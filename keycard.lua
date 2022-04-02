@@ -151,8 +151,6 @@ function CloseShaftDoor(num)
         SetEntityCoords(doorR, coords2)
         x = x + 1
         Wait(23)
-        --print("tick")
-        --print(GetEntityCoords(doorL))
     until x == 100 
     doorNr = 0
     doorOpen = false
@@ -182,7 +180,6 @@ CreateThread(function()
                 end
             else 
                 Wait(1000)
-                print("wtfff jldhflskdfsdfhsgbdflk")
             end
         else 
             Wait(1000)
