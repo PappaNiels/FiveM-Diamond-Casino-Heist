@@ -1,4 +1,27 @@
-local aggHeist = false
+aggHeist = false
+inInCasino = false
+
+local showBlip = false
+
+local blipCoords = vector3(2525.77, -251.71, -60.31)
+
+local blip
+
+RegisterCommand("aggr", function()
+    SetEntityCoords(PlayerPedId(), 923.76, 47.2, 81.11)
+    aggHeist = true
+end, false)
+
+
+RegisterCommand("wat", function()
+    
+    showBlip = true
+    blip = AddBlipForCoord(blipCoords[1])
+    SetBlipSprite(blip, 1)
+    SetBlipColour(blip, 5)
+    SetBlipHighDetail(blip, true)
+end, false)
+
 CreateThread(function()
     while true do 
         Wait(2)
@@ -29,49 +52,56 @@ function AggrHeistEntry()
     ExecuteCommand("wat")
 end
 
-RegisterCommand("aggr", function()
-    SetEntityCoords(PlayerPedId(), 923.76, 47.2, 81.11)
-    aggHeist = true
-end, false)
 
-local blipCoords = {
-    vector3(2502.42, -229.31, -60.31),
-    vector3(2498.65, -229.18, -55.12)
-}
-
-local showBlip = false
-local blip
-RegisterCommand("wat", function()
-    
-    showBlip = true
-    blip = AddBlipForCoord(blipCoords[1])
-    SetBlipSprite(blip, 1)
-    SetBlipColour(blip, 5)
-    SetBlipHighDetail(blip, true)
-end, false)
-
-local x = 1
 
 CreateThread(function()
-    while true do 
-        Wait(0)
-        if showBlip then
-            SubtitleMsg("Go to the ~y~Management Office~s~", 60)
-            local distance = #(GetEntityCoords(PlayerPedId()) - blipCoords[x])
-            if distance < 2 then     
-                if blipCoords[x + 1] == nil then 
-                    RemoveBlip(blip)
-                    showBlip = false 
-                    print("end") 
-                else
-                    x = x + 1
-                    SetBlipCoords(blip, blipCoords[x])                    
+    while true do
+        Wait(0) 
+        if inInCasino then 
+            SubtitleMsg("Go to the ~y~staff lobby~s~.", 60)
+            local distance = #(GetEntityCoords(PlayerPedId()) - blipCoords)
+            if distance < 10 then 
+                DrawMarker(1, 2525.77, -251.71, -61.31, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 1.0, 30, 30, 30, 100, false, false, 2, false, nil, nil, false)
+                if distance < 2 then 
+                    if IsControlJustPressed(0, 38) then 
+                        RemoveBlip(blip)
+                        FadeTeleport(2525.3, -256.46, -60.32, 181.9425)
+                        inCasino = false
+                    end
+                else 
+                    Wait(50)
                 end
             else 
-                Wait(50)              
+                Wait(50)
             end
         else 
             Wait(1000)
-        end
+        end 
     end
 end)
+
+--local x = 1
+
+--CreateThread(function()
+--    while true do 
+--        Wait(0)
+--        if showBlip then
+--            SubtitleMsg("Go to the ~y~staff lobby~s~.", 60)
+--            local 
+--            if distance < 2 then     
+--                if blipCoords[x + 1] == nil then 
+--                    RemoveBlip(blip)
+--                    showBlip = false 
+--                    print("end") 
+--                else
+--                    x = x + 1
+--                    SetBlipCoords(blip, blipCoords[x])                    
+--                end
+--            else 
+--                Wait(50)              
+--            end
+--        else 
+--            Wait(1000)
+--        end
+--    end
+--end)

@@ -13,7 +13,8 @@ client_scripts {
     "keycard.lua",
     "aggressive-ent.lua",
     "functions.lua",
-    "main.lua"
+    "main.lua", 
+    "staff.lua"
 }
 
 dependencies {

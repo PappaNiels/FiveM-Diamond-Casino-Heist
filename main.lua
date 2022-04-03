@@ -1,15 +1,65 @@
+heistInprogress = false
+
+hPlayer = { 
+    PlayerPedId(),
+    PlayerPedId(),
+    PlayerPedId(),
+    PlayerPedId()    
+}
+
+heistType = 0
+entryType = 0
+
+entrypointsCasino = {
+    -- Agressive 
+
+    --[[1]]  vector3(923.76, 47.2, 81.11),  -- Front
+    --[[2]]  vector3(893.29, -176.47, 22.58),  -- Sewer
+
+    -- Silent and sneaky + Big con
+
+    --[[3]]  vector3(0, 0, 0),  -- Staff entry
+    --[[4]]  vector3(0, 0, 0),  -- Garbage entry
+    --[[5]]  vector3(0, 0, 0),  -- Roof 1 
+    --[[6]]  vector3(0, 0, 0),  -- Roof 2
+    --[[7]]  vector3(0, 0, 0),  -- Roof 3
+    --[[8]]  vector3(0, 0, 0),  -- Roof 4
+    --[[9]]  vector3(0, 0, 0),  -- Roof 5
+    --[[10]] vector3(0, 0, 0), -- Roof 6
+    --[[11]] vector3(0, 0, 0), -- Roof 7
+    
+    -- Gruppe Sechs
+    --[[12]] vector3(0, 0, 0)  -- Garage
+
+}
+
+lvlOneKeypad = {
+
+}
+
+lvlTwoKeypad = {
+
+}
+
+lvlThreeKeypad = {
+
+}
+
+lvlFourKeypad  = {
+    vector3(2465.45, -282.0, -70.69)
+    vector3(2465.3, -276.45, -70.69)
+}
+
+difficulty = 0
+loot = 0
+
 local models = { 
     GetHashKey("a_f_m_bevhills_01"),
     GetHashKey("a_f_m_bevhills_02"),
     GetHashKey("a_f_m_bodybuild_01") 
 }
 
-local hPlayer = { 
-    PlayerPedId(),
-    PlayerPedId(),
-    PlayerPedId(),
-    PlayerPedId()    
-}
+
 
 local nPropsCoords = { 
     vector3(2505.54, -238.53, -71.65),
@@ -21,8 +71,16 @@ local nPropsNames = {
     GetHashKey("ch_des_heist3_vault_end")
 }
 
-local difficulty
-local loot
+RegisterCommand("vl_break", function()
+    for i = 1, #nPropsCoords, 1 do 
+        local prop = GetClosestObjectOfType(nPropsCoords[i], 1.0, nPropsNames[i], false, false, false)
+        local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
+        SetEntityVisible(prop, true)
+        SetEntityVisible(prop1, false)
+        SetEntityCollision(prop, true, true)
+        SetEntityCollision(prop1, false, true)
+    end
+end, false)
 
 function GetHeistPlayer()
     Models()
@@ -56,7 +114,11 @@ function GetLoot()
     return loot 
 end
 
-function HideNProps()
+AddEventHandler("onResourceStart", function()
+    HideNPropsStart()
+end)
+
+function HideNPropsStart()
     for i = 1, #nPropsCoords, 1 do 
         local prop = GetClosestObjectOfType(nPropsCoords[i], 1.0, nPropsNames[i], false, false, false)
         local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
@@ -66,18 +128,3 @@ function HideNProps()
         SetEntityCollision(prop1, true, true)
     end
 end
-
-RegisterCommand("vl_break", function()
-    for i = 1, #nPropsCoords, 1 do 
-        local prop = GetClosestObjectOfType(nPropsCoords[i], 1.0, nPropsNames[i], false, false, false)
-        local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
-        SetEntityVisible(prop, true)
-        SetEntityVisible(prop1, false)
-        SetEntityCollision(prop, true, true)
-        SetEntityCollision(prop1, false, true)
-    end
-end, false)
-
-AddEventHandler("onResourceStart", function()
-    HideNProps()
-end)

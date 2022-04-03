@@ -66,3 +66,9 @@ function LoadAnim(animDict)
         Wait(10)
     end
 end
+
+RegisterCommand("tp", function(source, args)
+    local x, y, z, h = args[1], args[2], args[3], args[4]
+    print(x, y, z, h)
+    FadeTeleport(x, y, z, h)
+end, false)
