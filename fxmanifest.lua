@@ -14,7 +14,8 @@ client_scripts {
     "aggressive-ent.lua",
     "functions.lua",
     "main.lua", 
-    "staff.lua"
+    "staff.lua",
+    "security.lua"
 }
 
 dependencies {

@@ -62,7 +62,7 @@ CreateThread(function()
             if distance < 20 then 
                 DrawMarker(1, sewerEntry.x, sewerEntry.y, sewerEntry.z - 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.50, 0.75, 229, 202, 23, 100, false, false, 2, false, nil, nil, false)
                 if not inTunnel and isReady and distance < 4 then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to enter the tunnel")
+                    HelpMsg("Press ~INPUT_CONTEXT~ to enter the tunnel", 110)
                     if IsControlJustPressed(0, 38) then
                         --EnterTunnel()
                         FadeTeleport(2517.22, -326.99, -71.2, 84.0)

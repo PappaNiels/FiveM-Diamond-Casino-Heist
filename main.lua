@@ -46,7 +46,7 @@ lvlThreeKeypad = {
 }
 
 lvlFourKeypad  = {
-    vector3(2465.45, -282.0, -70.69)
+    vector3(2465.45, -282.0, -70.69),
     vector3(2465.3, -276.45, -70.69)
 }
 
@@ -58,8 +58,6 @@ local models = {
     GetHashKey("a_f_m_bevhills_02"),
     GetHashKey("a_f_m_bodybuild_01") 
 }
-
-
 
 local nPropsCoords = { 
     vector3(2505.54, -238.53, -71.65),
@@ -121,10 +119,10 @@ end)
 function HideNPropsStart()
     for i = 1, #nPropsCoords, 1 do 
         local prop = GetClosestObjectOfType(nPropsCoords[i], 1.0, nPropsNames[i], false, false, false)
-        local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
+        --local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
         SetEntityVisible(prop, false)
         SetEntityCollision(prop, false, true)
-        SetEntityVisible(prop1, true)
-        SetEntityCollision(prop1, true, true)
+        --SetEntityVisible(prop1, true)
+        --SetEntityCollision(prop1, true, true)
     end
 end

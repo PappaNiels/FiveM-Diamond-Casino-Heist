@@ -67,7 +67,7 @@ CreateThread(function()
             if distance < 10 then 
                 DrawMarker(1, 2465.45, -282.0, -71.7, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.50, 0.75, 229, 202, 23, 100, false, false, 2, false, nil, nil, false)
                 if distance < 1 then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard")
+                    HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard", 110)
                     if IsControlJustPressed(0, 38) then 
                         ExecuteCommand("keycard")
                         heistInProgress = false 

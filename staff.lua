@@ -54,6 +54,7 @@ CreateThread(function()
                 end
                 if #(coords - vector3(2514.21, -281.78, -70.72)) < 1 then 
                     isInStaff = false
+                    isInSecurity = true
                 else 
                     Wait(50)
                 end

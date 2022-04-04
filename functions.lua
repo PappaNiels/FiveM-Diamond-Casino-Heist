@@ -1,7 +1,7 @@
-function HelpMsg(text)
+function HelpMsg(text, time)
     AddTextEntry("bomb", text)
-    BeginTextCommandDisplayHelp( "bomb")
-    EndTextCommandDisplayHelp(0, false, -1)
+    BeginTextCommandDisplayHelp("bomb")
+    EndTextCommandDisplayHelp(0, false, true, time)
 end
 
 function SubtitleMsg(msg, time)
