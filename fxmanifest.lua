@@ -15,7 +15,8 @@ client_scripts {
     "functions.lua",
     "main.lua", 
     "staff.lua",
-    "security.lua"
+    "security.lua",
+    "mantrap.lua"
 }
 
 dependencies {

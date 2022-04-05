@@ -39,7 +39,7 @@ CreateThread(function()
     end
 end)
 
-function AggrHeistEntry()
+local function AggrHeistEntry()
     FadeTeleport(2466.15, -281.06, -58.47)
     LoadCutscene("hs3f_dir_ent")
     StartCutscene(0)
@@ -48,7 +48,7 @@ function AggrHeistEntry()
     isInCasino = true
 end
 
-function AddCasinoBlip()
+local function AddCasinoBlip()
     showBlip = true
     blip = AddBlipForCoord(blipCoords)
     SetBlipSprite(blip, 1)

@@ -10,7 +10,7 @@ RegisterCommand("st_blips", function()
     --AddStaffBlips()
 end, false)
 
-function AddStaffBlips()
+local function AddStaffBlips()
     blipEle = AddBlipForCoord(2520.97, -279.37, -58.72)
     blipSta = AddBlipForCoord(2514.67, -280.43, -58.72)
 
@@ -47,7 +47,8 @@ CreateThread(function()
                     end
                 else
                     if coords.z < -67 then 
-                        RemoveBlip(blipSta)                       
+                        RemoveBlip(blipSta)
+                                               
                     else
                         Wait(50)
                     end
@@ -55,6 +56,7 @@ CreateThread(function()
                 if #(coords - vector3(2514.21, -281.78, -70.72)) < 1 then 
                     isInStaff = false
                     isInSecurity = true
+                    blipActive = false
                 else 
                     Wait(50)
                 end

@@ -109,80 +109,80 @@ RegisterCommand("vl_reset", function()
     SetEntityVisible(vaultShell, true)
 end, false)
 
-function OpenVaultShaft(num)
-    local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
-    local doorL = GetClosestObjectOfType(vaultEntryDoorsCoords[num], 1.0, pDoorL, false, false, false)
-    local doorR = GetClosestObjectOfType(vaultEntryDoorsCoords[num + 1], 1.0, pDoorR, false, false, false)
-    local x = 0
-    local coords1, coords2 = vaultEntryDoorsCoords[num], vaultEntryDoorsCoords[num + 1]
-    if num == 3 then 
-        local vaultShell = GetClosestObjectOfType(2505.54, -238.53, -71.65, 1.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
-        SetEntityVisible(vaultShell, false)
-        print("vault")
-    end
-    repeat 
-        coords1 = coords1 + vector3(0, 0.0105, 0)
-        coords2 = coords2 - vector3(0, 0.0105, 0)
-        SetEntityCoords(doorL, coords1)
-        SetEntityCoords(doorR, coords2)
-        x = x + 1
-        Wait(23)
-        --print("tick")
-        --print(GetEntityCoords(doorL))
-    until x == 100 
-    doorNr = num 
-    doorOpen = true
-    
-    --Wait(10000)
-    --SetEntityCoords(doorL, vaultEntryDoorsCoords[num])
-    --SetEntityCoords(doorR, vaultEntryDoorsCoords[num + 1])
-end 
+--function OpenVaultShaft(num)
+--    local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
+--    local doorL = GetClosestObjectOfType(vaultEntryDoorsCoords[num], 1.0, pDoorL, false, false, false)
+--    local doorR = GetClosestObjectOfType(vaultEntryDoorsCoords[num + 1], 1.0, pDoorR, false, false, false)
+--    local x = 0
+--    local coords1, coords2 = vaultEntryDoorsCoords[num], vaultEntryDoorsCoords[num + 1]
+--    if num == 3 then 
+--        local vaultShell = GetClosestObjectOfType(2505.54, -238.53, -71.65, 1.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+--        SetEntityVisible(vaultShell, false)
+--        print("vault")
+--    end
+--    repeat 
+--        coords1 = coords1 + vector3(0, 0.0105, 0)
+--        coords2 = coords2 - vector3(0, 0.0105, 0)
+--        SetEntityCoords(doorL, coords1)
+--        SetEntityCoords(doorR, coords2)
+--        x = x + 1
+--        Wait(23)
+--        --print("tick")
+--        --print(GetEntityCoords(doorL))
+--    until x == 100 
+--    doorNr = num 
+--    doorOpen = true
+--    
+--    --Wait(10000)
+--    --SetEntityCoords(doorL, vaultEntryDoorsCoords[num])
+--    --SetEntityCoords(doorR, vaultEntryDoorsCoords[num + 1])
+--end 
+--
+--function CloseShaftDoor(num)
+--    local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
+--    local doorL = GetClosestObjectOfType(vaultEntryDoorsCoords[num] + vector3(0, 1.05, 0), 2.0, pDoorL, false, false, false)
+--    local doorR = GetClosestObjectOfType(vaultEntryDoorsCoords[num + 1] - vector3(0, 1.05, 0), 2.0, pDoorR, false, false, false)
+--    local x = 0
+--    local coords1, coords2 = vaultEntryDoorsCoords[num] + vector3(0, 1.05, 0), vaultEntryDoorsCoords[num + 1] - vector3(0, 1.05, 0)
+--    repeat 
+--        coords1 = coords1 - vector3(0, 0.0105, 0)
+--        coords2 = coords2 + vector3(0, 0.0105, 0)
+--        SetEntityCoords(doorL, coords1)
+--        SetEntityCoords(doorR, coords2)
+--        x = x + 1
+--        Wait(23)
+--    until x == 100 
+--    doorNr = 0
+--    doorOpen = false
+--end
 
-function CloseShaftDoor(num)
-    local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
-    local doorL = GetClosestObjectOfType(vaultEntryDoorsCoords[num] + vector3(0, 1.05, 0), 2.0, pDoorL, false, false, false)
-    local doorR = GetClosestObjectOfType(vaultEntryDoorsCoords[num + 1] - vector3(0, 1.05, 0), 2.0, pDoorR, false, false, false)
-    local x = 0
-    local coords1, coords2 = vaultEntryDoorsCoords[num] + vector3(0, 1.05, 0), vaultEntryDoorsCoords[num + 1] - vector3(0, 1.05, 0)
-    repeat 
-        coords1 = coords1 - vector3(0, 0.0105, 0)
-        coords2 = coords2 + vector3(0, 0.0105, 0)
-        SetEntityCoords(doorL, coords1)
-        SetEntityCoords(doorR, coords2)
-        x = x + 1
-        Wait(23)
-    until x == 100 
-    doorNr = 0
-    doorOpen = false
-end
-
-CreateThread(function()
-    while true do 
-        Wait(10)
-        if doorOpen then 
-            if doorNr == 1 then 
-                local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorsCoords[1])
-                if distance > 10 then 
-                    print("close" .. doorNr)
-                    CloseShaftDoor(1)
-                    Wait(100)
-                else 
-                    Wait(100)
-                end
-            elseif doorNr == 3 then
-                local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorsCoords[3])
-                if distance > 7 then 
-                    print("close" .. doorNr)
-                    CloseShaftDoor(3)
-                    Wait(100)
-                else 
-                    Wait(100)
-                end
-            else 
-                Wait(1000)
-            end
-        else 
-            Wait(1000)
-        end
-    end
-end)
+--CreateThread(function()
+--    while true do 
+--        Wait(10)
+--        if doorOpen then 
+--            if doorNr == 1 then 
+--                local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorsCoords[1])
+--                if distance > 10 then 
+--                    print("close" .. doorNr)
+--                    CloseShaftDoor(1)
+--                    Wait(100)
+--                else 
+--                    Wait(100)
+--                end
+--            elseif doorNr == 3 then
+--                local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorsCoords[3])
+--                if distance > 7 then 
+--                    print("close" .. doorNr)
+--                    CloseShaftDoor(3)
+--                    Wait(100)
+--                else 
+--                    Wait(100)
+--                end
+--            else 
+--                Wait(1000)
+--            end
+--        else 
+--            Wait(1000)
+--        end
+--    end
+--end)
