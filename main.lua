@@ -13,20 +13,20 @@ entryType = 0
 entrypointsCasino = {
     -- Agressive 
 
-    --[[1]]  vector3(923.76, 47.2, 81.11),  -- Front
+    --[[1]]  vector3(923.76, 47.20, 81.11),  -- Front
     --[[2]]  vector3(893.29, -176.47, 22.58),  -- Sewer
 
     -- Silent and sneaky + Big con
 
-    --[[3]]  vector3(0, 0, 0),  -- Staff entry
-    --[[4]]  vector3(0, 0, 0),  -- Garbage entry
-    --[[5]]  vector3(0, 0, 0),  -- Roof 1 
-    --[[6]]  vector3(0, 0, 0),  -- Roof 2
-    --[[7]]  vector3(0, 0, 0),  -- Roof 3
-    --[[8]]  vector3(0, 0, 0),  -- Roof 4
-    --[[9]]  vector3(0, 0, 0),  -- Roof 5
-    --[[10]] vector3(0, 0, 0), -- Roof 6
-    --[[11]] vector3(0, 0, 0), -- Roof 7
+    --[[3]]  vector3(978.78, 18.64, 80.99),  -- Staff Entry
+    --[[4]]  vector3(993.17, 77.05, 80.99),  -- Garbage Entry
+    --[[5]]  vector3(972.15, 25.54, 120.24),  -- Roof Helipad North  
+    --[[6]]  vector3(959.39, 31.75, 120.23),  -- Roof Helipad South 
+    --[[7]]  vector3(988.32, 59.03, 111.26),  -- Roof North East
+    --[[8]]  vector3(953.78, 4.02, 111.26),  -- Roof South East 
+    --[[9]]  vector3(938.59, -1.21, 111.3),  -- Roof South
+    --[[10]] vector3(936.42, 14.51, 112.55), -- Roof South West6
+    --[[11]] vector3(953.40, 79.20, 111.25), -- Roof 7
     
     -- Gruppe Sechs
     --[[12]] vector3(0, 0, 0)  -- Garage
@@ -54,6 +54,7 @@ lvlFourKeypad  = {
 
 difficulty = 0
 loot = 0
+vaultLayout = 0
 
 local models = { 
     GetHashKey("a_f_m_bevhills_01"),
@@ -102,18 +103,13 @@ function Models()
     end
 end
 
-function GetDifficulty()
-    return difficulty 
+function SetLoot()
+    loot = math.random(1, 4)
 end
 
-function SetLoot(_loot)
-    loot = _loot
+function SetLayout()
+    vaultLayout = math.random(1,4)
 end
-
-function GetLoot()
-    return loot 
-end
-
 AddEventHandler("onResourceStart", function()
     HideNPropsStart()
 end)
