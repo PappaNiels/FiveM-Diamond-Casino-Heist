@@ -17,7 +17,8 @@ client_scripts {
     "staff.lua",
     "security.lua",
     "mantrap.lua",
-    "ipl.lua"
+    "ipl.lua",
+    "vault.lua"
 }
 
 dependencies {

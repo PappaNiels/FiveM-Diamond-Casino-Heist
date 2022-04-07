@@ -103,13 +103,19 @@ function Models()
     end
 end
 
-function SetLoot()
-    loot = math.random(1, 4)
-end
+--function SetLoot()
+--    loot = math.random(1, 4)
+--end
 
 function SetLayout()
-    vaultLayout = math.random(1,4)
+    if loot ~= 2 then 
+        vaultLayout = math.random(1,6)
+    else  
+        vaultLayout = math.random(7,10)
+    end
+    --vaultLayout = math.random(1,4)
 end
+
 AddEventHandler("onResourceStart", function()
     HideNPropsStart()
 end)

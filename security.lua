@@ -15,7 +15,7 @@ RegisterCommand("sec_blips", function()
     isInSecurity = true
 end, false)
 
-function AddSecurityBlips()
+local function AddSecurityBlips()
     for i = 1, 2, 1 do 
         blip[i] = AddBlipForCoord(lvlFourKeypad[i])    
         SetBlipSprite(blip[i], 733)

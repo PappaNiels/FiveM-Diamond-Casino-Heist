@@ -32,6 +32,8 @@ CreateThread(function()
                         aggHeist = false
                     end
                 end
+            else 
+                Wait(100)
             end
         else    
             Wait(1000)
@@ -39,7 +41,7 @@ CreateThread(function()
     end
 end)
 
-local function AggrHeistEntry()
+function AggrHeistEntry()
     FadeTeleport(2466.15, -281.06, -58.47)
     LoadCutscene("hs3f_dir_ent")
     StartCutscene(0)
