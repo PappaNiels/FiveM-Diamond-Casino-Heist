@@ -37,11 +37,22 @@ local smallDoorMove = {
     vector2(-0.0046, -0.0112)
 }
 
+local artCabinetCoords = {
+    vector4(2527.96, -218.3934, -71.73721, 223.12),
+    vector4(2527.589, -219.2627, -71.73721, 0.1564346),
+    vector4(2541.379, -237.1996, -71.73713, -0.6946586),
+    vector4(2534.479, -253.8472, -71.73721, -0.9335806),
+    vector4(2522.384, -258.904, -71.73721, -0.9996574),
+    vector4(2502.734, -247.5772, -71.73713, 0.8571671)
+}
+
 local slideDoorBigName = "ch_prop_ch_vault_slide_door_lrg"
 local slideDoorSmallName = "ch_prop_ch_vault_slide_door_sm"
+local artCabinetName = "ch_prop_ch_sec_cabinet_02a"
 
 local bigDoor = {}
 local smallDoor = {}
+local artCabinets = {}
 
 --local i = 1
 
@@ -86,12 +97,14 @@ local function SetVaultDoors()
 
     for i = 1, #vaultLayoutDoorBig[vaultLayout], 1 do 
         SetEntityCoords(bigDoor[vaultLayoutDoorBig[vaultLayout][i]], slideDoorOpenBigCoords[vaultLayoutDoorBig[vaultLayout][i]])
-        --print(vaultLayoutDoorBig[vaultLayout][i].."big")
+        print(GetEntityCoords(bigDoor[i]))
+        print(vaultLayoutDoorBig[vaultLayout][i].."big")
     end
 
     for i = 1, #vaultLayoutDoorSmall[vaultLayout], 1 do
         SetEntityCoords(smallDoor[vaultLayoutDoorSmall[vaultLayout][i]], slideDoorOpenSmallCoords[vaultLayoutDoorSmall[vaultLayout][i]])
-        --print(vaultLayoutDoorSmall[vaultLayout][i].."small")
+        print(GetEntityCoords(smallDoor[i]))
+        print(vaultLayoutDoorSmall[vaultLayout][i].."small")
     end
 end
 
@@ -136,23 +149,16 @@ local function OpenVaultDoors()
 end
 
 RegisterCommand("test_loop", function()
-    
-    for i = 1, 5, 1 do 
-        if i == 2 or i == 4 then 
-            i = i + 1
-        end
-        print(i)
-    end
-
     OpenVaultDoors()
 end)
 
 RegisterCommand("vl_bdoor", function()
     SetLoot()
     SetLayout()
+    Wait(1000)
     SetVaultDoors()
-    isInVault = true
+    --isInVault = true
     --print(loot)
-    --print(vaultLayout.. "vl")
-    --print(vaultLayoutDoorBig[vaultLayout][1], vaultLayoutDoorBig[vaultLayout][2])
+    print(vaultLayout.. "vl")
+    print(vaultLayoutDoorBig[vaultLayout][1], vaultLayoutDoorBig[vaultLayout][2], vaultLayoutDoorSmall[vaultLayout][1], vaultLayoutDoorSmall[vaultLayout][2])
 end, false)

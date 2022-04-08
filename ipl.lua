@@ -97,72 +97,15 @@ function SetLoot()
     RefreshInterior(vault)
 end 
 
-RegisterCommand("setlootd", function()
-    
-    
-    DeactivateInteriorEntitySet(vault, "money_prop_1")
-    DeactivateInteriorEntitySet(vault, "money_prop_2")
-    DeactivateInteriorEntitySet(vault, "painting_prop_1")
-    DeactivateInteriorEntitySet(vault, "painting_prop_2")
-    DeactivateInteriorEntitySet(vault, "gold_prop_1")
-    DeactivateInteriorEntitySet(vault, "gold_prop_2")
-    ActivateInteriorEntitySet(vault, "diamonds_prop_1")
-    ActivateInteriorEntitySet(vault, "diamonds_prop_2")
-    RefreshInterior(vault)
-end, false)
 CreateThread(function()
     RequestIpl("ch_h3_casino_cameras")
 
-    --local vault = GetInteriorAtCoords(2488.348, -267.3637, -71.64563)
-
-    --ActivateInteriorEntitySet(vault, )
-
-    --DeactivateInteriorEntitySet(vault,  "test")
-    --ActivateInteriorEntitySet(vault, "cabinet")
     ActivateInteriorEntitySet(vault, "standard_props")
     ActivateInteriorEntitySet(vault, "cabinet_1")
+    ActivateInteriorEntitySet(vault, "cabinet_art")
+    
     
     DeactivateInteriorEntitySet(vault, "cabinet_2")
     
-    --if loot == 1 then 
-    --    DeactivateInteriorEntitySet(vault, "money_prop_1")
-    --    ActivateInteriorEntitySet(vault, "money_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "painting_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "painting_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "gold_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "gold_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "diamonds_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "diamonds_prop_2")
-    --elseif loot == 2 then 
-    --    DeactivateInteriorEntitySet(vault, "money_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "money_prop_2")
-    --    ActivateInteriorEntitySet(vault, "painting_prop_1")
-    --    ActivateInteriorEntitySet(vault, "painting_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "gold_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "gold_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "diamonds_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "diamonds_prop_2")
-    --elseif loot == 3 then
-    --    DeactivateInteriorEntitySet(vault, "money_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "money_prop_2") 
-    --    ActivateInteriorEntitySet(vault, "gold_prop_1")
-    --    ActivateInteriorEntitySet(vault, "gold_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "painting_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "painting_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "diamonds_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "diamonds_prop_2")
-    --elseif loot == 4 then
-    --    DeactivateInteriorEntitySet(vault, "money_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "money_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "painting_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "painting_prop_2")
-    --    DeactivateInteriorEntitySet(vault, "gold_prop_1")
-    --    DeactivateInteriorEntitySet(vault, "gold_prop_2")
-    --    ActivateInteriorEntitySet(vault, "diamonds_prop_1")
-    --    ActivateInteriorEntitySet(vault, "diamonds_prop_2")
-    --    
-    --    --print("tick")
-    --end
-    --print("loop")
     RefreshInterior(vault)
 end)

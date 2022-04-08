@@ -25,32 +25,42 @@ entrypointsCasino = {
     --[[7]]  vector3(988.32, 59.03, 111.26),  -- Roof North East
     --[[8]]  vector3(953.78, 4.02, 111.26),  -- Roof South East 
     --[[9]]  vector3(938.59, -1.21, 111.3),  -- Roof South
-    --[[10]] vector3(936.42, 14.51, 112.55), -- Roof South West6
-    --[[11]] vector3(953.40, 79.20, 111.25), -- Roof 7
+    --[[10]] vector3(936.42, 14.51, 112.55), -- Roof South West
+    --[[11]] vector3(953.40, 79.20, 111.25), -- Roof North West
     
     -- Gruppe Sechs
     --[[12]] vector3(0, 0, 0)  -- Garage
 
 }
 
-lvlOneKeypad = {
 
+keypads = {
+    ["lvlOneKeypad"] = {
+
+    },
+
+    ["lvlTwoKeypad"] = {
+
+    },
+
+    ["lvlThreeKeypad"] = {
+        vector3(2519.80, -226.47, -70.40),
+        vector3(2533.10, -237.28, -70.40),
+        vector3(2519.72, -250.60, -70.40),
+        vector3(2514.85, -223.50, -70.40),
+        vector3(2536.07, -232.34, -70.40),
+        vector3(2536.06, -244.72, -70.40),
+        vector3(2514.85, -253.55, -70.40)
+    },
+
+    ["lvlFourKeypad"]  = {
+        vector3(2465.45, -282.00, -70.69),
+        vector3(2465.30, -276.45, -70.69),
+        vector3(2492.82, -241.52, -70.40),
+        vector3(2492.83, -235.50, -70.40)
+    } 
 }
 
-lvlTwoKeypad = {
-
-}
-
-lvlThreeKeypad = {
-
-}
-
-lvlFourKeypad  = {
-    vector3(2465.45, -282.00, -70.69),
-    vector3(2465.30, -276.45, -70.69),
-    vector3(2492.82, -241.52, -70.40),
-    vector3(2492.83, -235.50, -70.40)
-}
 
 difficulty = 0
 loot = 0

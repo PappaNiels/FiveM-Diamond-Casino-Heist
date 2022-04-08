@@ -17,7 +17,7 @@ end, false)
 
 local function AddSecurityBlips()
     for i = 1, 2, 1 do 
-        blip[i] = AddBlipForCoord(lvlFourKeypad[i])    
+        blip[i] = AddBlipForCoord(keypads["lvlFourKeypad"][i])    
         SetBlipSprite(blip[i], 733)
         SetBlipColour(blip[i], 2)
         SetBlipHighDetail(blip[i], true)
@@ -109,7 +109,7 @@ CreateThread(function()
                 AddSecurityBlips()
                 Wait(100)
             else
-                local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - lvlFourKeypad[1]), #(GetEntityCoords(PlayerPedId()) - lvlFourKeypad[2])
+                local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - lvlFourKeypad[2])
                 if distance1 < 1.5 or distance2 < 1.5 then
                     isInSecurity = false
                     canSwipeKeycard = true 
@@ -129,7 +129,7 @@ CreateThread(function()
         Wait(0)
         if canSwipeKeycard then 
             SubtitleMsg("Simultaneously swipe the ~g~keycards~s~", 100)
-            local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - lvlFourKeypad[1]), #(GetEntityCoords(PlayerPedId()) - lvlFourKeypad[2])
+            local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][2])
             
             if distance1 < 0.5 then 
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard", 150) 
