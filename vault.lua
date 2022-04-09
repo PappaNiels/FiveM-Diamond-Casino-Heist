@@ -148,6 +148,24 @@ local function OpenVaultDoors()
     end
 end
 
+CreateThread(function()
+    while true do 
+        if isInVault then 
+            for i = 1, #keypads["lvlThreeKeypad"] do 
+                local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
+                if distance < 2 then 
+                    print(distance)
+                    Wait(10)
+                else 
+                    Wait(100)
+                end
+            end
+        else 
+            Wait(1000)
+        end
+    end
+end)
+
 RegisterCommand("test_loop", function()
     OpenVaultDoors()
 end)
@@ -161,4 +179,8 @@ RegisterCommand("vl_bdoor", function()
     --print(loot)
     print(vaultLayout.. "vl")
     print(vaultLayoutDoorBig[vaultLayout][1], vaultLayoutDoorBig[vaultLayout][2], vaultLayoutDoorSmall[vaultLayout][1], vaultLayoutDoorSmall[vaultLayout][2])
+end, false)
+
+RegisterCommand("vl_dist", function()
+    isInVault = true
 end, false)

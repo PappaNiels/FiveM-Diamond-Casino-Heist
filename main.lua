@@ -24,12 +24,11 @@ entrypointsCasino = {
     --[[6]]  vector3(959.39, 31.75, 120.23),  -- Roof Helipad South 
     --[[7]]  vector3(988.32, 59.03, 111.26),  -- Roof North East
     --[[8]]  vector3(953.78, 4.02, 111.26),  -- Roof South East 
-    --[[9]]  vector3(938.59, -1.21, 111.3),  -- Roof South
-    --[[10]] vector3(936.42, 14.51, 112.55), -- Roof South West
-    --[[11]] vector3(953.40, 79.20, 111.25), -- Roof North West
+    --[[9]] vector3(936.42, 14.51, 112.55), -- Roof South West
+    --[[10]] vector3(953.40, 79.20, 111.25), -- Roof North West
     
     -- Gruppe Sechs
-    --[[12]] vector3(0, 0, 0)  -- Garage
+    --[[11]] vector3(0, 0, 0)  -- Garage
 
 }
 
@@ -54,10 +53,10 @@ keypads = {
     },
 
     ["lvlFourKeypad"]  = {
-        vector3(2465.45, -282.00, -70.69),
-        vector3(2465.30, -276.45, -70.69),
-        vector3(2492.82, -241.52, -70.40),
-        vector3(2492.83, -235.50, -70.40)
+        vector3(2464.828, -282.2930, -70.4072),
+        vector3(2464.845, -276.1607, -70.4072),
+        vector3(2492.825, -241.5286, -70.4072),
+        vector3(2492.829, -235.4994, -70.4072)
     } 
 }
 

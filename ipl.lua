@@ -2,7 +2,19 @@ local vault = GetInteriorAtCoords(2488.348, -267.3637, -71.64563)
 
 function SetLoot()
     loot = math.random(1, 4)
-    print(loot)
+    
+    if loot == 1 then 
+        _loot = "cash"
+    elseif loot == 2 then
+        _loot = "art"
+    elseif loot == 3 then 
+        _loot = "gold"
+    elseif loot == 4 then 
+        _loot = "diamonds"
+    end 
+
+    
+    print(_loot)
 
     if loot == 1 then 
         local remove = {
