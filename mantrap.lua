@@ -97,13 +97,16 @@ CreateThread(function()
     while true do 
         Wait(0)
         if isInMantrap then 
-            --print(openedDoor)
+            print(openedDoor)
             if openedDoor == 1 then 
                 local distance = #(GetEntityCoords(PlayerPedId()) - mantrapEntryDoorsCoords[3])
                 --print(distance)
                 if distance < 2.5 then 
                     OpenMantrapDoor(3)
                     isInMantrap = false
+                    isInVault = true
+                    
+                    --SetVaultDoors()
                     --print("door 1")
                 else 
                     Wait(100)

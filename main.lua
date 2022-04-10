@@ -126,7 +126,11 @@ function SetLayout()
 end
 
 AddEventHandler("onResourceStart", function()
-    HideNPropsStart()
+    --HideNPropsStart()
+    --if GetCurrentResourceName() ~= "1heist" then 
+    --    print("Not the correct resource name")
+    --    StopResource(GetCurrentResourceName())
+    --end
 end)
 
 function HideNPropsStart()

@@ -1,7 +1,12 @@
 local vault = GetInteriorAtCoords(2488.348, -267.3637, -71.64563)
 
-function SetLoot()
-    loot = math.random(1, 4)
+RegisterCommand("set_loot", function(source, args)
+    local num = tonumber(args[1])
+    SetLoot(num)
+end)
+
+function SetLoot(loot)
+    --loot = math.random(1, 4)
     
     if loot == 1 then 
         _loot = "cash"

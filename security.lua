@@ -25,6 +25,14 @@ local function AddSecurityBlips()
     end
 end
 
+local function RemoveSecurityBlips()
+    for i = 1, 2, 1 do     
+        RemoveBlip(blip[i])
+        blipActive = false
+        print(i)
+    end
+end
+
 --function StartKeycardAnim(num)
 --    local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
 --    
@@ -109,7 +117,7 @@ CreateThread(function()
                 AddSecurityBlips()
                 Wait(100)
             else
-                local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - lvlFourKeypad[2])
+                local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][2])
                 if distance1 < 1.5 or distance2 < 1.5 then
                     isInSecurity = false
                     canSwipeKeycard = true 
@@ -134,20 +142,30 @@ CreateThread(function()
             if distance1 < 0.5 then 
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard", 150) 
                 if IsControlPressed(0, 38) then  
-                    StartKeycardAnim(1)
+                    SwipeKeycardMantrap(1)
+                    OpenMantrapDoor(1)
                     --print("a")
+                    isInMantrap = true
+                    openedDoor = 1
                     canSwipeKeycard = false
+                    RemoveSecurityBlips()
+                    
                     --keycard = 1
                 else 
                     --print("wha") 
                     Wait(10)
                 end
+                
             elseif distance2 < 0.5 then
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard", 150) 
                 if IsControlPressed(0, 38) then 
-                    StartKeycardAnim(2)
+                    SwipeKeycardMantrap(2)
+                    OpenMantrapDoor(1)
                     --print("a")
+                    isInMantrap = true
                     canSwipeKeycard = false
+                    openedDoor = 1
+                    RemoveSecurityBlips()
                     --keycard = 2
                 else
                     --print("wha") 
@@ -162,28 +180,28 @@ CreateThread(function()
     end
 end)
 
-CreateThread(function()
-    while true do
-        Wait(0) 
-        if holdingPass then 
-            DisableControlAction(1, 200, true)
-            HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
-            if IsControlPressed(0, 18) then 
-                --print("enter")
-                --print(keycard) 
-                holdingPass = false
-                SwipeKeycardAnim(keycard)
-            elseif IsControlPressed(0, 202) then 
-                --print("esc")
-                holdingPass = false 
-                canSwipeKeycard = true
-                keycard = 0
-            else 
-                Wait(50)
-            end
-
-        else 
-            Wait(1000)
-        end
-    end
-end)
+--CreateThread(function()
+--    while true do
+--        Wait(0) 
+--        if holdingPass then 
+--            DisableControlAction(1, 200, true)
+--            HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
+--            if IsControlPressed(0, 18) then 
+--                --print("enter")
+--                --print(keycard) 
+--                holdingPass = false
+--                --SwipeKeycardAnim(keycard)
+--            elseif IsControlPressed(0, 202) then 
+--                --print("esc")
+--                holdingPass = false 
+--                canSwipeKeycard = true
+--                keycard = 0
+--            else 
+--                Wait(50)
+--            end
+--
+--        else 
+--            Wait(1000)
+--        end
+--    end
+--end)

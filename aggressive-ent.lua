@@ -78,10 +78,10 @@ CreateThread(function()
                             isInStaff = true
                         end
                     else 
-                        Wait(50)
+                        Wait(10)
                     end
-                --else 
-                    --Wait(50)
+                else 
+                    Wait(100)
                 end
             end
         else 

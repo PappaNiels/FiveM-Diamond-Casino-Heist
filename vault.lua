@@ -55,6 +55,18 @@ local smallDoor = {}
 local artCabinets = {}
 
 --local i = 1
+local statusBigDoor = {
+    false,
+    false,
+    false
+}
+
+local statusSmallDoor = { 
+    false,
+    false,
+    false,
+    false
+}
 
 local vaultLayoutDoorBig = {
     [1] = {2, 3},
@@ -92,7 +104,7 @@ local function GetVaultDoors()
     end
 end
 
-local function SetVaultDoors()
+function SetVaultDoors()
     GetVaultDoors()
 
     for i = 1, #vaultLayoutDoorBig[vaultLayout], 1 do 
@@ -109,19 +121,23 @@ local function SetVaultDoors()
 end
 
 local function OpenSlideDoors(prop, xTick, yTick)
+    
     local coords = GetEntityCoords(prop)
     local x = 0
+    print(coords)
+    print("opened")
     repeat 
         x = x + 1
         coords = coords + vector3(xTick, yTick, 0)
         SetEntityCoords(prop, coords)
         Wait(23)
     until x == 100
+    
 end
 
 local function OpenVaultDoors()
     GetVaultDoors()
-
+    
     --for i = 1, #bigDoor, 1 do 
     --    SetEntityCoords(bigDoor[i], slideDoorOpenBigCoords[i])
     --end
@@ -129,20 +145,20 @@ local function OpenVaultDoors()
         OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
         --Wait(5000)
     end
-
+    
     Wait(5000)
-
+    
     for i = 1, #smallDoor, 1 do
         OpenSlideDoors(smallDoor[i], smallDoorMove[i].x, smallDoorMove[i].y)
         --Wait(5000)
     end
-
+    
     Wait(20000)
-
+    
     for i = 1, #bigDoor, 1 do 
         SetEntityCoords(bigDoor[i], slideDoorBigCoords[i])
     end
-
+    
     for i = 1, #smallDoor, 1 do 
         SetEntityCoords(smallDoor[i], slideDoorSmallCoords[i])
     end
@@ -153,11 +169,29 @@ CreateThread(function()
         if isInVault then 
             for i = 1, #keypads["lvlThreeKeypad"] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
-                if distance < 2 then 
-                    print(distance)
-                    Wait(10)
+                if distance < 3 then 
+                    print(distance) 
+                    GetVaultDoors()
+                    if i > 3 then 
+                        local x = i - 3
+                        if IsControlPressed(0, 38) and not statusSmallDoor[x] then
+                            HackKeypad(i)
+                            OpenSlideDoors(smallDoor[x], smallDoorMove[x].x, smallDoorMove[x].y)
+                            isInVault = false
+                        else 
+                            Wait(10)
+                        end
+                    else
+                        if IsControlPressed(0, 38) and not statusBigDoor[i] then
+                            HackKeypad(i)
+                            OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
+                            isInVault = false
+                        else 
+                            Wait(10)
+                        end
+                    end
                 else 
-                    Wait(100)
+                    Wait(30)
                 end
             end
         else 
@@ -168,6 +202,9 @@ end)
 
 RegisterCommand("test_loop", function()
     OpenVaultDoors()
+end)
+RegisterCommand("vl_testloop", function()
+    isInVault = true
 end)
 
 RegisterCommand("vl_bdoor", function()

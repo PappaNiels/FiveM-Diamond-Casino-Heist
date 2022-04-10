@@ -110,16 +110,16 @@ RegisterCommand("test_anim", function()
 end, false)
 
 -- NEEDS TESTING
-function HackKeypad()
+function HackKeypad(num)
     local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
     local hackDevice = "ch_prop_ch_usb_drive01x"
     local phoneDevice = "prop_phone_ing"
     LoadAnim(animDict)
     LoadModel(hackDevice)
     LoadModel(phoneDevice)
-
+    print(num)
     --keypad = 0 --GetClosestObjectOfType(keypads["lvlFourKeypad"][2], 2.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
-    keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][2], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
+    keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
     hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     
@@ -170,7 +170,7 @@ function SwipeKeycardMantrap(pos)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][1])
     Wait(2000)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][2])
-    Wait(2000)
+    --Wait(2000)
     while loop do 
         if IsControlPressed(0, 38) then 
             loop = false
