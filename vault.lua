@@ -94,6 +94,17 @@ local vaultLayoutDoorSmall = {
     [10] = {2, 4}
 }
 
+local hackKeypadAnims = { 
+    ["anims"] = {    
+        {'action_var_01', 'action_var_01_ch_prop_ch_usb_drive01x', 'action_var_01_prop_phone_ing'},
+        {'hack_loop_var_01', 'hack_loop_var_01_ch_prop_ch_usb_drive01x', 'hack_loop_var_01_prop_phone_ing'},
+        {'success_react_exit_var_01', 'success_react_exit_var_01_ch_prop_ch_usb_drive01x', 'success_react_exit_var_01_prop_phone_ing'},
+        {'fail_react', 'fail_react_ch_prop_ch_usb_drive01x', 'fail_react_prop_phone_ing'},
+        {'reattempt', 'reattempt_ch_prop_ch_usb_drive01x', 'reattempt_prop_phone_ing'}
+    },
+    ["networkScenes"] = {}
+} 
+
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         table.insert(bigDoor, GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false))
@@ -109,14 +120,14 @@ function SetVaultDoors()
 
     for i = 1, #vaultLayoutDoorBig[vaultLayout], 1 do 
         SetEntityCoords(bigDoor[vaultLayoutDoorBig[vaultLayout][i]], slideDoorOpenBigCoords[vaultLayoutDoorBig[vaultLayout][i]])
-        print(GetEntityCoords(bigDoor[i]))
-        print(vaultLayoutDoorBig[vaultLayout][i].."big")
+        statusBigDoor[vaultLayoutDoorBig[vaultLayout][i]] = true
+        print(vaultLayoutDoorBig[vaultLayout][i] .. "big")
     end
-
+    
     for i = 1, #vaultLayoutDoorSmall[vaultLayout], 1 do
         SetEntityCoords(smallDoor[vaultLayoutDoorSmall[vaultLayout][i]], slideDoorOpenSmallCoords[vaultLayoutDoorSmall[vaultLayout][i]])
-        print(GetEntityCoords(smallDoor[i]))
-        print(vaultLayoutDoorSmall[vaultLayout][i].."small")
+        statusSmallDoor[vaultLayoutDoorSmall[vaultLayout][i]] = true
+        print(vaultLayoutDoorSmall[vaultLayout][i] .. "small")
     end
 end
 
@@ -164,38 +175,85 @@ local function OpenVaultDoors()
     end
 end
 
+local function HackKeypad(num)
+    local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
+    local hackDevice = "ch_prop_ch_usb_drive01x"
+    local phoneDevice = "prop_phone_ing"
+    LoadAnim(animDict)
+    LoadModel(hackDevice)
+    LoadModel(phoneDevice)
+    print(num)
+    --keypad = 0 --GetClosestObjectOfType(keypads["lvlFourKeypad"][2], 2.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
+    keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
+    hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
+    phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
+    
+    print(keypad)
+    
+    for i = 1, #hackKeypadAnims["anims"], 1 do 
+        hackKeypadAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims["networkScenes"][i], animDict, hackKeypadAnims["anims"][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims["networkScenes"][i], animDict, hackKeypadAnims["anims"][i][2], 1.0, -1.0, 1148846080)
+        NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims["networkScenes"][i], animDict, hackKeypadAnims["anims"][i][3], 1.0, -1.0, 1148846080)
+    end
+    
+    print(hackKeypadAnims["networkScenes"][2])
+    NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][1])
+    Wait(4000)
+    NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][2])
+    Wait(2000)
+    --if IsControlPressed(0, 38) then 
+    Wait(3000)
+    NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][3])
+    Wait(4000)
+    DeleteObject(hackUsb)
+    DeleteObject(phone)
+    --end
+end
+
 CreateThread(function()
     while true do 
         if isInVault then 
             for i = 1, #keypads["lvlThreeKeypad"] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
-                if distance < 3 then 
-                    print(distance) 
-                    GetVaultDoors()
+                if distance < 2 then 
+                    --print(distance) 
                     if i > 3 then 
                         local x = i - 3
-                        if IsControlPressed(0, 38) and not statusSmallDoor[x] then
-                            HackKeypad(i)
-                            OpenSlideDoors(smallDoor[x], smallDoorMove[x].x, smallDoorMove[x].y)
-                            isInVault = false
-                        else 
-                            Wait(10)
+                        if not statusSmallDoor[x] then  
+                            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
+                            if IsControlPressed(0, 38) then
+                                HackKeypad(i)
+                                OpenSlideDoors(smallDoor[x], smallDoorMove[x].x, smallDoorMove[x].y)
+                                statusSmallDoor[x] = true
+                                --isInVault = false
+                            else 
+                                Wait(100)
+                            end
+                        --else 
+                        --    Wait(1000)
                         end
                     else
-                        if IsControlPressed(0, 38) and not statusBigDoor[i] then
-                            HackKeypad(i)
-                            OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
-                            isInVault = false
-                        else 
-                            Wait(10)
+                        if not statusBigDoor[i] then 
+                            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
+                            if IsControlPressed(0, 38) then
+                                HackKeypad(i)
+                                OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
+                                statusBigDoor[i] = true
+                                --isInVault = false
+                            else 
+                                Wait(100)
+                            end
+                        --else 
+                        --    Wait(1000)
                         end
                     end
                 else 
-                    Wait(30)
+                    Wait(5)
                 end
             end
         else 
-            Wait(1000)
+            Wait(500)
         end
     end
 end)
@@ -208,14 +266,23 @@ RegisterCommand("vl_testloop", function()
 end)
 
 RegisterCommand("vl_bdoor", function()
-    SetLoot()
+    print("command")
+    --SetLoot()
     SetLayout()
-    Wait(1000)
+    Wait(100)
     SetVaultDoors()
-    --isInVault = true
     --print(loot)
     print(vaultLayout.. "vl")
-    print(vaultLayoutDoorBig[vaultLayout][1], vaultLayoutDoorBig[vaultLayout][2], vaultLayoutDoorSmall[vaultLayout][1], vaultLayoutDoorSmall[vaultLayout][2])
+    --print(vaultLayoutDoorBig[vaultLayout][1], vaultLayoutDoorBig[vaultLayout][2], vaultLayoutDoorSmall[vaultLayout][1], vaultLayoutDoorSmall[vaultLayout][2])
+    print("-----")
+    for i = 1, #statusBigDoor, 1 do
+       print(statusBigDoor[i]) 
+    end
+    print("-----")
+    for i = 1, #statusSmallDoor, 1 do
+       print(statusSmallDoor[i]) 
+    end
+    isInVault = true
 end, false)
 
 RegisterCommand("vl_dist", function()

@@ -1,4 +1,5 @@
 isInMantrap = false
+canPlantExplosive = false
 openedDoor = 0
 
 local mantrapEntryDoorsCoords = {
@@ -6,6 +7,26 @@ local mantrapEntryDoorsCoords = {
     vector3(2464.183, -280.288, -71.694), 
     vector3(2492.280, -237.459, -71.738), 
     vector3(2492.280, -239.544, -71.738)
+}
+
+local plantExplosives = {
+    ["anims"] = {
+        [1] = {
+            {"player_ig8_vault_explosive_enter", "semtex_b_ig8_vault_explosive_enter", "bag_ig8_vault_explosive_enter"},
+            {"player_ig8_vault_explosive_idle", "", ""},
+            {"player_ig8_vault_explosive_plant_a", "", ""},
+            {"player_ig8_vault_explosive_plant_b", "", ""},
+            {"player_ig8_vault_explosive", "", ""}
+        },
+        [2] = { 
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""}
+        }
+    },
+    ["networkScene"] = {}
 }
 
 RegisterCommand("doors_unrev", function()
@@ -19,6 +40,19 @@ RegisterCommand("doors_rev", function()
     isInMantrap = true
     openedDoor = 3
 end, false)
+
+function PlantBombs()
+    local animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@.ycd"
+    local bomb = "ch_prop_ch_explosive_01a"
+    local bag = ""
+    LoadAnim(animDict)
+    LoadModel(bomb)
+    LoadModel(bag)
+
+    vaultDoor = GetClosestObjectOfType()
+    bombProp = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId(), true, true, false))
+    bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId(), true, true, false))
+end
 
 function OpenMantrapDoor(num)
     local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
@@ -104,8 +138,10 @@ CreateThread(function()
                 if distance < 2.5 then 
                     OpenMantrapDoor(3)
                     isInMantrap = false
-                    isInVault = true
-                    
+                    --isInVault = true
+                    if heistType == 1 then 
+                        canPlantExplosive = true 
+                    end
                     --SetVaultDoors()
                     --print("door 1")
                 else 

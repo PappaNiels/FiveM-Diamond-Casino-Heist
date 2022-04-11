@@ -9,6 +9,32 @@ local keycardProp
 --local blipOne
 --local blipTwo 
 local blip = {1, 1}
+local keycardSwipeAnims = {
+    ["anims"] = {
+        [1] = {
+            {"ped_a_enter", "ped_a_enter_keycard"},
+            {"ped_a_enter_loop", "ped_a_enter_loop_keycard"},
+            {"ped_a_intro_b", "ped_a_intro_b_keycard"},
+            {"ped_a_loop", "ped_a_loop_keycard"},
+            {"ped_a_pass", "ped_a_pass_keycard"},
+            {"ped_a_fail_a", "ped_a_fail_a_keycard"}, 
+            {"ped_a_fail_b", "ped_a_fail_b_keycard"}, 
+            {"ped_a_fail_c", "ped_a_fail_c_keycard"} 
+        },
+        [2] = { 
+            {"ped_b_enter", "ped_b_enter_keycard"},
+            {"ped_b_enter_loop", "ped_b_enter_loop_keycard"},
+            {"ped_b_intro_b", "ped_b_intro_b_keycard"},
+            {"ped_b_loop", "ped_b_loop_keycard"},
+            {"ped_b_pass", "ped_b_pass_keycard"},
+            {"ped_b_fail_a", "ped_b_fail_a_keycard"}, 
+            {"ped_b_fail_b", "ped_b_fail_b_keycard"}, 
+            {"ped_b_fail_c", "ped_b_fail_c_keycard"}
+        }
+    },
+    ["networkScenes"] = {}
+}
+
 
 RegisterCommand("sec_blips", function()
     --AddSecurityBlips()
@@ -31,6 +57,47 @@ local function RemoveSecurityBlips()
         blipActive = false
         print(i)
     end
+end
+
+local function SwipeKeycardMantrap(pos)
+    local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
+    local keycard = "ch_prop_vault_key_card_01a"
+    LoadAnim(animDict)
+    LoadModel(keycard)
+
+    keypad = GetClosestObjectOfType(keypads["lvlFourKeypad"][pos], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
+    keycard = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    local x = 0
+
+    if pos == 1 or pos == 3 then 
+        x = 1
+    else 
+        x = 2
+    end
+    for i = 1, #keycardSwipeAnims["anims"][2] do 
+        keycardSwipeAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][x][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(keycard, keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][x][i][2], 1.0, -1.0, 114886080)
+    end
+
+    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][1])
+    Wait(2000)
+    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][2])
+    --Wait(2000)
+    while loop do 
+        if IsControlPressed(0, 38) then 
+            loop = false
+        else
+            Wait(50)
+        end
+    end
+    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][3])
+    Wait(2000)
+    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
+    Wait(2000)
+    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][5])
+    Wait(2000)
+    DeleteObject(keycard)
 end
 
 --function StartKeycardAnim(num)

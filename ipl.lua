@@ -5,8 +5,8 @@ RegisterCommand("set_loot", function(source, args)
     SetLoot(num)
 end)
 
-function SetLoot(loot)
-    --loot = math.random(1, 4)
+function SetLoot()
+    loot = math.random(1, 4)
     
     if loot == 1 then 
         _loot = "cash"
