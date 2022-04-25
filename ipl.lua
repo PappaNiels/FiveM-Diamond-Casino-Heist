@@ -5,8 +5,8 @@ RegisterCommand("set_loot", function(source, args)
     SetLoot(num)
 end)
 
-function SetLoot()
-    loot = math.random(1, 4)
+function SetLoot(loot)
+    --loot = math.random(1, 4)
     
     if loot == 1 then 
         _loot = "cash"
@@ -25,6 +25,7 @@ function SetLoot()
         local remove = {
             "painting_prop_1",
             "painting_prop_2",
+            "painting_prop_cabinet",
             "gold_prop_1",
             "gold_prop_2",
             "diamonds_prop_1",
@@ -55,13 +56,14 @@ function SetLoot()
 
         local add = { 
             "painting_prop_1",
-            "painting_prop_2"
+            "painting_prop_2",
+            "painting_prop_cabinet"
         }
-
+        
         for i = 1, #remove, 1 do 
             DeactivateInteriorEntitySet(vault, remove[i])
         end
-
+        
         for i = 1, #add, 1 do 
             ActivateInteriorEntitySet(vault, add[i])
         end 
@@ -71,19 +73,20 @@ function SetLoot()
             "money_prop_2",
             "painting_prop_1",
             "painting_prop_2",
+            "painting_prop_cabinet",
             "diamonds_prop_1",
             "diamonds_prop_2"
         }
-
+        
         local add = {
             "gold_prop_1",
             --"gold_prop_2"
         }
-
+        
         for i = 1, #remove, 1 do 
             DeactivateInteriorEntitySet(vault, remove[i])
         end
-
+        
         for i = 1, #add, 1 do 
             ActivateInteriorEntitySet(vault, add[i])
         end 
@@ -93,6 +96,7 @@ function SetLoot()
             "money_prop_2",
             "painting_prop_1",
             "painting_prop_2",
+            "painting_prop_cabinet",
             "gold_prop_1",
             "gold_prop_2"
             
