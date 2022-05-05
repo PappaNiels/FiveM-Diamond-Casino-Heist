@@ -5,6 +5,13 @@ RegisterCommand("set_loot", function(source, args)
     SetLoot(num)
 end)
 
+function SetVaultDoorStatus()
+    ActivateInteriorEntitySet(vault, "vault_door_normal")
+    DeactivateInteriorEntitySet(vault, "vault_door_broken")
+    RefreshInterior(vault)
+    Wait(100)
+end
+
 function SetLoot(loot)
     --loot = math.random(1, 4)
     

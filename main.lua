@@ -1,4 +1,4 @@
-heistInprogress = false
+heistInProgress = false
 
 hPlayer = { 
     PlayerPedId(),
@@ -133,7 +133,7 @@ AddEventHandler("onResourceStart", function()
     --end
 end)
 
-function HideNPropsStart()
+function SetupCheckpoint()
     for i = 1, #nPropsCoords, 1 do 
         local prop = GetClosestObjectOfType(nPropsCoords[i], 1.0, nPropsNames[i], false, false, false)
         --local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
@@ -142,4 +142,8 @@ function HideNPropsStart()
         --SetEntityVisible(prop1, true)
         --SetEntityCollision(prop1, true, true)
     end
+
+    SetVaultDoorStatus()
+    FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true)
+
 end

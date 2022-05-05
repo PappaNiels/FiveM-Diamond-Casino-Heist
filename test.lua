@@ -102,3 +102,38 @@ RegisterCommand("cut_agg_entry", function()
     StartCutscene(0)
     print(GetCutsceneTotalDuration())
 end, false)
+
+RegisterCommand("vl_exp", function() 
+    SetVaultDoorStatus()
+    VaultExplosion() 
+end, false)
+
+local vaultDoorAnim = {
+    ["anims"] = {
+        {"explosion_vault_01", "explosion_vault_02", "explosion_camera"}
+    },
+    ["networkScenes"] = {}
+}
+
+function VaultExplosion()
+    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
+    LoadAnim(animDict)
+
+    vaultOne = GetClosestObjectOfType(2504.97, -240.3102, -70.17885, 1.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false)
+    vaultTwo = GetClosestObjectOfType(2504.97, -240.3102, -70.17885, 1.0, GetHashKey("ch_des_heist3_vault_end"), false, false, false)
+    --vaultCam = GetClosestObjectOfType(, 1.0, GetHashKey(""), false, false, false)
+    print(vaultOne, vaultTwo)
+    --for i = 1, #vaultDoorAnim["anims"] do 
+    vaultDoorAnim["networkScenes"][1] = NetworkCreateSynchronisedScene(GetEntityCoords(vaultOne), GetEntityRotation(vaultOne), 2, true, false, 1065353216, 0, 1.3)
+    NetworkAddEntityToSynchronisedScene(vaultOne, vaultDoorAnim["networkScenes"][1], animDict, vaultDoorAnim["anims"][1][3], 1.0, -1.0, 114886080)
+    --NetworkAddEntityToSynchronisedScene(vaultTwo, vaultDoorAnim["networkScenes"][1], animDict, vaultDoorAnim["anims"][1][2], 1.0, -1.0, 114886080)
+    --print(NetworkIsEntity)
+    --end
+    --print(vaultDoorAnim["anims"][1][1], vaultDoorAnim["anims"][1][2])
+    --print(NetworkGetEntityFromNetworkId(vaultDoorAnim["networkScenes"][1]))
+    print(vaultDoorAnim["networkScenes"][1])
+    NetworkStartSynchronisedScene(vaultDoorAnim["networkScenes"][1])
+    
+
+
+end

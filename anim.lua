@@ -11,8 +11,8 @@ RegisterCommand("anim1", function()
 end, false)
 
 RegisterCommand("anim", function()
-    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
-    local animName = "explosion_vault_01"
+    local animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
+    local animName = "player_ig8_vault_explosive_enter"
     
     
 
