@@ -12,7 +12,7 @@ end, false)
 
 RegisterCommand("anim", function()
     local animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
-    local animName = "player_ig8_vault_explosive_enter"
+    local animName = "player_ig8_vault_explosive_plant_a"
     
     
 

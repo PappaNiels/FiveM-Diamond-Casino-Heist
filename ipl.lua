@@ -5,9 +5,19 @@ RegisterCommand("set_loot", function(source, args)
     SetLoot(num)
 end)
 
-function SetVaultDoorStatus()
-    ActivateInteriorEntitySet(vault, "vault_door_normal")
-    DeactivateInteriorEntitySet(vault, "vault_door_broken")
+function SetVaultDoorStatus(num)
+    if num == 1 then 
+        ActivateInteriorEntitySet(vault, "vault_door_normal")
+        DeactivateInteriorEntitySet(vault, "vault_door_broken")
+    elseif num == 2 then 
+        DeactivateInteriorEntitySet(vault, "vault_door_normal")
+        DeactivateInteriorEntitySet(vault, "vault_door_broken")
+    elseif num == 3 then 
+        ActivateInteriorEntitySet(vault, "vault_door_broken")
+    elseif num == 4 then 
+        ActivateInteriorEntitySet(vault, "vault_door_normal")
+        SetEntityHeading(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), 132.0)
+    end
     RefreshInterior(vault)
     Wait(100)
 end

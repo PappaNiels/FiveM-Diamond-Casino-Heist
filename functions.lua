@@ -54,7 +54,7 @@ end
 function LoadModel(model)
     RequestModel(model)
 
-    print(IsModelInCdimage(model))
+    --print(IsModelInCdimage(model))
 
     while not HasModelLoaded(model) do 
         Wait(10)
@@ -64,7 +64,7 @@ end
 function LoadAnim(animDict)
     RequestAnimDict(animDict)
 
-    print(DoesAnimDictExist())
+    --print(DoesAnimDictExist())
 
     while not HasAnimDictLoaded(animDict) do
         Wait(10)

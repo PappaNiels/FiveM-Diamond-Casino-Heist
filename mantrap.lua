@@ -2,6 +2,9 @@ isInMantrap = false
 canPlantExplosive = false
 openedDoor = 0
 
+local leftExplosives = false
+local rightExplosives = false
+
 local mantrapEntryDoorsCoords = {
     vector3(2464.183, -278.204, -71.694),
     vector3(2464.183, -280.288, -71.694), 
@@ -12,50 +15,24 @@ local mantrapEntryDoorsCoords = {
 local plantExplosives = {
     ["anims"] = {
         ["left"] = {
-            [1] = { 
-                {"player_ig8_vault_explosive_enter",    "semtex_a_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
-                {"player_ig8_vault_explosive_idle",     "semtex_a_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
-                {"player_ig8_vault_explosive_plant_a",  "semtex_a_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
-                {"player_ig8_vault_explosive_plant_b",  "semtex_a_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
-                {"player_ig8_vault_explosive",          "semtex_a_ig8_vault_explosive",         "bag_ig8_vault_explosive",          "cam_ig8_vault_explosive"} 
-            },
-            [2] = {
-                {"player_ig8_vault_explosive_enter",    "semtex_b_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
-                {"player_ig8_vault_explosive_idle",     "semtex_b_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
-                {"player_ig8_vault_explosive_plant_a",  "semtex_b_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
-                {"player_ig8_vault_explosive_plant_b",  "semtex_b_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
-                {"player_ig8_vault_explosive",          "semtex_b_ig8_vault_explosive",         "bag_ig8_vault_explosive",          "cam_ig8_vault_explosive"} 
-            }
+            {"player_ig8_vault_explosive_enter",    "semtex_a_ig8_vault_explosive_enter",   "semtex_b_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
+            {"player_ig8_vault_explosive_idle",     "semtex_a_ig8_vault_explosive_idle",    "semtex_b_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
+            {"player_ig8_vault_explosive_plant_a",  "semtex_a_ig8_vault_explosive_plant_a", "semtex_b_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
+            {"player_ig8_vault_explosive_plant_b",  "semtex_a_ig8_vault_explosive_plant_b", "semtex_b_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"} 
         },
         ["right"] = { 
-            [1] = { 
-                {"player_ig8_vault_explosive_enter",    "semtex_a_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
-                {"player_ig8_vault_explosive_idle",     "semtex_a_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
-                {"player_ig8_vault_explosive_plant_a",  "semtex_a_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
-                {"player_ig8_vault_explosive_plant_b",  "semtex_a_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
-                {"player_ig8_vault_explosive_plant_c",  "semtex_a_ig8_vault_explosive_plant_c", "bag_ig8_vault_explosive_plant_c",  "cam_ig8_vault_explosive_plant_c"},
-                {"player_ig8_vault_explosive",          "semtex_a_ig8_vault_explosive",         "bag_ig8_vault_explosive",          "cam_ig8_vault_explosive"} 
-            },
-            [2] = {
-                {"player_ig8_vault_explosive_enter",    "semtex_b_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
-                {"player_ig8_vault_explosive_idle",     "semtex_b_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
-                {"player_ig8_vault_explosive_plant_a",  "semtex_b_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
-                {"player_ig8_vault_explosive_plant_b",  "semtex_b_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
-                {"player_ig8_vault_explosive_plant_c",  "semtex_b_ig8_vault_explosive_plant_c", "bag_ig8_vault_explosive_plant_c",  "cam_ig8_vault_explosive_plant_c"},
-                {"player_ig8_vault_explosive",          "semtex_b_ig8_vault_explosive",         "bag_ig8_vault_explosive",          "cam_ig8_vault_explosive"} 
-            },
-            [3] = {
-                {"player_ig8_vault_explosive_enter",    "semtex_c_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
-                {"player_ig8_vault_explosive_idle",     "semtex_c_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
-                {"player_ig8_vault_explosive_plant_a",  "semtex_c_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
-                {"player_ig8_vault_explosive_plant_b",  "semtex_c_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
-                {"player_ig8_vault_explosive_plant_c",  "semtex_c_ig8_vault_explosive_plant_c", "bag_ig8_vault_explosive_plant_c",  "cam_ig8_vault_explosive_plant_c"},
-                {"player_ig8_vault_explosive",          "semtex_c_ig8_vault_explosive",         "bag_ig8_vault_explosive",          "cam_ig8_vault_explosive"} 
-            }
+            {"player_ig8_vault_explosive_enter",    "semtex_a_ig8_vault_explosive_enter",    "semtex_b_ig8_vault_explosive_enter",   "semtex_c_ig8_vault_explosive_enter",      "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
+            {"player_ig8_vault_explosive_idle",     "semtex_a_ig8_vault_explosive_idle",     "semtex_b_ig8_vault_explosive_idle",    "semtex_c_ig8_vault_explosive_idle",       "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
+            {"player_ig8_vault_explosive_plant_a",  "semtex_a_ig8_vault_explosive_plant_a",  "semtex_b_ig8_vault_explosive_plant_a", "semtex_c_ig8_vault_explosive_plant_a",    "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
+            {"player_ig8_vault_explosive_plant_b",  "semtex_a_ig8_vault_explosive_plant_b",  "semtex_b_ig8_vault_explosive_plant_b", "semtex_c_ig8_vault_explosive_plant_b",    "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
+            {"player_ig8_vault_explosive_plant_c",  "semtex_a_ig8_vault_explosive_plant_c",  "semtex_b_ig8_vault_explosive_plant_c", "semtex_c_ig8_vault_explosive_plant_c",    "bag_ig8_vault_explosive_plant_c",  "cam_ig8_vault_explosive_plant_c"} 
         }
     },
-    ["networkScenes"] = {}
+    ["networkScenesLeft"] = {},
+    ["networkScenesRight"] = {}
 }
+
+local explosives = {}
 
 RegisterCommand("doors_unrev", function()
     OpenMantrapDoor(1)
@@ -69,70 +46,218 @@ RegisterCommand("doors_rev", function()
     openedDoor = 3
 end, false)
 
-RegisterCommand("test_anim_bomb", function()
-    SetVaultDoorStatus()
-    FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true)
-    PlantBombs("right")
+RegisterCommand("vl_anim", function()
+    SetVaultDoorStatus(2)
+    --ExecuteCommand("vl_exp")
+    local prop = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+    SetEntityVisible(prop, false)
+    VaultAnim()
 end, false)
 
-function PlantBombs(place)
-    local animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
-    local x = 0 
-    local bomb = "ch_prop_ch_explosive_01a"
-    local bag = "ch_p_m_bag_var02_arm_s"--"hei_p_m_bag_var22_arm_s" --
+RegisterCommand("test_anim_bomb", function()
+    --SetVaultDoorStatus(1)
+    
+    FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true) 
+    
+    --PlantBombsRight()
+    SetVaultDoorStatus(1)
+    PlantBombsLeft()
+end, false)
 
-    if place == "left" then 
-        animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@" 
-        x = math.random(1, 2) 
-    else
-        animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@" 
-        x = math.random(1, 3)
+RegisterCommand("vl_exp", function()
+    print(#explosives)
+    print(vaultObjOne)
+    print(vaultObjTwo)
+    for i = 1, #explosives do 
+        --print(explosives[i])
+        AddExplosion(GetEntityCoords(explosives[i]), 4, 1.0, true, false, true)
+        DeleteEntity(explosives[i])
     end
+end, false)
 
-    --print(x)
-    --print("Animdict: "..animDict)
-    --print(animDict)
-    LoadAnim(animDict)
+function PlantBombsLeft()
+    local animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
+    local bomb = "ch_prop_ch_explosive_01a"
+    local bag =  "ch_p_m_bag_var02_arm_s"--"hei_p_m_bag_var22_arm_s"
+
     LoadModel(bomb)
     LoadModel(bag)
-    --print(plantExplosives["anims"][place][x][1][1])
-    --print(plantExplosives["anims"][place][x][1][2])
-    --print(plantExplosives["anims"][place][x][1][3])
-    --print(#plantExplosives["anims"][place][1])
-    vaultDoor = GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false)
-    bombProp = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, true, false)
+    
+    bombPropOne = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, true, false)
+    bombPropTwo = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, true, false)
     bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
-    print(GetEntityCoords(vaultDoor), GetEntityRotation(vaultDoor))
+    cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    SetCamActive(cam, true)
+    RenderScriptCams(true, false, 1000.0, true, false)
+    SetEntityVisible(bombPropTwo, false)
+    
+    LoadAnim(animDict)
+    
+    --print(plantExplosives["anims"]["left"][2][2])
 
-    --FreezeEntityPosition(bombProp, false)
-    --PlayEntityAnim(bombProp, plantExplosives["anims"][place][x][1][2], animDict, 1.0, false, true, false, 0, 0x4000)
-    --cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    for i = 1, #plantExplosives["anims"]["left"] do 
+        plantExplosives["networkScenesLeft"][i] = NetworkCreateSynchronisedScene(2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(bombPropOne, plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][2], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombPropTwo, plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][3], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bagProp, plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][4], 1.0, -1.0, 114886080)
+        --print(i)
+    end
+    
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][1])
+    PlayCamAnim(cam, plantExplosives["anims"]["left"][1][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(2000)
+    --print(GetAnimDuration(animDict, plantExplosives["anims"]["left"][1][1]))
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][2])
+    PlayCamAnim(cam, plantExplosives["anims"]["left"][2][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    --Wait(1000)
+    bombOne = true
+    while bombOne do 
+        HelpMsg("Press ~INPUT_CONTEXT~ to plant a bomb", 1000)
+        if IsControlPressed(0, 38) then 
+            bombOne = false 
+        else 
+            Wait(10)
+        end
+    end
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][3])
+    PlayCamAnim(cam, plantExplosives["anims"]["left"][3][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    SetEntityVisible(bombPropTwo, true) 
+    Wait(3000)
+    print(GetAnimDuration(animDict, plantExplosives["anims"]["left"][3][1]) * 1000)
+    bombTwo = true
+    while bombTwo do 
+        HelpMsg("Press ~INPUT_CONTEXT~ to plant a bomb", 1000)
+        if IsControlPressed(0, 38) then 
+            bombTwo = false 
+        else 
+            Wait(10)
+        end
+    end   
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][4])
+    PlayCamAnim(cam, plantExplosives["anims"]["left"][4][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(3000)
+    ClearPedTasksImmediately(PlayerPedId())
+    RenderScriptCams(false, false, 1000.0, false)
+    DestroyCam(cam, false)
+    DeleteEntity(bagProp)
+    --DeleteEntity(bombPropOne)
+    --DeleteEntity(bombPropTwo)
+    table.insert(explosives, bombPropOne)
+    table.insert(explosives, bombPropTwo)
+end
 
-    for i = 1, #plantExplosives["anims"][place][1] do 
-        plantExplosives["networkScenes"][i] = NetworkCreateSynchronisedScene(2504.975, -240.3, -70.2, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
-        NetworkAddPedToSynchronisedScene(PlayerPedId(), plantExplosives["networkScenes"][i], animDict, plantExplosives["anims"][place][x][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-        NetworkAddEntityToSynchronisedScene(bombProp, plantExplosives["networkScenes"][i], animDict, plantExplosives["anims"][place][x][i][2], 1.0, -1.0, 114886080)
-        NetworkAddEntityToSynchronisedScene(bagProp, plantExplosives["networkScenes"][i], animDict, plantExplosives["anims"][place][x][i][3], 1.0, -1.0, 114886080)
+function PlantBombsRight()
+    local animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
+    local bomb = "ch_prop_ch_explosive_01a"
+    local bag =  "ch_p_m_bag_var02_arm_s"--"hei_p_m_bag_var22_arm_s"
+
+    LoadModel(bomb)
+    LoadModel(bag)
+    
+    local prop = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+    SetEntityVisible(prop, false)
+
+    bombPropOne = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, true, false)
+    bombPropTwo = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, true, false)
+    bombPropThree = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, true, false)
+    bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
+    cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    SetCamActive(cam, true)
+    RenderScriptCams(true, true, 1000, true, false)    
+    SetEntityVisible(bombPropTwo, false)
+    SetEntityVisible(bombPropThree, false)
+    
+    LoadAnim(animDict)
+    
+    --print(plantExplosives["anims"]["right"][2][2])
+
+    
+    for i = 1, #plantExplosives["anims"]["right"] do 
+        plantExplosives["networkScenesRight"][i] = NetworkCreateSynchronisedScene(2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), plantExplosives["networkScenesRight"][i], animDict, plantExplosives["anims"]["right"][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(bombPropOne, plantExplosives["networkScenesRight"][i], animDict, plantExplosives["anims"]["right"][i][2], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombPropTwo, plantExplosives["networkScenesRight"][i], animDict, plantExplosives["anims"]["right"][i][3], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombPropThree, plantExplosives["networkScenesRight"][i], animDict, plantExplosives["anims"]["right"][i][4], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bagProp, plantExplosives["networkScenesRight"][i], animDict, plantExplosives["anims"]["right"][i][5], 1.0, -1.0, 114886080)
+        --print(i)
+    end
+    
+    print(plantExplosives["anims"]["right"][1][6])
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][1])
+    PlayCamAnim(cam, plantExplosives["anims"]["right"][1][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(1000)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][2])
+    PlayCamAnim(cam, plantExplosives["anims"]["right"][2][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(2000)
+    --print("test")
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][3])
+    PlayCamAnim(cam, plantExplosives["anims"]["right"][3][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(1000)
+    SetEntityVisible(bombPropTwo, true) 
+    Wait(1000)
+    --print("two")   
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][4])
+    PlayCamAnim(cam, plantExplosives["anims"]["right"][4][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(1000)
+    SetEntityVisible(bombPropThree, true)    
+    Wait(1000)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][5])
+    PlayCamAnim(cam, plantExplosives["anims"]["right"][5][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    Wait(3000)
+    ClearPedTasksImmediately(PlayerPedId())
+    RenderScriptCams(false, false, 3000.0, false)
+    DestroyAllCams(false)
+    
+    DeleteEntity(bagProp)
+    --DeleteEntity(bombPropOne)
+    --DeleteEntity(bombPropTwo)
+    --DeleteEntity(bombPropThree)
+    table.insert(explosives, bombPropOne)
+    table.insert(explosives, bombPropTwo)
+    table.insert(explosives, bombPropThree)
+    Wait(1000)
+    --PlantBombsLeft()
+end
+
+function VaultAnim()
+    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
+    local vaultDoorOne = "ch_des_heist3_vault_01"
+    local vaultDoorTwo = "ch_des_heist3_vault_02"
+    LoadAnim(animDict)
+    LoadModel(vaultDoorOne)
+    LoadModel(vaultDoorTwo)
+
+    vaultObjOne = CreateObject(GetHashKey(vaultDoorOne), 2504.97, -240.31, -73.69, true, true, false)
+    vaultObjTwo = CreateObject(GetHashKey(vaultDoorTwo), 2504.97, -240.31, -75.334, true, true, false)    
+    
+    PlantBombsRight()
+
+    Wait(5000)
+
+    PlayEntityAnim(vaultObjTwo, "explosion_vault_02", animDict, 1.0, false, true, true, 0, 0x4000)
+    PlayEntityAnim(vaultObjOne, "explosion_vault_01", animDict, 1.0, false, true, true, 0, 0x4000)
+    Wait(1300)
+    AddExplosion(GetEntityCoords(explosives[1]), 4, 1.0, true, false, true)
+    Wait(100)
+    AddExplosion(GetEntityCoords(explosives[2]), 4, 1.0, true, false, true)
+    AddExplosion(GetEntityCoords(explosives[3]), 4, 1.0, true, false, true)
+    Wait(200)
+    AddExplosion(GetEntityCoords(explosives[4]), 4, 1.0, true, false, true)
+    AddExplosion(GetEntityCoords(explosives[5]), 4, 1.0, true, false, true)
+    StopFireInRange(2504.97, -240.31, -73.69, 10.0)
+    ClearArea(2504.97, -240.31, -73.69, 10.0)
+    for i = 1, #explosives do 
+        DeleteEntity(explosives[i])
     end
 
-    --print(GetAnimDuration(animDict, plantExplosives["anims"][place][x][1][1]))
-    --AttachEntityToEntity(bombProp, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 0xDEAD), GetEntityCoords(PlayerPedId()), GetEntityRotation(PlayerPedId()))
-    NetworkStartSynchronisedScene(plantExplosives["networkScenes"][1])
-    Wait(2000)
-    print("1")
-    --Wait(GetAnimDuration(animDict, plantExplosives["anims"][place][x][1][1]) * 1000)
-    NetworkStartSynchronisedScene(plantExplosives["networkScenes"][3])
-    print('3')
-    Wait(2000)
-    --Wait(GetAnimDuration(animDict, plantExplosives["anims"][place][x][3][1]) * 1000)
-    print('4')
-    NetworkStartSynchronisedScene(plantExplosives["networkScenes"][4])
-    --NetworkStartSynchronisedScene(plantExplosives["networkScenes"][5])
-    --ClearPedTasksImmediately(PlayerPedId())
+    SetEntityVisible(GetClosestObjectOfType(2505.54, -238.53, -71.65, 1.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false), true)
 
-
-
-
+    Wait(2500)
+    SetVaultDoorStatus(3)
+    
+    DeleteEntity(vaultObjOne)
+    print("test")
 end
 
 function OpenMantrapDoor(num)
