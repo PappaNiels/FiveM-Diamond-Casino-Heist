@@ -21,6 +21,10 @@ client_scripts {
     "vault.lua"
 }
 
+--server_scripts { 
+--    "sv_main.lua"
+--}
+
 dependencies {
     "/gameBuild:h4"
 }

@@ -32,7 +32,7 @@ CreateThread(function()
     while true do
         Wait(0) 
         if isInStaff then 
-            SubtitleMsg("Go to the ~y~basement~s~.", 110)
+            SubtitleMsg("Go to the ~y~basement~s~.", 120)
             if not blipActive then 
                 AddStaffBlips()
                 Wait(100)

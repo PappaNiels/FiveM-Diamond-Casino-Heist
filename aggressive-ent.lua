@@ -66,7 +66,7 @@ CreateThread(function()
                 AddCasinoBlip()
                 Wait(100)
             else 
-                SubtitleMsg("Go to the ~y~staff lobby~s~.", 60)
+                SubtitleMsg("Go to the ~y~staff lobby~s~.", 120)
                 local distance = #(GetEntityCoords(PlayerPedId()) - blipCoords)
                 if distance < 10 then 
                     DrawMarker(1, 2525.77, -251.71, -61.31, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 1.0, 30, 30, 30, 100, false, false, 2, false, nil, nil, false)

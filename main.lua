@@ -143,7 +143,17 @@ function SetupCheckpoint()
         --SetEntityCollision(prop1, true, true)
     end
 
-    SetVaultDoorStatus()
-    FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true)
+    SetVaultDoorStatus(2)
+    --FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true)
 
+    local shaft = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+    local vaultDoorOne = "ch_des_heist3_vault_01"
+    local vaultDoorTwo = "ch_des_heist3_vault_02"
+
+    SetEntityVisible(shaft, false)
+    LoadModel(vaultDoorOne)
+    LoadModel(vaultDoorTwo)
+
+    vaultObjOne = CreateObject(GetHashKey(vaultDoorOne), 2504.97, -240.31, -73.69, false, false, false)
+    vaultObjTwo = CreateObject(GetHashKey(vaultDoorTwo), 2504.97, -240.31, -75.334, false, false, false)  
 end

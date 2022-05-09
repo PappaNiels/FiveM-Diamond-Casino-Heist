@@ -55,7 +55,7 @@ local function RemoveSecurityBlips()
     for i = 1, 2, 1 do     
         RemoveBlip(blip[i])
         blipActive = false
-        print(i)
+        --print(i)
     end
 end
 
@@ -84,6 +84,7 @@ local function SwipeKeycardMantrap(pos)
     Wait(2000)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][2])
     --Wait(2000)
+    loop = true
     while loop do 
         if IsControlPressed(0, 38) then 
             loop = false
