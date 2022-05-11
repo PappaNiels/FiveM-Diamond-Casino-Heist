@@ -105,6 +105,24 @@ local hackKeypadAnims = {
     ["networkScenes"] = {}
 } 
 
+local paintingAnims = {
+    ["anims"] = {
+        -- Player, Knife, Painting, Bag, Cam
+        {"ver_01_top_left_enter", "ver_01_top_left_enter_w_me_switchblade", "ver_01_top_left_enter_ch_prop_vault_painting_01a", "ver_01_top_left_enter_hei_p_m_bag_var22_arm_s", "ver_01_top_left_enter_cam"}, -- Enter top left
+        {"ver_01_cutting_top_left_idle", "ver_01_cutting_top_left_idle_w_me_switchblade", "ver_01_cutting_top_left_idle_ch_prop_vault_painting_01a", "ver_01_cutting_top_left_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_top_left_idle_cam"}, -- Idle top left
+        {"ver_01_cutting_top_left_to_right", "ver_01_cutting_top_left_to_right_w_me_switchblade", "ver_01_cutting_top_left_to_right_ch_prop_vault_painting_01a", "ver_01_cutting_top_left_to_right_hei_p_m_bag_var22_arm_s", "ver_01_cutting_top_left_to_right_cam"}, -- Cut top left to right
+        {"ver_01_cutting_top_right_idle", "ver_01_cutting_top_right_idle_w_me_switchblade", "ver_01_cutting_top_right_idle_ch_prop_vault_painting_01a", "ver_01_cutting_top_right_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_top_right_idle_cam"}, -- Idle top right
+        {"ver_01_cutting_right_top_to_bottom", "ver_01_cutting_right_top_to_bottom_w_me_switchblade", "ver_01_cutting_right_top_to_bottom_ch_prop_vault_painting_01a", "ver_01_cutting_right_top_to_bottom_hei_p_m_bag_var22_arm_s", "ver_01_cutting_right_top_to_bottom_cam"}, -- Cut top right to bottom
+        {"ver_01_cutting_bottom_right_idle", "ver_01_cutting_bottom_right_idle_w_me_switchblade", "ver_01_cutting_bottom_right_idle_ch_prop_vault_painting_01a", "ver_01_cutting_bottom_right_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_bottom_right_idle_cam"}, -- Idle bottom right
+        {"ver_01_cutting_bottom_right_to_left", "ver_01_cutting_bottom_right_to_left_w_me_switchblade", "ver_01_cutting_bottom_right_to_left_ch_prop_vault_painting_01a", "ver_01_cutting_bottom_right_to_left_hei_p_m_bag_var22_arm_s", "ver_01_cutting_bottom_right_to_left_cam"}, -- Cut top right to bottom
+        {"ver_01_cutting_bottom_left_idle", "ver_01_cutting_bottom_left_idle_w_me_switchblade", "ver_01_cutting_bottom_left_idle_ch_prop_vault_painting_01a", "ver_01_cutting_bottom_left_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_bottom_left_idle_cam"}, -- Idle bottom right
+        {"ver_01_cutting_left_top_to_bottom", "ver_01_cutting_left_top_to_bottom_w_me_switchblade", "ver_01_cutting_left_top_to_bottom_ch_prop_vault_painting_01a", "ver_01_cutting_left_top_to_bottom_hei_p_m_bag_var22_arm_s", "ver_01_cutting_left_top_to_bottom_cam"}, -- Cut top right to bottom
+        {"ver_01_with_painting_exit", "ver_01_with_painting_exit_w_me_switchblade", "ver_01_with_painting_exit_ch_prop_vault_painting_01a", "ver_01_with_painting_exit_hei_p_m_bag_var22_arm_s", "ver_01_with_painting_exit_cam"}, -- Cut top right to bottom
+        
+    }, 
+    ["networkScenes"] = {}
+}
+
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         table.insert(bigDoor, GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false))
@@ -211,6 +229,75 @@ local function HackKeypad(num)
     --end
 end
 
+local function CutPainting(num)
+    local knife = "w_me_switchblade"
+    local bag = "hei_p_m_bag_var22_arm_s"
+    local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
+    local painting = "ch_prop_vault_painting_01a"
+    local cabinet = "ch_prop)ch_sec_cabinet_02a"
+    LoadModel(knife)
+    LoadModel(bag)
+    LoadAnim(animDict)
+    
+
+
+
+    --if num == 1 then 
+    --    painting = "ch_prop_vault_painting_01a"
+    --elseif num == 2 then 
+    --    painting = "ch_prop_vault_painting_01b"
+    --elseif num == 3 then
+    --    painting = "ch_prop_vault_painting_01c"
+    --elseif num == 4 then 
+    --    painting = "ch_prop_vault_painting_01d"
+    --elseif num == 5 then 
+    --    painting = "ch_prop_vault_painting_01e"
+    --elseif num == 6 then 
+    --    painting = "ch_prop_vault_painting_01f"
+    --else 
+    --    print("painting does not exist")
+    --end
+
+    cabinetObj = GetClosestObjectOfType(2507.3, -222.86, -70.84, 5.0, GetHashKey(cabinet), false, false, false)
+    knifeObj = CreateObject(GetHashKey(knife), GetEntityCoords(PlayerPedId()), true, true, false)
+    paintingObj = GetClosestObjectOfType(2507.3, -222.86, -70.84, 5.0, GetHashKey(painting), false, false, false)
+    bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
+
+    print(DoesEntityExist(paintingObj))
+    print(DoesEntityExist(cabinetObj))
+
+    for i = 1, #paintingAnims["anims"] do 
+        paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(cabinetObj), GetEntityRotation(cabinetObj), 2, true, false, 1065353216, 0, 1.3)
+        --paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(2507.85, -223.37, -71.73, 0.0, 0.0, 43.12, 2, true, false, 1065353216, 0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(knifeObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][2], 1.0, -1.0, 1148846080)
+        NetworkAddEntityToSynchronisedScene(paintingObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][3], 1.0, -1.0, 1148846080)
+        NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][4], 1.0, -1.0, 1148846080)
+    end
+    
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][1])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][2])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][3])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][4])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][5])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][6])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][7])
+    --Wait(2000)
+    --NetworkStartSynchronisedScene(paintingAnims["networkScenes"][8])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][9])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims["networkScenes"][10])
+
+    DeleteEntity(knifeObj)
+    DeleteEntity(bagObj)
+end
 CreateThread(function()
     while true do 
         if isInVault then 
@@ -287,4 +374,8 @@ end, false)
 
 RegisterCommand("vl_dist", function()
     isInVault = true
+end, false)
+
+RegisterCommand("vl_painting", function()
+    CutPainting()
 end, false)
