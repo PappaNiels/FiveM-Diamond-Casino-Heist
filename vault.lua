@@ -38,12 +38,21 @@ local smallDoorMove = {
 }
 
 local artCabinetCoords = {
-    vector4(2527.96, -218.3934, -71.73721, 223.12),
-    vector4(2527.589, -219.2627, -71.73721, 0.1564346),
-    vector4(2541.379, -237.1996, -71.73713, -0.6946586),
-    vector4(2534.479, -253.8472, -71.73721, -0.9335806),
-    vector4(2522.384, -258.904, -71.73721, -0.9996574),
-    vector4(2502.734, -247.5772, -71.73713, 0.8571671)
+    vector3(2507.609, -223.2121, -71.73716),
+    vector3(2527.589, -219.2627, -71.73721),
+    vector3(2541.379, -237.1996, -71.73713),
+    vector3(2534.479, -253.8472, -71.73721),
+    vector3(2522.384, -258.904, -71.73721),
+    vector3(2502.734, -247.5772, -71.73713)
+}
+
+local paintingCoords = {
+    vector3(2507.225, -222.7878, -70.56751),
+    vector3(2527.759, -218.6664, -70.56751),
+    vector3(2541.959, -237.2035, -70.56751),
+    vector3(2534.866, -254.2816, -70.56751),
+    vector3(2522.428, -259.4458, -70.56751),
+    vector3(2502.229, -247.7811, -70.56751)
 }
 
 local slideDoorBigName = "ch_prop_ch_vault_slide_door_lrg"
@@ -66,6 +75,15 @@ local statusSmallDoor = {
     false,
     false,
     false
+}
+
+local statusArt = {
+    true, 
+    true,
+    true,
+    true,
+    true, 
+    true
 }
 
 local vaultLayoutDoorBig = {
@@ -108,16 +126,16 @@ local hackKeypadAnims = {
 local paintingAnims = {
     ["anims"] = {
         -- Player, Knife, Painting, Bag, Cam
-        {"ver_01_top_left_enter", "ver_01_top_left_enter_w_me_switchblade", "ver_01_top_left_enter_ch_prop_vault_painting_01a", "ver_01_top_left_enter_hei_p_m_bag_var22_arm_s", "ver_01_top_left_enter_cam"}, -- Enter top left
-        {"ver_01_cutting_top_left_idle", "ver_01_cutting_top_left_idle_w_me_switchblade", "ver_01_cutting_top_left_idle_ch_prop_vault_painting_01a", "ver_01_cutting_top_left_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_top_left_idle_cam"}, -- Idle top left
-        {"ver_01_cutting_top_left_to_right", "ver_01_cutting_top_left_to_right_w_me_switchblade", "ver_01_cutting_top_left_to_right_ch_prop_vault_painting_01a", "ver_01_cutting_top_left_to_right_hei_p_m_bag_var22_arm_s", "ver_01_cutting_top_left_to_right_cam"}, -- Cut top left to right
-        {"ver_01_cutting_top_right_idle", "ver_01_cutting_top_right_idle_w_me_switchblade", "ver_01_cutting_top_right_idle_ch_prop_vault_painting_01a", "ver_01_cutting_top_right_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_top_right_idle_cam"}, -- Idle top right
-        {"ver_01_cutting_right_top_to_bottom", "ver_01_cutting_right_top_to_bottom_w_me_switchblade", "ver_01_cutting_right_top_to_bottom_ch_prop_vault_painting_01a", "ver_01_cutting_right_top_to_bottom_hei_p_m_bag_var22_arm_s", "ver_01_cutting_right_top_to_bottom_cam"}, -- Cut top right to bottom
-        {"ver_01_cutting_bottom_right_idle", "ver_01_cutting_bottom_right_idle_w_me_switchblade", "ver_01_cutting_bottom_right_idle_ch_prop_vault_painting_01a", "ver_01_cutting_bottom_right_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_bottom_right_idle_cam"}, -- Idle bottom right
-        {"ver_01_cutting_bottom_right_to_left", "ver_01_cutting_bottom_right_to_left_w_me_switchblade", "ver_01_cutting_bottom_right_to_left_ch_prop_vault_painting_01a", "ver_01_cutting_bottom_right_to_left_hei_p_m_bag_var22_arm_s", "ver_01_cutting_bottom_right_to_left_cam"}, -- Cut top right to bottom
-        {"ver_01_cutting_bottom_left_idle", "ver_01_cutting_bottom_left_idle_w_me_switchblade", "ver_01_cutting_bottom_left_idle_ch_prop_vault_painting_01a", "ver_01_cutting_bottom_left_idle_hei_p_m_bag_var22_arm_s", "ver_01_cutting_bottom_left_idle_cam"}, -- Idle bottom right
-        {"ver_01_cutting_left_top_to_bottom", "ver_01_cutting_left_top_to_bottom_w_me_switchblade", "ver_01_cutting_left_top_to_bottom_ch_prop_vault_painting_01a", "ver_01_cutting_left_top_to_bottom_hei_p_m_bag_var22_arm_s", "ver_01_cutting_left_top_to_bottom_cam"}, -- Cut top right to bottom
-        {"ver_01_with_painting_exit", "ver_01_with_painting_exit_w_me_switchblade", "ver_01_with_painting_exit_ch_prop_vault_painting_01a", "ver_01_with_painting_exit_hei_p_m_bag_var22_arm_s", "ver_01_with_painting_exit_cam"}, -- Cut top right to bottom
+        {"ver_01_top_left_enter",               "ver_01_top_left_enter_w_me_switchblade",                   "ver_01_top_left_enter_ch_prop_vault_painting_01a",                 "ver_01_top_left_enter_hei_p_m_bag_var22_arm_s",                "ver_01_top_left_enter_ch_prop_ch_sec_cabinet_02a",                "ver_01_top_left_enter_cam"}, -- Enter top left
+        {"ver_01_cutting_top_left_idle",        "ver_01_cutting_top_left_idle_w_me_switchblade",            "ver_01_cutting_top_left_idle_ch_prop_vault_painting_01a",          "ver_01_cutting_top_left_idle_hei_p_m_bag_var22_arm_s",         "ver_01_cutting_top_left_idle_ch_prop_ch_sec_cabinet_02a",         "ver_01_cutting_top_left_idle_cam"}, -- Idle top left
+        {"ver_01_cutting_top_left_to_right",    "ver_01_cutting_top_left_to_right_w_me_switchblade",        "ver_01_cutting_top_left_to_right_ch_prop_vault_painting_01a",      "ver_01_cutting_top_left_to_right_hei_p_m_bag_var22_arm_s",     "ver_01_cutting_top_left_to_right_ch_prop_ch_sec_cabinet_02a",     "ver_01_cutting_top_left_to_right_cam"}, -- Cut top left to right
+        {"ver_01_cutting_top_right_idle",       "ver_01_cutting_top_right_idle_w_me_switchblade",           "ver_01_cutting_top_right_idle_ch_prop_vault_painting_01a",         "ver_01_cutting_top_right_idle_hei_p_m_bag_var22_arm_s",        "ver_01_cutting_top_right_idle_ch_prop_ch_sec_cabinet_02a",        "ver_01_cutting_top_right_idle_cam"}, -- Idle top right
+        {"ver_01_cutting_right_top_to_bottom",  "ver_01_cutting_right_top_to_bottom_w_me_switchblade",      "ver_01_cutting_right_top_to_bottom_ch_prop_vault_painting_01a",    "ver_01_cutting_right_top_to_bottom_hei_p_m_bag_var22_arm_s",   "ver_01_cutting_right_top_to_bottom_ch_prop_ch_sec_cabinet_02a",   "ver_01_cutting_right_top_to_bottom_cam"}, -- Cut top right to bottom
+        {"ver_01_cutting_bottom_right_idle",    "ver_01_cutting_bottom_right_idle_w_me_switchblade",        "ver_01_cutting_bottom_right_idle_ch_prop_vault_painting_01a",      "ver_01_cutting_bottom_right_idle_hei_p_m_bag_var22_arm_s",     "ver_01_cutting_bottom_right_idle_ch_prop_ch_sec_cabinet_02a",     "ver_01_cutting_bottom_right_idle_cam"}, -- Idle bottom right
+        {"ver_01_cutting_bottom_right_to_left", "ver_01_cutting_bottom_right_to_left_w_me_switchblade",     "ver_01_cutting_bottom_right_to_left_ch_prop_vault_painting_01a",   "ver_01_cutting_bottom_right_to_left_hei_p_m_bag_var22_arm_s",  "ver_01_cutting_bottom_right_to_left_ch_prop_ch_sec_cabinet_02a",  "ver_01_cutting_bottom_right_to_left_cam"}, -- Cut top right to bottom
+        {"ver_01_cutting_bottom_left_idle",     "ver_01_cutting_bottom_left_idle_w_me_switchblade",         "ver_01_cutting_bottom_left_idle_ch_prop_vault_painting_01a",       "ver_01_cutting_bottom_left_idle_hei_p_m_bag_var22_arm_s",      "ver_01_cutting_bottom_left_idle_ch_prop_ch_sec_cabinet_02a",      "ver_01_cutting_bottom_left_idle_cam"}, -- Idle bottom right
+        {"ver_01_cutting_left_top_to_bottom",   "ver_01_cutting_left_top_to_bottom_w_me_switchblade",       "ver_01_cutting_left_top_to_bottom_ch_prop_vault_painting_01a",     "ver_01_cutting_left_top_to_bottom_hei_p_m_bag_var22_arm_s",    "ver_01_cutting_left_top_to_bottom_ch_prop_ch_sec_cabinet_02a",    "ver_01_cutting_left_top_to_bottom_cam"}, -- Cut top right to bottom
+        {"ver_01_with_painting_exit",           "ver_01_with_painting_exit_w_me_switchblade",               "ver_01_with_painting_exit_ch_prop_vault_painting_01a",             "ver_01_with_painting_exit_hei_p_m_bag_var22_arm_s",            "ver_01_with_painting_exit_ch_prop_ch_sec_cabinet_02a",            "ver_01_with_painting_exit_cam"}, -- Cut top right to bottom
         
     }, 
     ["networkScenes"] = {}
@@ -130,6 +148,12 @@ local function GetVaultDoors()
 
     for i = 1, #slideDoorSmallCoords, 1 do 
         table.insert(smallDoor, GetClosestObjectOfType(slideDoorSmallCoords[i], 1.0, GetHashKey(slideDoorSmallName), false, false, false))
+    end
+end
+
+local function GetArtCabinets() 
+    for i = 1, #artCabinetCoords do 
+        table.insert(artCabinets, GetClosestObjectOfType(artCabinetCoords[i], 1.0, GetHashKey(artCabinetName), false, false, false))
     end
 end
 
@@ -200,13 +224,13 @@ local function HackKeypad(num)
     LoadAnim(animDict)
     LoadModel(hackDevice)
     LoadModel(phoneDevice)
-    print(num)
+    --print(num)
     --keypad = 0 --GetClosestObjectOfType(keypads["lvlFourKeypad"][2], 2.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
     keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
     hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     
-    print(keypad)
+    --print(keypad)
     
     for i = 1, #hackKeypadAnims["anims"], 1 do 
         hackKeypadAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
@@ -234,70 +258,118 @@ local function CutPainting(num)
     local bag = "hei_p_m_bag_var22_arm_s"
     local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
     local painting = "ch_prop_vault_painting_01a"
-    local cabinet = "ch_prop)ch_sec_cabinet_02a"
+    --local cabinet = "ch_prop_ch_sec_cabinet_02a"
+    local scenesPos = { 
+        vector3(2507.53, -223.11, -71.73),
+        vector3(2527.6, -219.1, -71.73), -- -19,  30
+        vector3(2541.50, -237.22, -71.73), -- 
+        vector3(0, 0, -71.73),
+        vector3(0, 0, -71.73),
+        vector3(0, 0, -71.73)
+    }
+
+    local paintingNum = {
+        "ch_prop_vault_painting_01a",
+        "ch_prop_vault_painting_01d",
+        "ch_prop_vault_painting_01f",
+        "ch_prop_vault_painting_01g",
+        "ch_prop_vault_painting_01h",
+        "ch_prop_vault_painting_01i"
+    }
+
     LoadModel(knife)
     LoadModel(bag)
     LoadAnim(animDict)
     
-
-
-
-    --if num == 1 then 
-    --    painting = "ch_prop_vault_painting_01a"
-    --elseif num == 2 then 
-    --    painting = "ch_prop_vault_painting_01b"
-    --elseif num == 3 then
-    --    painting = "ch_prop_vault_painting_01c"
-    --elseif num == 4 then 
-    --    painting = "ch_prop_vault_painting_01d"
-    --elseif num == 5 then 
-    --    painting = "ch_prop_vault_painting_01e"
-    --elseif num == 6 then 
-    --    painting = "ch_prop_vault_painting_01f"
-    --else 
-    --    print("painting does not exist")
-    --end
-
-    cabinetObj = GetClosestObjectOfType(2507.3, -222.86, -70.84, 5.0, GetHashKey(cabinet), false, false, false)
     knifeObj = CreateObject(GetHashKey(knife), GetEntityCoords(PlayerPedId()), true, true, false)
-    paintingObj = GetClosestObjectOfType(2507.3, -222.86, -70.84, 5.0, GetHashKey(painting), false, false, false)
+    paintingObj = GetClosestObjectOfType(paintingCoords[num], 1.0, GetHashKey(paintingNum[num]), false, false, false)
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
-
-    print(DoesEntityExist(paintingObj))
-    print(DoesEntityExist(cabinetObj))
-
+    
     for i = 1, #paintingAnims["anims"] do 
-        paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(cabinetObj), GetEntityRotation(cabinetObj), 2, true, false, 1065353216, 0, 1.3)
-        --paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(2507.85, -223.37, -71.73, 0.0, 0.0, 43.12, 2, true, false, 1065353216, 0, 1.3)
+        paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(scenesPos[num], GetEntityRotation(paintingObj), 2, true, false, 1065353216, 0, 1065353216)
         NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
         NetworkAddEntityToSynchronisedScene(knifeObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][2], 1.0, -1.0, 1148846080)
-        NetworkAddEntityToSynchronisedScene(paintingObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][3], 1.0, -1.0, 1148846080)
         NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][4], 1.0, -1.0, 1148846080)
     end
     
+    cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    SetCamActive(cam, true)
+    RenderScriptCams(true, 1, 1000, true, false)
+    
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][1])
-    Wait(2000)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][1][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
+    Wait(3000)
+    PlayCamAnim(cam, paintingAnims["anims"][2][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][2][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][2])
-    Wait(2000)
+    local one = true 
+    while one do 
+        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~ 1 ~s~)")
+        if IsControlPressed(0, 38) then 
+            one = false 
+        else 
+            Wait(10)
+        end
+    end
+    PlayCamAnim(cam, paintingAnims["anims"][3][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][3][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][3])
-    Wait(2000)
+    Wait(3000)
+    PlayCamAnim(cam, paintingAnims["anims"][4][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][4][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][4])
-    Wait(2000)
+    local two = true 
+    while two do 
+        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~2~s~)")
+        if IsControlPressed(0, 38) then 
+            two = false 
+        else 
+            Wait(10)
+        end
+    end
+    PlayCamAnim(cam, paintingAnims["anims"][5][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][5][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][5])
-    Wait(2000)
+    Wait(3000)
+    PlayCamAnim(cam, paintingAnims["anims"][6][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][6][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][6])
-    Wait(2000)
+    local three = true 
+    while three do 
+        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~3~s~)")
+        if IsControlPressed(0, 38) then 
+            three = false 
+        else 
+            Wait(10)
+        end
+    end
+    PlayCamAnim(cam, paintingAnims["anims"][7][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][7][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][7])
-    --Wait(2000)
-    --NetworkStartSynchronisedScene(paintingAnims["networkScenes"][8])
-    Wait(2000)
+    Wait(3000)
+    local four = true 
+    while four do 
+        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~4~s~)")
+        if IsControlPressed(0, 38) then 
+            four = false 
+        else 
+            Wait(10)
+        end
+    end
+    PlayCamAnim(cam, paintingAnims["anims"][9][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][9][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][9])
     Wait(2000)
+    PlayCamAnim(cam, paintingAnims["anims"][10][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayEntityAnim(paintingObj, paintingAnims["anims"][10][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][10])
-
+    RenderScriptCams(0, 0, 1000.0, false, false)
+    Wait(8000)
+    
     DeleteEntity(knifeObj)
     DeleteEntity(bagObj)
 end
+
 CreateThread(function()
     while true do 
         if isInVault then 
@@ -336,9 +408,10 @@ CreateThread(function()
                         end
                     end
                 else 
-                    Wait(5)
+                    Wait(500)
                 end
             end
+            
         else 
             Wait(500)
         end
@@ -376,6 +449,15 @@ RegisterCommand("vl_dist", function()
     isInVault = true
 end, false)
 
-RegisterCommand("vl_painting", function()
-    CutPainting()
+RegisterCommand("vl_painting", function(source, args)
+    CutPainting(tonumber(args[1]))
+end, false)
+
+RegisterCommand("vl_painting_test", function()
+    local painting = "ch_prop_vault_painting_01a"
+    local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
+    LoadAnim(animDict)
+    paintingObj = GetClosestObjectOfType(2507.225, -222.7878, -70.56751, 1.0, GetHashKey(painting), false, false, false)
+
+    PlayEntityAnim(paintingObj, "ver_01_with_painting_exit_ch_prop_vault_painting_01a", animDict, 1.0, false, true, true, 0.0, 0x4000)
 end, false)
