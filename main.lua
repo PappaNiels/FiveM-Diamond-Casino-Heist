@@ -143,7 +143,7 @@ function SetupCheckpoint()
         --SetEntityCollision(prop1, true, true)
     end
 
-    SetVaultDoorStatus(2)
+    
     --FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true)
 
     local shaft = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)

@@ -55,6 +55,15 @@ local paintingCoords = {
     vector3(2502.229, -247.7811, -70.56751)
 }
 
+local cutPaintingPos = { 
+    vector3(2507.53, -223.11, -71.73),
+    vector3(2527.6, -219.1, -71.73), 
+    vector3(2541.50, -237.22, -71.73), 
+    vector3(2534.6, -253.96, -71.73),
+    vector3(2522.4, -259.02, -71.73),
+    vector3(2502.61, -247.59, -71.71)
+}
+
 local slideDoorBigName = "ch_prop_ch_vault_slide_door_lrg"
 local slideDoorSmallName = "ch_prop_ch_vault_slide_door_sm"
 local artCabinetName = "ch_prop_ch_sec_cabinet_02a"
@@ -62,8 +71,8 @@ local artCabinetName = "ch_prop_ch_sec_cabinet_02a"
 local bigDoor = {}
 local smallDoor = {}
 local artCabinets = {}
+local artBlips = {}
 
---local i = 1
 local statusBigDoor = {
     false,
     false,
@@ -78,12 +87,12 @@ local statusSmallDoor = {
 }
 
 local statusArt = {
-    true, 
-    true,
-    true,
-    true,
-    true, 
-    true
+    false, 
+    false,
+    false,
+    false,
+    false, 
+    false
 }
 
 local vaultLayoutDoorBig = {
@@ -141,6 +150,16 @@ local paintingAnims = {
     ["networkScenes"] = {}
 }
 
+function AddArtBlips()
+    for i = 1, #paintingCoords do 
+        artBlips[i] = AddBlipForCoord(paintingCoords[i])
+        SetBlipSprite(artBlips[i], 535 + i)
+        SetBlipHighDetail(artBlips[i], true)
+        SetBlipColour(artBlips[i], 2)
+        SetBlipScale(artBlips[i], 0.75)
+    end
+end
+
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         table.insert(bigDoor, GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false))
@@ -159,17 +178,17 @@ end
 
 function SetVaultDoors()
     GetVaultDoors()
-
+    if vaultLayout == 0 then vaultLayout = 1 end
     for i = 1, #vaultLayoutDoorBig[vaultLayout], 1 do 
         SetEntityCoords(bigDoor[vaultLayoutDoorBig[vaultLayout][i]], slideDoorOpenBigCoords[vaultLayoutDoorBig[vaultLayout][i]])
         statusBigDoor[vaultLayoutDoorBig[vaultLayout][i]] = true
-        print(vaultLayoutDoorBig[vaultLayout][i] .. "big")
+        --print(vaultLayoutDoorBig[vaultLayout][i] .. "big")
     end
     
     for i = 1, #vaultLayoutDoorSmall[vaultLayout], 1 do
         SetEntityCoords(smallDoor[vaultLayoutDoorSmall[vaultLayout][i]], slideDoorOpenSmallCoords[vaultLayoutDoorSmall[vaultLayout][i]])
         statusSmallDoor[vaultLayoutDoorSmall[vaultLayout][i]] = true
-        print(vaultLayoutDoorSmall[vaultLayout][i] .. "small")
+        --print(vaultLayoutDoorSmall[vaultLayout][i] .. "small")
     end
 end
 
@@ -177,8 +196,6 @@ local function OpenSlideDoors(prop, xTick, yTick)
     
     local coords = GetEntityCoords(prop)
     local x = 0
-    print(coords)
-    print("opened")
     repeat 
         x = x + 1
         coords = coords + vector3(xTick, yTick, 0)
@@ -239,7 +256,7 @@ local function HackKeypad(num)
         NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims["networkScenes"][i], animDict, hackKeypadAnims["anims"][i][3], 1.0, -1.0, 1148846080)
     end
     
-    print(hackKeypadAnims["networkScenes"][2])
+    --print(hackKeypadAnims["networkScenes"][2])
     NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][1])
     Wait(4000)
     NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][2])
@@ -259,14 +276,6 @@ local function CutPainting(num)
     local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
     local painting = "ch_prop_vault_painting_01a"
     --local cabinet = "ch_prop_ch_sec_cabinet_02a"
-    local scenesPos = { 
-        vector3(2507.53, -223.11, -71.73),
-        vector3(2527.6, -219.1, -71.73), -- -19,  30
-        vector3(2541.50, -237.22, -71.73), -- 
-        vector3(0, 0, -71.73),
-        vector3(0, 0, -71.73),
-        vector3(0, 0, -71.73)
-    }
 
     local paintingNum = {
         "ch_prop_vault_painting_01a",
@@ -286,7 +295,7 @@ local function CutPainting(num)
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
     
     for i = 1, #paintingAnims["anims"] do 
-        paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(scenesPos[num], GetEntityRotation(paintingObj), 2, true, false, 1065353216, 0, 1065353216)
+        paintingAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(cutPaintingPos[num], GetEntityRotation(paintingObj), 2, true, false, 1065353216, 0, 1065353216)
         NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
         NetworkAddEntityToSynchronisedScene(knifeObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][2], 1.0, -1.0, 1148846080)
         NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims["networkScenes"][i], animDict, paintingAnims["anims"][i][4], 1.0, -1.0, 1148846080)
@@ -296,10 +305,11 @@ local function CutPainting(num)
     SetCamActive(cam, true)
     RenderScriptCams(true, 1, 1000, true, false)
     
+    PlayCamAnim(cam, paintingAnims["anims"][3][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][1])
     PlayEntityAnim(paintingObj, paintingAnims["anims"][1][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     Wait(3000)
-    PlayCamAnim(cam, paintingAnims["anims"][2][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][2][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][2][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][2])
     local one = true 
@@ -311,11 +321,11 @@ local function CutPainting(num)
             Wait(10)
         end
     end
-    PlayCamAnim(cam, paintingAnims["anims"][3][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][3][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][3][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][3])
     Wait(3000)
-    PlayCamAnim(cam, paintingAnims["anims"][4][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][4][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][4][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][4])
     local two = true 
@@ -327,11 +337,11 @@ local function CutPainting(num)
             Wait(10)
         end
     end
-    PlayCamAnim(cam, paintingAnims["anims"][5][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][5][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][5][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][5])
     Wait(3000)
-    PlayCamAnim(cam, paintingAnims["anims"][6][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][6][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][6][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][6])
     local three = true 
@@ -343,7 +353,7 @@ local function CutPainting(num)
             Wait(10)
         end
     end
-    PlayCamAnim(cam, paintingAnims["anims"][7][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][7][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][7][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][7])
     Wait(3000)
@@ -356,22 +366,25 @@ local function CutPainting(num)
             Wait(10)
         end
     end
-    PlayCamAnim(cam, paintingAnims["anims"][9][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][9][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][9][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][9])
     Wait(2000)
-    PlayCamAnim(cam, paintingAnims["anims"][10][6], animDict, scenesPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][10][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     PlayEntityAnim(paintingObj, paintingAnims["anims"][10][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][10])
+    Wait(1000)
     RenderScriptCams(0, 0, 1000.0, false, false)
-    Wait(8000)
+    Wait(7000)
     
     DeleteEntity(knifeObj)
     DeleteEntity(bagObj)
+    RemoveBlip(artBlips[num])
 end
 
 CreateThread(function()
     while true do 
+        Wait(0)
         if isInVault then 
             for i = 1, #keypads["lvlThreeKeypad"] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
@@ -387,7 +400,7 @@ CreateThread(function()
                                 statusSmallDoor[x] = true
                                 --isInVault = false
                             else 
-                                Wait(100)
+                                Wait(10)
                             end
                         --else 
                         --    Wait(1000)
@@ -401,22 +414,58 @@ CreateThread(function()
                                 statusBigDoor[i] = true
                                 --isInVault = false
                             else 
-                                Wait(100)
+                                Wait(10)
                             end
                         --else 
                         --    Wait(1000)
                         end
                     end
-                else 
-                    Wait(500)
+                
                 end
             end
             
         else 
-            Wait(500)
+            Wait(10000)
         end
     end
 end)
+
+CreateThread(function()
+    while true do 
+        Wait(0)
+        if isInVault and loot == 2 then 
+            for i = 1, #paintingCoords do 
+                local distance = #(GetEntityCoords(PlayerPedId()) - paintingCoords[i])
+                if distance < 2 and not statusArt[i] then 
+                    --print("near"..i)
+                    HelpMsg("test (~INPUT_CONTEXT~)", 1000)
+                    if IsControlPressed(0, 38) then 
+                        print("catched e")
+                        CutPainting(i)
+                        statusArt[i] = true
+                    else 
+                        Wait(5)
+                    end
+                else 
+                    --isNearPainting = false 
+                    --print("not near")
+                    Wait(7)
+                end
+                --Wait(100)
+            end
+        else 
+            Wait(10000)
+        end
+    end
+end)
+
+RegisterCommand("vl_dist_paint", function()
+    isInVault, loot = true, 2
+end, false)
+
+RegisterCommand("vl_dist_end", function()
+    isInVault, loot = false, 0
+end, false)
 
 RegisterCommand("test_loop", function()
     OpenVaultDoors()
@@ -446,18 +495,10 @@ RegisterCommand("vl_bdoor", function()
 end, false)
 
 RegisterCommand("vl_dist", function()
-    isInVault = true
+    SetVaultDoors()
+    isInVault, loot = true, 2
 end, false)
 
 RegisterCommand("vl_painting", function(source, args)
     CutPainting(tonumber(args[1]))
-end, false)
-
-RegisterCommand("vl_painting_test", function()
-    local painting = "ch_prop_vault_painting_01a"
-    local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
-    LoadAnim(animDict)
-    paintingObj = GetClosestObjectOfType(2507.225, -222.7878, -70.56751, 1.0, GetHashKey(painting), false, false, false)
-
-    PlayEntityAnim(paintingObj, "ver_01_with_painting_exit_ch_prop_vault_painting_01a", animDict, 1.0, false, true, true, 0.0, 0x4000)
 end, false)

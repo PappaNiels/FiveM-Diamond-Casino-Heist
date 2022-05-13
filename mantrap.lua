@@ -135,7 +135,7 @@ function PlantBombsLeft()
     bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
     SetCamActive(cam, true)
-    RenderScriptCams(true, false, 1000.0, true, false)
+    RenderScriptCams(true, true, 1000.0, true, false)
     SetEntityVisible(bombPropTwo, false)
     
     LoadAnim(animDict)
@@ -181,7 +181,7 @@ function PlantBombsLeft()
     FreezeEntityPosition(bombPropTwo, true)
     Wait(3000)
     ClearPedTasksImmediately(PlayerPedId())
-    RenderScriptCams(false, true, 1000.0, false)
+    RenderScriptCams(false, false, 1000.0, false)
     DestroyCam(cam, false)
     DeleteEntity(bagProp)
     --DeleteEntity(bombPropOne)
@@ -272,7 +272,7 @@ function PlantBombsRight()
     FreezeEntityPosition(bombPropThree, true)
     Wait(3000)
     ClearPedTasksImmediately(PlayerPedId())
-    RenderScriptCams(false, true, 1000.0, false)
+    RenderScriptCams(false, 0, 1000.0, false)
     DestroyAllCams(false)
     
     DeleteEntity(bagProp)
@@ -375,6 +375,7 @@ CreateThread(function()
             if doorNr == 1 then 
                 local distance = #(GetEntityCoords(PlayerPedId()) - mantrapEntryDoorsCoords[1])
                 if distance > 10 then 
+                    SetVaultDoorStatus(2)
                     CloseMantrapDoor(1)
                     Wait(100)
                 else 
@@ -382,7 +383,7 @@ CreateThread(function()
                 end
             elseif doorNr == 3 then
                 local distance = #(GetEntityCoords(PlayerPedId()) - mantrapEntryDoorsCoords[3])
-                if distance > 7 then 
+                if distance > 5 then 
                     CloseMantrapDoor(3)
                     Wait(100)
                 else 
@@ -463,11 +464,16 @@ CreateThread(function()
                 end
             elseif leftExplosives and rightExplosives then 
                 canPlantExplosive = false 
-                local exBlip = AddBlipForRadius(2504.975, -240.23, -70.2, 2.0)
+                local exBlip = AddBlipForRadius(2504.975, -240.23, -70.2, 5.0)
                 SetBlipColour(exBlip, 1)
                 SubtitleMsg("Leave the ~r~blast radius.")
                 Wait(5000)
                 VaultAnim()
+                Wait(1000)
+                RemoveBlip(exBlip)
+                SetVaultDoors()
+                AddArtBlips()
+                isInVault = true
             else 
                 Wait(500)
             end

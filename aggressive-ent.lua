@@ -10,6 +10,9 @@ local blip
 RegisterCommand("aggr", function()
     SetEntityCoords(PlayerPedId(), 923.76, 47.2, 81.11)
     aggHeist = true
+    loot = 2
+    SetLayout()
+    SetLoot(loot)
 end, false)
 
 
@@ -23,20 +26,24 @@ CreateThread(function()
         Wait(2)
         if aggHeist then 
             local distance = #(GetEntityCoords(PlayerPedId()) - vector3(923.76, 47.2, 81.11))
-            if distance < 10 then 
+            if distance < 5 then 
                 DrawMarker(1, 923.76, 47.2, 80.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 2.0, 1.0, 30, 30, 30, 100, false, false, 2, false, nil, nil, false)
                 if distance < 1.8 then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to enter the Casino", 110)
+                    HelpMsg("Press ~INPUT_CONTEXT~ to enter the Casino", 160)
                     if IsControlJustPressed(0, 38) then
                         AggrHeistEntry()
                         aggHeist = false
+                    else 
+                        --Wait(10)
                     end
+                else 
+                    Wait(5)
                 end
             else 
-                Wait(100)
+                Wait(50)
             end
         else    
-            Wait(1000)
+            Wait(10000)
         end
     end
 end)
@@ -76,9 +83,9 @@ CreateThread(function()
                             FadeTeleport(2525.3, -256.46, -60.32, 181.9425)
                             isInCasino = false
                             isInStaff = true
+                        else 
+                            Wait(10)
                         end
-                    else 
-                        Wait(10)
                     end
                 else 
                     Wait(100)
