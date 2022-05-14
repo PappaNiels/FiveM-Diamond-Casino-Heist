@@ -64,6 +64,59 @@ local cutPaintingPos = {
     vector3(2502.61, -247.59, -71.71)
 }
 
+local cartLoc = {
+    [1] = {
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0)
+    },
+    [3] = {
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0)
+    },
+    [4] = {
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0)
+    },
+    [5] = {
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0)
+    },
+    [6] = {
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0),
+        vector3(0, 0, 0)
+    }
+}
+
 local slideDoorBigName = "ch_prop_ch_vault_slide_door_lrg"
 local slideDoorSmallName = "ch_prop_ch_vault_slide_door_sm"
 local artCabinetName = "ch_prop_ch_sec_cabinet_02a"
@@ -72,6 +125,7 @@ local bigDoor = {}
 local smallDoor = {}
 local artCabinets = {}
 local artBlips = {}
+local carts = {}
 
 local statusBigDoor = {
     false,
@@ -153,7 +207,7 @@ local paintingAnims = {
 function AddArtBlips()
     for i = 1, #paintingCoords do 
         artBlips[i] = AddBlipForCoord(paintingCoords[i])
-        SetBlipSprite(artBlips[i], 535 + i)
+        SetBlipSprite(artBlips[i], 534 + i)
         SetBlipHighDetail(artBlips[i], true)
         SetBlipColour(artBlips[i], 2)
         SetBlipScale(artBlips[i], 0.75)
@@ -232,6 +286,23 @@ local function OpenVaultDoors()
     for i = 1, #smallDoor, 1 do 
         SetEntityCoords(smallDoor[i], slideDoorSmallCoords[i])
     end
+end
+
+local function PlaceCarts(loot)
+    local cartType = {
+        {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
+        "niks",
+        {"ch_prop_ch_gold_trolly_01a", "ch_prop_ch_gold_trolly_01b", "ch_prop_ch_gold_trolly_01c"},
+        {"ch_prop_ch_diamond_trolly_01a", "ch_prop_ch_diamond_trolly_01b", "ch_prop_ch_diamond_trolly_01c"} 
+    }
+
+    LoadModel(cartType[loot])
+
+    carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1], true, true, false)
+
+    --for i = 1, #cartLoc[vaultLayout] do 
+    --    carts[i] = CreateObject(GetHashKey(cartType[loot]), cartLoc[vaultLayout][i], true, true, false)
+    --end
 end
 
 local function HackKeypad(num)
@@ -314,8 +385,8 @@ local function CutPainting(num)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][2])
     local one = true 
     while one do 
-        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~ 1 ~s~)")
-        if IsControlPressed(0, 38) then 
+        HelpMsg("~INPUT_MOVE_RIGHT_ONLY~ to cut right \n Press ~INPUT_FRONTEND_PAUSE_ALTERNATE~ to exit.")
+        if IsControlPressed(0, 35) then 
             one = false 
         else 
             Wait(10)
@@ -330,8 +401,8 @@ local function CutPainting(num)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][4])
     local two = true 
     while two do 
-        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~2~s~)")
-        if IsControlPressed(0, 38) then 
+        HelpMsg("~INPUT_MOVE_DOWN_ONLY~ to cut down \n Press ~INPUT_FRONTEND_PAUSE_ALTERNATE~ to exit.")
+        if IsControlPressed(0, 33) then 
             two = false 
         else 
             Wait(10)
@@ -346,8 +417,8 @@ local function CutPainting(num)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][6])
     local three = true 
     while three do 
-        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~3~s~)")
-        if IsControlPressed(0, 38) then 
+        HelpMsg("~INPUT_MOVE_LEFT_ONLY~ to cut left \n Press ~INPUT_FRONTEND_PAUSE_ALTERNATE~ to exit.")
+        if IsControlPressed(0, 34) then 
             three = false 
         else 
             Wait(10)
@@ -359,8 +430,8 @@ local function CutPainting(num)
     Wait(3000)
     local four = true 
     while four do 
-        HelpMsg("This is a test (~INPUT_CONTEXT~) (~y~4~s~)")
-        if IsControlPressed(0, 38) then 
+        HelpMsg("~INPUT_MOVE_DOWN_ONLY~ to cut down \n Press ~INPUT_FRONTEND_PAUSE_ALTERNATE~ to exit.")
+        if IsControlPressed(0, 33) then 
             four = false 
         else 
             Wait(10)
@@ -381,6 +452,8 @@ local function CutPainting(num)
     DeleteEntity(bagObj)
     RemoveBlip(artBlips[num])
 end
+
+
 
 CreateThread(function()
     while true do 
@@ -438,7 +511,7 @@ CreateThread(function()
                 local distance = #(GetEntityCoords(PlayerPedId()) - paintingCoords[i])
                 if distance < 2 and not statusArt[i] then 
                     --print("near"..i)
-                    HelpMsg("test (~INPUT_CONTEXT~)", 1000)
+                    HelpMsg("Press ~INPUT_CONTEXT~ to cut the painting.", 1000)
                     if IsControlPressed(0, 38) then 
                         print("catched e")
                         CutPainting(i)

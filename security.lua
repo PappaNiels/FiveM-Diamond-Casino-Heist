@@ -86,7 +86,8 @@ local function SwipeKeycardMantrap(pos)
     --Wait(2000)
     loop = true
     while loop do 
-        if IsControlPressed(0, 38) then 
+        HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
+        if IsControlPressed(0, 18) then 
             loop = false
         else
             Wait(50)
@@ -133,7 +134,7 @@ CreateThread(function()
             local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][2])
             
             if distance1 < 0.5 then 
-                HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard", 150) 
+                HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then  
                     SwipeKeycardMantrap(1)
                     OpenMantrapDoor(1)
@@ -150,7 +151,7 @@ CreateThread(function()
                 end
                 
             elseif distance2 < 0.5 then
-                HelpMsg("Press ~INPUT_CONTEXT~ to swipe the keycard", 150) 
+                HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then 
                     SwipeKeycardMantrap(2)
                     OpenMantrapDoor(1)

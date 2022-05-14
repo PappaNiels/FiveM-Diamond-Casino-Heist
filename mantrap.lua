@@ -135,7 +135,7 @@ function PlantBombsLeft()
     bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
     SetCamActive(cam, true)
-    RenderScriptCams(true, true, 1000.0, true, false)
+    RenderScriptCams(true, 1, 1000.0, true, false)
     SetEntityVisible(bombPropTwo, false)
     
     LoadAnim(animDict)
@@ -151,8 +151,9 @@ function PlantBombsLeft()
     PlayCamAnim(cam, plantExplosives["anims"]["left"][1][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][1])
     Wait(2000)
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][2])
     PlayCamAnim(cam, plantExplosives["anims"]["left"][2][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][2])
+    --Wait(1000)
     bombOne = true
     while bombOne do 
         HelpMsg("Press ~INPUT_ATTACK~ to plant the first explosive", 1000)
@@ -165,7 +166,7 @@ function PlantBombsLeft()
     PlayCamAnim(cam, plantExplosives["anims"]["left"][3][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][3])
     FreezeEntityPosition(bombPropOne, true)
-    Wait(1000)
+    Wait(2000)
     SetEntityVisible(bombPropTwo, true) 
     bombTwo = true
     while bombTwo do 
@@ -209,7 +210,7 @@ function PlantBombsRight()
     bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
     SetCamActive(cam, true)
-    RenderScriptCams(true, true, 1000.0, true, false)    
+    RenderScriptCams(true, 1, 1000.0, true, false)    
     SetEntityVisible(bombPropTwo, false)
     SetEntityVisible(bombPropThree, false)
     
@@ -226,7 +227,7 @@ function PlantBombsRight()
     
     PlayCamAnim(cam, plantExplosives["anims"]["right"][1][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][1])
-    Wait(1000)
+    Wait(500)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][2])
     PlayCamAnim(cam, plantExplosives["anims"]["right"][2][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
     bombOne = true
@@ -241,7 +242,7 @@ function PlantBombsRight()
     PlayCamAnim(cam, plantExplosives["anims"]["right"][3][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][3])
     FreezeEntityPosition(bombPropOne, true)
-    Wait(1000)
+    Wait(1500)
     SetEntityVisible(bombPropTwo, true) 
     bombTwo = true
     while bombTwo do 
@@ -316,12 +317,16 @@ function VaultAnim()
         DeleteEntity(explosives[i])
     end
 
-    SetEntityVisible(GetClosestObjectOfType(2505.54, -238.53, -71.65, 1.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false), true)
+    SetEntityVisible(GetClosestObjectOfType(2502.34, -239.46, -70.71, 1.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false), true)
 
     Wait(2500)
     SetVaultDoorStatus(3)
+    --local Obj = GetClosestObjectOfType(2504.97, -240.3102, -70.17885, 1.0, GetHashKey("ch_des_heist3_vault_end"), false, false, false)
+    --print(GetEntityCoords(Obj), GetEntityRotation(Obj))
     
+    --LoadModel("ch_prop_ch_vault_wall_damage")
     DeleteEntity(vaultObjOne)
+    --local fffffff = CreateObject(GetHashkey("ch_prop_ch_vault_wall_damage"), 2504.97, -240.3102, -70.17885, false, false, false)
 
     leftExplosives, rightExplosives = false, false
 end
@@ -406,11 +411,11 @@ CreateThread(function()
                 local distance = #(GetEntityCoords(PlayerPedId()) - mantrapEntryDoorsCoords[3])
                 if distance < 2.5 then 
                     SetupCheckpoint()
+                    canPlantExplosive = true 
                     OpenMantrapDoor(3)
                     isInMantrap = false
                     --isInVault = true
                     --if heistType == 1 then 
-                    canPlantExplosive = true 
                     --end
                 else 
                     Wait(100)
@@ -464,15 +469,21 @@ CreateThread(function()
                 end
             elseif leftExplosives and rightExplosives then 
                 canPlantExplosive = false 
-                local exBlip = AddBlipForRadius(2504.975, -240.23, -70.2, 5.0)
-                SetBlipColour(exBlip, 1)
-                SubtitleMsg("Leave the ~r~blast radius.")
+                local exBlip = AddBlipForRadius(2502.51, -238.75, -70.2, 5.0)
+                SetBlipColour(exBlip, 76)
+                SetBlipAlpha(exBlip, 175)
+                SubtitleMsg("Leave the ~r~blast radius.", 8000)
                 Wait(5000)
                 VaultAnim()
-                Wait(1000)
                 RemoveBlip(exBlip)
+                Wait(1000)
                 SetVaultDoors()
-                AddArtBlips()
+                loot = 2
+                if loot == 2 then 
+                    AddArtBlips()
+                else 
+                    print("no art :(")
+                end
                 isInVault = true
             else 
                 Wait(500)
