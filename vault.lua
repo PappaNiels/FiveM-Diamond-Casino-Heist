@@ -66,28 +66,28 @@ local cutPaintingPos = {
 
 local cartLoc = {
     [1] = {
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
+        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
+        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
+        vector3(2518.748, -237.311966, -71.2666855), -- Cart Type C
+        vector3(2513.519, -225.5228, -71.2666855), -- Cart Type A
+        vector3(2522.04688, -222.246826, -71.2666855), -- Cart Type B
         vector3(0, 0, 0),
         vector3(0, 0, 0),
         vector3(0, 0, 0)
     },
     [3] = {
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
+        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
+        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
+        vector3(2518.748, -237.311966, -71.2666855), -- Cart Type C
+        vector3(2513.519, -225.5228, -71.2666855), -- Cart Type A
+        vector3(2522.04688, -222.246826, -71.2666855), -- Cart Type B
         vector3(0, 0, 0),
         vector3(0, 0, 0),
         vector3(0, 0, 0)
     },
     [4] = {
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
+        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
+        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
         vector3(0, 0, 0),
         vector3(0, 0, 0),
         vector3(0, 0, 0),
@@ -96,8 +96,8 @@ local cartLoc = {
         vector3(0, 0, 0)
     },
     [5] = {
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
+        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
+        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
         vector3(0, 0, 0),
         vector3(0, 0, 0),
         vector3(0, 0, 0),
@@ -106,8 +106,8 @@ local cartLoc = {
         vector3(0, 0, 0)
     },
     [6] = {
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
+        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
+        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
         vector3(0, 0, 0),
         vector3(0, 0, 0),
         vector3(0, 0, 0),
@@ -214,6 +214,10 @@ function AddArtBlips()
     end
 end
 
+function AddCartBlips()
+
+end
+
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         table.insert(bigDoor, GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false))
@@ -291,9 +295,9 @@ end
 local function PlaceCarts(loot)
     local cartType = {
         {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-        "niks",
+        "nothing",
         {"ch_prop_ch_gold_trolly_01a", "ch_prop_ch_gold_trolly_01b", "ch_prop_ch_gold_trolly_01c"},
-        {"ch_prop_ch_diamond_trolly_01a", "ch_prop_ch_diamond_trolly_01b", "ch_prop_ch_diamond_trolly_01c"} 
+        {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
 
     LoadModel(cartType[loot])
