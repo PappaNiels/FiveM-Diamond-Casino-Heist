@@ -148,8 +148,8 @@ function PlantBombsLeft()
         NetworkAddEntityToSynchronisedScene(bagProp, plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][4], 1.0, -1.0, 114886080)
     end
     
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][1])
     PlayCamAnim(cam, plantExplosives["anims"]["left"][1][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][1])
     Wait(2000)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][2])
     PlayCamAnim(cam, plantExplosives["anims"]["left"][2][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
@@ -162,8 +162,8 @@ function PlantBombsLeft()
             Wait(10)
         end
     end
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][3])
     PlayCamAnim(cam, plantExplosives["anims"]["left"][3][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][3])
     FreezeEntityPosition(bombPropOne, true)
     Wait(1000)
     SetEntityVisible(bombPropTwo, true) 
@@ -176,8 +176,8 @@ function PlantBombsLeft()
             Wait(10)
         end
     end   
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][4])
     PlayCamAnim(cam, plantExplosives["anims"]["left"][4][5], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesLeft"][4])
     FreezeEntityPosition(bombPropTwo, true)
     Wait(3000)
     ClearPedTasksImmediately(PlayerPedId())
@@ -224,8 +224,8 @@ function PlantBombsRight()
         NetworkAddEntityToSynchronisedScene(bagProp, plantExplosives["networkScenesRight"][i], animDict, plantExplosives["anims"]["right"][i][5], 1.0, -1.0, 114886080)
     end
     
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][1])
     PlayCamAnim(cam, plantExplosives["anims"]["right"][1][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][1])
     Wait(1000)
     NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][2])
     PlayCamAnim(cam, plantExplosives["anims"]["right"][2][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
@@ -238,8 +238,8 @@ function PlantBombsRight()
             Wait(10)
         end
     end
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][3])
     PlayCamAnim(cam, plantExplosives["anims"]["right"][3][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][3])
     FreezeEntityPosition(bombPropOne, true)
     Wait(1000)
     SetEntityVisible(bombPropTwo, true) 
@@ -252,8 +252,8 @@ function PlantBombsRight()
             Wait(10)
         end
     end   
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][4])
     PlayCamAnim(cam, plantExplosives["anims"]["right"][4][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][4])
     FreezeEntityPosition(bombPropTwo, true)
     Wait(1000)
     SetEntityVisible(bombPropThree, true)    
@@ -267,8 +267,8 @@ function PlantBombsRight()
             Wait(10)
         end
     end
-    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][5])
     PlayCamAnim(cam, plantExplosives["anims"]["right"][5][6], animDict, 2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, false, 2)
+    NetworkStartSynchronisedScene(plantExplosives["networkScenesRight"][5])
     FreezeEntityPosition(bombPropThree, true)
     Wait(3000)
     ClearPedTasksImmediately(PlayerPedId())
