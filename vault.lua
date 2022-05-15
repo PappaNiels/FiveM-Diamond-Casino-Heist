@@ -66,54 +66,64 @@ local cutPaintingPos = {
 
 local cartLoc = {
     [1] = {
+        {vector3(2527.56885, -235.687744, -71.2666855),                             }, -- Cart Type A  A
+        {vector3(2523.88159, -245.282669, -71.2666855),                             }, -- Cart Type B  B
+        {vector3(2518.748, -237.311966, -71.2666855),                               }, -- Cart Type C  C
+        {vector3(2513.519, -225.5228, -71.2666855),                                 }, -- Cart Type A  D
+        {vector3(2522.04688, -222.246826, -71.2666855),                             }, -- Cart Type B  E
+        {vector3(0, 0, 0),                                                          },    -- Cart Type C F                                           
+        {vector3(2532.42676, -245.743271, -71.2666855),                             }, -- Cart Type A G
+        {vector3(2516.40869, -252.185562, -71.2666855),                             }    -- Cart Type B H
+    },
+    [2] = {
         vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
         vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
         vector3(2518.748, -237.311966, -71.2666855), -- Cart Type C
         vector3(2513.519, -225.5228, -71.2666855), -- Cart Type A
         vector3(2522.04688, -222.246826, -71.2666855), -- Cart Type B
         vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0)
+        vector3(2532.42676, -245.743271, -71.2666855),
+        vector3(2516.40869, -252.185562, -71.2666855),
     },
     [3] = {
-        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
-        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
-        vector3(2518.748, -237.311966, -71.2666855), -- Cart Type C
-        vector3(2513.519, -225.5228, -71.2666855), -- Cart Type A
-        vector3(2522.04688, -222.246826, -71.2666855), -- Cart Type B
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0)
+        vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A A
+        vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B B
+        vector3(2506.02979, -229.8687, -71.2666855),   --           C C               
+        vector3(2527.599, -224.06337, -71.2666855),    --           A D   
+        vector3(2531.93628, -251.4501, -71.2666855),   --           B E 
+        vector3(2528.15063, -249.921661, -71.2666855), --           C F 
+        vector3(2531.93628, -251.4501, -71.2666855),   --           A G 
+        vector3(0, 0, 0),                              --           B H 
     },
     [4] = {
         vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
         vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
+        vector3(2506.02979, -229.8687, -71.2666855),
+        vector3(2527.599, -224.06337, -71.2666855),
+        vector3(2531.93628, -251.4501, -71.2666855),
+        vector3(2531.93628, -251.4501, -71.2666855),
+        vector3(2516.40869, -252.185562, -71.2666855),
         vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0)
     },
     [5] = {
         vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
         vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
+        vector3(2506.02979, -229.8687, -71.2666855),
+        vector3(2527.599, -224.06337, -71.2666855),
+        vector3(2531.93628, -251.4501, -71.2666855),
+        vector3(2528.15063, -249.921661, -71.2666855),
+        vector3(2516.40869, -252.185562, -71.2666855),
         vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0)
     },
     [6] = {
         vector3(2527.56885, -235.687744, -71.2666855), -- Cart Type A
         vector3(2523.88159, -245.282669, -71.2666855), -- Cart Type B
+        vector3(2506.02979, -229.8687, -71.2666855),
+        vector3(2527.599, -224.06337, -71.2666855), -- Cart Type A
+        vector3(2531.93628, -251.4501, -71.2666855),
+        vector3(2528.15063, -249.921661, -71.2666855),
+        vector3(2516.40869, -252.185562, -71.2666855),
         vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0),
-        vector3(0, 0, 0)
     }
 }
 
@@ -302,7 +312,8 @@ local function PlaceCarts(loot)
 
     LoadModel(cartType[loot])
 
-    carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1], true, true, false)
+    carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1][1], true, true, false)
+    SetEntityHeading(carts, cartsLoc[vaultLayout][1][2])
 
     --for i = 1, #cartLoc[vaultLayout] do 
     --    carts[i] = CreateObject(GetHashKey(cartType[loot]), cartLoc[vaultLayout][i], true, true, false)
