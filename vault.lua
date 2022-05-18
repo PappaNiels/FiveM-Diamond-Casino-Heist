@@ -242,6 +242,26 @@ function AddCartBlips()
     end
 end
 
+local function PlaceCarts()
+    local cartType = {
+        {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
+        "nothing",
+        {"ch_prop_ch_gold_trolly_01a", "ch_prop_ch_gold_trolly_01b", "ch_prop_ch_gold_trolly_01c"},
+        {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
+    }
+
+    for i = 1, #cartType[loot] do 
+        LoadModel(cartType[loot][i])
+    end
+
+    --carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1][1], true, true, false)
+    --SetEntityHeading(carts, cartsLoc[vaultLayout][1][2])
+
+    for i = 1, #cartLoc[vaultLayout] do 
+        carts[i] = CreateObject(GetHashKey(cartType[loot]), cartLoc[vaultLayout][i][1], true, true, false)
+    end
+end
+
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         table.insert(bigDoor, GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false))
@@ -313,26 +333,6 @@ local function OpenVaultDoors()
     
     for i = 1, #smallDoor, 1 do 
         SetEntityCoords(smallDoor[i], slideDoorSmallCoords[i])
-    end
-end
-
-local function PlaceCarts()
-    local cartType = {
-        {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-        "nothing",
-        {"ch_prop_ch_gold_trolly_01a", "ch_prop_ch_gold_trolly_01b", "ch_prop_ch_gold_trolly_01c"},
-        {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
-    }
-
-    for i = 1, #cartType[loot] do 
-        LoadModel(cartType[loot][i])
-    end
-
-    --carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1][1], true, true, false)
-    --SetEntityHeading(carts, cartsLoc[vaultLayout][1][2])
-
-    for i = 1, #cartLoc[vaultLayout] do 
-        carts[i] = CreateObject(GetHashKey(cartType[loot]), cartLoc[vaultLayout][i][1], true, true, false)
     end
 end
 
