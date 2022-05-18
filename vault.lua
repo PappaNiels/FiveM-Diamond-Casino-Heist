@@ -1,3 +1,5 @@
+local cartLayout = 0
+
 local slideDoorBigCoords = {
     vector3(2519.962, -226.0072, -71.74234),
     vector3(2533.56, -239.6175, -71.74234),
@@ -66,64 +68,24 @@ local cutPaintingPos = {
 
 local cartLoc = {
     [1] = {
-        {vector3(2527.56885, -235.687744, -71.2666855),                             }, -- Cart Type A  A
-        {vector3(2523.88159, -245.282669, -71.2666855),                             }, -- Cart Type B  B
-        {vector3(2518.748, -237.311966, -71.2666855),                               }, -- Cart Type C  C
-        {vector3(2513.519, -225.5228, -71.2666855),                                 }, -- Cart Type A  D
-        {vector3(2522.04688, -222.246826, -71.2666855),                             }, -- Cart Type B  E
-        {vector3(0, 0, 0),                                                          },    -- Cart Type C F                                           
-        {vector3(2532.42676, -245.743271, -71.2666855),                             }, -- Cart Type A G
-        {vector3(2516.40869, -252.185562, -71.2666855),                             }    -- Cart Type B H
+        {vector3(2527.56885, -235.687744, -71.743), 117.08}, -- Cart Type A  A
+        {vector3(2523.88159, -245.282669, -71.743), 22.55}, -- Cart Type B  B
+        {vector3(2518.748, -237.311966, -71.743), 59.45}, -- Cart Type C  C
+        {vector3(2513.519, -225.5228, -71.743), 321.67}, -- Cart Type A  D
+        {vector3(2522.04688, -222.246826, -71.743), 172.0}, -- Cart Type B  E
+        {vector3(2534.379, -231.07428, -71.743), 319.02},    -- Cart Type C F                                           
+        {vector3(2532.42676, -245.743271, -71.743), 222.48}, -- Cart Type A G
+        {vector3(2516.40869, -252.185562, -71.743), 0.0}    -- Cart Type B H
     },
     [2] = {
-        {vector3(2527.56885, -235.687744, -71.2666855), },-- Cart Type A
-        {vector3(2523.88159, -245.282669, -71.2666855), },-- Cart Type B
-        {vector3(2518.748, -237.311966, -71.2666855), },-- Cart Type C
-        {vector3(2513.519, -225.5228, -71.2666855), },-- Cart Type A
-        {vector3(2522.04688, -222.246826, -71.2666855), },-- Cart Type B
-        {vector3(0, 0, 0), },
-        {vector3(2532.42676, -245.743271, -71.2666855), },
-        {vector3(2516.40869, -252.185562, -71.2666855), }
-    },
-    [3] = {
-        {vector3(2527.56885, -235.687744, -71.2666855), }, -- Cart Type A A
-        {vector3(2523.88159, -245.282669, -71.2666855), },-- Cart Type B B
-        {vector3(2506.02979, -229.8687, -71.2666855),   },--           C C               
-        {vector3(2527.599, -224.06337, -71.2666855),    },--           A D   
-        {vector3(2531.93628, -251.4501, -71.2666855),   },--           B E 
-        {vector3(2528.15063, -249.921661, -71.2666855), },--           C F 
-        {vector3(2531.93628, -251.4501, -71.2666855),   },--           A G 
-        {vector3(0, 0, 0),                              }--           B H 
-    },
-    [4] = {
-        {vector3(2527.56885, -235.687744, -71.2666855), },-- Cart Type A
-        {vector3(2523.88159, -245.282669, -71.2666855), },-- Cart Type B
-        {vector3(2506.02979, -229.8687, -71.2666855), },
-        {vector3(2527.599, -224.06337, -71.2666855), },
-        {vector3(2531.93628, -251.4501, -71.2666855), },
-        {vector3(2531.93628, -251.4501, -71.2666855), },
-        {vector3(2516.40869, -252.185562, -71.2666855), },
-        {vector3(0, 0, 0), }
-    },
-    [5] = {
-        {vector3(2527.56885, -235.687744, -71.2666855), },-- Cart Type A
-        {vector3(2523.88159, -245.282669, -71.2666855), },-- Cart Type B
-        {vector3(2506.02979, -229.8687, -71.2666855), },
-        {vector3(2527.599, -224.06337, -71.2666855), },
-        {vector3(2531.93628, -251.4501, -71.2666855), },
-        {vector3(2528.15063, -249.921661, -71.2666855), },
-        {vector3(2516.40869, -252.185562, -71.2666855), },
-        {vector3(0, 0, 0), }
-    },
-    [6] = {
-        {vector3(2527.56885, -235.687744, -71.2666855), },-- Cart Type A
-        {vector3(2523.88159, -245.282669, -71.2666855),  },-- Cart Type B
-        {vector3(2506.02979, -229.8687, -71.2666855), },
-        {vector3(2527.599, -224.06337, -71.2666855), },-- Cart Type A
-        {vector3(2531.93628, -251.4501, -71.2666855), },
-        {vector3(2528.15063, -249.921661, -71.2666855), },
-        {vector3(2516.40869, -252.185562, -71.2666855), },
-        {vector3(0, 0, 0), }
+        {vector3(2527.56885, -235.687744, -71.743), 117.08}, -- Cart Type A A
+        {vector3(2523.88159, -245.282669, -71.743), 22.55},-- Cart Type B B
+        {vector3(2506.02979, -229.8687, -71.743), 325.98},--           C C               
+        {vector3(2527.599, -224.06337, -71.743), 245.31},--           A D   
+        {vector3(2531.93628, -251.4501, -71.743), 335.88},--           B E 
+        {vector3(2528.15063, -249.921661, -71.743), 220.06},--           C F 
+        {vector3(2516.40869, -252.185562, -71.743), 0.0},--           A G 
+        {vector3(2505.54688, -245.549637, -71.743), 210.65}--           B H 
     }
 }
 
@@ -217,7 +179,11 @@ local paintingAnims = {
 
 local cartAnims = {
     ["anims"] = {
-
+        -- Player, Bag, Trolly, Cam
+        {"intro", "bag_intro"},
+        {"grab", "bag_grab"},
+        {"grab_idle", "bag_grab_idle"},
+        {"exit", "bag_exit"}
     },
     ["networkScenes"] = {}
 }
@@ -233,9 +199,9 @@ function AddArtBlips()
 end
 
 function AddCartBlips()
-    for i = 1, #cartLoc[loot] do 
-        cartBlips[i] = AddBlipForCoord(cartLoc[loot][i])
-        SetBlipSprite(artBlips[i], 534 + i)
+    for i = 1, #cartLoc[cartLayout] do 
+        cartBlips[i] = AddBlipForCoord(cartLoc[cartLayout][i][1])
+        SetBlipSprite(cartBlips[i], 534 + i)
         SetBlipHighDetail(cartBlips[i], true)
         SetBlipColour(cartBlips[i], 2)
         SetBlipScale(cartBlips[i], 0.75)
@@ -245,20 +211,56 @@ end
 local function PlaceCarts()
     local cartType = {
         {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-        "nothing",
-        {"ch_prop_ch_gold_trolly_01a", "ch_prop_ch_gold_trolly_01b", "ch_prop_ch_gold_trolly_01c"},
+        {"nothing"},
+        {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
         {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
+
+
+    --print(loot)
+    --print(cartType[loot][1])
+    --print(IsModelInCdimage(cartType[loot][1]))
+    --print(cartLoc[1][1][1])
 
     for i = 1, #cartType[loot] do 
         LoadModel(cartType[loot][i])
     end
 
+    
+    if vaultLayout < 3 then 
+        cartLayout = 1
+    else 
+        cartLayout = 2
+    end
     --carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1][1], true, true, false)
     --SetEntityHeading(carts, cartsLoc[vaultLayout][1][2])
 
-    for i = 1, #cartLoc[vaultLayout] do 
-        carts[i] = CreateObject(GetHashKey(cartType[loot]), cartLoc[vaultLayout][i][1], true, true, false)
+    --print(#cartLoc[layout])
+
+    for i = 1, #cartLoc[cartLayout] do 
+        j = 0
+        if i > 3 and i < 7 then 
+            j = i - 3 
+        elseif i > 6 then 
+            j = i - 6
+        else 
+            j = i
+        end
+        
+        carts[i] = CreateObject(GetHashKey(cartType[loot][j]), cartLoc[cartLayout][i][1], true, true, false)
+        SetEntityHeading(carts[i], cartLoc[cartLayout][i][2])
+        print("i: " .. i)
+        print("j: " .. j)
+        print("---")
+    end
+
+    --print(#carts)
+end
+
+
+local function RemoveCarts()
+    for i = 1, #carts do 
+        DeleteEntity(carts[i])
     end
 end
 
@@ -333,12 +335,6 @@ local function OpenVaultDoors()
     
     for i = 1, #smallDoor, 1 do 
         SetEntityCoords(smallDoor[i], slideDoorSmallCoords[i])
-    end
-end
-
-local function RemoveCarts()
-    for i = 1, #carts do 
-        DeleteEntity(carts[i])
     end
 end
 
@@ -490,7 +486,9 @@ local function CutPainting(num)
     RemoveBlip(artBlips[num])
 end
 
+local function GrabLoot()
 
+end
 
 CreateThread(function()
     while true do 
@@ -613,9 +611,13 @@ RegisterCommand("vl_painting", function(source, args)
     CutPainting(tonumber(args[1]))
 end, false)
 
-RegisterCammand("vl_placecarts", function(src, args)
+RegisterCommand("vl_placecarts", function(src, args)
     loot = tonumber(args[1])
+    vaultLayout = tonumber(args[2])
     PlaceCarts()
+    print(cartLoc[cartLayout][1][1])
+    print(cartLayout)
+    AddCartBlips()
 end, false)
 
 RegisterCommand("vl_removecarts", function()
