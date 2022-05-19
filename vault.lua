@@ -409,7 +409,7 @@ local function CutPainting(num)
     SetCamActive(cam, true)
     RenderScriptCams(true, 1, 1000, true, false)
     
-    PlayCamAnim(cam, paintingAnims["anims"][3][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
+    PlayCamAnim(cam, paintingAnims["anims"][2][6], animDict, cutPaintingPos[num], GetEntityRotation(paintingObj), false, 2)
     NetworkStartSynchronisedScene(paintingAnims["networkScenes"][1])
     PlayEntityAnim(paintingObj, paintingAnims["anims"][1][3], animDict, 1.0, false, true, true, 0.0, 0x4000)
     Wait(3000)

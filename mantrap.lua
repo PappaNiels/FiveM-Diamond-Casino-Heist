@@ -214,6 +214,8 @@ function PlantBombsRight()
     SetEntityVisible(bombPropTwo, false)
     SetEntityVisible(bombPropThree, false)
     
+    print(DoesCamExist(cam))
+
     LoadAnim(animDict)
     
     for i = 1, #plantExplosives["anims"]["right"] do 
