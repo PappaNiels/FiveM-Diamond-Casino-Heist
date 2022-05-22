@@ -59,6 +59,26 @@ local function RemoveSecurityBlips()
     end
 end
 
+local function NetworkMantrapDoors()
+    local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
+    local doorL = GetClosestObjectOfType(2464.183, -278.204, -71.694, 1.0, pDoorL, false, false, false)
+    local doorR = GetClosestObjectOfType(2464.183, -280.288, -71.694, 1.0, pDoorR, false, false, false)
+
+    print(doorL, doorR)
+
+    NetworkRegisterEntityAsNetworked(doorL)
+    netId = NetworkGetNetworkIdFromEntity(doorL)
+    SetNetworkIdCanMigrate(netId, true)
+    SetNetworkIdExistsOnAllMachines(netId, true)
+    print(netId)
+    
+    NetworkRegisterEntityAsNetworked(doorR)
+    netId = NetworkGetNetworkIdFromEntity(doorR)
+    SetNetworkIdCanMigrate(netId, true)
+    SetNetworkIdExistsOnAllMachines(netId, true)
+    print(netId)
+end
+
 local function SwipeKeycardMantrap(pos)
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
     local keycard = "ch_prop_vault_key_card_01a"
@@ -109,6 +129,7 @@ CreateThread(function()
             SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
             if not blipActive then 
                 AddSecurityBlips()
+                NetworkMantrapDoors()
                 Wait(100)
             else
                 local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][2])

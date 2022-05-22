@@ -1,10 +1,6 @@
 heistInProgress = false
 
-hPlayer = { 
-    PlayerPedId(),
-    PlayerPedId(),
-    PlayerPedId(),
-    PlayerPedId()    
+hPlayer = {   
 }
 
 heistType = 0
@@ -94,7 +90,7 @@ end, false)
 
 function GetHeistPlayer()
     Models()
-    hPlayer[2] = CreatePed(7, models[1], 0.0, 0.0, 0.0, 0.0, true, true)
+    --hPlayer[2] = CreatePed(7, models[1], 0.0, 0.0, 0.0, 0.0, true, true)
     hPlayer[3] = CreatePed(7, models[2], 0.0, 0.0, 0.0, 0.0, true, true)
     hPlayer[4] = CreatePed(7, models[3], 0.0, 0.0, 0.0, 0.0, true, true)
     return hPlayer 
@@ -157,3 +153,11 @@ function SetupCheckpoint()
     vaultObjOne = CreateObject(GetHashKey(vaultDoorOne), 2504.97, -240.31, -73.69, false, false, false)
     vaultObjTwo = CreateObject(GetHashKey(vaultDoorTwo), 2504.97, -240.31, -75.334, false, false, false)  
 end
+
+RegisterCommand("hPlayer", function(source, args)
+    print(GetPlayerPed(1))
+    print(args[1])
+    hPlayer[args[1]] = GetPlayerPed(source) 
+    print(PlayerPedId(), source)
+    print(hPlayer[1], hPlayer[2])
+end, false)

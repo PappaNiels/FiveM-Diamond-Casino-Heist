@@ -345,16 +345,21 @@ function OpenMantrapDoor(num)
         --print("vault")
         
     end
-    repeat 
-        coords1 = coords1 + vector3(0, 0.0105, 0)
-        coords2 = coords2 - vector3(0, 0.0105, 0)
-        SetEntityCoords(doorL, coords1)
-        SetEntityCoords(doorR, coords2)
-        x = x + 1
-        Wait(23)
-    until x == 100 
-    doorNr = num 
-    doorOpen = true
+    print(hPlayer[1], PlayerPedId())
+    if hPlayer[1] == PlayerPedId() or hPlayer[2] == PlayerPedId() or hPlayer[3] == PlayerPedId() or hPlayer[4] == PlayerPedId() then 
+        repeat 
+            coords1 = coords1 + vector3(0, 0.0105, 0)
+            coords2 = coords2 - vector3(0, 0.0105, 0)
+            SetEntityCoords(doorL, coords1)
+            SetEntityCoords(doorR, coords2)
+            x = x + 1
+            Wait(23)
+        until x == 100 
+        doorNr = num 
+        doorOpen = true
+    else 
+        print("isnt hplayer")
+    end
 end 
 
 function CloseMantrapDoor(num)

@@ -486,7 +486,26 @@ local function CutPainting(num)
     RemoveBlip(artBlips[num])
 end
 
-local function GrabLoot()
+local function GrabLoot(num)
+    local animDict = ""
+    local propType = {
+        "ch_prop_20dollar_pile_01a",
+        "nothing",
+        "ch_prop_gold_bar_01a",
+        "ch_prop_dimaondbox_01a"
+    }
+
+    local cartType = {
+        {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
+        {"nothing"},
+        {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
+        {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
+    }
+
+    LoadAnim(animDict)
+    LoadModel(propType[loot])
+
+    trollyObj = CreateObject(GetHashKey())
 
 end
 

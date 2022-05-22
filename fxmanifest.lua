@@ -6,24 +6,24 @@ description "Diamond Casino Heist"
 version "1.0.0"
 
 client_scripts {
-    "rappel.lua",
-    "anim.lua",
-    "sewer.lua",
-    "test.lua",
-    "keycard.lua",
-    "aggressive-ent.lua",
-    "functions.lua",
-    "main.lua", 
-    "staff.lua",
-    "security.lua",
-    "mantrap.lua",
-    "ipl.lua",
-    "vault.lua"
+    "client/rappel.lua",
+    "client/anim.lua",
+    "client/sewer.lua",
+    "client/test.lua",
+    "client/keycard.lua",
+    "client/aggressive-ent.lua",
+    "client/functions.lua",
+    "client/main.lua", 
+    "client/staff.lua",
+    "client/security.lua",
+    "client/mantrap.lua",
+    "client/ipl.lua",
+    "client/vault.lua"
 }
 
---server_scripts { 
---    "sv_main.lua"
---}
+server_scripts { 
+    "server/main.lua"
+}
 
 dependencies {
     "/gameBuild:h4"
