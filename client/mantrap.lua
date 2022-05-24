@@ -346,7 +346,7 @@ function OpenMantrapDoor(num)
         
     end
     print(hPlayer[1], PlayerPedId())
-    if hPlayer[1] == PlayerPedId() or hPlayer[2] == PlayerPedId() or hPlayer[3] == PlayerPedId() or hPlayer[4] == PlayerPedId() then 
+    --if hPlayer[1] == PlayerPedId() or hPlayer[2] == PlayerPedId() or hPlayer[3] == PlayerPedId() or hPlayer[4] == PlayerPedId() then 
         repeat 
             coords1 = coords1 + vector3(0, 0.0105, 0)
             coords2 = coords2 - vector3(0, 0.0105, 0)
@@ -357,9 +357,9 @@ function OpenMantrapDoor(num)
         until x == 100 
         doorNr = num 
         doorOpen = true
-    else 
-        print("isnt hplayer")
-    end
+    --else 
+        --print("isnt hplayer")
+    --end
 end 
 
 function CloseMantrapDoor(num)

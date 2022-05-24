@@ -266,11 +266,15 @@ end
 
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
-        table.insert(bigDoor, GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false))
+        local propB = GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false)
+        SetEntityForAll(propB)
+        table.insert(bigDoor, propB)
     end
-
+    
     for i = 1, #slideDoorSmallCoords, 1 do 
-        table.insert(smallDoor, GetClosestObjectOfType(slideDoorSmallCoords[i], 1.0, GetHashKey(slideDoorSmallName), false, false, false))
+        local propS = GetClosestObjectOfType(slideDoorSmallCoords[i], 1.0, GetHashKey(slideDoorSmallName), false, false, false)
+        SetEntityForAll(prop)
+        table.insert(smallDoor, propS)
     end
 end
 

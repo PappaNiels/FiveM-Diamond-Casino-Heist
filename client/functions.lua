@@ -37,18 +37,24 @@ function LoadCutscene(name)
     local hPlayer = GetHeistPlayer()
 
     --print(hPlayer[2])
+    local cutPlayer = {
+        ClonePed(hPlayer[1], false, true, false),
+        ClonePed(hPlayer[2], false, true, false),
+        ClonePed(hPlayer[3], false, true, false),
+        ClonePed(hPlayer[4], false, true, false)
+    }
 
     SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(hPlayer[2], "MP_1", 0, 0, 64)
+    RegisterEntityForCutscene(cutPlayer[1], "MP_1", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_2", 0, 1)
-    RegisterEntityForCutscene(PlayerPedId(), "MP_2", 0, 0, 64)
+    RegisterEntityForCutscene(cutPlayer[2], "MP_2", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_3", 0, 1)
-    RegisterEntityForCutscene(hPlayer[3], "MP_3", 0, 0, 64)
+    RegisterEntityForCutscene(cutPlayer[3], "MP_3", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_4", 0, 1)
-    RegisterEntityForCutscene(hPlayer[4], "MP_4", 0, 0, 64)
+    RegisterEntityForCutscene(cutPlayer[4], "MP_4", 0, 0, 64)
 end
 
 function LoadModel(model)
@@ -71,6 +77,21 @@ function LoadAnim(animDict)
     end
 end
 
+function SetEntityForAll(entity)
+    NetworkRegisterEntityAsNetworked(entity)
+    netId = NetworkGetNetworkIdFromEntity(entity)
+    SetNetworkIdCanMigrate(netId, true)
+    SetNetworkIdExistsOnAllMachines(netId, true)
+end
+
+
+RegisterNetEvent("cl:casinoheist:startCutscene")
+AddEventHandler("cl:casinoheist:startCutscene", function(cutscene)
+    if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
+        LoadCutscene(cutscene)
+    end
+end)
+
 
 --RegisterCommand("test_anim", function()
 --    HackKeypad(4, 0)
@@ -84,10 +105,3 @@ end
 --RegisterCommand("swipe_test", function()
 --    SwipeKeycardMantrap(4)
 --end, false)
-
-
-RegisterCommand("tp", function(source, args)
-    local x, y, z, h = args[1], args[2], args[3], args[4]
-    print(x, y, z, h)
-    FadeTeleport(x, y, z, h)
-end, false)

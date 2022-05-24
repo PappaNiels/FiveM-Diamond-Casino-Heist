@@ -69,13 +69,13 @@ local function NetworkMantrapDoors()
     NetworkRegisterEntityAsNetworked(doorL)
     netId = NetworkGetNetworkIdFromEntity(doorL)
     SetNetworkIdCanMigrate(netId, true)
-    SetNetworkIdExistsOnAllMachines(netId, true)
+    --SetNetworkIdExistsOnAllMachines(netId, true)
     print(netId)
     
     NetworkRegisterEntityAsNetworked(doorR)
     netId = NetworkGetNetworkIdFromEntity(doorR)
     SetNetworkIdCanMigrate(netId, true)
-    SetNetworkIdExistsOnAllMachines(netId, true)
+    --SetNetworkIdExistsOnAllMachines(netId, true)
     print(netId)
 end
 
