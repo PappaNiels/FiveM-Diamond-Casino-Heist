@@ -34,15 +34,19 @@ function LoadCutscene(name)
     end
 
     
-    local hPlayer = GetHeistPlayer()
+    local players = GetHeistPlayer()
 
-    --print(hPlayer[2])
     local cutPlayer = {
-        ClonePed(hPlayer[1], false, true, false),
-        ClonePed(hPlayer[2], false, true, false),
-        ClonePed(hPlayer[3], false, true, false),
-        ClonePed(hPlayer[4], false, true, false)
+        --ClonePedEx(hPlayer[1], 0.0, false, true, 1),
+        --ClonePedEx(hPlayer[2], 0.0, false, true, 1),
+        --ClonePedEx(hPlayer[3], 0.0, false, true, 1),
+        --ClonePedEx(hPlayer[4], 0.0, false, true, 1)
     }
+
+    for i = 1, 4 do 
+        cutPlayer[i] = ClonePedEx(hPlayer[i], 0.0, false, true, 1)
+    end
+    --print(hPlayer[2])
 
     SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
     RegisterEntityForCutscene(cutPlayer[1], "MP_1", 0, 0, 64)

@@ -267,13 +267,13 @@ end
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         local propB = GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false)
-        SetEntityForAll(propB)
+        --SetEntityForAll(propB)
         table.insert(bigDoor, propB)
     end
     
     for i = 1, #slideDoorSmallCoords, 1 do 
         local propS = GetClosestObjectOfType(slideDoorSmallCoords[i], 1.0, GetHashKey(slideDoorSmallName), false, false, false)
-        SetEntityForAll(prop)
+        --SetEntityForAll(prop)
         table.insert(smallDoor, propS)
     end
 end
@@ -599,8 +599,16 @@ RegisterCommand("vl_dist_end", function()
 end, false)
 
 RegisterCommand("test_loop", function()
+    print(TriggerServerEvent("test:sv:casinoheist:openvaultdoors"))
+    
+end)
+
+RegisterNetEvent("test:cl:casinoheist:openvaultdoors")
+AddEventHandler("test:cl:casinoheist:openvaultdoors", function()
     OpenVaultDoors()
 end)
+
+
 RegisterCommand("vl_testloop", function()
     isInVault = true
 end)

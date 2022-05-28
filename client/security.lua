@@ -86,7 +86,9 @@ local function SwipeKeycardMantrap(pos)
     LoadModel(keycard)
 
     keypad = GetClosestObjectOfType(keypads["lvlFourKeypad"][pos], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
-    keycard = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    keycardProp = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    SetEntityAsMissionEntity(keycardProp, true)
+    
     local x = 0
 
     if pos == 1 or pos == 3 then 
@@ -97,13 +99,18 @@ local function SwipeKeycardMantrap(pos)
     for i = 1, #keycardSwipeAnims["anims"][2] do 
         keycardSwipeAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3)
         NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][x][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-        NetworkAddEntityToSynchronisedScene(keycard, keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][x][i][2], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(keycardProp, keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][x][i][2], 1.0, -1.0, 114886080)
     end
 
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][1])
     Wait(2000)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][2])
     --Wait(2000)
+    SwipeServerCallback(x)
+    
+end
+
+function SwipeServerCallback(pos)
     loop = true
     while loop do 
         HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
@@ -114,13 +121,30 @@ local function SwipeKeycardMantrap(pos)
         end
     end
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][3])
-    Wait(2000)
-    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
-    Wait(2000)
-    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][5])
-    Wait(2000)
-    DeleteObject(keycard)
+    print(pos)
+    TriggerServerEvent("sv:security:swipecard", pos, function(bool) 
+        print("eventTriggered") 
+        if bool then 
+            print(true)
+            NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
+            Wait(2000)
+            NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][5])
+            OpenMantrapDoor(1)
+            openedDoor = 1
+            DeleteObject(keycardProp)
+        else
+            print("fail") 
+            NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][6])
+            --SwipeServerCallback()
+
+        end
+    end)
 end
+
+RegisterNetEvent("test:cl:casinoheist:keycardswipe")
+AddEventHandler("test:cl:casinoheist:keycardswipe", function()
+    isInSecurity = true
+end)
 
 CreateThread(function()
     while true do 
@@ -129,7 +153,7 @@ CreateThread(function()
             SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
             if not blipActive then 
                 AddSecurityBlips()
-                NetworkMantrapDoors()
+                --NetworkMantrapDoors()
                 Wait(100)
             else
                 local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][2])
@@ -158,10 +182,10 @@ CreateThread(function()
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then  
                     SwipeKeycardMantrap(1)
-                    OpenMantrapDoor(1)
+                    --OpenMantrapDoor(1)
                     --print("a")
                     isInMantrap = true
-                    openedDoor = 1
+                    --openedDoor = 1
                     canSwipeKeycard = false
                     RemoveSecurityBlips()
                     
@@ -175,11 +199,11 @@ CreateThread(function()
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then 
                     SwipeKeycardMantrap(2)
-                    OpenMantrapDoor(1)
+                    --OpenMantrapDoor(1)
                     --print("a")
                     isInMantrap = true
                     canSwipeKeycard = false
-                    openedDoor = 1
+                    --openedDoor = 1
                     RemoveSecurityBlips()
                     --keycard = 2
                 else
@@ -220,3 +244,9 @@ end)
 --        end
 --    end
 --end)
+
+RegisterCommand("test_clcallback", function()
+    TriggerServerEvent("sv:security:swipecard", 1, function(bool)
+        if bool then print("succes") end
+    end)
+end, false)

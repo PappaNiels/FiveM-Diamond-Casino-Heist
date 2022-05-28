@@ -157,12 +157,17 @@ function SetupCheckpoint()
 end
 
 RegisterNetEvent("cl:casinoheist:updateHeistPlayers")
-AddEventHandler("cl:casinoheist:updateHeistPlayers", function(one, two, three, four)
+AddEventHandler("cl:casinoheist:updateHeistPlayers", function(one)
     print("client event " .. one)
     hPlayer[1] = one
     hPlayer[2] = two
     hPlayer[3] = three
     hPlayer[4] = four
+
+    for i = 1, 4 do 
+        hPlayer[i] = one[i]
+    end
+
     print(hPlayer[1], hPlayer[2], hPlayer[3], hPlayer[4], "set")
 end)
 
@@ -170,6 +175,6 @@ RegisterCommand("hPlayer", function(source, args)
     print(args[1])
     --hPlayer[tonumber(args[1])] = PlayerPedId()
     print(PlayerPedId())
-    TriggerServerEvent("sv:casino:setHeistPlayers", PlayerPedId(), tonumber(args[1]))
+    TriggerServerEvent("sv:casinoheist:setHeistPlayers", PlayerPedId(), tonumber(args[1]))
     --print(hPlayer[1], hPlayer[2])
 end, false)

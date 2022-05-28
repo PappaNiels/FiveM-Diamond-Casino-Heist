@@ -6,15 +6,21 @@ RegisterCommand("test_h", function(source, args)
     print(hPlayer[1], hPlayer[2])
 end, false)
 
-RegisterNetEvent("sv:casino:setHeistPlayers")
-AddEventHandler("sv:casino:setHeistPlayers", function(player, num)
+RegisterNetEvent("sv:casinoheist:setHeistPlayers")
+AddEventHandler("sv:casinoheist:setHeistPlayers", function(player, num)
     hPlayer[num] = player
-    print(player, num) 
-    TriggerClientEvent("cl:casinoheist:updateHeistPlayers", -1, hPlayer[1], hPlayer[2], hPlayer[3], hPlayer[4])
-    print(hPlayer[num])
+    --print(player, num) 
+    TriggerClientEvent("cl:casinoheist:updateHeistPlayers", -1, hPlayer--[[[1], hPlayer[2], hPlayer[3], hPlayer[4] ]])
+    --print(hPlayer[num])
 end)
 
 RegisterNetEvent("sv:casinoheist:loadCutscene")
 AddEventHandler("sv:casinoheist:loadCutscene", function(cutscene)
     TriggerClientEvent("cl:casinoheist:startCutscene", -1, cutscene)
+end)
+
+RegisterNetEvent("test:sv:casinoheist:openvaultdoors")
+AddEventHandler("test:sv:casinoheist:openvaultdoors", function()
+    TriggerClientEvent("test:cl:casinoheist:openvaultdoors", -1)
+    return true
 end)
