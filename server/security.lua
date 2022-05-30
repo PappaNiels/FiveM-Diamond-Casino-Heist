@@ -1,47 +1,59 @@
-isCardSwiped = false 
-canOpen = false
-secondKeycard = false
+local isCardSwiped = false 
+local canOpen = false
+local secondKeycard = false
 
-pos = 0
+local pos = 0
 
-callback = {}
+_source = {}
 
-RegisterNetEvent("sv:security:swipecard")
-AddEventHandler("sv:security:swipecard", function(posE, func)
-    callback = func
-    --isCardSwiped = true
-    --Wait(3000) 
-    print("kaas")
-    --if pos == 0 then 
-    --    StartTimer()
-    --    pos = posE
-    --    --return
-    --else 
-    --    secondKeycard = true
-    --end
-    CheckSwipe()
+RegisterNetEvent("sv:casinoheist:security:swipecard")
+AddEventHandler("sv:casinoheist:security:swipecard", function()
+    --sources[posE] = _source
+    print(pos)
+    if pos == 3 then 
+        secondKeycard = true
+        --_source[1] = source
+        --return
+    else
+        StartTimer(source)
+        --pos = 3
+        
+        print("AAAAAA")
+        --_source[2] = source
+    end
+    --CheckSwipe()
     
 end)
 
-function StartTimer()
-    canOpen = true 
-    Wait(1000)
-    canOpen = false 
-    CheckSwipe()
+function StartTimer(src)
+    --canOpen = true 
+    Wait(3000)
+    --canOpen = false 
+    CheckSwipe(src)
+    --pos = 0
 end
 
-function CheckSwipe()
-    if canOpen then 
-        callback(true, 0)
-        print("callback")
+function CheckSwipe(src)
+    if secondKeycard then 
+        print("callback " .. tostring(secondKeycard))
+        TriggerClientEvent("cl:casinoheist:security:keycardswipesucceeded", src)
+        pos = 0
+        secondKeycard = false
+        --TriggerClientEvent("cl:casinoheist:keycardswipesucceeded", sources[2])
+        --callback(true, 0)
     else 
-        callback(false, 0)
-        print("callback")
+        --local num = 
+        print("callback " .. tostring(secondKeycard), src)
+        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", src, math.random(0, 2))
+        print(pos)
+        pos = 0
+        --TriggerClientEvent("cl:casinoheist:keycardswipefailed", sources[2], math.random(0, 2))
+        --callback("false")
     end
 end
 
 function OpenMantrapDoors(num)
-    TriggerClientEvent("sv:security:openmantrapdoors", -1, num)
+    TriggerClientEvent("cl:security:openmantrapdoors", -1, num)
 end
 
 RegisterCommand("test_callback", function()

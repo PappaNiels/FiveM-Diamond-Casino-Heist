@@ -1,7 +1,9 @@
 isInMantrap = false
 --isInCheckpoint = false
 canPlantExplosive = false
-openedDoor = 0
+doorOpen = false
+doorNr = 0
+
 
 local leftExplosives = false
 local rightExplosives = false
@@ -380,6 +382,16 @@ function CloseMantrapDoor(num)
     doorOpen = false
 end
 
+RegisterNetEvent("cl:security:openmantrapdoors")
+AddEventHandler("cl:security:openmantrapdoors", function(num) 
+    OpenMantrapDoor(num) 
+end)
+
+RegisterNetEvent("cl:security:closemantrapdoors")
+AddEventHandler("cl:security:closemantrapdoors", function(num)
+    CloseMantrapDoor(num)
+end)
+
 CreateThread(function()
     while true do 
         Wait(10)
@@ -479,7 +491,7 @@ CreateThread(function()
                 local exBlip = AddBlipForRadius(2502.51, -238.75, -70.2, 5.0)
                 SetBlipColour(exBlip, 76)
                 SetBlipAlpha(exBlip, 175)
-                SubtitleMsg("Leave the ~r~blast radius.", 8000)
+                SubtitleMsg("Leave the ~r~blast radius.", 6000)
                 Wait(5000)
                 VaultAnim()
                 RemoveBlip(exBlip)
