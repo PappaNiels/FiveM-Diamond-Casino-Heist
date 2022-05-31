@@ -225,7 +225,7 @@ CreateThread(function()
             elseif distance2 < 0.5 then
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then 
-                    SwipeKeycardMantrap(2)
+                    SwipeKeycardMantrap(2, true)
                     --OpenMantrapDoor(1)
                     --print("a")
                     isInMantrap = true

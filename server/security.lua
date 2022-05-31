@@ -9,8 +9,9 @@ _source = {}
 RegisterNetEvent("sv:casinoheist:security:swipecard")
 AddEventHandler("sv:casinoheist:security:swipecard", function()
     --sources[posE] = _source
+    pos = pos + 1
     print(pos)
-    if pos == 3 then 
+    if pos == 2 then 
         secondKeycard = true
         --_source[1] = source
         --return
@@ -27,10 +28,10 @@ end)
 
 function StartTimer(src)
     --canOpen = true 
-    Wait(3000)
+    Wait(5000)
     --canOpen = false 
     CheckSwipe(src)
-    --pos = 0
+    pos = 0
 end
 
 function CheckSwipe(src)
