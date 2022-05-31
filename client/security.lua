@@ -122,6 +122,7 @@ local function SwipeKeycardMantrap(pos, start)
         elseif IsControlPressed(0, 200) then
             ClearPedTasksImmediately(PlayerPedId())
             DeleteObject(keycardProp)
+            canSwipeKeycard = true
             exit = true
             loop = false
         else
