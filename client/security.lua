@@ -118,7 +118,7 @@ local function SwipeKeycardMantrap(pos, start)
         HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
         if IsControlPressed(0, 18) then 
             loop = false
-        elseif IsControlPressed(0, ) then
+        elseif IsControlPressed(0, 200) then
             break
         else
             Wait(50)
