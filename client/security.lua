@@ -114,36 +114,30 @@ local function SwipeKeycardMantrap(pos, start)
     --Wait(2000)
     print("loop")
     loop = true
+    exit = false
     while loop do 
         HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
         if IsControlPressed(0, 18) then 
             loop = false
         elseif IsControlPressed(0, 200) then
-            break
+            ClearPedTasksImmediately(PlayerPedId())
+            DeleteObject(keycardProp)
+            exit = true
+            loop = false
         else
             Wait(50)
         end
     end
 
-    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][3])
-    print(keycardSwipeAnims["networkScenes"][3])
-    Wait(2000)
-    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
+    if not exit then 
+        NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][3])
+        print(keycardSwipeAnims["networkScenes"][3])
+        Wait(2000)
+        NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
 
-    TriggerServerEvent("sv:casinoheist:security:swipecard")
+        TriggerServerEvent("sv:casinoheist:security:swipecard")
+    end
     --KeycardLoop()
-end
-
-function KeycardLoop(j)    
-    --if j == 1 then 
-    --    for i = 2, #keycardSwipeAnims["anims"][2] do 
-    --        keycardSwipeAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3)
-    --        NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][place][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-    --        NetworkAddEntityToSynchronisedScene(keycardProp, keycardSwipeAnims["networkScenes"][i], animDict, keycardSwipeAnims["anims"][place][i][2], 1.0, -1.0, 114886080)
-    --    end
-    --end
-
-    
 end
 
 RegisterNetEvent("cl:casinoheist:security:keycardswipesucceeded")
