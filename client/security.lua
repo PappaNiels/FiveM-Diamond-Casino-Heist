@@ -114,6 +114,7 @@ local function SwipeKeycardMantrap(pos, start)
         Wait(2000)
         NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
 
+        print(pos)
         TriggerServerEvent("sv:casinoheist:security:swipecard", pos)
     end
 end
@@ -180,7 +181,7 @@ CreateThread(function()
                     Wait(10)
                 end
                 
-            elseif distance2 < 0.5 then
+            elseif distance2 < 1 then
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then 
                     SwipeKeycardMantrap(2, true)

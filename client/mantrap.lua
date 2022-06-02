@@ -3,6 +3,7 @@ isInMantrap = false
 canPlantExplosive = false
 doorOpen = false
 doorNr = 0
+openedDoor = 0
 
 
 local leftExplosives = false
@@ -336,6 +337,7 @@ function VaultAnim()
 end
 
 function OpenMantrapDoor(num)
+    print(num)
     local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
     local doorL = GetClosestObjectOfType(mantrapEntryDoorsCoords[num], 1.0, pDoorL, false, false, false)
     local doorR = GetClosestObjectOfType(mantrapEntryDoorsCoords[num + 1], 1.0, pDoorR, false, false, false)
@@ -347,7 +349,6 @@ function OpenMantrapDoor(num)
         --print("vault")
         
     end
-    print(hPlayer[1], PlayerPedId())
     --if hPlayer[1] == PlayerPedId() or hPlayer[2] == PlayerPedId() or hPlayer[3] == PlayerPedId() or hPlayer[4] == PlayerPedId() then 
         repeat 
             coords1 = coords1 + vector3(0, 0.0105, 0)
@@ -384,7 +385,10 @@ end
 
 RegisterNetEvent("cl:security:openmantrapdoors")
 AddEventHandler("cl:security:openmantrapdoors", function(num) 
-    OpenMantrapDoor(num) 
+    if openedDoor ~= num then 
+        OpenMantrapDoor(num) 
+        openedDoor = num
+    end
 end)
 
 RegisterNetEvent("cl:security:closemantrapdoors")
@@ -426,12 +430,15 @@ CreateThread(function()
     while true do 
         Wait(0)
         if isInMantrap then 
+            --print("mantrap")
             if openedDoor == 1 then 
+                print("test")
                 local distance = #(GetEntityCoords(PlayerPedId()) - mantrapEntryDoorsCoords[3])
                 if distance < 2.5 then 
                     SetupCheckpoint()
                     canPlantExplosive = true 
-                    OpenMantrapDoor(3)
+                    TriggerServerEvent("sv:casinoheist:security:openmantrapdoors", 3)
+                    --OpenMantrapDoor(3)
                     isInMantrap = false
                     --isInVault = true
                     --if heistType == 1 then 
@@ -442,7 +449,8 @@ CreateThread(function()
             elseif openedDoor == 3 then   
                 local distance = #(GetEntityCoords(PlayerPedId()) - mantrapEntryDoorsCoords[1])
                 if distance < 2.5 then 
-                    OpenMantrapDoor(1)
+                    --OpenMantrapDoor(1)
+                    TriggerServerEvent("sv:casinoheist:security:openmantrapdoors", 1)
                     isInMantrap = false
                 else 
                     Wait(100)
@@ -512,3 +520,7 @@ CreateThread(function()
         end
     end
 end)
+
+RegisterCommand("test_mt", function()
+    isInMantrap = true
+end, false)
