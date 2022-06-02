@@ -59,7 +59,7 @@ RegisterCommand("vl_anim", function()
     SetVaultDoorStatus(2)
     local prop = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
     SetEntityVisible(prop, false)
-    VaultAnim()
+    --VaultAnim()
 end, false)
 
 RegisterCommand("test_anim_bomb", function()
@@ -106,13 +106,13 @@ RegisterCommand("vl_start", function()
     SetVaultDoorStatus(2)
     local prop = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
     SetEntityVisible(prop, false)
-    local vaultDoorOne = "ch_des_heist3_vault_01"
-    local vaultDoorTwo = "ch_des_heist3_vault_02"
-    LoadModel(vaultDoorOne)
-    LoadModel(vaultDoorTwo)
-    vaultObjOne = CreateObject(GetHashKey(vaultDoorOne), 2504.97, -240.31, -73.69, false, false, false)
-    vaultObjTwo = CreateObject(GetHashKey(vaultDoorTwo), 2504.97, -240.31, -75.334, false, false, false)  
-    canPlantExplosive = true 
+    --local vaultDoorOne = "ch_des_heist3_vault_01"
+    --local vaultDoorTwo = "ch_des_heist3_vault_02"
+    --LoadModel(vaultDoorOne)
+    --LoadModel(vaultDoorTwo)
+    --vaultObjOne = CreateObject(GetHashKey(vaultDoorOne), 2504.97, -240.31, -73.69, false, false, false)
+    --vaultObjTwo = CreateObject(GetHashKey(vaultDoorTwo), 2504.97, -240.31, -75.334, false, false, false)  
+    --canPlantExplosive = true 
 end, false)
 
 function PlantBombsLeft()
@@ -137,7 +137,7 @@ function PlantBombsLeft()
         plantExplosives["networkScenesLeft"][i] = NetworkCreateSynchronisedScene(2504.975, -240.23, -70.2, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
         NetworkAddPedToSynchronisedScene(PlayerPedId(), plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
         NetworkAddEntityToSynchronisedScene(bombLeft[1], plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][2], 1.0, -1.0, 114886080)
-        NetworkAddEntityToSynchronisedScene(bombPropTwo, plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][3], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombLeft[2], plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][3], 1.0, -1.0, 114886080)
         NetworkAddEntityToSynchronisedScene(bagProp, plantExplosives["networkScenesLeft"][i], animDict, plantExplosives["anims"]["left"][i][4], 1.0, -1.0, 114886080)
     end
     
@@ -360,10 +360,25 @@ AddEventHandler("cl:casinoheist:mantrap:syncvaultbombs", function(side)
     if side == 1 then 
         RemoveBlip(blip[1])
         leftExplosives = true
+        print(side)
     else 
         RemoveBlip(blip[2])
         rightExplosives = true
+        print(side)
     end
+end)
+
+RegisterNetEvent("test:cl:vaultroom")
+AddEventHandler("test:cl:vaultroom", function()
+    canPlantExplosive = true
+    SetupCheckpoint()
+end)
+
+RegisterNetEvent("test:cl:mantrap:syncdoors")
+AddEventHandler("test:cl:mantrap:syncdoors", function()
+    SetVaultDoorStatus(2)
+    local prop = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+    SetEntityVisible(prop, false)
 end)
 
 CreateThread(function()
@@ -449,7 +464,7 @@ CreateThread(function()
                 HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the left side.", 500)
                 if IsControlPressed(0, 38) then 
                     PlantBombsLeft()
-                    TriggerServerEvent("cl:casinoheist:mantrap:syncvaultbombs", 1)
+                    TriggerServerEvent("sv:casinoheist:mantrap:syncvaultbombs", 1)
                     --RemoveBlip(blip[1])
                     --leftExplosives = true
                 else 
@@ -459,7 +474,7 @@ CreateThread(function()
                 HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the right side.", 500)
                 if IsControlPressed(0, 38) then 
                     PlantBombsRight()
-                    TriggerServerEvent("cl:casinoheist:mantrap:syncvaultbombs", 2)
+                    TriggerServerEvent("sv:casinoheist:mantrap:syncvaultbombs", 2)
                     --RemoveBlip(blip[2])
                     --rightExplosives = true
                 else 
@@ -474,7 +489,7 @@ CreateThread(function()
                 Wait(5000)
                 VaultAnim()
                 RemoveBlip(exBlip)
-                Wait(1000)
+                Wait(2000)
                 SetVaultDoors()
                 loot = 2
                 if loot == 2 then 
@@ -487,7 +502,7 @@ CreateThread(function()
                 Wait(500)
             end
         else 
-            Wait(10000)
+            Wait(5000)
         end
     end
 end)
