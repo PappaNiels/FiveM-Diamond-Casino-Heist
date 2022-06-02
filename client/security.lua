@@ -111,7 +111,6 @@ local function SwipeKeycardMantrap(pos, start)
 
     if not exit then 
         NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][3])
-        print(keycardSwipeAnims["networkScenes"][3])
         Wait(2000)
         NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
 

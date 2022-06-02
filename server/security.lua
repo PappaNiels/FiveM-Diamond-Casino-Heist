@@ -14,26 +14,25 @@ AddEventHandler("sv:casinoheist:security:swipecard", function(door)
         playerTwo = source
     else
         StartTimer(source)
-        playerOne = source
         doors = door
     end
 end)
 
-function StartTimer() 
+function StartTimer(src) 
     Wait(3000)
-    CheckSwipe()
+    CheckSwipe(src)
     ply = 0
 end
 
-function CheckSwipe()
+function CheckSwipe(src)
     if secondKeycard then 
-        TriggerClientEvent("cl:casinoheist:security:keycardswipesucceeded", playerOne)
+        TriggerClientEvent("cl:casinoheist:security:keycardswipesucceeded", src)
         TriggerClientEvent("cl:casinoheist:security:keycardswipesucceeded", playerTwo)
         Wait(1000)
         OpenMantrapDoors()
         secondKeycard = false
     else 
-        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", playerOne, math.random(0, 2))
+        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", src, math.random(0, 2))
         TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", playerTwo, math.random(0, 2))
     end
 end
