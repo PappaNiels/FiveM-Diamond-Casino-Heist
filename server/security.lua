@@ -48,11 +48,6 @@ AddEventHandler("sv:casinoheist:security:openmantrapdoors", function(door)
     TriggerClientEvent("cl:security:openmantrapdoors", -1, door)
 end)
 
-function OpenMantrapDoors(door)
-    --print(door)
-    
-end
-
 RegisterCommand("test_sec_blip", function()
     TriggerClientEvent("test:cl:casinoheist:keycardswipe", -1)
 end, false)
