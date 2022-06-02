@@ -1,4 +1,4 @@
-fx_version "bodacious"
+fx_version "cerulean"
 game "gta5"
 
 author "Niels"
@@ -24,6 +24,7 @@ client_scripts {
 server_scripts { 
     "server/main.lua",
     "server/security.lua",
+    "server/mantrap.lua",
 }
 
 dependencies {
