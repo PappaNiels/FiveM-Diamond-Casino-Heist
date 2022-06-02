@@ -62,29 +62,10 @@ local function RemoveSecurityBlips()
     end
 end
 
-local function NetworkMantrapDoors()
-    local pDoorL, pDoorR = GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")
-    local doorL = GetClosestObjectOfType(2464.183, -278.204, -71.694, 1.0, pDoorL, false, false, false)
-    local doorR = GetClosestObjectOfType(2464.183, -280.288, -71.694, 1.0, pDoorR, false, false, false)
-
-    print(doorL, doorR)
-
-    NetworkRegisterEntityAsNetworked(doorL)
-    netId = NetworkGetNetworkIdFromEntity(doorL)
-    SetNetworkIdCanMigrate(netId, true)
-    --SetNetworkIdExistsOnAllMachines(netId, true)
-    print(netId)
-    
-    NetworkRegisterEntityAsNetworked(doorR)
-    netId = NetworkGetNetworkIdFromEntity(doorR)
-    SetNetworkIdCanMigrate(netId, true)
-    --SetNetworkIdExistsOnAllMachines(netId, true)
-    print(netId)
-end
-
 local function SwipeKeycardMantrap(pos, start)
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
     local keycard = "ch_prop_vault_key_card_01a"
+    local x = 0
     LoadAnim(animDict)
     LoadModel(keycard)
 
@@ -93,8 +74,6 @@ local function SwipeKeycardMantrap(pos, start)
         keycardProp = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
     end
     
-    local x = 0
-
     if pos == 1 or pos == 3 then 
         place = 1
     else 
@@ -109,10 +88,10 @@ local function SwipeKeycardMantrap(pos, start)
     if start then
         NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][1])
     end
+
     Wait(1000)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][2])
-    --Wait(2000)
-    print("loop")
+
     loop = true
     exit = false
     while loop do 
@@ -136,35 +115,21 @@ local function SwipeKeycardMantrap(pos, start)
         Wait(2000)
         NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][4])
 
-        TriggerServerEvent("sv:casinoheist:security:swipecard")
+        TriggerServerEvent("sv:casinoheist:security:swipecard", pos)
     end
-    --KeycardLoop()
 end
 
 RegisterNetEvent("cl:casinoheist:security:keycardswipesucceeded")
 AddEventHandler("cl:casinoheist:security:keycardswipesucceeded", function()
-    print("true")
-    --Wait(2000)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][5])
     Wait(2000)
-    --OpenMantrapDoor(1)
-    --openedDoor = 1
     DeleteObject(keycardProp)
-    --ClearPedTasks(PlayerPedId())
-    print("boe")
 end)
 
 RegisterNetEvent("cl:casinoheist:security:keycardswipefailed")
 AddEventHandler("cl:casinoheist:security:keycardswipefailed", function(num)
-    --print("false")
-    --print(num, source, GetPlayerFromServerId(source))
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][6 + num])
-    --TaskPlayAnim(PlayerPedId(), "anim_heist@hs3f@ig3_cardswipe_insync@male@", keycardSwipeAnims["anims"][place][6 + num][1], 8.0, -8.0, 1700, 1, 0.0, false, false, false)
-    --PlayEntityAnim(keycardProp, keycardSwipeAnims["anims"][place][6 + num][1])
     Wait(1800)
-    --print(GetAnimDuration("anim_heist@hs3f@ig3_cardswipe_insync@male@", keycardSwipeAnims["anims"][1][6 + num][1]))
-    ----ClearPedTasksImmediately(PlayerPedId())
-    --KeycardLoop(1)
     SwipeKeycardMantrap(place, false)
 end)
 
@@ -209,16 +174,10 @@ CreateThread(function()
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then  
                     SwipeKeycardMantrap(1, true)
-                    --OpenMantrapDoor(1)
-                    --print("a")
                     isInMantrap = true
-                    --openedDoor = 1
                     canSwipeKeycard = false
                     RemoveSecurityBlips()
-                    
-                    --keycard = 1
                 else 
-                    --print("wha") 
                     Wait(10)
                 end
                 
@@ -226,15 +185,10 @@ CreateThread(function()
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
                 if IsControlPressed(0, 38) then 
                     SwipeKeycardMantrap(2, true)
-                    --OpenMantrapDoor(1)
-                    --print("a")
                     isInMantrap = true
                     canSwipeKeycard = false
-                    --openedDoor = 1
                     RemoveSecurityBlips()
-                    --keycard = 2
                 else
-                    --print("wha") 
                     Wait(10)
                 end
             else 
@@ -246,33 +200,6 @@ CreateThread(function()
     end
 end)
 
---CreateThread(function()
---    while true do
---        Wait(0) 
---        if holdingPass then 
---            DisableControlAction(1, 200, true)
---            HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
---            if IsControlPressed(0, 18) then 
---                --print("enter")
---                --print(keycard) 
---                holdingPass = false
---                --SwipeKeycardAnim(keycard)
---            elseif IsControlPressed(0, 202) then 
---                --print("esc")
---                holdingPass = false 
---                canSwipeKeycard = true
---                keycard = 0
---            else 
---                Wait(50)
---            end
---
---        else 
---            Wait(1000)
---        end
---    end
---end)
-
 RegisterCommand("test_clcallback", function()
-    TriggerServerEvent("sv:security:swipecard", 1)
-    --print(PlayerPedId())    
+    TriggerServerEvent("sv:security:swipecard", 1)   
 end, false)
