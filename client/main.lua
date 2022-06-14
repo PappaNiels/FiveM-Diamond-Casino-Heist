@@ -23,7 +23,7 @@ entrypointsCasino = {
     --[[10]] vector3(953.40, 79.20, 111.25), -- Roof North West
     
     -- Gruppe Sechs
-    --[[11]] vector3(0, 0, 0)  -- Garage
+    --[[11]] vector3(1000.4, -54.99, 74.96)  -- Garage
 
 }
 
