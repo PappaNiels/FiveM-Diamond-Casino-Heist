@@ -122,6 +122,17 @@ local statusArt = {
     false
 }
 
+local statusTrolly = {
+    false, 
+    false, 
+    false, 
+    false,  
+    false,
+    false,
+    false,
+    false,
+}
+
 local vaultLayoutDoorBig = {
     [1] = {2, 3},
     [2] = {1},
@@ -181,7 +192,7 @@ local cartAnims = {
     ["anims"] = {
         -- Player, Bag, Trolly, Cam
         {"intro", "bag_intro"},
-        {"grab", "bag_grab"},
+        {"grab", "bag_grab", "cart_cash_dissapear"},
         {"grab_idle", "bag_grab_idle"},
         {"exit", "bag_exit"}
     },
@@ -206,6 +217,19 @@ function AddCartBlips()
         SetBlipColour(cartBlips[i], 2)
         SetBlipScale(cartBlips[i], 0.75)
     end
+end
+
+local function CartDefine(i)
+    j = 0
+    if i > 3 and i < 7 then 
+        j = i - 3 
+    elseif i > 6 then 
+        j = i - 6
+    else 
+        j = i
+    end
+
+    return j
 end
 
 local function PlaceCarts()
@@ -238,14 +262,7 @@ local function PlaceCarts()
     --print(#cartLoc[layout])
 
     for i = 1, #cartLoc[cartLayout] do 
-        j = 0
-        if i > 3 and i < 7 then 
-            j = i - 3 
-        elseif i > 6 then 
-            j = i - 6
-        else 
-            j = i
-        end
+        j = CartDefine(i)
         
         carts[i] = CreateObject(GetHashKey(cartType[loot][j]), cartLoc[cartLayout][i][1], true, true, false)
         SetEntityHeading(carts[i], cartLoc[cartLayout][i][2])
@@ -490,8 +507,9 @@ local function CutPainting(num)
     RemoveBlip(artBlips[num])
 end
 
-local function GrabLoot(num)
-    local animDict = ""
+local function GrabTrollyLoot(num)
+    local animDict = "anim@heists@ornate_bank@grab_cash"
+    local bag = "hei_p_m_bag_var22_arm_s"
     local propType = {
         "ch_prop_20dollar_pile_01a",
         "nothing",
@@ -506,20 +524,50 @@ local function GrabLoot(num)
         {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
 
+    j = CartDefine(num)
+
     LoadAnim(animDict)
     LoadModel(propType[loot])
+    LoadModel(bag)
 
-    trollyObj = CreateObject(GetHashKey())
+    trollyObj = GetClosestObjectOfType(cartLoc[cartLayout][num][1], 1.0, GetHashKey(cartType[loot][j]), false, false, false)
+    bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
 
+    while not NetworkHasControlOfEntity(trollyObj) do
+        Citizen.Wait(1)
+        NetworkRequestControlOfEntity(trollyObj)
+    end
+
+    print(trollyObj)
+
+    for i = 1, #cartAnims["anims"] do 
+        cartAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(trollyObj), GetEntityRotation(trollyObj), 1, false, false, 1, 1000, 1.0)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), cartAnims["networkScenes"][i], animDict, cartAnims["anims"][i][1], 1.5, -4.0, 1, 16, 1148846080, 0) 
+        NetworkAddEntityToSynchronisedScene(bagObj, cartAnims["networkScenes"][i], animDict, cartAnims["anims"][i][2], 4.0, -8.0, 1) 
+    end
+
+    NetworkAddEntityToSynchronisedScene(trollyObj, cartAnims["networkScenes"][2], animDict, cartAnims["anims"][loot][2][3], 4.0, -8.0, 1)
+
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][1])
+    print(1)
+    Wait(3000)
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][2])
+    print(2)
+    Wait(3000)
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][3])
+    print(3)
+    Wait(3000)
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][4])
+    print(4)
 end
-
+    
 CreateThread(function()
     while true do 
         Wait(0)
         if isInVault then 
             for i = 1, #keypads["lvlThreeKeypad"] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
-                if distance < 2 then 
+                if distance < 1.5 then 
                     --print(distance) 
                     if i > 3 then 
                         local x = i - 3
@@ -585,7 +633,32 @@ CreateThread(function()
                 --Wait(100)
             end
         else 
-            Wait(10000)
+            Wait(5000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do 
+        Wait(0)
+        if isInVault and loot ~= 2 then 
+            for i = 1, #cartLoc[cartLayout] do 
+                local distance = #(GetEntityCoords(PlayerPedId()) - cartLoc[cartLayout][i][1])
+                if distance < 1.5 and not statusTrolly[i] then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to start " .. i, 1000)
+                    if IsControlPressed(0, 38) then 
+                        print("test: " .. i)
+                        GrabTrollyLoot(i)
+                        statusTrolly[i] = true
+                    else 
+                        Wait(5)
+                    end
+                else 
+                    Wait(5)
+                end
+            end
+        else 
+            Wait(5000)
         end
     end
 end)
@@ -646,9 +719,11 @@ RegisterCommand("vl_placecarts", function(src, args)
     loot = tonumber(args[1])
     vaultLayout = tonumber(args[2])
     PlaceCarts()
-    print(cartLoc[cartLayout][1][1])
-    print(cartLayout)
+    --print(cartLoc[cartLayout][1][1])
+    --print(cartLayout)
     AddCartBlips()
+    isInVault = true 
+
 end, false)
 
 RegisterCommand("vl_removecarts", function()
