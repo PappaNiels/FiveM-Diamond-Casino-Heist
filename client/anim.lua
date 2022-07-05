@@ -24,9 +24,9 @@ RegisterCommand("anim", function()
 end, false)
 
 RegisterCommand("eanim", function()
-    local prop = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
-    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
-    local animName = "explosion_vault_01"
+    --local prop = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
+    local animDict = "anim@heists@ornate_bank@grab_cash"
+    local animName = "grab"
     
     if DoesAnimDictExist(animDict) then 
         print("yes")
@@ -39,10 +39,11 @@ RegisterCommand("eanim", function()
         Wait(10)
     end
     
-    print(GetAnimDuration(animDict, animName))
-    print(prop)
-    PlayEntityAnim(prop, animName, animDict,  1, false, false, false, 1, 1)
-    print(IsEntityPlayingAnim(prop, animDict, animName, 2))
+    TaskPlayAnim(PlayerPedId(), animDict, animName, -8.0, 8.0, 3000, 0, 0, false, false, false)
+    --print(GetAnimDuration(animDict, animName))
+    --print(prop)
+    --PlayEntityAnim(prop, animName, animDict,  1, false, false, false, 1, 1)
+    --print(IsEntityPlayingAnim(prop, animDict, animName, 2))
     --print(GetHashKey("ch_des_heist3_vault_01"))
     --SetEntityVisible(prop, false)
     --SetEntityCollision(prop, false, true)
