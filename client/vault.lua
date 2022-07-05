@@ -240,12 +240,6 @@ local function PlaceCarts()
         {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
 
-
-    --print(loot)
-    --print(cartType[loot][1])
-    --print(IsModelInCdimage(cartType[loot][1]))
-    --print(cartLoc[1][1][1])
-
     for i = 1, #cartType[loot] do 
         LoadModel(cartType[loot][i])
     end
@@ -256,10 +250,6 @@ local function PlaceCarts()
     else 
         cartLayout = 2
     end
-    --carts = CreateObject(GetHashKey(cartType[1]), cartLoc[vaultLayout][1][1], true, true, false)
-    --SetEntityHeading(carts, cartsLoc[vaultLayout][1][2])
-
-    --print(#cartLoc[layout])
 
     for i = 1, #cartLoc[cartLayout] do 
         j = CartDefine(i)
@@ -270,8 +260,6 @@ local function PlaceCarts()
         print("j: " .. j)
         print("---")
     end
-
-    --print(#carts)
 end
 
 
@@ -284,13 +272,11 @@ end
 local function GetVaultDoors()
     for i = 1, #slideDoorBigCoords, 1 do 
         local propB = GetClosestObjectOfType(slideDoorBigCoords[i], 1.0, GetHashKey(slideDoorBigName), false, false, false)
-        --SetEntityForAll(propB)
         table.insert(bigDoor, propB)
     end
     
     for i = 1, #slideDoorSmallCoords, 1 do 
         local propS = GetClosestObjectOfType(slideDoorSmallCoords[i], 1.0, GetHashKey(slideDoorSmallName), false, false, false)
-        --SetEntityForAll(prop)
         table.insert(smallDoor, propS)
     end
 end
@@ -307,13 +293,11 @@ function SetVaultDoors()
     for i = 1, #vaultLayoutDoorBig[vaultLayout], 1 do 
         SetEntityCoords(bigDoor[vaultLayoutDoorBig[vaultLayout][i]], slideDoorOpenBigCoords[vaultLayoutDoorBig[vaultLayout][i]])
         statusBigDoor[vaultLayoutDoorBig[vaultLayout][i]] = true
-        --print(vaultLayoutDoorBig[vaultLayout][i] .. "big")
     end
     
     for i = 1, #vaultLayoutDoorSmall[vaultLayout], 1 do
         SetEntityCoords(smallDoor[vaultLayoutDoorSmall[vaultLayout][i]], slideDoorOpenSmallCoords[vaultLayoutDoorSmall[vaultLayout][i]])
         statusSmallDoor[vaultLayoutDoorSmall[vaultLayout][i]] = true
-        --print(vaultLayoutDoorSmall[vaultLayout][i] .. "small")
     end
 end
 
@@ -333,19 +317,14 @@ end
 local function OpenVaultDoors()
     GetVaultDoors()
     
-    --for i = 1, #bigDoor, 1 do 
-    --    SetEntityCoords(bigDoor[i], slideDoorOpenBigCoords[i])
-    --end
     for i = 1, #bigDoor, 1 do
         OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
-        --Wait(5000)
     end
     
     Wait(5000)
     
     for i = 1, #smallDoor, 1 do
         OpenSlideDoors(smallDoor[i], smallDoorMove[i].x, smallDoorMove[i].y)
-        --Wait(5000)
     end
     
     Wait(20000)
@@ -363,16 +342,14 @@ local function HackKeypad(num)
     local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
     local hackDevice = "ch_prop_ch_usb_drive01x"
     local phoneDevice = "prop_phone_ing"
+
     LoadAnim(animDict)
     LoadModel(hackDevice)
     LoadModel(phoneDevice)
-    --print(num)
-    --keypad = 0 --GetClosestObjectOfType(keypads["lvlFourKeypad"][2], 2.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
+
     keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
     hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
-    
-    --print(keypad)
     
     for i = 1, #hackKeypadAnims["anims"], 1 do 
         hackKeypadAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
@@ -381,18 +358,15 @@ local function HackKeypad(num)
         NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims["networkScenes"][i], animDict, hackKeypadAnims["anims"][i][3], 1.0, -1.0, 1148846080)
     end
     
-    --print(hackKeypadAnims["networkScenes"][2])
     NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][1])
     Wait(4000)
     NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][2])
     Wait(2000)
-    --if IsControlPressed(0, 38) then 
     Wait(3000)
     NetworkStartSynchronisedScene(hackKeypadAnims["networkScenes"][3])
     Wait(4000)
     DeleteObject(hackUsb)
     DeleteObject(phone)
-    --end
 end
 
 local function CutPainting(num)
@@ -400,7 +374,6 @@ local function CutPainting(num)
     local bag = "hei_p_m_bag_var22_arm_s"
     local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
     local painting = "ch_prop_vault_painting_01a"
-    --local cabinet = "ch_prop_ch_sec_cabinet_02a"
 
     local paintingNum = {
         "ch_prop_vault_painting_01a",
@@ -523,44 +496,68 @@ local function GrabTrollyLoot(num)
         {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
         {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
-
+    
     j = CartDefine(num)
-
+    
     LoadAnim(animDict)
     LoadModel(propType[loot])
     LoadModel(bag)
 
     trollyObj = GetClosestObjectOfType(cartLoc[cartLayout][num][1], 1.0, GetHashKey(cartType[loot][j]), false, false, false)
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
-
-    while not NetworkHasControlOfEntity(trollyObj) do
-        Citizen.Wait(1)
-        NetworkRequestControlOfEntity(trollyObj)
-    end
-
-    print(trollyObj)
-
-    for i = 1, #cartAnims["anims"] do 
-        cartAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(trollyObj), GetEntityRotation(trollyObj), 1, false, false, 1, 1000, 1.0)
-        NetworkAddPedToSynchronisedScene(PlayerPedId(), cartAnims["networkScenes"][i], animDict, cartAnims["anims"][i][1], 1.5, -4.0, 1, 16, 1148846080, 0) 
-        NetworkAddEntityToSynchronisedScene(bagObj, cartAnims["networkScenes"][i], animDict, cartAnims["anims"][i][2], 4.0, -8.0, 1) 
-    end
-
-    NetworkAddEntityToSynchronisedScene(trollyObj, cartAnims["networkScenes"][2], animDict, cartAnims["anims"][loot][2][3], 4.0, -8.0, 1)
-
-    NetworkStartSynchronisedScene(cartAnims["networkScenes"][1])
-    print(1)
-    Wait(3000)
-    NetworkStartSynchronisedScene(cartAnims["networkScenes"][2])
-    print(2)
-    Wait(3000)
-    NetworkStartSynchronisedScene(cartAnims["networkScenes"][3])
-    print(3)
-    Wait(3000)
-    NetworkStartSynchronisedScene(cartAnims["networkScenes"][4])
-    print(4)
-end
+    cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
+    AttachCamToEntity(cam, trollyObj, 1.0, 1.0, 1.0, true)
+    PointCamAtEntity(cam, PlayerPedId(), 0, 0, 0, true)
+    SetCamActive(cam, true)
     
+    for i = 1, #cartAnims["anims"] do 
+        cartAnims["networkScenes"][i] = NetworkCreateSynchronisedScene(GetEntityCoords(trollyObj), GetEntityRotation(trollyObj), 2, true, false, 1065353216, 0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), cartAnims["networkScenes"][i], animDict, cartAnims["anims"][i][1], 4.0, -4.0, 1, 16, 1148846080, 0)
+        NetworkAddEntityToSynchronisedScene(bagObj, cartAnims["networkScenes"][i], animDict, cartAnims["anims"][i][2], 1.0, -1.0, 1148846080) 
+        
+        if i == 2 then 
+            NetworkAddEntityToSynchronisedScene(trollyObj, cartAnims["networkScenes"][2], animDict, cartAnims["anims"][2][3], 1.0, -1.0, 1148846080)
+        end
+    end
+    
+    RenderScriptCams(true, true, 1000.0, true, false)
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][1])
+    Wait(2000)
+
+    boxObj = CreateObject(propType[loot], GetEntityCoords(PlayerPedId()), true, false, false)
+
+    FreezeEntityPosition(boxObj, true)
+    SetEntityInvincible(boxObj, true)
+    SetEntityNoCollisionEntity(boxObj, PlayerPedId())
+    SetEntityVisible(boxObj, false, false)
+    AttachEntityToEntity(boxObj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 0, true)
+    local startedGrabbing = GetGameTimer()
+    
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][2])
+
+    while GetGameTimer() - startedGrabbing < 37000 do
+        Wait(5)
+        DisableControlAction(0, 73, true)
+        if HasAnimEventFired(PlayerPedId(), GetHashKey("CASH_APPEAR")) then
+            if not IsEntityVisible(boxObj) then
+                SetEntityVisible(boxObj, true, false)
+            end
+        end
+        if HasAnimEventFired(PlayerPedId(), GetHashKey("RELEASE_CASH_DESTROY")) then
+            if IsEntityVisible(boxObj) then
+                SetEntityVisible(boxObj, false, false)
+            end
+        end
+    end
+    DeleteObject(boxObj)
+    NetworkStartSynchronisedScene(cartAnims["networkScenes"][4])
+    RenderScriptCams(false, false, 1000.0, true, false)
+    Wait(1600)
+    ClearPedTasks(PlayerPedId())
+    DeleteEntity(bagObj)
+    RemoveBlip(cartBlips[num])
+end
+
 CreateThread(function()
     while true do 
         Wait(0)
@@ -568,7 +565,6 @@ CreateThread(function()
             for i = 1, #keypads["lvlThreeKeypad"] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
                 if distance < 1.5 then 
-                    --print(distance) 
                     if i > 3 then 
                         local x = i - 3
                         if not statusSmallDoor[x] then  
@@ -577,12 +573,9 @@ CreateThread(function()
                                 HackKeypad(i)
                                 OpenSlideDoors(smallDoor[x], smallDoorMove[x].x, smallDoorMove[x].y)
                                 statusSmallDoor[x] = true
-                                --isInVault = false
                             else 
                                 Wait(10)
                             end
-                        --else 
-                        --    Wait(1000)
                         end
                     else
                         if not statusBigDoor[i] then 
@@ -591,12 +584,9 @@ CreateThread(function()
                                 HackKeypad(i)
                                 OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
                                 statusBigDoor[i] = true
-                                --isInVault = false
                             else 
                                 Wait(10)
                             end
-                        --else 
-                        --    Wait(1000)
                         end
                     end
                 
@@ -616,7 +606,6 @@ CreateThread(function()
             for i = 1, #paintingCoords do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - paintingCoords[i])
                 if distance < 2 and not statusArt[i] then 
-                    --print("near"..i)
                     HelpMsg("Press ~INPUT_CONTEXT~ to cut the painting.", 1000)
                     if IsControlPressed(0, 38) then 
                         print("catched e")
@@ -626,11 +615,8 @@ CreateThread(function()
                         Wait(5)
                     end
                 else 
-                    --isNearPainting = false 
-                    --print("not near")
                     Wait(7)
                 end
-                --Wait(100)
             end
         else 
             Wait(5000)
@@ -688,13 +674,10 @@ end)
 
 RegisterCommand("vl_bdoor", function()
     print("command")
-    --SetLoot()
     SetLayout()
     Wait(100)
     SetVaultDoors()
-    --print(loot)
     print(vaultLayout.. "vl")
-    --print(vaultLayoutDoorBig[vaultLayout][1], vaultLayoutDoorBig[vaultLayout][2], vaultLayoutDoorSmall[vaultLayout][1], vaultLayoutDoorSmall[vaultLayout][2])
     print("-----")
     for i = 1, #statusBigDoor, 1 do
        print(statusBigDoor[i]) 
@@ -719,11 +702,8 @@ RegisterCommand("vl_placecarts", function(src, args)
     loot = tonumber(args[1])
     vaultLayout = tonumber(args[2])
     PlaceCarts()
-    --print(cartLoc[cartLayout][1][1])
-    --print(cartLayout)
     AddCartBlips()
     isInVault = true 
-
 end, false)
 
 RegisterCommand("vl_removecarts", function()
