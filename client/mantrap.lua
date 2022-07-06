@@ -342,21 +342,18 @@ function CloseMantrapDoor(num)
     doorOpen = false
 end
 
-RegisterNetEvent("cl:security:openmantrapdoors")
-AddEventHandler("cl:security:openmantrapdoors", function(num) 
+RegisterNetEvent("cl:security:openmantrapdoors", function(num)
     if openedDoor ~= num then 
         OpenMantrapDoor(num) 
         openedDoor = num
     end
 end)
 
-RegisterNetEvent("cl:security:closemantrapdoors")
-AddEventHandler("cl:security:closemantrapdoors", function(num)
+RegisterNetEvent("cl:security:closemantrapdoors", function(num)
     CloseMantrapDoor(num)
 end)
 
-RegisterNetEvent("cl:casinoheist:mantrap:syncvaultbombs")
-AddEventHandler("cl:casinoheist:mantrap:syncvaultbombs", function(side)
+RegisterNetEvent("cl:casinoheist:mantrap:syncvaultbombs", function(side)
     if side == 1 then 
         RemoveBlip(blip[1])
         leftExplosives = true
@@ -368,14 +365,12 @@ AddEventHandler("cl:casinoheist:mantrap:syncvaultbombs", function(side)
     end
 end)
 
-RegisterNetEvent("test:cl:vaultroom")
-AddEventHandler("test:cl:vaultroom", function()
+RegisterNetEvent("test:cl:vaultroom", function()
     canPlantExplosive = true
     SetupCheckpoint()
 end)
 
-RegisterNetEvent("test:cl:mantrap:syncdoors")
-AddEventHandler("test:cl:mantrap:syncdoors", function()
+RegisterNetEvent("test:cl:mantrap:syncdoors", function()
     SetVaultDoorStatus(2)
     local prop = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
     SetEntityVisible(prop, false)

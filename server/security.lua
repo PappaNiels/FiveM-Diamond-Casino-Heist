@@ -25,8 +25,7 @@ local function StartTimer(src, door)
     ply = 0
 end
 
-RegisterNetEvent("sv:casinoheist:security:swipecard")
-AddEventHandler("sv:casinoheist:security:swipecard", function(door)
+RegisterNetEvent("sv:casinoheist:security:swipecard", function(door)
     ply = ply + 1
 
     if ply == 2 then 
@@ -43,8 +42,7 @@ AddEventHandler("sv:casinoheist:security:swipecard", function(door)
     end
 end)
 
-RegisterNetEvent("sv:casinoheist:security:openmantrapdoors")
-AddEventHandler("sv:casinoheist:security:openmantrapdoors", function(door)
+RegisterNetEvent("sv:casinoheist:security:openmantrapdoors", function(door)
     TriggerClientEvent("cl:security:openmantrapdoors", -1, door)
 end)
 

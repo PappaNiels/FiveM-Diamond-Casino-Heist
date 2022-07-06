@@ -59,6 +59,10 @@ keypads = {
 difficulty = 0
 loot = 0
 vaultLayout = 0
+teamlives = 0
+take = 123
+
+goldbar = 16156
 
 local models = { 
     GetHashKey("a_f_m_bevhills_01"),
@@ -156,8 +160,7 @@ function SetupCheckpoint()
     SetEntityForAll(vaultObjTwo)
 end
 
-RegisterNetEvent("cl:casinoheist:updateHeistPlayers")
-AddEventHandler("cl:casinoheist:updateHeistPlayers", function(one)
+RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(one)
     print("client event " .. one)
     hPlayer[1] = one
     hPlayer[2] = two
@@ -170,6 +173,16 @@ AddEventHandler("cl:casinoheist:updateHeistPlayers", function(one)
 
     print(hPlayer[1], hPlayer[2], hPlayer[3], hPlayer[4], "set")
 end)
+
+RegisterNetEvent("cl:casinoheist:syncteamlives", function()
+    teamlives = teamlives - 1
+
+    if teamlives < 1 then 
+        barColour = {201, 37, 37, 255}
+        AddTextEntry("lives", teamlives)
+    end
+end)
+
 
 RegisterCommand("hPlayer", function(source, args)
     print(args[1])

@@ -1,6 +1,10 @@
+barColour = {255, 255, 255, 500}
+amountSize = 0.45
+wide = 0
+
 function HelpMsg(text, time)
-    AddTextEntry("bomb", text)
-    BeginTextCommandDisplayHelp("bomb")
+    AddTextEntry("help", text)
+    BeginTextCommandDisplayHelp("help")
     EndTextCommandDisplayHelp(0, false, true, time .. .0)
 end
 
@@ -9,6 +13,37 @@ function SubtitleMsg(msg, time)
     SetTextEntry_2("STRING")
     AddTextComponentString(msg)
     DrawSubtitleTimed(time, true)
+end
+
+function DrawTeamlives()
+    --while true do 
+        SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
+        SetTextScale(0.28, 0.28)
+        BeginTextCommandDisplayText("team")
+        EndTextCommandDisplayText(0.853, 0.951)
+
+        SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
+        SetTextScale(0.45, 0.45)
+        BeginTextCommandDisplayText("lives")
+        EndTextCommandDisplayText(0.976, 0.946)
+
+        DrawSprite("commonmenu", "header_gradient_script", 0.912, 0.962, 0.155, 0.040, 90.0, 201, 37, 37, 500)
+    --end
+end
+
+function DrawTake()
+    --while true do 
+    -- .. "," .. string.sub(take, 3, 5) ))
+    SetTextScale(0.28, 0.28)
+    BeginTextCommandDisplayText("taketxt")
+    EndTextCommandDisplayText(0.88, 0.915)
+
+    SetTextScale(0.4, 0.4)
+    BeginTextCommandDisplayText("takenr")
+    EndTextCommandDisplayText(0.958 - wide, 0.907)
+
+    DrawSprite("commonmenu", "header_gradient_script", 0.912, 0.922, 0.155, 0.030, 90.0, barColour[1], barColour[2], barColour[3], 255)
+    --end
 end
 
 function FadeTeleport(x, y, z, h)
@@ -89,8 +124,7 @@ function SetEntityForAll(entity)
 end
 
 
-RegisterNetEvent("cl:casinoheist:startCutscene")
-AddEventHandler("cl:casinoheist:startCutscene", function(cutscene)
+RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
         LoadCutscene(cutscene)
     end

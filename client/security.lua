@@ -119,22 +119,19 @@ local function SwipeKeycardMantrap(pos, start)
     end
 end
 
-RegisterNetEvent("cl:casinoheist:security:keycardswipesucceeded")
-AddEventHandler("cl:casinoheist:security:keycardswipesucceeded", function()
+RegisterNetEvent("cl:casinoheist:security:keycardswipesucceeded", function()
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][5])
     Wait(2000)
     DeleteObject(keycardProp)
 end)
 
-RegisterNetEvent("cl:casinoheist:security:keycardswipefailed")
-AddEventHandler("cl:casinoheist:security:keycardswipefailed", function(num)
+RegisterNetEvent("cl:casinoheist:security:keycardswipefailed", function(num)
     NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][6 + num])
     Wait(1800)
     SwipeKeycardMantrap(place, false)
 end)
 
-RegisterNetEvent("test:cl:casinoheist:keycardswipe")
-AddEventHandler("test:cl:casinoheist:keycardswipe", function()
+RegisterNetEvent("test:cl:casinoheist:keycardswipe", function()
     isInSecurity = true
 end)
 

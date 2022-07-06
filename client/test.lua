@@ -103,6 +103,61 @@ RegisterCommand("cut_agg_entry", function()
     print(GetCutsceneTotalDuration())
 end, false)
 
+RegisterCommand("timer_test", function()
+    RequestStreamedTextureDict("commonmenu")
+    
+    while not HasStreamedTextureDictLoaded("commonmenu") do 
+        Wait(1)
+    end
+
+    if teamlives < 1 then 
+        barColour = {201, 37, 37, 255}
+    end
+
+    local num = 12345
+    local len = string.len(tostring(num))
+
+    print(string.sub(num, 1, 2) .. "," .. string.sub(num, 3, 5), len)
+    
+    takef = 0
+
+    if len == 4 then 
+        takef = string.sub(num, 1, 1) .. "," .. string.sub(num, 2, 4)
+        --amountSize = 0.4
+        --wide = len / 210
+    elseif len == 5 then 
+        takef = string.sub(num, 1, 2) .. "," .. string.sub(num, 3, 5)
+        --amountSize = 0.4
+        --wide = len / 270
+    elseif len == 6 then 
+        takef = string.sub(num, 1, 3) .. "," .. string.sub(num, 4, 6)
+        --amountSize = 0.35
+        --wide = len / 275
+    elseif len == 7 then 
+        takef = string.sub(num, 1, 1) .. "," .. string.sub(num, 2, 4) .. "," .. string.sub(num, 5, 7)
+        --amountSize = 0.25
+        --wide = len / 275
+    end
+
+    AddTextEntry("team", "TEAM LIVES")
+    AddTextEntry("lives", tostring(teamlives))
+    AddTextEntry("taketxt", "TAKE")
+    AddTextEntry("takenr", "$" .. takef)
+    
+
+    
+
+    CreateThread(function()
+        while true do 
+            Wait(4)
+            DrawTeamlives()
+            DrawTake()
+        end
+    end)
+    
+
+end, false)
+
 RegisterCommand("vl_exp", function() 
     SetVaultDoorStatus()
     VaultExplosion() 
