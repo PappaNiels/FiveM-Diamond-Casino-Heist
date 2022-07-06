@@ -520,7 +520,7 @@ local function GrabTrollyLoot(num)
         end
     end
     
-    RenderScriptCams(true, true, 1000.0, true, false)
+    RenderScriptCams(true, true, 1000, true, false)
     NetworkStartSynchronisedScene(cartAnims["networkScenes"][1])
     Wait(2000)
 

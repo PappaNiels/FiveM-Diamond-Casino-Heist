@@ -194,7 +194,7 @@ function PlantBombsRight()
     bagProp = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, true, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
     SetCamActive(cam, true)
-    RenderScriptCams(true, 1, 1000.0, true, false)    
+    RenderScriptCams(true, 1, 1000, true, false)    
     SetEntityVisible(bombRight[2], false)
     SetEntityVisible(bombRight[3], false)
 
