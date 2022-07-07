@@ -1,5 +1,5 @@
 barColour = {255, 255, 255, 500}
-amountSize = 0.45
+amountSize = 0.5
 wide = 0
 barBackground = "header_gradient_script"
 
@@ -26,6 +26,7 @@ function DrawTeamlives()
         SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
         SetTextScale(0.47, 0.47)
         BeginTextCommandDisplayText("lives")
+        AddTextComponentInteger(teamlives)
         EndTextCommandDisplayText(0.977, 0.944)
 
         --DrawSprite("commonmenu", barBackground, 0.912, 0.962, 0.155, 0.040, 90.0, 201, 37, 37, 500)
@@ -41,8 +42,9 @@ function DrawTake()
     BeginTextCommandDisplayText("taketxt")
     EndTextCommandDisplayText(0.88, 0.915)
 
-    SetTextScale(0.0, 0.51)
+    SetTextScale(0.0, amountSize)
     BeginTextCommandDisplayText("takenr")
+    AddTextComponentSubstringPlayerName(take)
     EndTextCommandDisplayText(0.934, 0.903)
 
     DrawSprite("timerbars", "all_black_bg", 0.915, 0.922, 0.15, 0.035, 0.0, 100, 100, 100, 150)
