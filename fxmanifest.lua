@@ -18,13 +18,15 @@ client_scripts {
     "client/security.lua",
     "client/mantrap.lua",
     "client/ipl.lua",
-    "client/vault.lua"
+    "client/vault.lua",
+    "client/hud.lua"
 }
 
 server_scripts { 
     "server/main.lua",
     "server/security.lua",
     "server/mantrap.lua",
+    "server/hud.lua"
 }
 
 dependencies {
