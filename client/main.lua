@@ -8,22 +8,22 @@ entryType = 0
 entrypointsCasino = {
     -- Agressive 
 
-    --[[1]]  vector3(923.76, 47.20, 81.11),  -- Front
-    --[[2]]  vector3(893.29, -176.47, 22.58),  -- Sewer
+    --[[1]]  vector3(923.76, 47.20, 81.11),     -- Front
+    --[[2]]  vector3(893.29, -176.47, 22.58),   -- Sewer
 
     -- Silent and sneaky + Big con
 
-    --[[3]]  vector3(978.78, 18.64, 80.99),  -- Staff Entry
-    --[[4]]  vector3(993.17, 77.05, 80.99),  -- Garbage Entry
-    --[[5]]  vector3(972.15, 25.54, 120.24),  -- Roof Helipad North  
-    --[[6]]  vector3(959.39, 31.75, 120.23),  -- Roof Helipad South 
-    --[[7]]  vector3(988.32, 59.03, 111.26),  -- Roof North East
-    --[[8]]  vector3(953.78, 4.02, 111.26),  -- Roof South East 
-    --[[9]] vector3(936.42, 14.51, 112.55), -- Roof South West
-    --[[10]] vector3(953.40, 79.20, 111.25), -- Roof North West
+    --[[3]]  vector3(978.78, 18.64, 80.99),     -- Staff Entry
+    --[[4]]  vector3(993.17, 77.05, 80.99),     -- Garbage Entry
+    --[[5]]  vector3(972.15, 25.54, 120.24),    -- Roof Helipad North  
+    --[[6]]  vector3(959.39, 31.75, 120.23),    -- Roof Helipad South 
+    --[[7]]  vector3(988.32, 59.03, 111.26),    -- Roof North East
+    --[[8]]  vector3(953.78, 4.02, 111.26),     -- Roof South East 
+    --[[9]]  vector3(936.42, 14.51, 112.55),    -- Roof South West
+    --[[10]] vector3(953.40, 79.20, 111.25),    -- Roof North West
     
     -- Gruppe Sechs
-    --[[11]] vector3(1000.4, -54.99, 74.96)  -- Garage
+    --[[11]] vector3(1000.4, -54.99, 74.96)     -- Garage
 
 }
 
@@ -63,6 +63,19 @@ take = 8502100
 
 cash = 5875
 goldbar = 16156
+
+hacker = {
+    -- Person, Skill, Time Undetected, Time Detected, Cut
+    {"Avi Schartzman", "Expert", 2000, 146000, 0.1},
+    {"Paige Harris", "Expert", 205000, 143000, 0.09},
+    {"Christian Feltz", "Good", 179000, 125000, 0.07},
+    {"Yohan Blair", "Good", 172000, 121000, 0.05},
+    {"Rickie Lukens", "Poor", 146000, 102000, 0.03},
+}
+
+hackerSelected = 1
+
+alarmTriggered = 0
 
 local models = { 
     GetHashKey("a_f_m_bevhills_01"),
@@ -130,7 +143,7 @@ AddEventHandler("onResourceStart", function()
     --    print("Not the correct resource name")
     --    StopResource(GetCurrentResourceName())
     --end
-    TriggerServerEvent("sv:casinoheist:setupheist" )
+    --TriggerServerEvent("sv:casinoheist:setupheist" )
 end)
 
 function SetupCheckpoint()
@@ -173,14 +186,6 @@ RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(one)
     --end
 
     print(hPlayer[1], hPlayer[2], hPlayer[3], hPlayer[4], "set")
-end)
-
-RegisterNetEvent("cl:casinoheist:syncteamlives", function(lives)
-    teamlives = lives
-
-    if teamlives < 1 then 
-        barColour = {201, 37, 37, 255}
-    end
 end)
 
 AddEventHandler("baseevents:onPlayerDied", function(o, i)

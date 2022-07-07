@@ -142,7 +142,6 @@ CreateThread(function()
     ActivateInteriorEntitySet(vault, "cabinet_1")
     ActivateInteriorEntitySet(vault, "cabinet_art")
     
-    
     DeactivateInteriorEntitySet(vault, "cabinet_2")
     
     RefreshInterior(vault)

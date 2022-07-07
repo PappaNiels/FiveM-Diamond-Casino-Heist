@@ -311,7 +311,6 @@ local function OpenSlideDoors(prop, xTick, yTick)
         SetEntityCoords(prop, coords)
         Wait(23)
     until x == 100
-    
 end
 
 local function OpenVaultDoors()

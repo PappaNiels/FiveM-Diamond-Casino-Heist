@@ -1,10 +1,3 @@
-barColour = {255, 255, 255, 500}
-amountSize = 0.5
-wide = 0
-height = 0
-barBackground = "header_gradient_script"
-takef = ""
-
 function HelpMsg(text, time)
     AddTextEntry("help", text)
     BeginTextCommandDisplayHelp("help")
@@ -16,38 +9,6 @@ function SubtitleMsg(msg, time)
     SetTextEntry_2("STRING")
     AddTextComponentString(msg)
     DrawSubtitleTimed(time, true)
-end
-
-function DrawTeamlives() 
-    SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
-    SetTextScale(0.28, 0.28)
-    BeginTextCommandDisplayText("team")
-    EndTextCommandDisplayText(0.853, 0.954)
-
-    SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
-    SetTextScale(0.47, 0.47)
-    BeginTextCommandDisplayText("lives")
-    AddTextComponentInteger(teamlives)
-    EndTextCommandDisplayText(0.977, 0.945)
-    
-    if teamlives < 1 then 
-        DrawSprite("timerbars", "all_red_bg", 0.8455, 0.962, 0.29, 0.035, 0.0, 79, 12, 12, 300)
-    else 
-        DrawSprite("timerbars", "all_black_bg", 0.915, 0.962, 0.15, 0.035, 0.0, 100, 100, 100, 150)
-    end 
-end
-
-function DrawTake()
-    SetTextScale(0.28, 0.28)
-    BeginTextCommandDisplayText("taketxt")
-    EndTextCommandDisplayText(0.88, 0.915)
-
-    SetTextScale(0.0, amountSize)
-    BeginTextCommandDisplayText("takenr")
-    AddTextComponentSubstringPlayerName(takef)
-    EndTextCommandDisplayText(0.938 - wide, 0.903 + height)
-
-    DrawSprite("timerbars", "all_black_bg", 0.915, 0.922, 0.15, 0.035, 0.0, 100, 100, 100, 150)
 end
 
 function FadeTeleport(x, y, z, h)
@@ -117,6 +78,14 @@ function LoadAnim(animDict)
 
     while not HasAnimDictLoaded(animDict) do
         Wait(10)
+    end
+end
+
+function LoadTexture(ytd)
+    RequestStreamedTextureDict(ytd)
+    
+    while not HasStreamedTextureDictLoaded(ytd) do 
+        Wait(1)
     end
 end
 

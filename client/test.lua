@@ -115,11 +115,11 @@ RegisterCommand("timer_test", function()
     end
 
     --local num = 85021
-    local len = string.len(tostring(take))
-
+    
     print(string.sub(take, 1, 2) .. "," .. string.sub(take, 3, 5), len)
     
     
+    local len = string.len(tostring(take))
 
     if len == 4 then 
         takef = string.sub(take, 1, 1) .. "," .. string.sub(take, 2, 4)
