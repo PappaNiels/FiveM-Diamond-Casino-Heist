@@ -55,13 +55,13 @@ keypads = {
     } 
 }
 
-
 difficulty = 0
 loot = 0
 vaultLayout = 0
-teamlives = 0
+teamlives = 1
 take = 8502100
 
+cash = 5875
 goldbar = 16156
 
 local models = { 
@@ -130,6 +130,7 @@ AddEventHandler("onResourceStart", function()
     --    print("Not the correct resource name")
     --    StopResource(GetCurrentResourceName())
     --end
+    TriggerServerEvent("sv:casinoheist:setupheist" )
 end)
 
 function SetupCheckpoint()
@@ -167,27 +168,32 @@ RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(one)
     hPlayer[3] = three
     hPlayer[4] = four
 
-    for i = 1, 4 do 
-        hPlayer[i] = one[i]
-    end
+    --for i = 1, 4 do 
+    --    hPlayer[i] = one[i]
+    --end
 
     print(hPlayer[1], hPlayer[2], hPlayer[3], hPlayer[4], "set")
 end)
 
-RegisterNetEvent("cl:casinoheist:syncteamlives", function()
-    teamlives = teamlives - 1
+RegisterNetEvent("cl:casinoheist:syncteamlives", function(lives)
+    teamlives = lives
 
     if teamlives < 1 then 
         barColour = {201, 37, 37, 255}
-        AddTextEntry("lives", teamlives)
     end
 end)
 
+AddEventHandler("baseevents:onPlayerDied", function(o, i)
+    if hPlayer[1] == GetPlayerServerId(PlayerId()) or hPlayer[2] == GetPlayerServerId(PlayerId()) or hPlayer[3] == GetPlayerServerId(PlayerId()) or hPlayer[4] == GetPlayerServerId(PlayerId()) then 
+        TriggerServerEvent("sv:casinoheist:removeteamlive")
+        print("works")
+    else 
+        print("isnt")
+    end
+end)
 
 RegisterCommand("hPlayer", function(source, args)
     print(args[1])
-    --hPlayer[tonumber(args[1])] = PlayerPedId()
     print(PlayerPedId())
     TriggerServerEvent("sv:casinoheist:setHeistPlayers", PlayerPedId(), tonumber(args[1]))
-    --print(hPlayer[1], hPlayer[2])
 end, false)
