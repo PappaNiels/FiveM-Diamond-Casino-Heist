@@ -28,5 +28,6 @@ server_scripts {
 }
 
 dependencies {
-    "/gameBuild:h4"
+    "/gameBuild:h4",
+    "baseevents"
 }
