@@ -104,17 +104,17 @@ RegisterCommand("cut_agg_entry", function()
 end, false)
 
 RegisterCommand("timer_test", function()
-    RequestStreamedTextureDict("commonmenu")
+    RequestStreamedTextureDict("timerbars")
     
-    while not HasStreamedTextureDictLoaded("commonmenu") do 
+    while not HasStreamedTextureDictLoaded("timerbars") do 
         Wait(1)
     end
 
     if teamlives < 1 then 
-        barColour = {201, 37, 37, 255}
+        barColour = {170, 40, 40, 255}
     end
 
-    local num = 12345
+    local num = 85021
     local len = string.len(tostring(num))
 
     print(string.sub(num, 1, 2) .. "," .. string.sub(num, 3, 5), len)
@@ -139,21 +139,21 @@ RegisterCommand("timer_test", function()
         --wide = len / 275
     end
 
-    AddTextEntry("team", "TEAM LIVES")
-    AddTextEntry("lives", tostring(teamlives))
-    AddTextEntry("taketxt", "TAKE")
-    AddTextEntry("takenr", "$" .. takef)
+    --AddTextEntry("team", "TEAM LIVES")
+    --AddTextEntry("lives", tostring(teamlives))
+    --AddTextEntry("taketxt", "TAKE")
+    --AddTextEntry("takenr", "$" .. takef)
     
 
-    
+    DrawTeamliwsves()
 
-    CreateThread(function()
-        while true do 
-            Wait(4)
-            DrawTeamlives()
-            DrawTake()
-        end
-    end)
+    --CreateThread(function()
+    --    while true do 
+    --        Wait(4)
+    --        DrawTeamlives()
+    --        --DrawTake()
+    --    end
+    --end)
     
 
 end, false)

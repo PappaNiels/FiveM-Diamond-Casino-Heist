@@ -1,6 +1,7 @@
 barColour = {255, 255, 255, 500}
 amountSize = 0.45
 wide = 0
+barBackground = "header_gradient_script"
 
 function HelpMsg(text, time)
     AddTextEntry("help", text)
@@ -20,15 +21,17 @@ function DrawTeamlives()
         SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
         SetTextScale(0.28, 0.28)
         BeginTextCommandDisplayText("team")
-        EndTextCommandDisplayText(0.853, 0.951)
+        EndTextCommandDisplayText(0.853, 0.954)
 
         SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
-        SetTextScale(0.45, 0.45)
+        SetTextScale(0.47, 0.47)
         BeginTextCommandDisplayText("lives")
-        EndTextCommandDisplayText(0.976, 0.946)
+        EndTextCommandDisplayText(0.977, 0.944)
 
-        DrawSprite("commonmenu", "header_gradient_script", 0.912, 0.962, 0.155, 0.040, 90.0, 201, 37, 37, 500)
-    --end
+        --DrawSprite("commonmenu", barBackground, 0.912, 0.962, 0.155, 0.040, 90.0, 201, 37, 37, 500)
+        --DrawSprite("timerbars", "all_black_bg", 0.915, 0.962, 0.15, 0.035, 0.0, 100, 100, 100, 150)
+        DrawSprite("timerbars", "all_red_bg", 0.8455, 0.962, 0.29, 0.035, 0.0, 79, 12, 12, 300)
+        --end
 end
 
 function DrawTake()
@@ -38,11 +41,11 @@ function DrawTake()
     BeginTextCommandDisplayText("taketxt")
     EndTextCommandDisplayText(0.88, 0.915)
 
-    SetTextScale(0.4, 0.4)
+    SetTextScale(0.0, 0.51)
     BeginTextCommandDisplayText("takenr")
-    EndTextCommandDisplayText(0.958 - wide, 0.907)
+    EndTextCommandDisplayText(0.934, 0.903)
 
-    DrawSprite("commonmenu", "header_gradient_script", 0.912, 0.922, 0.155, 0.030, 90.0, barColour[1], barColour[2], barColour[3], 255)
+    DrawSprite("timerbars", "all_black_bg", 0.915, 0.922, 0.15, 0.035, 0.0, 100, 100, 100, 150)
     --end
 end
 
