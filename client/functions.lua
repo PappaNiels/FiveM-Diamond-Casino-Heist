@@ -16,23 +16,23 @@ function SubtitleMsg(msg, time)
     DrawSubtitleTimed(time, true)
 end
 
-function DrawTeamlives()
-    --while true do 
-        SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
-        SetTextScale(0.28, 0.28)
-        BeginTextCommandDisplayText("team")
-        EndTextCommandDisplayText(0.853, 0.954)
+function DrawTeamlives() 
+    SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
+    SetTextScale(0.28, 0.28)
+    BeginTextCommandDisplayText("team")
+    EndTextCommandDisplayText(0.853, 0.954)
 
-        SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
-        SetTextScale(0.47, 0.47)
-        BeginTextCommandDisplayText("lives")
-        AddTextComponentInteger(teamlives)
-        EndTextCommandDisplayText(0.977, 0.944)
-
-        --DrawSprite("commonmenu", barBackground, 0.912, 0.962, 0.155, 0.040, 90.0, 201, 37, 37, 500)
-        --DrawSprite("timerbars", "all_black_bg", 0.915, 0.962, 0.15, 0.035, 0.0, 100, 100, 100, 150)
+    SetTextColour(barColour[1], barColour[2], barColour[3], barColour[4])
+    SetTextScale(0.47, 0.47)
+    BeginTextCommandDisplayText("lives")
+    AddTextComponentInteger(teamlives)
+    EndTextCommandDisplayText(0.977, 0.944)
+    
+    if teamlives < 1 then 
         DrawSprite("timerbars", "all_red_bg", 0.8455, 0.962, 0.29, 0.035, 0.0, 79, 12, 12, 300)
-        --end
+    else 
+        DrawSprite("timerbars", "all_black_bg", 0.915, 0.962, 0.15, 0.035, 0.0, 100, 100, 100, 150)
+    end 
 end
 
 function DrawTake()

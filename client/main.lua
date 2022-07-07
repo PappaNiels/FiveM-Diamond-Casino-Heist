@@ -60,7 +60,7 @@ difficulty = 0
 loot = 0
 vaultLayout = 0
 teamlives = 1
-take = 123
+take = 8502
 
 goldbar = 16156
 
