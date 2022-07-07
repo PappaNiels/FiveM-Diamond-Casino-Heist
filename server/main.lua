@@ -1,6 +1,4 @@
 hPlayer = {1, 1, 1, 1}
-teamlives = 1
-take = 0
 
 RegisterCommand("test_h", function(source, args)
     print(source, args[1], GetPlayerPed(source))
@@ -22,12 +20,4 @@ end)
 RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
     TriggerClientEvent("test:cl:casinoheist:openvaultdoors", -1)
     return true
-end)
-
-RegisterNetEvent("sv:casinoheist:addtake", function(add)
-    TriggerClientEvent("cl:casinoheist:synctake", -1 , take + add)
-end)
-
-RegisterNetEvent("sv:casinoheist:removeteamlive", function()
-    TriggerClientEvent("cl:casinoheist:syncteamlives", -1, teamlives - 1)
 end)
