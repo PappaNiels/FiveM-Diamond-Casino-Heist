@@ -1,7 +1,9 @@
 barColour = {255, 255, 255, 500}
 amountSize = 0.5
 wide = 0
+height = 0
 barBackground = "header_gradient_script"
+takef = ""
 
 function HelpMsg(text, time)
     AddTextEntry("help", text)
@@ -26,7 +28,7 @@ function DrawTeamlives()
     SetTextScale(0.47, 0.47)
     BeginTextCommandDisplayText("lives")
     AddTextComponentInteger(teamlives)
-    EndTextCommandDisplayText(0.977, 0.944)
+    EndTextCommandDisplayText(0.977, 0.945)
     
     if teamlives < 1 then 
         DrawSprite("timerbars", "all_red_bg", 0.8455, 0.962, 0.29, 0.035, 0.0, 79, 12, 12, 300)
@@ -44,8 +46,9 @@ function DrawTake()
 
     SetTextScale(0.0, amountSize)
     BeginTextCommandDisplayText("takenr")
-    AddTextComponentSubstringPlayerName(take)
-    EndTextCommandDisplayText(0.934, 0.903)
+    AddTextComponentSubstringPlayerName(takef)
+    --EndTextCommandDisplayText(0.931, 0.903)
+    EndTextCommandDisplayText(0.938 - wide, 0.903 + height)
 
     DrawSprite("timerbars", "all_black_bg", 0.915, 0.922, 0.15, 0.035, 0.0, 100, 100, 100, 150)
     --end
