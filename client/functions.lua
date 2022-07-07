@@ -38,8 +38,6 @@ function DrawTeamlives()
 end
 
 function DrawTake()
-    --while true do 
-    -- .. "," .. string.sub(take, 3, 5) ))
     SetTextScale(0.28, 0.28)
     BeginTextCommandDisplayText("taketxt")
     EndTextCommandDisplayText(0.88, 0.915)
@@ -47,11 +45,9 @@ function DrawTake()
     SetTextScale(0.0, amountSize)
     BeginTextCommandDisplayText("takenr")
     AddTextComponentSubstringPlayerName(takef)
-    --EndTextCommandDisplayText(0.931, 0.903)
     EndTextCommandDisplayText(0.938 - wide, 0.903 + height)
 
     DrawSprite("timerbars", "all_black_bg", 0.915, 0.922, 0.15, 0.035, 0.0, 100, 100, 100, 150)
-    --end
 end
 
 function FadeTeleport(x, y, z, h)
