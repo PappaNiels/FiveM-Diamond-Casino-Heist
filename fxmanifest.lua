@@ -19,7 +19,8 @@ client_scripts {
     "client/mantrap.lua",
     "client/ipl.lua",
     "client/vault.lua",
-    "client/hud.lua"
+    "client/hud.lua",
+    "client/arcade.lua"
 }
 
 server_scripts { 
