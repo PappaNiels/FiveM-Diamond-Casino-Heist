@@ -64,6 +64,10 @@ take = 8502100
 cash = 5875
 goldbar = 16156
 
+gunman = {
+    {"Chester McCoy"}
+}
+
 hacker = {
     -- Person, Skill, Time Undetected, Time Detected, Cut
     {"Avi Schartzman", "Expert", 2000, 146000, 0.1},

@@ -155,6 +155,24 @@ RegisterCommand("timer_test", function()
 
 end, false)
 
+RegisterCommand("scaleform", function()
+    local scaleform = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
+
+    while not HasScaleformMovieLoaded(scaleform) do 
+        Wait(1)
+    end
+
+    BeginScaleformMovieMethod(scaleform, "CASINO_HEIST_BOARD_PREP")
+
+    EndScaleformMovieMethod()
+
+    while true do 
+        Wait(0)
+        DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
+    end
+
+end)
+
 RegisterCommand("vl_exp", function() 
     SetVaultDoorStatus()
     VaultExplosion() 
