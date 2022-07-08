@@ -3,15 +3,16 @@ local vault = GetInteriorAtCoords(2488.348, -267.3637, -71.64563)
 
 local arcadeprops = {
     "casino_prop",
-    "mater_terminal",
+    "master_terminal",
     "hacker_terminal",
     "weapon_terminal",
+    "vehicle_tools",
     "basic_after_setup",
     "living_quarters_after_setup",
     "garage_lights",
     "lester_whiteboard",
     "casino_map",
-    "builder",
+    "builder_hat",
     "vault_keycard"
 }
 
@@ -159,9 +160,10 @@ CreateThread(function()
     
     DeactivateInteriorEntitySet(vault, "cabinet_2")
 
-    for i = 1, 11 do 
+    for i = 1, 12 do 
         ActivateInteriorEntitySet(arcade, arcadeprops[i])
     end
     
     RefreshInterior(vault)
+    RefreshInterior(arcade)
 end)
