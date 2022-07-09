@@ -6,6 +6,8 @@ local camCoords = {
 local camHeading = {0.0, 270.0, 180.0}
 local boardCam = 0
 local boardUsing = 0
+local setupRow  = 3
+local setupLine = 1
 
 local boardType = {
     RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP"),
@@ -19,7 +21,11 @@ local todoList = {
         {"Scope Out Vault Contents", false},
         {"Select Approach", false}
     },
-    [2] = {},
+    [2] = {
+        [1] = {},
+        [2] = {},
+        [3] = {}
+    },
     [3] = {
         {"Entry Disquise", false},
         {"Exit", false},
@@ -36,7 +42,11 @@ local optionalList = {
         {"Purchase Security Keypad", false},
         {"Purchase Vault Door", false}
     },
-    [2] = {},
+    [2] = {
+        [1] = {},
+        [2] = {},
+        [3] = {}
+    },
     [3] = {
         {"Decoy Gunman", false},
         {"Clean Vehicle", false},
@@ -44,11 +54,61 @@ local optionalList = {
     }
 }
 
+local lockList = {
+    false,
+    false,
+    false
+}
+
+local extremeList = {
+    false, 
+    false, 
+    false
+}
+
 local lootString = {
     "CASH",
-    "ARTWORK",
     "GOLD",
+    "ARTWORK",
     "DIAMONDS"
+}
+
+local arrowsVisible = {
+    [1] = {
+        false,
+        true,
+        false,
+        true,
+        false,
+        true
+    },
+    [2] = {},
+    [3] = {}
+}
+
+local images = {
+    [1] = {    
+        {true, 3, 3},
+        {true, 4, 2},
+        {true, 8, loot},
+        {true, 11, 1}, 
+        {true, 12, 1}, 
+        {true, 13, 1}, 
+        {true, 14, 1}, 
+        {true, 15, 1}, 
+        {true, 16, 1}  
+    }, 
+    [2] = {},
+    [3] = {}
+}
+
+local setupBoardPlacement = {
+    [1] = 9,
+    [2] = 10,
+    [3] = {11, 12, 13, 8, 2},
+    [4] = {14, 15, 16, 8, 3},
+    [5] = {5, 6, 7, 4}
+
 }
 
 function StartCamWhiteboard(board)
@@ -59,6 +119,7 @@ function StartCamWhiteboard(board)
         Wait(1)
     end
 
+    DisplayRadar(false)
     SetupBoardInfo(board)
     boardUsing = board
 end
@@ -77,6 +138,86 @@ local function OptionalList(board, i)
     EndScaleformMovieMethod()
 end
 
+local function Lock(i)
+    BeginScaleformMovieMethod(boardType[1], "SET_PADLOCK")
+    ScaleformMovieMethodAddParamInt(i + 4)
+    ScaleformMovieMethodAddParamBool(lockList[i])
+    EndScaleformMovieMethod()
+end
+
+local function SetImage(board, i)
+    if images[board][i][1] then 
+        BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_IMAGE")
+        ScaleformMovieMethodAddParamInt(images[board][i][2])
+        ScaleformMovieMethodAddParamInt(images[board][i][3])
+        EndScaleformMovieMethod()
+    else 
+        BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
+        ScaleformMovieMethodAddParamInt(images[board][i][2])
+        ScaleformMovieMethodAddParamBool(not images[board][i][1])
+        EndScaleformMovieMethod()
+    end
+end
+
+local function SetArrows(board, i)
+    BeginScaleformMovieMethod(boardType[board], "SET_SELECTION_ARROWS_VISIBLE")
+    ScaleformMovieMethodAddParamInt(i + 10)
+    ScaleformMovieMethodAddParamBool(arrowsVisible[board][i])
+    EndScaleformMovieMethod()
+end
+
+local function SetMarker(board, row, line)
+    BeginScaleformMovieMethod(boardType[board], "SET_CURRENT_SELECTION")
+    ScaleformMovieMethodAddParamInt()
+    EndScaleformMovieMethod()
+end
+
+--[[ 
+    Setup:
+
+    SET_BUTTON_VISIBLE empty
+
+    buttonId (interger)
+    1  = nil
+    2  = Casino Model
+    3  = Door Security
+    4  = Vault Door
+    5  = Silent and Sneaky
+    6  = The Big Con
+    7  = Aggressive
+    8  = Target
+    9  = Scope Out Casino
+    10 = Vault Contents
+    11 = First Access Point
+    12 = Second Access Point 
+    13 = Third Access Point
+    14 = Fourth Access Point 
+    15 = Fifth Access Point 
+    16 = Sixth Access Point
+
+    imageId (interger)
+
+    buttonId 2 to 4
+    1 = Casino Model
+    2 = Vault Door
+    3 = Door Security
+
+    buttonId 5 - 7
+    1 = Silent and Sneaky
+    2 = The Big Con
+    3 = Aggressive
+
+    buttonId 8 
+    1 = Cash
+    2 = Gold
+    3 = Artwork
+    4 = Diamonds
+
+    buttonId 9 - 10
+    No need to change
+
+    buttonId 11 - 16
+--]]
 
 function SetupBoardInfo(board)
     if board == 1 then 
@@ -88,30 +229,54 @@ function SetupBoardInfo(board)
             OptionalList(1, i)
         end
 
-        BeginScaleformMovieMethod(boardType[1], "SET_CURRECT_SELECTION")
-        ScaleformMovieMethodAddParamPlayerNameString(GetControlInstructionalButton(2, 38, true))
+        for i = 1, #lockList do 
+            Lock(i)
+        end
+
+        --for i = 1, #arrowsVisible do 
+        --    SetArrows(1, i)
+        --end
+
+        for i = 1, #images do 
+            SetImage(1, i)
+        end
+        --BeginScaleformMovieMethod(boardType[1], "INITIALISE")
+        --ScaleformMovieMethodAddParamInt(1)
+        --EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(boardType[1], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt(11)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(boardType[1], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt(startId)
+        --ScaleformMovieMethodAddParamInt(1)
+        --ScaleformMovieMethodAddParamInt(0)
+        --ScaleformMovieMethodAddParamBool(false)
         EndScaleformMovieMethod()
 
         BeginScaleformMovieMethod(boardType[1], "SET_BLUEPRINT_VISIBLE")
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[1], "GET_CURRENT_SELECTION")
-        --ScaleformMovieMethodAddParamInt(1)
-        --ScaleformMovieMethodAddParamBool(false)
-        test = EndScaleformMovieMethodReturnValue()
+        --BeginScaleformMovieMethod(boardType[1], "SET_BUTTON_IMAGE")
+        --ScaleformMovieMethodAddParamInt(8)
+        --ScaleformMovieMethodAddParamInt(4)
+        --test = EndScaleformMovieMethodReturnValue()
 
-        print(test)
+        --print(test)
 
         BeginScaleformMovieMethod(boardType[1], "SET_TARGET_TYPE")
         ScaleformMovieMethodAddParamPlayerNameString("ARTWORK")
         EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[1], "SET_INPUT_EVENT")
-        ScaleformMovieMethodAddParamInt(1)
+        --BeginScaleformMovieMethod(boardType[1], "TXD_HAS_LOADED")
+        --ScaleformMovieMethodAddParamTextureNameString("casino_heist_board_setup")
         --ScaleformMovieMethodAddParamBool(true)
-        EndScaleformMovieMethod()
+        --ScaleformMovieMethodAddParamInt(1)
+        --testt = EndScaleformMovieMethodReturnValue()
 
+        --print(testt)
         --BeginScaleformMovieMethod(boardType[1], "SHOW_OVERLAY")
         --ScaleformMovieMethodAddParamPlayerNameString("TITLE")
         --ScaleformMovieMethodAddParamPlayerNameString("MESSAGE")
@@ -153,69 +318,35 @@ CreateThread(function()
     end
 end)
 
+CreateThread(function()
+    while true do 
+        Wait(0)
+        if boardUsing == 1 or boardUsing == 2 or boardUsing == 3 then 
+            DisableAllControlActions(2)
+        else 
+            Wait(1000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do 
+        Wait(0)
+
+        if IsControlPressed(0, 32) then -- W
+
+        elseif IsControlPressed(0, 33) then -- S
+
+        elseif IsControlPressed(0, 34) then -- A
+
+        elseif IsControlPressed(0, 35) then -- D
+
+        else 
+            Wait(100)
+        end
+    end
+end)
+
 RegisterCommand("camarcade", function(src, args)
     StartCamWhiteboard(tonumber(args[1]))
 end, false)
-
-function ButtonMessage(text)
-    BeginTextCommandScaleformString("STRING")
-    AddTextComponentScaleform(text)
-    EndTextCommandScaleformString()
-end
-
-function Button(ControlButton)
-    N_0xe83a3e3557a56640(ControlButton)
-end
-
-function setupScaleform(scaleform)
-    local scaleform = RequestScaleformMovie(scaleform)
-    while not HasScaleformMovieLoaded(scaleform) do
-        Citizen.Wait(0)
-    end
-
-    -- draw it once to set up layout
-    DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 0, 0)
-
-    PushScaleformMovieFunction(scaleform, "CLEAR_ALL")
-    PopScaleformMovieFunctionVoid()
-    
-    PushScaleformMovieFunction(scaleform, "SET_CLEAR_SPACE")
-    PushScaleformMovieFunctionParameterInt(200)
-    PopScaleformMovieFunctionVoid()
-
-    PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
-    PushScaleformMovieFunctionParameterInt(0)
-    Button(GetControlInstructionalButton(2, 191, true))
-    ButtonMessage("This is enter!")
-    PopScaleformMovieFunctionVoid()
-
-    PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
-    PushScaleformMovieFunctionParameterInt(1)
-    Button(GetControlInstructionalButton(2, 194, true)) -- The button to display
-    ButtonMessage("This is backspace!") -- the message to display next to it
-    PopScaleformMovieFunctionVoid()
-
-    PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
-    PushScaleformMovieFunctionParameterInt(2)
-    Button(GetControlInstructionalButton(2, 193, true))
-    ButtonMessage("This is space!")
-    PopScaleformMovieFunctionVoid()
-
-    PushScaleformMovieFunction(scaleform, "SET_DATA_SLOT")
-    PushScaleformMovieFunctionParameterInt(3)
-    Button(GetControlInstructionalButton(2, 192, true))
-    ButtonMessage("This is tab!")
-    PopScaleformMovieFunctionVoid()
-
-    PushScaleformMovieFunction(scaleform, "DRAW_INSTRUCTIONAL_BUTTONS")
-    PopScaleformMovieFunctionVoid()
-
-    PushScaleformMovieFunction(scaleform, "SET_BACKGROUND_COLOUR")
-    PushScaleformMovieFunctionParameterInt(0)
-    PushScaleformMovieFunctionParameterInt(0)
-    PushScaleformMovieFunctionParameterInt(0)
-    PushScaleformMovieFunctionParameterInt(80)
-    PopScaleformMovieFunctionVoid()
-
-    return scaleform
-end
