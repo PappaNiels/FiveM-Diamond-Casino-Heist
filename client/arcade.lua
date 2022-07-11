@@ -90,25 +90,24 @@ local images = {
     [1] = {    
         {true, 3, 3},
         {true, 4, 2},
-        {true, 8, loot},
-        {true, 11, 1}, 
-        {true, 12, 1}, 
-        {true, 13, 1}, 
-        {true, 14, 1}, 
-        {true, 15, 1}, 
-        {true, 16, 1}  
+        {true, 8, 1},
+        {true, 11, 2}, 
+        {true, 12, 11}, 
+        {true, 13, 7}, 
+        {true, 14, 3}, 
+        {true, 15, 6}, 
+        {true, 16, 4}  
     }, 
     [2] = {},
     [3] = {}
 }
 
 local setupBoardPlacement = {
-    [1] = 9,
-    [2] = 10,
+    [1] = {9, 9, 9, 9, 9},
+    [2] = {10, 10, 10, 10, 10},
     [3] = {11, 12, 13, 8, 2},
     [4] = {14, 15, 16, 8, 3},
-    [5] = {5, 6, 7, 4}
-
+    [5] = {5, 6, 7, 0, 4} -- 4 = [5]
 }
 
 function StartCamWhiteboard(board)
@@ -151,6 +150,7 @@ local function SetImage(board, i)
         ScaleformMovieMethodAddParamInt(images[board][i][2])
         ScaleformMovieMethodAddParamInt(images[board][i][3])
         EndScaleformMovieMethod()
+        print(images[board][i][3]) 
     else 
         BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
         ScaleformMovieMethodAddParamInt(images[board][i][2])
@@ -167,9 +167,31 @@ local function SetArrows(board, i)
 end
 
 local function SetMarker(board, row, line)
-    BeginScaleformMovieMethod(boardType[board], "SET_CURRENT_SELECTION")
-    ScaleformMovieMethodAddParamInt()
-    EndScaleformMovieMethod()
+    if board == 1 then 
+        if setupRow == 5 and setupLine == 3 and line == 1 then 
+            setupLine = 5
+        elseif setupRow == 5 and setupLine == 5 and line == -1 then 
+            setupLine = 3
+        else 
+            setupLine = setupLine + line
+            setupRow = setupRow + row
+        end
+        
+        BeginScaleformMovieMethod(boardType[1], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt(setupBoardPlacement[setupRow][setupLine])
+        EndScaleformMovieMethod()
+    elseif board == 2 then 
+        BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt()
+        EndScaleformMovieMethod()
+    elseif board == 3 then 
+        BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt()
+        EndScaleformMovieMethod()
+    end
+end
+
+local function tt()
 end
 
 --[[ 
@@ -217,7 +239,20 @@ end
     No need to change
 
     buttonId 11 - 16
+    1  = Waste Disposal
+    2  = Main Door
+    3  = Roof Terrace 1
+    4  = Roof 1
+    5  = Roof Terrace 2 
+    6  = Security Tunnel
+    7  = Sewer
+    8  = Roof Terrace 3
+    9  = Roof 2
+    10 = Roof Terrace 4
+    11 = Staff Lobby
 --]]
+
+testint = 1
 
 function SetupBoardInfo(board)
     if board == 1 then 
@@ -237,7 +272,7 @@ function SetupBoardInfo(board)
         --    SetArrows(1, i)
         --end
 
-        for i = 1, #images do 
+        for i = 1, #images[1] do 
             SetImage(1, i)
         end
         --BeginScaleformMovieMethod(boardType[1], "INITIALISE")
@@ -250,9 +285,6 @@ function SetupBoardInfo(board)
 
         BeginScaleformMovieMethod(boardType[1], "SET_CURRENT_SELECTION")
         ScaleformMovieMethodAddParamInt(startId)
-        --ScaleformMovieMethodAddParamInt(1)
-        --ScaleformMovieMethodAddParamInt(0)
-        --ScaleformMovieMethodAddParamBool(false)
         EndScaleformMovieMethod()
 
         BeginScaleformMovieMethod(boardType[1], "SET_BLUEPRINT_VISIBLE")
@@ -260,14 +292,14 @@ function SetupBoardInfo(board)
         EndScaleformMovieMethod()
 
         --BeginScaleformMovieMethod(boardType[1], "SET_BUTTON_IMAGE")
-        --ScaleformMovieMethodAddParamInt(8)
-        --ScaleformMovieMethodAddParamInt(4)
-        --test = EndScaleformMovieMethodReturnValue()
+        --ScaleformMovieMethodAddParamInt(11)
+        --ScaleformMovieMethodAddParamInt(testint)
+        --EndScaleformMovieMethod()
 
         --print(test)
 
         BeginScaleformMovieMethod(boardType[1], "SET_TARGET_TYPE")
-        ScaleformMovieMethodAddParamPlayerNameString("ARTWORK")
+        ScaleformMovieMethodAddParamPlayerNameString("CASH")
         EndScaleformMovieMethod()
 
         --BeginScaleformMovieMethod(boardType[1], "TXD_HAS_LOADED")
@@ -283,6 +315,7 @@ function SetupBoardInfo(board)
         --ScaleformMovieMethodAddParamPlayerNameString("ACCEPT")
         --ScaleformMovieMethodAddParamPlayerNameString("CANCEL")
         --EndScaleformMovieMethod()
+        
 
     elseif board == 2 then 
         for i = 1, #todoList[2] do 
@@ -307,7 +340,8 @@ CreateThread(function()
     while true do 
         Wait(0)
         if boardUsing == 1 then 
-            DrawScaleformMovie(boardType[1], 0.5101, 0.5, 0.58, 0.78, 255, 255, 255, 255)
+            --DrawScaleformMovie(boardType[1], 0.5101, 0.5, 0.58, 0.78, 255, 255, 255, 255)
+            DrawScaleformMovie_3dSolid(boardType[1], 2713.3, -366.2, -54.23418, 0.0, 0.0, camHeading[1], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
         elseif boardUsing == 2 then 
             DrawScaleformMovie(boardType[2], 0.5101, 0.5, 0.58, 0.78, 255, 255, 255, 255)
         elseif boardUsing == 3 then 
@@ -322,7 +356,7 @@ CreateThread(function()
     while true do 
         Wait(0)
         if boardUsing == 1 or boardUsing == 2 or boardUsing == 3 then 
-            DisableAllControlActions(2)
+            --DisableAllControlActions(2)
         else 
             Wait(1000)
         end
@@ -331,22 +365,39 @@ end)
 
 CreateThread(function()
     while true do 
-        Wait(0)
-
-        if IsControlPressed(0, 32) then -- W
-
-        elseif IsControlPressed(0, 33) then -- S
-
-        elseif IsControlPressed(0, 34) then -- A
-
-        elseif IsControlPressed(0, 35) then -- D
-
+        Wait(2)
+        if boardUsing == 1 or boardUsing == 2 or boardUsing == 3 then 
+            if IsDisabledControlJustPressed(0, 32) then -- W
+                --print('w')
+                if setupRow ~= 1 then
+                    SetMarker(1, -1, 0)
+                end
+            elseif IsDisabledControlJustPressed(0, 33) then -- S
+                --print('s')
+                if setupRow ~= 5 then 
+                    SetMarker(1, 1, 0)
+                end
+            elseif IsDisabledControlJustPressed(0, 34) then -- A
+                --print('a')
+                if setupLine ~= 1 then 
+                    SetMarker(1, 0, -1)
+                end
+            elseif IsDisabledControlJustPressed(0, 35) then -- D
+                --print('d')
+                if setupLine ~= 5 then 
+                    SetMarker(1, 0, 1)
+                end
+            end
         else 
-            Wait(100)
+            Wait(1000)
         end
     end
 end)
 
 RegisterCommand("camarcade", function(src, args)
     StartCamWhiteboard(tonumber(args[1]))
+end, false)
+
+RegisterCommand("test_scale", function()
+    boardUsing = 1
 end, false)
