@@ -586,17 +586,18 @@ CreateThread(function()
     while true do 
         Wait(0)
         if isInVault then 
-            for i = 1, #keypads["lvlThreeKeyped"][2]
-            local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][2][i])
-            if distance < 1.5 then
-                if not statusSmallDoor[x] then  
-                    HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
-                    if IsControlPressed(0, 38) then
-                        HackKeypad(2, i)
-                        OpenSlideDoors(smallDoor[i], smallDoorMove[i].x, smallDoorMove[i].y)
-                        statusSmallDoor[i] = true
-                    else 
-                        Wait(10)
+            for i = 1, #keypads["lvlThreeKeyped"][2] do
+                local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][2][i])
+                if distance < 1.5 then
+                    if not statusSmallDoor[x] then  
+                        HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
+                        if IsControlPressed(0, 38) then
+                            HackKeypad(2, i)
+                            OpenSlideDoors(smallDoor[i], smallDoorMove[i].x, smallDoorMove[i].y)
+                            statusSmallDoor[i] = true
+                        else 
+                            Wait(10)
+                        end
                     end
                 end
             end
