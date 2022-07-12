@@ -62,7 +62,8 @@ keypads = {
 }
 
 difficulty = 0
-loot = 0
+loot = 0 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
+approach = 2 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 vaultLayout = 0
 teamlives = 1
 take = 8502100
