@@ -337,7 +337,7 @@ local function OpenVaultDoors()
     end
 end
 
-local function HackKeypad(num)
+local function HackKeypad(door, num)
     local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
     local hackDevice = "ch_prop_ch_usb_drive01x"
     local phoneDevice = "prop_phone_ing"
@@ -346,7 +346,7 @@ local function HackKeypad(num)
     LoadModel(hackDevice)
     LoadModel(phoneDevice)
 
-    keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
+    keypad = GetClosestObjectOfType(keypads["lvlThreeKeypad"][door][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
     hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
     
@@ -561,37 +561,45 @@ CreateThread(function()
     while true do 
         Wait(0)
         if isInVault then 
-            for i = 1, #keypads["lvlThreeKeypad"] do 
-                local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][i])
+            for i = 1, #keypads["lvlThreeKeypad"][1] do 
+                local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][1][i])
                 if distance < 1.5 then 
-                    if i > 3 then 
-                        local x = i - 3
-                        if not statusSmallDoor[x] then  
-                            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
-                            if IsControlPressed(0, 38) then
-                                HackKeypad(i)
-                                OpenSlideDoors(smallDoor[x], smallDoorMove[x].x, smallDoorMove[x].y)
-                                statusSmallDoor[x] = true
-                            else 
-                                Wait(10)
-                            end
+                    if not statusBigDoor[i] then 
+                        HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
+                        if IsControlPressed(0, 38) then
+                            HackKeypad(1, i)
+                            OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
+                            statusBigDoor[i] = true
+                        else 
+                            Wait(10)
                         end
-                    else
-                        if not statusBigDoor[i] then 
-                            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
-                            if IsControlPressed(0, 38) then
-                                HackKeypad(i)
-                                OpenSlideDoors(bigDoor[i], bigDoorMove[i].x, bigDoorMove[i].y)
-                                statusBigDoor[i] = true
-                            else 
-                                Wait(10)
-                            end
-                        end
-                    end
-                
+                    end                
                 end
             end
-            
+        else 
+            Wait(10000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do 
+        Wait(0)
+        if isInVault then 
+            for i = 1, #keypads["lvlThreeKeyped"][2]
+            local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][2][i])
+            if distance < 1.5 then
+                if not statusSmallDoor[x] then  
+                    HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad", 1000)
+                    if IsControlPressed(0, 38) then
+                        HackKeypad(2, i)
+                        OpenSlideDoors(smallDoor[i], smallDoorMove[i].x, smallDoorMove[i].y)
+                        statusSmallDoor[i] = true
+                    else 
+                        Wait(10)
+                    end
+                end
+            end
         else 
             Wait(10000)
         end
