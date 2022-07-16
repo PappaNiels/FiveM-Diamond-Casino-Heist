@@ -4,10 +4,14 @@ local camCoords = {
     [3] = {2712.95, -366.3, -54.23}
 }
 local camHeading = {0.0, 270.0, 180.0}
+
 local boardCam = 0
 local boardUsing = 0
 local setupRow  = 3
 local setupLine = 1
+local prepRow = 1
+local prepLine = 1
+
 local camIsUsed = false
 
 local boardType = {
@@ -82,8 +86,7 @@ local optionalList = {
             {"Power Drills", false},
             {"Security Passes", false},
             {"Acquire Masks", false},
-            {"Exit Disguise", false},
-            {"", 0}
+            {"Exit Disguise", false}
         },
         [3] = { -- Aggressive
             {"Patrol Routes", false},
@@ -111,9 +114,9 @@ local approachSpecificPreps = {
         {17, 8, "INFILTRATION SUITS", false, false}
     },
     [2] = {
-        {14, 13, "BUGSTARS GEAR", false, false, "ENRTY DISGUISE"},
+        {14, 13, "BUGSTARS GEAR", false, true, "ENRTY DISGUISE"},
         {15, 12, "VAULT DRILLS", false, true},
-        {0, 0, 0, 0, 0},
+        {16, 0, "", false, false},
         {17, 16, "FIREFIGHTER GEAR", false, false, "EXIT DISGUISE"},
     },
     [3] = {
@@ -186,6 +189,12 @@ local setupBoardPlacement = {
     [5] = {5, 6, 7, 0, 4} 
 }
 
+local prepBoardPlacement = {
+    [1] = {10, 11, 12, 0, 14, 15},
+    [2] = {5, 6, 7, 18, 16, 17},
+    [3] = {9, 3, 4, 2, 8, 13}
+}
+
 function StartCamWhiteboard()
     boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing][1], camCoords[boardUsing][2], camCoords[boardUsing][3], 0, 0, camHeading[boardUsing], 20.0, true, 2)
     RenderScriptCams(true, false, 1000, true, false)
@@ -196,33 +205,34 @@ function StartCamWhiteboard()
 
     DisplayRadar(false)
     SetupBoardInfo()
+    
     camIsUsed = true
 end
 
-local function ToDoList(i)
-    if boardUsing == 2 then 
-        BeginScaleformMovieMethod(boardType[boardUsing], "ADD_TODO_LIST_ITEM")
-        ScaleformMovieMethodAddParamPlayerNameString(todoList[boardUsing][approach][i][1])
-        ScaleformMovieMethodAddParamBool(todoList[boardUsing][approach][i][2])
+local function ToDoList(i, num)
+    if num == 2 then 
+        BeginScaleformMovieMethod(boardType[2], "ADD_TODO_LIST_ITEM")
+        ScaleformMovieMethodAddParamPlayerNameString(todoList[2][approach][i][1])
+        ScaleformMovieMethodAddParamBool(todoList[2][approach][i][2])
         EndScaleformMovieMethod()
     else
-        BeginScaleformMovieMethod(boardType[boardUsing], "ADD_TODO_LIST_ITEM")
-        ScaleformMovieMethodAddParamPlayerNameString(todoList[boardUsing][i][1])
-        ScaleformMovieMethodAddParamBool(todoList[boardUsing][i][2])
+        BeginScaleformMovieMethod(boardType[1], "ADD_TODO_LIST_ITEM")
+        ScaleformMovieMethodAddParamPlayerNameString(todoList[1][i][1])
+        ScaleformMovieMethodAddParamBool(todoList[1][i][2])
         EndScaleformMovieMethod()
     end
 end
 
-local function OptionalList(i)
-    if boardUsing == 2 then 
-        BeginScaleformMovieMethod(boardType[boardUsing], "ADD_OPTIONAL_LIST_ITEM")
+local function OptionalList(i, num)
+    if num == 2 then 
+        BeginScaleformMovieMethod(boardType[2], "ADD_OPTIONAL_LIST_ITEM")
         ScaleformMovieMethodAddParamPlayerNameString(optionalList[2][approach][i][1])
         ScaleformMovieMethodAddParamBool(optionalList[2][approach][i][2])
         EndScaleformMovieMethod()
     else 
-        BeginScaleformMovieMethod(boardType[boardUsing], "ADD_OPTIONAL_LIST_ITEM")
-        ScaleformMovieMethodAddParamPlayerNameString(optionalList[boardUsing][i][1])
-        ScaleformMovieMethodAddParamBool(optionalList[boardUsing][i][2])
+        BeginScaleformMovieMethod(boardType[1], "ADD_OPTIONAL_LIST_ITEM")
+        ScaleformMovieMethodAddParamPlayerNameString(optionalList[1][i][1])
+        ScaleformMovieMethodAddParamBool(optionalList[1][i][2])
         EndScaleformMovieMethod()
     end
 end
@@ -257,7 +267,7 @@ local function SetArrows(i)
 end
 
 local function SetLootString()
-    BeginScaleformMovieMethod(boardType[boardUsing] "SET_TARGET_TYPE")
+    BeginScaleformMovieMethod(boardType[boardUsing], "SET_TARGET_TYPE")
     ScaleformMovieMethodAddParamPlayerNameString(lootString[1])
     EndScaleformMovieMethod()
 end
@@ -277,8 +287,24 @@ local function SetMarker(row, line)
         ScaleformMovieMethodAddParamInt(setupBoardPlacement[setupRow][setupLine])
         EndScaleformMovieMethod()
     elseif boardUsing == 2 then 
+        if prepRow == 1 and prepLine == 3 and line == 1 then 
+            print("test 1")
+            prepLine = 5
+        elseif prepRow == 1 and prepLine == 5 and line == -1 then 
+            print("test 2")
+            prepLine = 3
+        else 
+            print("test 3")
+            prepRow = prepRow + row
+            prepLine = prepLine + line
+        end
+        
+        print(prepRow)
+        print(prepLine)
+        print(prepBoardPlacement[prepRow][prepLine])
+
         BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
-        ScaleformMovieMethodAddParamInt()
+        ScaleformMovieMethodAddParamInt(prepBoardPlacement[prepRow][prepLine])
         EndScaleformMovieMethod()
     elseif boardUsing == 3 then 
         BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
@@ -298,7 +324,7 @@ local function SetSpecificPreps(i)
     BeginScaleformMovieMethod(boardType[2], "ADD_APPROACH")
     ScaleformMovieMethodAddParamInt(approachSpecificPreps[approach][i][1])
     ScaleformMovieMethodAddParamInt(approachSpecificPreps[approach][i][2])
-    ScaleformMovieMethodAddParamPlayerNameString(approachSpecificPreps[1][i][3])
+    ScaleformMovieMethodAddParamPlayerNameString(approachSpecificPreps[approach][i][3])
     ScaleformMovieMethodAddParamBool(approachSpecificPreps[approach][i][4])
     ScaleformMovieMethodAddParamBool(approachSpecificPreps[approach][i][5])
     ScaleformMovieMethodAddParamPlayerNameString(approachSpecificPreps[approach][i][6])
@@ -311,8 +337,9 @@ local function SetPoster(tickPlus)
         BeginScaleformMovieMethod(boardType[2], "SET_POSTER_VISIBLE")
         ScaleformMovieMethodAddParamInt(16)
         ScaleformMovieMethodAddParamBool(true)
-        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(tick)
         ScaleformMovieMethodAddParamInt(2)
+        EndScaleformMovieMethod()
     end
 end
 
@@ -376,7 +403,7 @@ end
     Prep:
 
     buttonId
-    1 = Gunman
+    1 = Gunman?
     2 = Security Intel
     3 = Patrol Routes
     4 = Duggan Shipments
@@ -388,7 +415,7 @@ end
     10 = Gunman
     11 = Driver
     12 = Hacker
-    13 = Security Pass
+    13 = Security Keycards
     14 = Specific Prep 1
     15 = Specific Prep 2
     16 = Specific Prep 3
@@ -429,11 +456,19 @@ testint = 1
 function SetupBoardInfo()
     if boardUsing == 1 then 
         for i = 1, #todoList[1] do 
-           ToDoList(i)
+           ToDoList(i, 1)
         end
+        
+        for i = 1, #todoList[2][approach] do 
+            ToDoList(i, 2)
+        end 
 
         for i = 1, #optionalList[1] do 
-            OptionalList(i)
+            OptionalList(i, 1)
+        end
+
+        for i = 1, #optionalList[2][approach] do 
+            OptionalList(i, 2)
         end
 
         for i = 1, #lockList do 
@@ -472,14 +507,14 @@ function SetupBoardInfo()
         --EndScaleformMovieMethod()
         
 
-    elseif boardUsing == 2 then 
-        for i = 1, 6 do 
-            ToDoList(i)
-        end
+    --elseif boardUsing == 2 then 
+        --for i = 1, 6 do 
+        --    ToDoList(i)
+        --end
 
-        for i = 1, 8 do 
-           OptionalList(i)
-        end
+        --for i = 1, 8 do 
+        --   OptionalList(i)
+        --end
 
         SetLootAndApproach()
         for i = 1, 4 do 
@@ -509,7 +544,7 @@ CreateThread(function()
         if boardUsing == 1 then 
             --DrawScaleformMovie(boardType[1], 0.5101, 0.5, 0.58, 0.78, 255, 255, 255, 255)
             DrawScaleformMovie_3dSolid(boardType[1], 2713.3, -366.2, -54.23418, 0.0, 0.0, camHeading[1], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
-        elseif boardUsing == 2 then 
+        --elseif boardUsing == 2 then 
             DrawScaleformMovie_3dSolid(boardType[2], 2716.27, -369.93, -54.23418, 0.0, 0.0, camHeading[2] - 180, 1.0, 1.0, 1.0, 3.1, 1.7, 1.0, 0)
             --DrawScaleformMovie(boardType[2], 0.5101, 0.5, 0.58, 0.78, 255, 255, 255, 255)
         elseif boardUsing == 3 then 
@@ -539,24 +574,24 @@ CreateThread(function()
             if IsDisabledControlJustPressed(0, 32) then -- W
                 --print('w')
                 if setupRow ~= 1 then
-                    SetMarker(1, -1, 0)
+                    SetMarker(-1, 0)
                 end
             elseif IsDisabledControlJustPressed(0, 33) then -- S
                 --print('s')
                 if setupRow ~= 5 then 
-                    SetMarker(1, 1, 0)
+                    SetMarker(1, 0)
                 end
             elseif IsDisabledControlJustPressed(0, 34) then -- A
                 --print('a')
                 if setupLine ~= 1 then 
-                    SetMarker(1, 0, -1)
+                    SetMarker(0, -1)
                 end
             elseif IsDisabledControlJustPressed(0, 35) then -- D
                 --print('d')
                 if setupLine ~= 5 then 
-                    SetMarker(1, 0, 1)
+                    SetMarker(0, 1)
                 end
-            elseif IsDisabledControlJustPressed(0, 44) then -- Q
+            elseif IsDisabledControlJustPressed(0, 38) then -- E
 
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
 
@@ -574,27 +609,25 @@ end)
 CreateThread(function()
     while true do 
         Wait(2)
-        if boardUsing == 2 then 
+        if boardUsing == 2 and camIsUsed then 
             if IsDisabledControlJustPressed(0, 32) then -- W
-                --print('w')
-                --if setupRow ~= 1 then
-                --    SetMarker(1, -1, 0)
-                --end
+                --print(prepRow)
+                if prepRow ~= 1 then 
+                    SetMarker(-1, 0)
+                end
             elseif IsDisabledControlJustPressed(0, 33) then -- S
-                --print('s')
-                --if setupRow ~= 5 then 
-                --    SetMarker(1, 1, 0)
-                --end
+                if prepRow ~= 3 then 
+                    SetMarker(1, 0)
+                end
             elseif IsDisabledControlJustPressed(0, 34) then -- A
-                --print('a')
-                --if setupLine ~= 1 then 
-                --    SetMarker(1, 0, -1)
-                --end
+                if prepLine ~= 1 then 
+                    --print(prepLine)
+                    SetMarker(0, -1)
+                end
             elseif IsDisabledControlJustPressed(0, 35) then -- D
-                --print('d')
-                --if setupLine ~= 5 then 
-                --    SetMarker(1, 0, 1)
-                --end
+                if prepLine ~= 6 then 
+                    SetMarker(0, 1)
+                end
             elseif IsDisabledControlJustPressed(0, 44) then -- Q
 
             elseif IsDisabledControlJustPressed(0, 38) then -- E
@@ -613,7 +646,8 @@ CreateThread(function()
 end)
 
 RegisterCommand("camarcade", function(src, args)
-    StartCamWhiteboard(tonumber(args[1]))
+    boardUsing = tonumber(args[1])
+    StartCamWhiteboard()
 end, false)
 
 RegisterCommand("test_scale", function(src, args)
