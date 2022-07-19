@@ -5,6 +5,8 @@ author "Niels"
 description "Diamond Casino Heist"
 version "1.0.0"
 
+lua54 "yes"
+
 client_scripts {
     "client/rappel.lua",
     "client/anim.lua",

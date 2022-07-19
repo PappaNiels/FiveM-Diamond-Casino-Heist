@@ -654,3 +654,5 @@ RegisterCommand("test_scale", function(src, args)
     boardUsing = tonumber(args[1])
     SetupBoardInfo()
 end, false)
+
+local coords = {2727.91138, -371.9535, -48.40004}
