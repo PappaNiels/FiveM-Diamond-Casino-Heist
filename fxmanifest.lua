@@ -30,6 +30,10 @@ server_scripts {
     "server/hud.lua"
 }
 
+escrow_ignore {
+    "shared/*.lua"
+}
+
 dependencies {
     "/gameBuild:h4",
     "baseevents"
