@@ -1,5 +1,6 @@
-local arcade = GetInteriorAtCoords(2704.21, -363.68, -55.19)
+local arcadeGarage = GetInteriorAtCoords(2704.21, -363.68, -55.19)
 local vault = GetInteriorAtCoords(2488.348, -267.3637, -71.64563)
+local arcade = GetInteriorAtCoords(2731.66, -382.94, -49.38)
 
 local arcadeprops = {
     "casino_prop",
@@ -153,6 +154,7 @@ end
 
 CreateThread(function()
     RequestIpl("ch_h3_casino_cameras")
+    RequestIpl("ch_mph3_add")
 
     ActivateInteriorEntitySet(vault, "standard_props")
     ActivateInteriorEntitySet(vault, "cabinet_1")
@@ -161,9 +163,11 @@ CreateThread(function()
     DeactivateInteriorEntitySet(vault, "cabinet_2")
 
     for i = 1, 12 do 
-        ActivateInteriorEntitySet(arcade, arcadeprops[i])
+        ActivateInteriorEntitySet(arcadeGarage, arcadeprops[i])
     end
     
+    ActivateInteriorEntitySet(arcade, "interior_exposed_hipster")
+
     RefreshInterior(vault)
-    RefreshInterior(arcade)
+    RefreshInterior(arcadeGarage)
 end)
