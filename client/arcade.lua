@@ -13,6 +13,9 @@ local prepRow = 1
 local prepLine = 1
 
 local camIsUsed = false
+local isInGarage = false  
+local doorOpen = false
+local isInBuilding = false
 
 local boardType = {
     RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP"),
@@ -655,4 +658,89 @@ RegisterCommand("test_scale", function(src, args)
     SetupBoardInfo()
 end, false)
 
-local coords = {2727.91138, -371.9535, -48.40004}
+-- Laptop 
+
+local lesterdoorObj = 0
+
+local function OpenLesterDoorFromArcade()
+    local lesterdoorCoords = vector3(2727.91138, -371.9535, -48.40004)
+    local networkScene = 0
+    local lesterdoor = ""
+    local animDict = ""
+
+    LoadModel(lesterdoor)
+    LoadAnim(animDict)
+
+    networkScene = NetworkCreateSynchronisedScene(lesterdoorCoords, GetEntityRotation(lesterdoorObj), 1, true, false, 1065353216, 0.0, 1.3)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), networkScene, animDict, "", 4.0, -4.0, 18, 0, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(lesterdoorObj, networkScene, animDict, "", 1.0, -1.0, 114886080)
+
+    NetworkStartSynchronisedScene(networkScene)
+end
+
+local function OpenLesterDoorFromGarage()
+    LoadAnim("")
+    PlayEntityAnim(lesterdoorObj, "", "", 0.0, true, true, false, 0.0, 0x4000) 
+end
+
+
+CreateThread(function()
+    while true do 
+        if isInBuilding and not isInGarage and not doorOpen then 
+            local distance = #(GetEntityCoords(PlayerPedId()) - lesterdoorCoords)
+            if distance < 2 then 
+                HelpMsg("Press ~INPUT_CONTEXT~ to access the basement", 1000)
+                if IsControlPressed(0, 38) then 
+                    OpenLesterDoorFromArcade()
+                    isInGarage = true
+                    doorOpen = true
+                else
+                    Wait(10)
+                end
+            else 
+                Wait(100)
+            end
+        else 
+            Wait(1000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do 
+        if isInBuilding and isInGarage and not doorOpen then 
+            local distance = #(GetEntityCoords(PlayerPedId()) - lesterdoorCoords)
+            if distance < 5 then 
+                OpenLesterDoorFromGarage()
+                isInGarage = false
+                doorOpen = true
+            else 
+                Wait(500)
+            end
+        else 
+            Wait(1000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do 
+        if isInBuilding and doorOpen then 
+            local distance = #(GetEntityCoords(PlayerPedId()) - lesterdoorCoords)
+            if distance > 3 then 
+                isInGarage = not isInGarage 
+                Wait(3000)
+            else 
+                Wait(700)
+            end
+        else 
+            Wait(3000)
+        end
+    end
+end)
+
+RegisterCommand("lester_door", function()
+    lesterdoorObj = CreateObject(GetHashKey(lesterdoor), lesterdoorCoords, false, false, false)
+    FadeTeleport()
+    isInBuilding = true
+end, false)
