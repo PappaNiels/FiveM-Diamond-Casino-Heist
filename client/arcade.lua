@@ -661,26 +661,27 @@ end, false)
 -- Laptop 
 
 local lesterdoorObj = 0
+local lesterdoorCoords = vector3(2727.91138, -371.982025, -48.40004)
+local lesterdoor = "ch_prop_arcade_fortune_door_01a"
 
 local function OpenLesterDoorFromArcade()
-    local lesterdoorCoords = vector3(2727.91138, -371.9535, -48.40004)
     local networkScene = 0
-    local lesterdoor = ""
-    local animDict = ""
+    --local lesterdoor = ""
+    local animDict = "anim_heist@arcade_property@fortune_teller@male@"
 
-    LoadModel(lesterdoor)
+    --LoadModel(lesterdoor)
     LoadAnim(animDict)
 
     networkScene = NetworkCreateSynchronisedScene(lesterdoorCoords, GetEntityRotation(lesterdoorObj), 1, true, false, 1065353216, 0.0, 1.3)
-    NetworkAddPedToSynchronisedScene(PlayerPedId(), networkScene, animDict, "", 4.0, -4.0, 18, 0, 1000.0, 0)
-    NetworkAddEntityToSynchronisedScene(lesterdoorObj, networkScene, animDict, "", 1.0, -1.0, 114886080)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), networkScene, animDict, "coin_drop", 4.0, -4.0, 18, 0, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(lesterdoorObj, networkScene, animDict, "coin_drop_arcade_fortune_door", 1.0, -1.0, 114886080)
 
     NetworkStartSynchronisedScene(networkScene)
 end
 
 local function OpenLesterDoorFromGarage()
-    LoadAnim("")
-    PlayEntityAnim(lesterdoorObj, "", "", 0.0, true, true, false, 0.0, 0x4000) 
+    LoadAnim("anim_heist@arcade_property@fortune_teller@male@")
+    PlayEntityAnim(lesterdoorObj, "anim_heist@arcade_property@fortune_teller@male@", "coin_drop_arcade_fortune_door", 0.0, true, true, false, 0.0, 0x4000) 
 end
 
 
@@ -740,7 +741,9 @@ CreateThread(function()
 end)
 
 RegisterCommand("lester_door", function()
-    lesterdoorObj = CreateObject(GetHashKey(lesterdoor), lesterdoorCoords, false, false, false)
-    FadeTeleport()
-    isInBuilding = true
+    LoadModel("ch_prop_arcade_fortune_door_01a")
+    ClearArea(GetEntityCoords(PlayerPedId()))
+    lesterdoorObj = CreateObject(GetHashKey("ch_prop_arcade_fortune_door_01a"), lesterdoorCoords, false, false, false)
+    --FadeTeleport()
+    --isInBuilding = true
 end, false)
