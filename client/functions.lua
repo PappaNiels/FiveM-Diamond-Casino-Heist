@@ -1,13 +1,14 @@
 function HelpMsg(text, time)
-    AddTextEntry("help", text)
-    BeginTextCommandDisplayHelp("help")
-    EndTextCommandDisplayHelp(0, false, true, time .. .0)
+    AddTextEntry("HelpMsg", text)
+    BeginTextCommandDisplayHelp("HelpMsg")
+    EndTextCommandDisplayHelp(0, false, true)
 end
 
 function SubtitleMsg(msg, time)
-    ClearPrints()
-    SetTextEntry_2("STRING")
-    AddTextComponentString(msg)
+    --SetTextEntry_2("STRING")
+    --AddTextComponentString(msg)
+    AddTextEntry("SubtitleMsg", msg)
+    BeginTextCommandPrint("SubtitleMsg")
     DrawSubtitleTimed(time, true)
 end
 

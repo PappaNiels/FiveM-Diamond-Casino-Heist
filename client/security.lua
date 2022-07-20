@@ -168,7 +168,7 @@ CreateThread(function()
             local distance1, distance2 = #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][1]), #(GetEntityCoords(PlayerPedId()) - keypads["lvlFourKeypad"][2])
             
             if distance1 < 1 then 
-                HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
+                HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.") 
                 if IsControlPressed(0, 38) then  
                     SwipeKeycardMantrap(1, true)
                     isInMantrap = true
@@ -179,7 +179,7 @@ CreateThread(function()
                 end
                 
             elseif distance2 < 1 then
-                HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.", 150) 
+                HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.") 
                 if IsControlPressed(0, 38) then 
                     SwipeKeycardMantrap(2, true)
                     isInMantrap = true
