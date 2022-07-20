@@ -14,8 +14,8 @@ local function CheckSwipe(src, door)
         TriggerEvent("sv:casinoheist:security:openmantrapdoors", door)
         secondKeycard = false
     else 
-        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", src, math.random(0, 2))
-        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", playerTwo, math.random(0, 2))
+        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", src, math.random(1, 3))
+        TriggerClientEvent("cl:casinoheist:security:keycardswipefailed", playerTwo, math.random(1, 3))
     end
 end
 

@@ -126,7 +126,7 @@ RegisterNetEvent("cl:casinoheist:security:keycardswipesucceeded", function()
 end)
 
 RegisterNetEvent("cl:casinoheist:security:keycardswipefailed", function(num)
-    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][6 + num])
+    NetworkStartSynchronisedScene(keycardSwipeAnims["networkScenes"][5 + num])
     Wait(1800)
     SwipeKeycardMantrap(place, false)
 end)
