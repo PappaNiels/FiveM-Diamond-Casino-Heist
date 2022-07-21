@@ -454,22 +454,6 @@ local function SetDataFinal(entrance, exit, buyer, outfitin, outfitout)
 end
 
 local function ChangeImage(num, change)
-    if boardUsing == 2 then 
-        
-    elseif boardUsing == 3 then 
-        if num == 2 then 
-            entryNr = entryNr + change
-        elseif num == 3 then 
-            exitNr = exitNr + change
-        elseif num == 8 then 
-            buyerNr = buyerNr + change
-        elseif num == 13 then 
-            entryDisguiseNr = entryDisguiseNr + change
-        elseif num == 14 then 
-            exitDisguiseNr = exitDisguiseNr + change
-        end
-
-    end
     imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
 
     BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
