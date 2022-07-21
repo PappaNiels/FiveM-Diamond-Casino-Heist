@@ -61,8 +61,8 @@ keypads = {
     } 
 }
 
-difficulty = 0
-loot = 0 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
+difficulty = 0 -- 1 = Normal, 2 = Hard
+loot = 1 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
 approach = 2 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 vaultLayout = 0
 teamlives = 1
@@ -70,6 +70,21 @@ take = 8502100
 
 cash = 5875
 goldbar = 16156
+
+potential = {
+    [1] = {
+        2115000,
+        2585000,
+        2350000,
+        3290000
+    },
+    [2] = {
+        2326500,
+        2843500,
+        2585000,
+        3619000
+    }
+}
 
 gunman = {
     {"Chester McCoy"}
