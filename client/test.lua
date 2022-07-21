@@ -75,7 +75,7 @@ end, false)
 
 -- Dropoff End Heist
 RegisterCommand("cut_dropoff", function()
-    RequestCutscene("hs3f_all_drp1", 8) -- hs3f_all_drp2 and hs3f_all_drp3 are a bit different, but they are all dropoffs
+    RequestCutscene("hs3f_all_drp1", 8) -- hs3f_all_drp2 and hs3f_all_drp3 are a bit different, but they are all dropoffs 1 = Mid Level, 2 = Low Level, 3 = High Level
 
     while not HasCutsceneLoaded() do 
         Wait(10)

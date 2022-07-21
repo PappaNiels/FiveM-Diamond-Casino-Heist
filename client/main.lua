@@ -61,7 +61,7 @@ keypads = {
     } 
 }
 
-difficulty = 0 -- 1 = Normal, 2 = Hard
+difficulty = 1 -- 1 = Normal, 2 = Hard
 loot = 1 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
 approach = 2 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 vaultLayout = 0
@@ -72,13 +72,13 @@ cash = 5875
 goldbar = 16156
 
 potential = {
-    [1] = {
+    [1] = { -- Normal
         2115000,
         2585000,
         2350000,
         3290000
     },
-    [2] = {
+    [2] = { -- Hard
         2326500,
         2843500,
         2585000,
