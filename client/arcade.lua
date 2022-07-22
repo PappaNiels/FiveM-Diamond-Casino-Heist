@@ -227,11 +227,23 @@ local finalBoardPlacement = {
 local imageOrder = {
     [2] = {},
     [3] = {
-        [2] = {2, 11, 3, 5, 8, 10, 4, 9},
-        [3] = {},
-        [8] = {1, 2, 3},
-        [13] = {},
-        [14] = {}
+        [1] = {
+            [2] = {},
+            [3] = {11, 1, 3, 5, 8, 10, 9, 4},
+            [8] = {1, 2, 3}
+        },
+        [2] = {
+            [2] = {},
+            [3] = {11, 1, 3, 5, 8, 10, 9, 4},
+            [8] = {1, 2, 3},
+            [13] = {1, 2, 3, 4},
+            [14] = {1, 2, 3}
+        },
+        [3] = {
+            [2] = {2, 11, 3, 5, 8, 10, 4, 9},
+            [3] = {11, 1, 3, 5, 8, 10, 9, 4},
+            [8] = {1, 2, 3}
+        }
     }
 }
 
@@ -240,13 +252,15 @@ local imageOrderNum = {
 
     },
     [3] = {
-        [2] = 1 -- Entry
-        [3] = 1 -- Exit
-        [8] = 1 -- Buyer
-        [13] = 1 -- EntryDisguise
-        [14] = 1 -- ExitDisguise
+        [2] = 0 -- Entry
+        [3] = 0 -- Exit
+        [8] = 0 -- Buyer
+        [13] = 0 -- Entry Disguise
+        [14] = 0 -- Exit Disguise
     }
 }
+
+local notSelected = {2, 3, 4, 13, 14}
 
 function StartCamWhiteboard()
     boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], camCoords[boardUsing], camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
@@ -460,6 +474,47 @@ local function ChangeImage(num, change)
     ScaleformMovieMethodAddParamInt(num)
     ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][num][imageOrderNum[boardUsing][num]])
     EndScaleformMovieMethod()
+end
+
+local function InsertEntry()
+    for i = 1, #imageOrder[boardUsing][approach][2] do 
+        imageOrder[boardUsing][approach][2][i] = nil 
+    end
+
+    if imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 1 then
+        imageOrder[boardUsing][2][2] = {11, 1}
+    elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 2 then
+        imageOrder[boardUsing][2][2] = {11, 1}
+    elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 3 then
+        imageOrder[boardUsing][2][2] = {6}
+    elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 4 then
+        imageOrder[boardUsing][2][2] = {1}
+    end
+end
+
+local function NotSelected(i)
+    BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
+    ScaleformMovieMethodAddParamInt(notSelected[i])
+    ScaleformMovieMethodAddParamBool(true)
+    EndScaleformMovieMethod()
+end
+
+local function GetButtonId()
+    if boardUsing == 1 then 
+        return setupBoardPlacement[setupRow][setupLine]
+    elseif boardUsing == 2 then
+        return prepBoardPlacement[prepRow][prepLine]
+    elseif boardUsing == 3 then 
+        return finalBoardPlacement[approach][finalRow][finalLine]
+    end
+
+local function SetFocusOnButton()
+    BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS_VISIBLE")
+    ScaleformMovieMethodAddParamInt(GetButtonId())
+    ScaleformMovieMethodAddParamBool(true)
+    EndScaleformMovieMethod()
+
+    isFocusedBoard = true
 end
 
 --[[ 
@@ -681,6 +736,10 @@ function SetupBoardInfo()
 
         SetState(1, false, true)
 
+        for i = 1, #notSelected do 
+            NotSelected(i)
+        end
+
         BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
         ScaleformMovieMethodAddParamInt(finalBoardPlacement[approach][finalRow][finalLine])
         EndScaleformMovieMethod()
@@ -764,7 +823,7 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 38) then -- E
                 ChangeCam(1)
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-
+                SetFocusOnButton()
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 ExitBoard()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
@@ -803,7 +862,7 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 38) then -- E
                 ChangeCam(1)
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-
+                SetFocusOnButton()
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 ExitBoard()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
@@ -839,7 +898,7 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 44) then -- Q
                 ChangeCam(-1)
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-
+                SetFocusOnButton()
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 ExitBoard()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
