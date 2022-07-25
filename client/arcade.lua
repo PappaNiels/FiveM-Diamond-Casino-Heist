@@ -228,7 +228,7 @@ local imageOrder = {
     [2] = {},
     [3] = {
         [1] = {
-            [2] = {},
+            [2] = {2, 11, 3, 5, 8, 10, 4, 9},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
             [8] = {1, 2, 3}
         },
@@ -507,6 +507,13 @@ local function GetButtonId()
     elseif boardUsing == 3 then 
         return finalBoardPlacement[approach][finalRow][finalLine]
     end
+end
+
+-- NEEDS EDITING!!!!
+
+local function CanChangeImage(num)
+    if imageOrderNum[boardUsing][] == 1 then 
+
 
 local function SetFocusOnButton()
     BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS_VISIBLE")
@@ -515,6 +522,13 @@ local function SetFocusOnButton()
     EndScaleformMovieMethod()
 
     isFocusedBoard = true
+end
+
+local function UnFocusOnButton()
+    BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS")
+    ScaleformMovieMethodAddParamInt(GetButtonId())
+    ScaleformMovieMethodAddParamBool(false)
+    EndScaleformMovieMethod()
 end
 
 --[[ 
@@ -914,13 +928,17 @@ CreateThread(function()
     while true do 
         if isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 174) then -- <--
-
+                if CanChangeImage(-1) then 
+                    ChangeImage()
+                end
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
-
+                if CanChangeImage(1) then 
+                    ChangeImage()
+                end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-
-            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 
+            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
+                UnFocusOnButton()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
             end
