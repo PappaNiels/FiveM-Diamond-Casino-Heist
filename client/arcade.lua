@@ -3,6 +3,13 @@ local camCoords = {
     vector3(2709.8, -369.5, -54.23), 
     vector3(2712.95, -366.3, -54.23)
 }
+
+local boardCoords = {
+    vector3(2713.3, -366.2, -54.23418),
+    vector3(2716.27, -369.93, -54.23418),
+    vector3(2712.58, -372.65, -54.23418)
+}
+
 local camHeading = {0.0, 270.0, 180.0}
 
 local boardCam = 0
@@ -107,7 +114,7 @@ local optionalList = {
     [3] = {
         {"Decoy Gunman", false},
         {"Clean Vehicle", false},
-        {"Exit Disquise", false}
+        {"Exit Disguise", false}
     }
 }
 
@@ -155,6 +162,39 @@ local approachString = {
     "SILENT & SNEAKY",
     "THE BIG CON",
     "AGGRESSIVE"
+}
+
+local entranceString = {
+
+}
+
+local exitString = {
+
+}
+
+local buyerString = {
+    "LOW LEVEL",
+    "MID LEVEL",
+    "HIGH LEVEL"
+}
+
+local entryDisguiseString = {
+    "BUGSTARS",
+    "MAINTENANCE",
+    "GRUPPE SECHS",
+    "YUNG ANCESTOR"
+}
+
+local exitDisguiseString = {
+    "FIRE FIGHTER",
+    "NOOSE",
+    "HIGH ROLLER"
+} 
+
+local boardString = {
+    "Setup Board",
+    "Prep Board",
+    "Finale Board"
 }
 
 local arrowsVisible = {
@@ -452,18 +492,18 @@ local function MapMarkers()
     EndScaleformMovieMethod()
 end
 
-local function SetDataFinal(entrance, exit, buyer, outfitin, outfitout)
+local function SetDataFinal()
     BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
     ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
     ScaleformMovieMethodAddParamInt(25000)
     ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
     ScaleformMovieMethodAddParamInt(100000)
-    ScaleformMovieMethodAddParamPlayerNameString("ENTRANCE")
-    ScaleformMovieMethodAddParamPlayerNameString("EXIT")
-    ScaleformMovieMethodAddParamPlayerNameString("BUYER")
-    ScaleformMovieMethodAddParamPlayerNameString("OUTFITIN")
-    ScaleformMovieMethodAddParamPlayerNameString("OUTFITOUT")
+    ScaleformMovieMethodAddParamPlayerNameString(entranceString[imageOrderNum[3][2]])
+    ScaleformMovieMethodAddParamPlayerNameString(exitString[imageOrderNum[3][3]])
+    ScaleformMovieMethodAddParamPlayerNameString(buyerString[imageOrderNum[3][4]])
+    ScaleformMovieMethodAddParamPlayerNameString(entryDisguiseString[imageOrderNum[3][13]])
+    ScaleformMovieMethodAddParamPlayerNameString(exitDisguiseString[imageOrderNum[3][14]])
     EndScaleformMovieMethod()
 end
 
@@ -509,11 +549,15 @@ local function GetButtonId()
     end
 end
 
--- NEEDS EDITING!!!!
-
 local function CanChangeImage(num)
-    if imageOrderNum[boardUsing][] == 1 then 
-
+    if #imageOrder[boardUsing][approach][GetButtonId()] == imageOrdernum[approach][GetButtonId()] and num == 1 then 
+        return false
+    elseif imageOrdernum[approach][GetButtonId()] =< 1 and num == -1 then 
+        return false
+    else
+        return true
+    end
+end
 
 local function SetFocusOnButton()
     BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS_VISIBLE")
@@ -742,7 +786,7 @@ function SetupBoardInfo()
             OptionalList(i, 3)
         end
 
-        SetDataFinal(0, 0, 0, 0, 0)
+        SetDataFinal()
 
         SetCrewCut(1, 100)
 
@@ -929,18 +973,41 @@ CreateThread(function()
         if isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 174) then -- <--
                 if CanChangeImage(-1) then 
-                    ChangeImage()
+                    ChangeImage(GetButtonId(), -1)
                 end
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
                 if CanChangeImage(1) then 
-                    ChangeImage()
+                    ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                
+                UnFocusOnButton()
+                isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 UnFocusOnButton()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
+            end
+        else 
+            Wait(1000)
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do 
+        if isInGarage and boardUsing == 0 then 
+            for i = 1, 3 do 
+                local distance = #(GetEntityCoords(PlayerPedId()) - boardCoords[i])
+
+                if distance < 2 then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to use the " .. boardString[i])
+                    if IsControlJustPressed(0, 38) then 
+                        boardUsing = i
+                        StartCamWhiteboard()
+                    end
+                else
+                    Wait(10)
+                end
             end
         else 
             Wait(1000)
