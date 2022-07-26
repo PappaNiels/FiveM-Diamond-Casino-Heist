@@ -494,12 +494,14 @@ local function MapMarkers()
 end
 
 local function SetDataFinal()
+    local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][4]) + (potential[difficulty][loot] * driver[selectedDriver][4]) + (potential[difficulty][loot] * hacker[selectedHacker][5])
+
     BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
     ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
     ScaleformMovieMethodAddParamInt(25000)
     ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
-    ScaleformMovieMethodAddParamInt(100000)
+    ScaleformMovieMethodAddParamInt(math.floor(cut))
     ScaleformMovieMethodAddParamPlayerNameString(entranceString[imageOrderNum[3][2]])
     ScaleformMovieMethodAddParamPlayerNameString(exitString[imageOrderNum[3][3]])
     ScaleformMovieMethodAddParamPlayerNameString(buyerString[imageOrderNum[3][4]])

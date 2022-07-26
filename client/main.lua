@@ -113,9 +113,9 @@ hacker = {
     {"Rickie Lukens", "Poor", 146000, 102000, 0.03},
 }
 
-selectedGunman = 0
-selectedDriver = 0
-selectedHacker = 0
+selectedGunman = 1
+selectedDriver = 1
+selectedHacker = 1
 
 availableVehicles = {
     [1] = { -- Driver
@@ -171,7 +171,7 @@ availableVehicles = {
 }
 
 weaponLoadout = {
-    [1] { -- Approach
+    [1] = { -- Approach
         [1] = { -- Gunman
             [1] = { -- Loadout 1
                 "WEAPON_PUMPSHOTGUN_MK2",
@@ -243,7 +243,7 @@ weaponLoadout = {
             }
         }
     },
-    [2] {
+    [2] = {
         [1] = {
             [1] = {
                 "WEAPON_SMG_MK2",
@@ -305,7 +305,7 @@ weaponLoadout = {
             }
         }
     },
-    [3] {
+    [3] = {
         [1] = {
             [1] = {
                 "WEAPON_PUMPSHOTGUN_MK2",
