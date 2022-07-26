@@ -292,10 +292,10 @@ local imageOrderNum = {
 
     },
     [3] = {
-        [2] = 0 -- Entry
-        [3] = 0 -- Exit
-        [8] = 0 -- Buyer
-        [13] = 0 -- Entry Disguise
+        [2] = 0, -- Entry
+        [3] = 0, -- Exit
+        [8] = 0, -- Buyer
+        [13] = 0, -- Entry Disguise
         [14] = 0 -- Exit Disguise
     }
 }
@@ -303,15 +303,16 @@ local imageOrderNum = {
 local notSelected = {2, 3, 4, 13, 14}
 
 function StartCamWhiteboard()
-    boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], camCoords[boardUsing], camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
+    boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
     RenderScriptCams(true, false, 1000, true, false)
 
+    print(boardUsing)
     --while not HasScaleformMovieLoaded(boardType[boardUsing]) do 
     --    Wait(1)
     --end
 
     DisplayRadar(false)
-    SetupBoardInfo()
+    --SetupBoardInfo()
     SetEntityVisible(PlayerPedId(), false)
     
     camIsUsed = true
@@ -552,7 +553,7 @@ end
 local function CanChangeImage(num)
     if #imageOrder[boardUsing][approach][GetButtonId()] == imageOrdernum[approach][GetButtonId()] and num == 1 then 
         return false
-    elseif imageOrdernum[approach][GetButtonId()] =< 1 and num == -1 then 
+    elseif imageOrdernum[approach][GetButtonId()] <= 1 and num == -1 then 
         return false
     else
         return true
@@ -782,8 +783,14 @@ function SetupBoardInfo()
             ToDoList(i, 3)
         end
         
-        for i = 1, #optionalList[3] do 
-            OptionalList(i, 3)
+        if approach ~= 2 then
+            for i = 1, 2 do 
+                OptionalList(i, 3)
+            end
+        else 
+            for i = 1, #optionalList[3] do 
+                OptionalList(i, 3)
+            end
         end
 
         SetDataFinal()
@@ -807,15 +814,17 @@ function SetupBoardInfo()
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-        ScaleformMovieMethodAddParamInt(13)
-        ScaleformMovieMethodAddParamBool(false)
-        EndScaleformMovieMethod()
+        if approach ~= 2 then 
+            BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+            ScaleformMovieMethodAddParamInt(13)
+            ScaleformMovieMethodAddParamBool(false)
+            EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-        ScaleformMovieMethodAddParamInt(14)
-        ScaleformMovieMethodAddParamBool(false)
-        EndScaleformMovieMethod()
+            BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+            ScaleformMovieMethodAddParamInt(14)
+            ScaleformMovieMethodAddParamBool(false)
+            EndScaleformMovieMethod()
+        end
 
         BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
         ScaleformMovieMethodAddParamInt(9)
@@ -1015,10 +1024,10 @@ CreateThread(function()
     end
 end)
 
-RegisterCommand("camarcade", function(src, args)
-    boardUsing = tonumber(args[1])
-    StartCamWhiteboard()
-end, false)
+--RegisterCommand("camarcade", function(src, args)
+--    boardUsing = tonumber(args[1])
+--    StartCamWhiteboard()
+--end, false)
 
 RegisterCommand("test_scale", function(src, args)
     --boardUsing = tonumber(args[1])
