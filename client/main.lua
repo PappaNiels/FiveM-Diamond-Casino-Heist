@@ -178,18 +178,12 @@ function SetupCheckpoint()
     SetEntityForAll(vaultObjTwo)
 end
 
-RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(one)
-    print("client event " .. one)
-    hPlayer[1] = one
-    hPlayer[2] = two
-    hPlayer[3] = three
-    hPlayer[4] = four
-
-    --for i = 1, 4 do 
-    --    hPlayer[i] = one[i]
-    --end
-
-    print(hPlayer[1], hPlayer[2], hPlayer[3], hPlayer[4], "set")
+RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(crew)
+    hPlayer = crew
+    for i = 1, #crew do
+        print(crew[i])
+        print(hPlayer[i])
+    end
 end)
 
 AddEventHandler("baseevents:onPlayerDied", function(o, i)
