@@ -156,15 +156,36 @@ RegisterCommand("timer_test", function()
 end, false)
 
 RegisterCommand("scaleform", function()
-    local scaleform = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
+    local scaleform = RequestScaleformMovie("SHOP_MENU_DLC")
 
     while not HasScaleformMovieLoaded(scaleform) do 
         Wait(1)
     end
 
-    BeginScaleformMovieMethod(scaleform, "CASINO_HEIST_BOARD_PREP")
+    LoadTexture("shopui_title_heist")
 
+    --BeginScaleformMovieMethod(scaleform, "SET_HEADER")
+    --ScaleformMovieMethodAddParamPlayerNameString("test")
+    ----ScaleformMovieMethodAddParamInt(2)
+    --EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleform, "SET_IMAGE")
+    ScaleformMovieMethodAddParamPlayerNameString("shopui_title_heist")
+    ScaleformMovieMethodAddParamPlayerNameString("shopui_title_heist")
+    --ScaleformMovieMethodAddParamInt(5)
     EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleform, "SET_DATA_SLOT")
+    ScaleformMovieMethodAddParamInt(1)
+    EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleform, "DRAW_MENU_LIST")
+    EndScaleformMovieMethod()
+    --BeginScaleformMovieMethod(scaleform, "SET_DESCRIPTION")
+    --ScaleformMovieMethodAddParamPlayerNameString("test")
+    --ScaleformMovieMethodAddParamPlayerNameString("test")
+    --ScaleformMovieMethodAddParamPlayerNameString("test")
+    --EndScaleformMovieMethod()
 
     while true do 
         Wait(0)
