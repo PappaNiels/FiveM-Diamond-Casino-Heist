@@ -74,6 +74,7 @@ goldbar = 16156
 selectedGunman = 1
 selectedDriver = 1
 selectedHacker = 1
+selectedBuyer  = 0
 
 --hackerSelected = 1
 

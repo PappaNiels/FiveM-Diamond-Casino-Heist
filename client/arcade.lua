@@ -25,6 +25,7 @@ local camIsUsed = false
 local isInGarage = false  
 local doorOpen = false
 local isInBuilding = false
+local entryIsAvailable = false
 
 local boardType = {
     RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP"),
@@ -165,11 +166,44 @@ local approachString = {
 }
 
 local entranceString = {
-
+    [1] = {
+        "STAFF LOBBY",
+        "WASTE DISPOSAL",
+        "S.W. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "N.E. ROOF TERRACE",
+        "N.W. ROOF TERRACE",
+        "SOUTH HELIPAD",
+        "NORTH HELIPAD"
+    },
+    [2] = {
+        [11] = "STAFF LOBBY",
+        [1] = "WASTE DISPOSAL",
+        [2] = "MAIN ENTRANCE",
+        [6] = "SECURITY TUNNEL"
+    },
+    [3] = {
+        
+    }
 }
 
 local exitString = {
-
+    [1] = {
+        "STAFF LOBBY",
+        "WASTE DISPOSAL",
+        "S.W. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "N.E. ROOF TERRACE",
+        "N.W. ROOF TERRACE",
+        "SOUTH HELIPAD",
+        "NORTH HELIPAD"
+    },
+    [2] = {
+        
+    },
+    [3] = {
+        
+    }
 }
 
 local buyerString = {
@@ -268,7 +302,7 @@ local imageOrder = {
     [2] = {},
     [3] = {
         [1] = {
-            [2] = {2, 11, 3, 5, 8, 10, 4, 9},
+            [2] = {11, 1, 3},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
             [8] = {1, 2, 3}
         },
@@ -502,8 +536,12 @@ local function SetDataFinal()
     ScaleformMovieMethodAddParamInt(25000)
     ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
     ScaleformMovieMethodAddParamInt(math.floor(cut))
-    ScaleformMovieMethodAddParamPlayerNameString(entranceString[imageOrderNum[3][2]])
-    ScaleformMovieMethodAddParamPlayerNameString(exitString[imageOrderNum[3][3]])
+    if approach == 2 then 
+        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]]])
+    else
+        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrderNum[3][2]])
+    end
+    ScaleformMovieMethodAddParamPlayerNameString(exitString[approach][imageOrderNum[3][3]])
     ScaleformMovieMethodAddParamPlayerNameString(buyerString[imageOrderNum[3][4]])
     ScaleformMovieMethodAddParamPlayerNameString(entryDisguiseString[imageOrderNum[3][13]])
     ScaleformMovieMethodAddParamPlayerNameString(exitDisguiseString[imageOrderNum[3][14]])
@@ -511,8 +549,9 @@ local function SetDataFinal()
 end
 
 local function ChangeImage(num, change)
-    print("change " .. change)
-    if imageOrderNum[boardUsing][num] == 0 then 
+    --print("change " .. change)
+    
+    if imageOrderNum[boardUsing][num] == 0 and boardUsing == 3 then 
         imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
         
         BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
@@ -531,9 +570,20 @@ local function ChangeImage(num, change)
     end
 
     --local test = imageOrderNum[boardUsing][num]
-    print(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
+    --print(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
 
-    
+    if boardUsing == 3 then 
+        if num == 2 and not entryIsAvailable then 
+            entryIsAvailable = true 
+        end
+
+        if num = 4 then 
+            selectedBuyer = selectedBuyer + change 
+            MapMarkers()
+        end
+
+        SetDataFinal()
+    end
 end
 
 local function InsertEntry()
@@ -548,7 +598,7 @@ local function InsertEntry()
     elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 3 then
         imageOrder[boardUsing][2][2] = {6}
     elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 4 then
-        imageOrder[boardUsing][2][2] = {1}
+        imageOrder[boardUsing][2][2] = {2}
     end
 end
 
@@ -609,6 +659,7 @@ local function PlayerJoinedCrew(id)
     ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(id))
     EndScaleformMovieMethod()
 end
+
 --[[ 
     Setup:
 
@@ -1007,7 +1058,9 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 44) then -- Q
                 ChangeCam(-1)
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                SetFocusOnButton()
+                if (GetButtonId() == 2 and entryIsAvailable) or approach ~= 2 then
+                    SetFocusOnButton()
+                end
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 ExitBoard()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
@@ -1024,6 +1077,7 @@ CreateThread(function()
         Wait(2)
         if isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 174) then -- <--
+                    --if GetButtonId() ~= 2 and imageOrderNum[3][13] ~= 0 and boardUsing == 3 then  
                 if CanChangeImage(GetButtonId(), -1) then 
                     ChangeImage(GetButtonId(), -1)
                 end
@@ -1032,10 +1086,12 @@ CreateThread(function()
                     ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
+                ExecuteButtonFunction(GetButtonId())
                 UnFocusOnButton()
                 isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 UnFocusOnButton()
+                isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
             end
