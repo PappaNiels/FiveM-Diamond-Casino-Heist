@@ -32,6 +32,10 @@ server_scripts {
     "server/hud.lua"
 }
 
+shared_scripts {
+    "shared/*.lua"
+}
+
 escrow_ignore {
     "shared/*.lua"
 }
