@@ -4,6 +4,20 @@ function HelpMsg(text, time)
     EndTextCommandDisplayHelp(0, false, true)
 end
 
+function InfoMsg(text, time)
+    BeginTextCommandThefeedPost("STRING")
+    AddTextComponentSubstringPlayerName(text)
+    EndTextCommandThefeedPostTicker(true, true)
+end
+
+function InfoMsgExtra(senderId, msg, subtitle)
+    local txd = GetPedMugshot()
+    
+    BeginTextCommandThefeedPost("STRING")
+    AddTextComponentSubstringPlayerName(GetPlayerName(GetPlayerFromServerId(senderId)) .. " has invited you to join his crew")
+    EndTextCommandThefeedPostMessagetext(txd, txd, false, 1, GetPlayerName(GetPlayerFromServerId(senderId)), "Diamond Casino Heist")
+end 
+
 function SubtitleMsg(msg, time)
     --SetTextEntry_2("STRING")
     --AddTextComponentString(msg)
@@ -34,32 +48,17 @@ function LoadCutscene(name)
         Wait(10)
     end
 
-    
-    local players = GetHeistPlayer()
-
-    local cutPlayer = {
-        --ClonePedEx(hPlayer[1], 0.0, false, true, 1),
-        --ClonePedEx(hPlayer[2], 0.0, false, true, 1),
-        --ClonePedEx(hPlayer[3], 0.0, false, true, 1),
-        --ClonePedEx(hPlayer[4], 0.0, false, true, 1)
-    }
-
-    for i = 1, 4 do 
-        cutPlayer[i] = ClonePedEx(hPlayer[i], 0.0, false, true, 1)
-    end
-    --print(hPlayer[2])
-
     SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(cutPlayer[1], "MP_1", 0, 0, 64)
+    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[1])), "MP_1", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_2", 0, 1)
-    RegisterEntityForCutscene(cutPlayer[2], "MP_2", 0, 0, 64)
+    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[2])), "MP_2", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_3", 0, 1)
-    RegisterEntityForCutscene(cutPlayer[3], "MP_3", 0, 0, 64)
+    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[3])), "MP_3", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_4", 0, 1)
-    RegisterEntityForCutscene(cutPlayer[4], "MP_4", 0, 0, 64)
+    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[4])), "MP_4", 0, 0, 64)
 end
 
 function LoadModel(model)
@@ -91,7 +90,7 @@ function LoadTexture(ytd)
 end
 
 function GetPedMugshot(id)
-    local pedheadshotint = RegisterPedheadshot(GetPlayerPed(id))
+    local pedheadshotint = RegisterPedheadshot(GetPlayerPed(GetPlayerFromServerId(id)))
         
     while not IsPedheadshotReady(pedheadshotint) do 
         Wait(0)
@@ -114,7 +113,7 @@ RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     end
 end)
 
-
+RegisterNetEvent("cl:casinoheist:infomessage", InfoMsg)
 --RegisterCommand("test_anim", function()
 --    HackKeypad(4, 0)
 --end, false)
