@@ -6,6 +6,19 @@ RegisterCommand("test_h", function(source, args)
     print(hPlayer[1], hPlayer[2])
 end, false)
 
+RegisterCommand("int_menu", function(src, args)
+    if args[1] == nil then 
+        TriggerClientEvent("cl:casinoheist:infomessage", src, "no id")
+    elseif tonumber(args[1]) == src then 
+        TriggerClientEvent("cl:casinoheist:infomessage", src, "same")
+    else
+        TriggerClientEvent("cl:casinoheist:infomessage", src, "not")
+    end
+
+    print(src)
+    --print(source)
+end, false)
+
 RegisterNetEvent("sv:casinoheist:setHeistPlayers", function(player, num)
     hPlayer[num] = source
     --print(player, num) 

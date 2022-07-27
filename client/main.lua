@@ -1,6 +1,6 @@
 heistInProgress = false
 
-hPlayer = {1, 1, 1, 1}
+hPlayer = {}
 
 heistType = 0
 entryType = 0
