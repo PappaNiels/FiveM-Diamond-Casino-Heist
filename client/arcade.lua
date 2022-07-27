@@ -368,6 +368,33 @@ local function ExitBoard()
     SetEntityVisible(PlayerPedId(), true)
 end
 
+local function GetButtonId()
+    if boardUsing == 1 then 
+        return setupBoardPlacement[setupRow][setupLine]
+    elseif boardUsing == 2 then
+        return prepBoardPlacement[prepRow][prepLine]
+    elseif boardUsing == 3 then 
+        return finalBoardPlacement[approach][finalRow][finalLine]
+    end
+end
+
+local function CanChangeImage(num, change)
+    --local num = GetButtonId()
+    print(num)
+    print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
+    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] and change == 1 then 
+        print("too high")
+        return false
+    elseif imageOrderNum[boardUsing][num] <= 1 and change == -1 then 
+        print("too low")
+        print(change)
+        return false
+    else
+        print("can")
+        return true
+    end
+end
+
 local function ToDoList(i, num)
     if num == 2 then 
         BeginScaleformMovieMethod(boardType[2], "ADD_TODO_LIST_ITEM")
@@ -527,8 +554,9 @@ local function MapMarkers()
     EndScaleformMovieMethod()
 end
 
-local function SetDataFinal()
+local function SetDataFinal(i)
     local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][4]) + (potential[difficulty][loot] * driver[selectedDriver][4]) + (potential[difficulty][loot] * hacker[selectedHacker][5])
+    --local num = GetButtonId()
 
     BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
@@ -537,7 +565,8 @@ local function SetDataFinal()
     ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
     ScaleformMovieMethodAddParamInt(math.floor(cut))
     if approach == 2 then 
-        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]]])
+        print(imageOrderNum[3][2])
+        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrder[3][approach][2][imageOrderNum[3][2]]])
     else
         ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrderNum[3][2]])
     end
@@ -577,7 +606,7 @@ local function ChangeImage(num, change)
             entryIsAvailable = true 
         end
 
-        if num = 4 then 
+        if num == 4 then 
             selectedBuyer = selectedBuyer + change 
             MapMarkers()
         end
@@ -607,33 +636,6 @@ local function NotSelected(i)
     ScaleformMovieMethodAddParamInt(notSelected[i])
     ScaleformMovieMethodAddParamBool(true)
     EndScaleformMovieMethod()
-end
-
-local function GetButtonId()
-    if boardUsing == 1 then 
-        return setupBoardPlacement[setupRow][setupLine]
-    elseif boardUsing == 2 then
-        return prepBoardPlacement[prepRow][prepLine]
-    elseif boardUsing == 3 then 
-        return finalBoardPlacement[approach][finalRow][finalLine]
-    end
-end
-
-local function CanChangeImage(num, change)
-    --local num = GetButtonId()
-    print(num)
-    print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
-    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] and change == 1 then 
-        print("too high")
-        return false
-    elseif imageOrderNum[boardUsing][num] <= 1 and change == -1 then 
-        print("too low")
-        print(change)
-        return false
-    else
-        print("can")
-        return true
-    end
 end
 
 local function SetFocusOnButton()
@@ -888,6 +890,8 @@ function SetupBoardInfo()
         for i = 1, #notSelected do 
             NotSelected(i)
         end
+
+        PlayerJoinedCrew(2)
 
         BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
         ScaleformMovieMethodAddParamInt(finalBoardPlacement[approach][finalRow][finalLine])
