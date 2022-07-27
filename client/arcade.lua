@@ -306,7 +306,7 @@ function StartCamWhiteboard()
     boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
     RenderScriptCams(true, false, 1000, true, false)
 
-    print(boardUsing)
+    --print(boardUsing)
     --while not HasScaleformMovieLoaded(boardType[boardUsing]) do 
     --    Wait(1)
     --end
@@ -327,7 +327,7 @@ end
 
 local function ExitBoard()
     boardUsing = 0
-    canUsing = false
+    camIsUsed = false
     DestroyAllCams()
     RenderScriptCams(false, false, 1000, true, false)
     DisplayRadar(true)
@@ -375,7 +375,7 @@ local function SetImage(i, num)
         ScaleformMovieMethodAddParamInt(images[num][i][2])
         ScaleformMovieMethodAddParamInt(images[num][i][3])
         EndScaleformMovieMethod()
-        print(images[num][i][3]) 
+        --print(images[num][i][3]) 
     else 
         BeginScaleformMovieMethod(boardType[num], "SET_BUTTON_GREYED_OUT")
         ScaleformMovieMethodAddParamInt(images[num][i][2])
@@ -425,16 +425,16 @@ local function SetMarker(row, line)
         ScaleformMovieMethodAddParamInt(prepBoardPlacement[prepRow][prepLine])
         EndScaleformMovieMethod()
     elseif boardUsing == 3 then 
-        if (finalRow == 1 or finalRow == 2) and finalLine == 1 and line == 1 and approach == 2 then 
+        if (finalRow == 1 or finalRow == 2) and finalLine == 1 and line == 1 and approach ~= 2 then 
             finalLine = 3
-            print("test1")
-        elseif (finalRow == 1 or finalRow == 2) and finalLine == 3 and line == -1 and approach == 2 then
+            --print("test1")
+        elseif (finalRow == 1 or finalRow == 2) and finalLine == 3 and line == -1 and approach ~= 2 then
             finalLine = 1
-            print("test2")
+            --print("test2")
         else 
             finalRow = finalRow + row
             finalLine = finalLine + line
-            print("test3")
+            --print("test3")
         end
         BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
         ScaleformMovieMethodAddParamInt(finalBoardPlacement[approach][finalRow][finalLine])
@@ -511,12 +511,29 @@ local function SetDataFinal()
 end
 
 local function ChangeImage(num, change)
-    imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
+    print("change " .. change)
+    if imageOrderNum[boardUsing][num] == 0 then 
+        imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
+        
+        BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
+        ScaleformMovieMethodAddParamInt(num)
+        ScaleformMovieMethodAddParamBool(false)
+        EndScaleformMovieMethod()
+    else 
+        imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
 
-    BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
-    ScaleformMovieMethodAddParamInt(num)
-    ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][num][imageOrderNum[boardUsing][num]])
-    EndScaleformMovieMethod()
+        --print("SET_IMAGE")
+
+        BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
+        ScaleformMovieMethodAddParamInt(num)
+        ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
+        EndScaleformMovieMethod()
+    end
+
+    --local test = imageOrderNum[boardUsing][num]
+    print(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
+
+    
 end
 
 local function InsertEntry()
@@ -552,12 +569,19 @@ local function GetButtonId()
     end
 end
 
-local function CanChangeImage(num)
-    if #imageOrder[boardUsing][approach][GetButtonId()] == imageOrdernum[approach][GetButtonId()] and num == 1 then 
+local function CanChangeImage(num, change)
+    --local num = GetButtonId()
+    print(num)
+    print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
+    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] and change == 1 then 
+        print("too high")
         return false
-    elseif imageOrdernum[approach][GetButtonId()] <= 1 and num == -1 then 
+    elseif imageOrderNum[boardUsing][num] <= 1 and change == -1 then 
+        print("too low")
+        print(change)
         return false
     else
+        print("can")
         return true
     end
 end
@@ -578,6 +602,21 @@ local function UnFocusOnButton()
     EndScaleformMovieMethod()
 end
 
+function PlayerJoinedCrew(id)
+    local pedheadshotint = RegisterPedheadshot(GetPlayerPed(id))
+        
+    while not IsPedheadshotReady(pedheadshotint) do 
+        Wait(0)
+    end
+
+    local pedheadshotstring = GetPedheadshotTxdString(pedheadshotint)
+
+    BeginScaleformMovieMethod(boardType[3], "SET_CREW_MEMBER")
+    ScaleformMovieMethodAddParamInt(8)
+    ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(id)))
+    ScaleformMovieMethodAddParamTextureNameString(pedheadshotstring)
+    EndScaleformMovieMethod()
+end
 --[[ 
     Setup:
 
@@ -842,6 +881,15 @@ function SetupBoardInfo()
         ScaleformMovieMethodAddParamInt(11)
         ScaleformMovieMethodAddParamBool(false)
         EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_GREYED_OUT")
+        ScaleformMovieMethodAddParamInt(2)
+        ScaleformMovieMethodAddParamBool(true)
+        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
+        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
+        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
+        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
+        EndScaleformMovieMethod()
     --end
 end
 
@@ -981,13 +1029,14 @@ end)
 
 CreateThread(function()
     while true do 
+        Wait(2)
         if isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 174) then -- <--
-                if CanChangeImage(-1) then 
+                if CanChangeImage(GetButtonId(), -1) then 
                     ChangeImage(GetButtonId(), -1)
                 end
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
-                if CanChangeImage(1) then 
+                if CanChangeImage(GetButtonId(), 1) then 
                     ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
@@ -1012,7 +1061,7 @@ CreateThread(function()
 
                 if distance < 2 then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to use the " .. boardString[i])
-                    if IsControlJustPressed(0, 38) then 
+                    if IsControlPressed(0, 38) then 
                         boardUsing = i
                         StartCamWhiteboard()
                     end
