@@ -90,6 +90,16 @@ function LoadTexture(ytd)
     end
 end
 
+function GetPedMugshot(id)
+    local pedheadshotint = RegisterPedheadshot(GetPlayerPed(id))
+        
+    while not IsPedheadshotReady(pedheadshotint) do 
+        Wait(0)
+    end
+
+    return GetPedheadshotTxdString(pedheadshotint)
+end
+
 function SetEntityForAll(entity)
     NetworkRegisterEntityAsNetworked(entity)
     netId = NetworkGetNetworkIdFromEntity(entity)
