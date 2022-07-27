@@ -17,7 +17,7 @@ function InfoMsg(text, id)
 end
 
 function InfoMsgExtra(senderId)
-    local txd = GetPedMugshot()
+    local txd = GetPedMugshot(senderId)
     
     BeginTextCommandThefeedPost("STRING")
     AddTextComponentSubstringPlayerName(GetPlayerName(GetPlayerFromServerId(senderId)) .. " has invited you to join his crew for the Diamond Casino Heist!")
