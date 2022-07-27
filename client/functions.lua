@@ -4,18 +4,24 @@ function HelpMsg(text, time)
     EndTextCommandDisplayHelp(0, false, true)
 end
 
-function InfoMsg(text, time)
-    BeginTextCommandThefeedPost("STRING")
-    AddTextComponentSubstringPlayerName(text)
-    EndTextCommandThefeedPostTicker(true, true)
+function InfoMsg(text, id)
+    if id ~= nil then 
+        BeginTextCommandThefeedPost("STRING")
+        AddTextComponentSubstringPlayerName(string.format(text, GetPlayerName(GetPlayerFromServerId(id))))
+        EndTextCommandThefeedPostTicker(true, true)
+    else 
+        BeginTextCommandThefeedPost("STRING")
+        AddTextComponentSubstringPlayerName(text)
+        EndTextCommandThefeedPostTicker(true, true)
+    end
 end
 
-function InfoMsgExtra(senderId, msg, subtitle)
+function InfoMsgExtra(senderId)
     local txd = GetPedMugshot()
     
     BeginTextCommandThefeedPost("STRING")
-    AddTextComponentSubstringPlayerName(GetPlayerName(GetPlayerFromServerId(senderId)) .. " has invited you to join his crew")
-    EndTextCommandThefeedPostMessagetext(txd, txd, false, 1, GetPlayerName(GetPlayerFromServerId(senderId)), "Diamond Casino Heist")
+    AddTextComponentSubstringPlayerName(GetPlayerName(GetPlayerFromServerId(senderId)) .. " has invited you to join his crew for the Diamond Casino Heist!")
+    EndTextCommandThefeedPostMessagetext(txd, txd, false, 0, GetPlayerName(GetPlayerFromServerId(senderId)), "Diamond Casino Heist")
 end 
 
 function SubtitleMsg(msg, time)
@@ -114,6 +120,7 @@ RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
 end)
 
 RegisterNetEvent("cl:casinoheist:infomessage", InfoMsg)
+RegisterNetEvent("cl:casinoheist:infomessageextra", InfoMsgExtra)
 --RegisterCommand("test_anim", function()
 --    HackKeypad(4, 0)
 --end, false)
