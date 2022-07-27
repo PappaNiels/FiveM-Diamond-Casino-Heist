@@ -1,13 +1,13 @@
 RegisterCommand("testcut", function()
-    RequestCutscene("hs3f_int2", 8)
-
-    while not HasCutsceneLoaded() do 
-        Wait(10)
-    end
+    --RequestCutscene("hs3f_int2", 8)
+--
+    --while not HasCutsceneLoaded() do 
+    --    Wait(10)
+    --end
     LoadCutscene("hs3f_int2")
 
-    SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
+    --SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
+    --RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
 
     StartCutscene(0)
     print(GetCutsceneTotalDuration())
