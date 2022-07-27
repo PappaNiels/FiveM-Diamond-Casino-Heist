@@ -602,19 +602,11 @@ local function UnFocusOnButton()
     EndScaleformMovieMethod()
 end
 
-function PlayerJoinedCrew(id)
-    local pedheadshotint = RegisterPedheadshot(GetPlayerPed(id))
-        
-    while not IsPedheadshotReady(pedheadshotint) do 
-        Wait(0)
-    end
-
-    local pedheadshotstring = GetPedheadshotTxdString(pedheadshotint)
-
+local function PlayerJoinedCrew(id)
     BeginScaleformMovieMethod(boardType[3], "SET_CREW_MEMBER")
     ScaleformMovieMethodAddParamInt(8)
     ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(id)))
-    ScaleformMovieMethodAddParamTextureNameString(pedheadshotstring)
+    ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(id))
     EndScaleformMovieMethod()
 end
 --[[ 
