@@ -74,9 +74,21 @@ goldbar = 16156
 selectedGunman = 1
 selectedDriver = 1
 selectedHacker = 1
+selectedEntrance = 0
+selectedExit = 0
 selectedBuyer  = 0
-
+selectedEntryDisguise = 0
+selectedExitDisguise = 0
 --hackerSelected = 1
+boughtCleanVehicle = false
+boughtDecoy = false
+
+playerCut = {
+    [1] = {100},
+    [2] = {85, 15},
+    [3] = {70, 15, 15},
+    [4] = {55, 15, 15, 15}
+}
 
 alarmTriggered = 0
 
