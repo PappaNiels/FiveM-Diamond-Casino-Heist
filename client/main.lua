@@ -180,10 +180,6 @@ end
 
 RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(crew)
     hPlayer = crew
-    for i = 1, #crew do
-        print(crew[i])
-        print(hPlayer[i])
-    end
 end)
 
 AddEventHandler("baseevents:onPlayerDied", function(o, i)
