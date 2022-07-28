@@ -11,9 +11,9 @@ end, false)
 RegisterCommand("invite_casinoheist", function(src, args)
     if src == hPlayer[1] then 
         if args[1] == nil then 
-            TriggerClientEvent("cl:casinoheist:infoMessage", src, "no id")
+            TriggerClientEvent("cl:casinoheist:infoMessage", src, "You need to add an id in order to invite someone for the Diamond Casino Heist")
         elseif tonumber(args[1]) == src then 
-            TriggerClientEvent("cl:casinoheist:infoMessage", src, "same")
+            TriggerClientEvent("cl:casinoheist:infoMessage", src, "You can not invite yourself")
         else
             invitedPlayers[#invitedPlayers + 1] = tonumber(args[1]) 
             TriggerClientEvent("cl:casinoheist:infoMessageExtra", tonumber(args[1]), src)
@@ -28,12 +28,11 @@ RegisterCommand("join_casinoheist", function(src)
     if not heistInProgress then 
         if #invitedPlayers ~= 0 then 
             for i = 1, #invitedPlayers do
-                print(i) 
                 if invitedPlayers[i] == src then 
                     hPlayer[#hPlayer + 1] = src 
                     for i = 1, #hPlayer do 
-                        TriggerClientEvent("cl:casinoheist:updateHeistPlayers", i, hPlayer)
-                        TriggerClientEvent("cl:casinoheist:syncHeistPlayerScaleform")
+                        TriggerClientEvent("cl:casinoheist:updateHeistPlayers", hPlayer[i], hPlayer)
+                        --TriggerClientEvent("cl:casinoheist:syncHeistPlayerScaleform", hPlayer[i])
                     end
 
                     for i = 1, #hPlayer - 1 do 
@@ -60,7 +59,9 @@ RegisterNetEvent("sv:casinoheist:setHeistPlayers", function(player, num)
 end)
 
 RegisterNetEvent("sv:casinoheist:loadCutscene", function(cutscene)
-    TriggerClientEvent("cl:casinoheist:startCutscene", -1, cutscene)
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:startCutscene", hPlayer[i], cutscene)
+    end
 end)
 
 RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
