@@ -167,10 +167,11 @@ local approachString = {
 
 local entranceString = {
     [1] = {
+        "ENTRANCE",
         "STAFF LOBBY",
         "WASTE DISPOSAL",
-        "S.W. ROOF TERRACE",
         "S.E. ROOF TERRACE",
+        "S.W. ROOF TERRACE",
         "N.E. ROOF TERRACE",
         "N.W. ROOF TERRACE",
         "SOUTH HELIPAD",
@@ -189,6 +190,18 @@ local entranceString = {
 
 local exitString = {
     [1] = {
+        "EXIT",
+        "STAFF LOBBY",
+        "WASTE DISPOSAL",
+        "N.W. ROOF TERRACE",
+        "N.E. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "S.W. ROOF TERRACE",
+        "SOUTH HELIPAD",
+        "NORTH HELIPAD"
+    },
+    [2] = {
+        "EXIT",
         "STAFF LOBBY",
         "WASTE DISPOSAL",
         "S.W. ROOF TERRACE",
@@ -198,21 +211,20 @@ local exitString = {
         "SOUTH HELIPAD",
         "NORTH HELIPAD"
     },
-    [2] = {
-        
-    },
     [3] = {
         
     }
 }
 
 local buyerString = {
+    "BUYER",
     "LOW LEVEL",
     "MID LEVEL",
     "HIGH LEVEL"
 }
 
 local entryDisguiseString = {
+    "ENTRY DISGUISE",
     "BUGSTARS",
     "MAINTENANCE",
     "GRUPPE SECHS",
@@ -220,6 +232,7 @@ local entryDisguiseString = {
 }
 
 local exitDisguiseString = {
+    "EXIT DISGUISE",
     "FIRE FIGHTER",
     "NOOSE",
     "HIGH ROLLER"
@@ -304,19 +317,19 @@ local imageOrder = {
         [1] = {
             [2] = {11, 1, 3},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
-            [8] = {1, 2, 3}
+            [4] = {1, 2, 3}
         },
         [2] = {
             [2] = {},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
-            [8] = {1, 2, 3},
+            [4] = {1, 2, 3},
             [13] = {1, 2, 3, 4},
             [14] = {1, 2, 3}
         },
         [3] = {
             [2] = {2, 11, 3, 5, 8, 10, 4, 9},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
-            [8] = {1, 2, 3}
+            [4] = {1, 2, 3}
         }
     }
 }
@@ -326,11 +339,11 @@ local imageOrderNum = {
 
     },
     [3] = {
-        [2] = 0, -- Entry
-        [3] = 0, -- Exit
-        [8] = 0, -- Buyer
-        [13] = 0, -- Entry Disguise
-        [14] = 0 -- Exit Disguise
+        [2] = 1, -- Entry
+        [3] = 1, -- Exit
+        [4] = 1, -- Buyer
+        [13] = 1, -- Entry Disguise
+        [14] = 1 -- Exit Disguise
     }
 }
 
@@ -389,10 +402,10 @@ local function CanChangeImage(num, change)
     --local num = GetButtonId()
     print(num)
     print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
-    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] and change == 1 then 
+    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] - 1 and change == 1 then 
         print("too high")
         return false
-    elseif imageOrderNum[boardUsing][num] <= 1 and change == -1 then 
+    elseif imageOrderNum[boardUsing][num] <= 2 and change == -1 then 
         print("too low")
         print(change)
         return false
@@ -407,23 +420,22 @@ local function SumTake()
         return playerCut[1][1]
     elseif #hPlayer == 2 then
         return playerCut[2][1] + playerCut[2][2]
-    elseif #hPlayer == 2 then
+    elseif #hPlayer == 3 then
         return playerCut[3][1] + playerCut[3][2] + playerCut[3][3]
-    elseif #hPlayer == 2 then
+    elseif #hPlayer == 4 then
         return playerCut[4][1] + playerCut[4][2] + playerCut[4][3] + playerCut[4][4]
     end
 end
 
-local function IsMinCut()
-    for i = 1, #hPlayer do 
-        if playerCut[#hPlayer][i] == 15 then 
-            return true 
-        end
+local function IsMinCut(player)
+    if playerCut[#hPlayer][player] == 15 then 
+        return true 
     end
 end
 
-local function CanChangeCut(change)
-    if change < 0 and not IsMinCut() then 
+local function CanChangeCut(player, change)
+    print(SumTake())
+    if change < 0 and not IsMinCut(player) then 
         return true 
     elseif SumTake() < 100 and change > 0 then 
         return true 
@@ -432,6 +444,33 @@ local function CanChangeCut(change)
     else
         return false
     end 
+end
+
+local function SetDataFinal(i)
+    local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][4]) + (potential[difficulty][loot] * driver[selectedDriver][4]) + (potential[difficulty][loot] * hacker[selectedHacker][5])
+    --local num = GetButtonId()
+
+    BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
+    ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
+    ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
+    ScaleformMovieMethodAddParamInt(25000)
+    ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
+    ScaleformMovieMethodAddParamInt(math.floor(cut))
+    if approach == 2 and entryIsAvailable and imageOrderNum[3][2] ~= 1 then 
+        print(1)
+        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrder[3][approach][2][imageOrderNum[3][2] - 1]])
+    elseif approach == 2 then 
+        ScaleformMovieMethodAddParamPlayerNameString("ENTRANCE")
+        print(2)
+    else
+        print(3)
+        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrderNum[3][2]])
+    end
+    ScaleformMovieMethodAddParamPlayerNameString(exitString[approach][imageOrderNum[3][3]])
+    ScaleformMovieMethodAddParamPlayerNameString(buyerString[imageOrderNum[3][4]])
+    ScaleformMovieMethodAddParamPlayerNameString(entryDisguiseString[imageOrderNum[3][13]])
+    ScaleformMovieMethodAddParamPlayerNameString(exitDisguiseString[imageOrderNum[3][14]])
+    EndScaleformMovieMethod()
 end
 
 local function ToDoList(i, num)
@@ -467,6 +506,28 @@ local function Lock(i)
     ScaleformMovieMethodAddParamInt(i + 4)
     ScaleformMovieMethodAddParamBool(lockList[i])
     EndScaleformMovieMethod()
+end
+
+local function InsertEntry()
+    for i = 1, #imageOrder[3][approach][2] do 
+        imageOrder[3][approach][2][i] = 0
+    end
+
+    print(imageOrderNum[3][13])
+
+    if imageOrderNum[3][13] == 1 then
+        --imageOrder[3][2][2][1] = 11
+        --imageOrder[3][2][2][2] = 1
+        imageOrder[3][2][2] = {11, 1}
+    elseif imageOrderNum[3][13] == 2 then
+        imageOrder[3][2][2] = {11, 1}
+    elseif imageOrderNum[3][13] == 3 then
+        imageOrder[3][2][2] = {6}
+    elseif imageOrderNum[3][13] == 4 then
+        imageOrder[3][2][2] = {2}
+    end
+
+    SetDataFinal()
 end
 
 local function SetImage(i, num)
@@ -589,43 +650,26 @@ end
 
 local function MapMarkers()
     BeginScaleformMovieMethod(boardType[3], "SET_MAP_MARKERS")
-    ScaleformMovieMethodAddParamInt(buyerNr)
-    EndScaleformMovieMethod()
-end
-
-local function SetDataFinal(i)
-    local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][4]) + (potential[difficulty][loot] * driver[selectedDriver][4]) + (potential[difficulty][loot] * hacker[selectedHacker][5])
-    --local num = GetButtonId()
-
-    BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
-    ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
-    ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
-    ScaleformMovieMethodAddParamInt(25000)
-    ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
-    ScaleformMovieMethodAddParamInt(math.floor(cut))
-    if approach == 2 then 
-        print(imageOrderNum[3][2])
-        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrder[3][approach][2][imageOrderNum[3][2]]])
-    else
-        ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrderNum[3][2]])
-    end
-    ScaleformMovieMethodAddParamPlayerNameString(exitString[approach][imageOrderNum[3][3]])
-    ScaleformMovieMethodAddParamPlayerNameString(buyerString[imageOrderNum[3][4]])
-    ScaleformMovieMethodAddParamPlayerNameString(entryDisguiseString[imageOrderNum[3][13]])
-    ScaleformMovieMethodAddParamPlayerNameString(exitDisguiseString[imageOrderNum[3][14]])
+    ScaleformMovieMethodAddParamInt(selectedBuyer)
     EndScaleformMovieMethod()
 end
 
 local function ChangeImage(num, change)
     --print("change " .. change)
     
-    if imageOrderNum[boardUsing][num] == 0 and boardUsing == 3 then 
-        imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
+    if imageOrderNum[boardUsing][num] == 1 and boardUsing == 3 then 
         
         BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
         ScaleformMovieMethodAddParamInt(num)
         ScaleformMovieMethodAddParamBool(false)
         EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
+        ScaleformMovieMethodAddParamInt(num)
+        ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][1])
+        EndScaleformMovieMethod()
+
+        imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
     else 
         imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
 
@@ -633,7 +677,9 @@ local function ChangeImage(num, change)
 
         BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
         ScaleformMovieMethodAddParamInt(num)
-        ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
+
+        ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num] - 1])
+
         EndScaleformMovieMethod()
     end
 
@@ -641,7 +687,8 @@ local function ChangeImage(num, change)
     --print(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
 
     if boardUsing == 3 then 
-        if num == 2 and not entryIsAvailable then 
+        if num == 13 and not entryIsAvailable then 
+            InsertEntry()
             entryIsAvailable = true 
         end
 
@@ -651,22 +698,6 @@ local function ChangeImage(num, change)
         end
 
         SetDataFinal()
-    end
-end
-
-local function InsertEntry()
-    for i = 1, #imageOrder[boardUsing][approach][2] do 
-        imageOrder[boardUsing][approach][2][i] = nil 
-    end
-
-    if imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 1 then
-        imageOrder[boardUsing][2][2] = {11, 1}
-    elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 2 then
-        imageOrder[boardUsing][2][2] = {11, 1}
-    elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 3 then
-        imageOrder[boardUsing][2][2] = {6}
-    elseif imageOrder[boardUsing][2][13][imageOrderNum[boardUsing][2][13]] == 4 then
-        imageOrder[boardUsing][2][2] = {2}
     end
 end
 
@@ -687,7 +718,7 @@ local function SetFocusOnButton()
 end
 
 local function UnFocusOnButton()
-    BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS")
+    BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS_VISIBLE")
     ScaleformMovieMethodAddParamInt(GetButtonId())
     ScaleformMovieMethodAddParamBool(false)
     EndScaleformMovieMethod()
@@ -1063,7 +1094,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(2000)
+            Wait(1000)
         end
     end
 end)
@@ -1102,7 +1133,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(2000)
+            Wait(1000)
         end
     end
 end)
@@ -1140,7 +1171,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(2000)
+            Wait(1000)
         end
     end
 end)
@@ -1152,7 +1183,7 @@ CreateThread(function()
             if IsDisabledControlJustPressed(0, 174) then -- <--
                     --if GetButtonId() ~= 2 and imageOrderNum[3][13] ~= 0 and boardUsing == 3 then
                 if boardUsing == 3 and (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
-                    if CanChangeCut(-5) then 
+                    if CanChangeCut(GetButtonId() - 7, -5) then 
                         local num = GetButtonId() - 7
                         playerCut[#hPlayer][num] = playerCut[#hPlayer][num] - 5 
                         SetCrewCut(num, playerCut[#hPlayer][num])
@@ -1162,7 +1193,7 @@ CreateThread(function()
                 end
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
                 if boardUsing == 3 and (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
-                    if CanChangeCut(5) then 
+                    if CanChangeCut(GetButtonId() - 7, 5) then 
                         local num = GetButtonId() - 7
                         playerCut[#hPlayer][num] = playerCut[#hPlayer][num] + 5
                         SetCrewCut(num, playerCut[#hPlayer][num])
@@ -1171,9 +1202,9 @@ CreateThread(function()
                     ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                ExecuteButtonFunction(GetButtonId())
-                UnFocusOnButton()
-                isFocusedBoard = false 
+                --ExecuteButtonFunction(GetButtonId())
+                --UnFocusOnButton()
+                --isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 UnFocusOnButton()
                 isFocusedBoard = false 
@@ -1181,7 +1212,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(2000)
+            Wait(1000)
         end
     end
 end)

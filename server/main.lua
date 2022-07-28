@@ -1,4 +1,4 @@
-hPlayer = {1}
+hPlayer = {2}
 invitedPlayers = {}
 heistInProgress = false
 
