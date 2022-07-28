@@ -1,6 +1,6 @@
 heistInProgress = false
 
-hPlayer = {}
+hPlayer = {1}
 
 heistType = 0
 entryType = 0
@@ -180,6 +180,7 @@ end
 
 RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(crew)
     hPlayer = crew
+    PlayerJoinedCrew(#hPlayer)
 end)
 
 AddEventHandler("baseevents:onPlayerDied", function(o, i)

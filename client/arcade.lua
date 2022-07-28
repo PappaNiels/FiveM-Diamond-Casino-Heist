@@ -654,12 +654,22 @@ local function UnFocusOnButton()
     EndScaleformMovieMethod()
 end
 
-local function PlayerJoinedCrew(id)
-    BeginScaleformMovieMethod(boardType[3], "SET_CREW_MEMBER")
-    ScaleformMovieMethodAddParamInt(8)
-    ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(id)))
-    ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(id))
+local function AppearanceButtons(i, bool)
+    BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+    ScaleformMovieMethodAddParamInt(i + 7)
+    ScaleformMovieMethodAddParamBool(bool)
     EndScaleformMovieMethod()
+end
+
+function PlayerJoinedCrew(i)
+        --print(hPlayer[i])
+    print(i)
+    BeginScaleformMovieMethod(boardType[3], "SET_CREW_MEMBER")
+    ScaleformMovieMethodAddParamInt(7 + i)
+    ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(hPlayer[i])))
+    ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(hPlayer[i]))
+    EndScaleformMovieMethod()
+    AppearanceButtons(#hPlayer, true)
 end
 
 --[[ 
@@ -891,7 +901,7 @@ function SetupBoardInfo()
             NotSelected(i)
         end
 
-        PlayerJoinedCrew(2)
+        PlayerJoinedCrew(1)
 
         BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
         ScaleformMovieMethodAddParamInt(finalBoardPlacement[approach][finalRow][finalLine])
@@ -902,32 +912,36 @@ function SetupBoardInfo()
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
 
-        if approach ~= 2 then 
-            BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-            ScaleformMovieMethodAddParamInt(13)
-            ScaleformMovieMethodAddParamBool(false)
-            EndScaleformMovieMethod()
+        --if approach ~= 2 then 
+        --    BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+        --    ScaleformMovieMethodAddParamInt(13)
+        --    ScaleformMovieMethodAddParamBool(false)
+        --    EndScaleformMovieMethod()
+--
+        --    BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+        --    ScaleformMovieMethodAddParamInt(14)
+        --    ScaleformMovieMethodAddParamBool(false)
+        --    EndScaleformMovieMethod()
+        --end
 
-            BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-            ScaleformMovieMethodAddParamInt(14)
-            ScaleformMovieMethodAddParamBool(false)
-            EndScaleformMovieMethod()
+        for i = 2, 4 do 
+            AppearanceButtons(i, false)
         end
 
-        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-        ScaleformMovieMethodAddParamInt(9)
-        ScaleformMovieMethodAddParamBool(false)
-        EndScaleformMovieMethod()
+        --BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+        --ScaleformMovieMethodAddParamInt(9)
+        --ScaleformMovieMethodAddParamBool(false)
+        --EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-        ScaleformMovieMethodAddParamInt(10)
-        ScaleformMovieMethodAddParamBool(false)
-        EndScaleformMovieMethod()
+        --BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+        --ScaleformMovieMethodAddParamInt(10)
+        --ScaleformMovieMethodAddParamBool(false)
+        --EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
-        ScaleformMovieMethodAddParamInt(11)
-        ScaleformMovieMethodAddParamBool(false)
-        EndScaleformMovieMethod()
+        --BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
+        --ScaleformMovieMethodAddParamInt(11)
+        --ScaleformMovieMethodAddParamBool(false)
+        --EndScaleformMovieMethod()
 
         BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_GREYED_OUT")
         ScaleformMovieMethodAddParamInt(2)
@@ -940,7 +954,7 @@ function SetupBoardInfo()
     --end
 end
 
-RegisterNetEvent("cl:casinoheist:syncheistplayerscaleform", PlayerJoinedCrew)
+RegisterNetEvent("cl:casinoheist:syncHeistPlayerScaleform", PlayerJoinedCrew)
 
 CreateThread(function()
     while true do 
@@ -950,7 +964,7 @@ CreateThread(function()
             DrawScaleformMovie_3dSolid(boardType[2], 2716.27, -369.93, -54.23418, 0.0, 0.0, camHeading[2] - 180, 1.0, 1.0, 1.0, 3.1, 1.7, 1.0, 0)
             DrawScaleformMovie_3dSolid(boardType[3], 2712.58, -372.65, -54.23418, 0.0, 0.0, camHeading[3], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -961,7 +975,7 @@ CreateThread(function()
         if camIsUsed then 
             DisableAllControlActions(2)
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -996,7 +1010,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -1035,7 +1049,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -1073,7 +1087,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -1102,7 +1116,7 @@ CreateThread(function()
 
             end
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -1124,7 +1138,7 @@ CreateThread(function()
                 end
             end
         else 
-            Wait(1000)
+            Wait(2000)
         end
     end
 end)
@@ -1138,6 +1152,11 @@ RegisterCommand("test_scale", function(src, args)
     --boardUsing = tonumber(args[1])
     isInGarage = true
     SetupBoardInfo()
+end, false)
+
+RegisterCommand("add_h", function(src, args)
+    hPlayer[#hPlayer + 1] = tonumber(args[1])
+    PlayerJoinedCrew(#hPlayer)
 end, false)
 
 -- Laptop 

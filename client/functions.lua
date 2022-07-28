@@ -97,8 +97,8 @@ end
 
 function GetPedMugshot(id)
     local pedheadshotint = RegisterPedheadshot(GetPlayerPed(GetPlayerFromServerId(id)))
-        
-    while not IsPedheadshotReady(pedheadshotint) do 
+
+    while not IsPedheadshotReady(pedheadshotint) or not IsPedheadshotValid(pedheadshotint) do 
         Wait(0)
     end
 
