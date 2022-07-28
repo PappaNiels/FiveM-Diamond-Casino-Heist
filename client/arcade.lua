@@ -337,10 +337,10 @@ local imageOrderNum = {
 local notSelected = {2, 3, 4, 13, 14}
 
 local playerCut = {
-    [1] = {100}
+    [1] = {100},
     [2] = {85, 15},
     [3] = {70, 15, 15},
-    [4] = {55, 15, 15, 15},
+    [4] = {55, 15, 15, 15}
 }
 
 function StartCamWhiteboard()
