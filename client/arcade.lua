@@ -69,7 +69,7 @@ local todoList = {
         {"Entry Disquise", false},
         {"Exit", false},
         {"Buyer", false},
-        {"Player Cuts", false}
+        {"Player Cuts", true}
     }
 }
 
@@ -349,13 +349,6 @@ local imageOrderNum = {
 
 local notSelected = {2, 3, 4, 13, 14}
 
-local playerCut = {
-    [1] = {100},
-    [2] = {85, 15},
-    [3] = {70, 15, 15},
-    [4] = {55, 15, 15, 15}
-}
-
 function StartCamWhiteboard()
     boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
     RenderScriptCams(true, false, 1000, true, false)
@@ -483,6 +476,16 @@ local function ToDoList(i, num)
         BeginScaleformMovieMethod(boardType[num], "ADD_TODO_LIST_ITEM")
         ScaleformMovieMethodAddParamPlayerNameString(todoList[num][i][1])
         ScaleformMovieMethodAddParamBool(todoList[num][i][2])
+        EndScaleformMovieMethod()
+    end
+end
+
+local function ClearLists(list)
+    if list == 1 then 
+        BeginScaleformMovieMethod(boardType[boardUsing], "CLEAR_TODO_LIST")
+        EndScaleformMovieMethod()
+    else
+        BeginScaleformMovieMethod(boardType[boardUsing], "CLEAR_OPTIONAL_LIST")
         EndScaleformMovieMethod()
     end
 end
@@ -677,9 +680,7 @@ local function ChangeImage(num, change)
 
         BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
         ScaleformMovieMethodAddParamInt(num)
-
         ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num] - 1])
-
         EndScaleformMovieMethod()
     end
 
@@ -687,15 +688,49 @@ local function ChangeImage(num, change)
     --print(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
 
     if boardUsing == 3 then 
-        if num == 13 and not entryIsAvailable then 
-            InsertEntry()
-            entryIsAvailable = true 
+        
+        
+
+        if num == 3 and not todoList[3][2][2]then 
+            todoList[3][2][2] = true
+            if approach == 2 then 
+                for i = 1, #todoList[3] do 
+                    ToDoList(i, 3)
+                end
+            else 
+                for i = 2, #todoList[3] do 
+                    ToDoList(i, 3)
+                end 
+            end
         end
 
         if num == 4 then 
             selectedBuyer = selectedBuyer + change 
             MapMarkers()
+            if not todoList[3][3][2] then 
+                todoList[3][3][2] = true
+                if approach == 2 then 
+                    for i = 1, #todoList[3] do 
+                        ToDoList(i, 3)
+                    end
+                else 
+                    for i = 2, #todoList[3] do 
+                        ToDoList(i, 3)
+                    end 
+                end
+            end
         end
+
+        if num == 13 and not entryIsAvailable then 
+            --InsertEntry()
+            todoList[3][1][2] = true
+            entryIsAvailable = true 
+            ClearLists(1)
+            for i = 1, #todoList[3] do 
+                ToDoList(i, 3)
+            end
+        end
+
 
         SetDataFinal()
     end
@@ -722,6 +757,11 @@ local function UnFocusOnButton()
     ScaleformMovieMethodAddParamInt(GetButtonId())
     ScaleformMovieMethodAddParamBool(false)
     EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
+    ScaleformMovieMethodAddParamInt(GetButtonId())
+    ScaleformMovieMethodAddParamBool(true)
+    EndScaleformMovieMethod()
 end
 
 local function AppearanceButtons(i, bool)
@@ -729,6 +769,72 @@ local function AppearanceButtons(i, bool)
     ScaleformMovieMethodAddParamInt(i + 7)
     ScaleformMovieMethodAddParamBool(bool)
     EndScaleformMovieMethod()
+end
+
+local function GreyOut(board, i, bool)
+    BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
+    ScaleformMovieMethodAddParamInt(i)
+    ScaleformMovieMethodAddParamBool(bool)
+    EndScaleformMovieMethod()
+end
+
+local function CheckTodoList()
+    local count = 0
+    if approach == 2 then 
+        count = 11
+    else 
+        count = 10
+    end
+
+    for i = 1, count do 
+        if i == 1 then 
+            if not if not todoList[1][3][2] then 
+                return false 
+                break 
+            end
+        elseif i < 8  then 
+            if not todoList[2][approach][i][2] then 
+                return false 
+                break 
+            end
+        else
+            if not todoList[3][approach][i][2] then 
+                return false 
+                break 
+            end
+        end
+    end
+end
+
+local function ExecuteButtonFunction(i)
+    if boardUsing == 1 then 
+        if i == 2 then 
+
+        elseif i == 3 then 
+
+        elseif i == 4 then
+        
+        elseif i == 5 then -- Silent and Sneaky
+
+        elseif i == 6 then -- The Big Con
+
+        elseif i == 7 then -- Aggressive
+
+    elseif boardUsing == 2 then 
+
+    elseif boardUsing == 3 then 
+        if i == 6 then 
+
+        elseif i == 7 then
+
+        elseif i == 12 then 
+            if CheckTodoList() then 
+                StartHeist()
+            else
+                InfoMsg("You can not start the Diamond Casino Heist just yet. See all the todo items")
+            end
+        end
+    end 
 end
 
 function PlayerJoinedCrew(i)
@@ -959,17 +1065,22 @@ function SetupBoardInfo()
         EndScaleformMovieMethod()
 
     --elseif boardUsing == 3 then 
-        for i = 1, #todoList[3] do 
-            ToDoList(i, 3)
-        end
         
         if approach ~= 2 then
             for i = 1, 2 do 
                 OptionalList(i, 3)
             end
+
+            for i = 2, #todoList[3] do 
+                ToDoList(i, 3)
+            end
         else 
             for i = 1, #optionalList[3] do 
                 OptionalList(i, 3)
+            end
+
+            for i = 1, #todoList[3] do 
+                ToDoList(i, 3)
             end
         end
 
@@ -1012,6 +1123,9 @@ function SetupBoardInfo()
             AppearanceButtons(i, false)
         end
 
+        for i = 1, 14 do 
+            GreyOut(3, i, true)
+        end
         --BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_VISIBLE")
         --ScaleformMovieMethodAddParamInt(9)
         --ScaleformMovieMethodAddParamBool(false)
@@ -1027,14 +1141,7 @@ function SetupBoardInfo()
         --ScaleformMovieMethodAddParamBool(false)
         --EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(boardType[3], "SET_BUTTON_GREYED_OUT")
-        ScaleformMovieMethodAddParamInt(2)
-        ScaleformMovieMethodAddParamBool(true)
-        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
-        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
-        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
-        --ScaleformMovieMethodAddParamPlayerNameString("TEst")
-        EndScaleformMovieMethod()
+        
     --end
 end
 
@@ -1048,7 +1155,7 @@ CreateThread(function()
             DrawScaleformMovie_3dSolid(boardType[2], 2716.27, -369.93, -54.23418, 0.0, 0.0, camHeading[2] - 180, 1.0, 1.0, 1.0, 3.1, 1.7, 1.0, 0)
             DrawScaleformMovie_3dSolid(boardType[3], 2712.58, -372.65, -54.23418, 0.0, 0.0, camHeading[3], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
         else 
-            Wait(2000)
+            Wait(3000)
         end
     end
 end)
@@ -1059,7 +1166,7 @@ CreateThread(function()
         if camIsUsed then 
             DisableAllControlActions(2)
         else 
-            Wait(2000)
+            Wait(3000)
         end
     end
 end)
@@ -1162,10 +1269,11 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 44) then -- Q
                 ChangeCam(-1)
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 then
+                if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
                     SetFocusOnButton()
                 end
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
+                GreyOut(3, GetButtonId(), true)
                 ExitBoard()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
@@ -1202,10 +1310,11 @@ CreateThread(function()
                     ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                --ExecuteButtonFunction(GetButtonId())
-                --UnFocusOnButton()
-                --isFocusedBoard = false 
+                ExecuteButtonFunction(GetButtonId())
+                UnFocusOnButton()
+                isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
+                GreyOut(3, GetButtonId(), true)
                 UnFocusOnButton()
                 isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
