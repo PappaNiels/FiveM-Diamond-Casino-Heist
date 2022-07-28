@@ -414,12 +414,20 @@ local function SumTake()
     end
 end
 
+local function IsMinCut()
+    for i = 1, #hPlayer do 
+        if playerCut[#hPlayer][i] == 15 then 
+            return true 
+        end
+    end
+end
+
 local function CanChangeCut(change)
-    if change < 0 then 
+    if change < 0 and not IsMinCut() then 
         return true 
     elseif SumTake() < 100 and change > 0 then 
         return true 
-    elseif SumTake() == 15 and change < 0 then 
+    elseif IsMinCut() and change < 0 then 
         return false
     else
         return false
@@ -1184,7 +1192,7 @@ CreateThread(function()
             for i = 1, 3 do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - boardCoords[i])
 
-                if distance < 2 then 
+                if distance < 1.5 then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to use the " .. boardString[i])
                     if IsControlPressed(0, 38) then 
                         boardUsing = i
