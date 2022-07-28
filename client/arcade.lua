@@ -336,6 +336,13 @@ local imageOrderNum = {
 
 local notSelected = {2, 3, 4, 13, 14}
 
+local playerCut = {
+    [1] = {100}
+    [2] = {85, 15},
+    [3] = {70, 15, 15},
+    [4] = {55, 15, 15, 15},
+}
+
 function StartCamWhiteboard()
     boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
     RenderScriptCams(true, false, 1000, true, false)
@@ -393,6 +400,30 @@ local function CanChangeImage(num, change)
         print("can")
         return true
     end
+end
+
+local function SumTake()
+    if #hPlayer == 1 then 
+        return playerCut[1][1]
+    elseif #hPlayer == 2 then
+        return playerCut[2][1] + playerCut[2][2]
+    elseif #hPlayer == 2 then
+        return playerCut[3][1] + playerCut[3][2] + playerCut[3][3]
+    elseif #hPlayer == 2 then
+        return playerCut[4][1] + playerCut[4][2] + playerCut[4][3] + playerCut[4][4]
+    end
+end
+
+local function CanChangeCut(change)
+    if change < 0 then 
+        return true 
+    elseif SumTake() < 100 and change > 0 then 
+        return true 
+    elseif SumTake() == 15 and change < 0 then 
+        return false
+    else
+        return false
+    end 
 end
 
 local function ToDoList(i, num)
@@ -453,7 +484,7 @@ local function SetArrows(i)
 end
 
 local function SetLootString()
-    BeginScaleformMovieMethod(boardType[boardUsing], "SET_TARGET_TYPE")
+    BeginScaleformMovieMethod(boardType[1], "SET_TARGET_TYPE")
     ScaleformMovieMethodAddParamPlayerNameString(lootString[1])
     EndScaleformMovieMethod()
 end
@@ -535,7 +566,7 @@ end
 
 local function SetCrewCut(player, cut)
     BeginScaleformMovieMethod(boardType[3], "SET_CREW_CUT")
-    ScaleformMovieMethodAddParamInt(7 + player)
+    ScaleformMovieMethodAddParamInt(player + 7)
     ScaleformMovieMethodAddParamInt(cut)
     EndScaleformMovieMethod()
 end
@@ -670,6 +701,20 @@ function PlayerJoinedCrew(i)
     ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(hPlayer[i]))
     EndScaleformMovieMethod()
     AppearanceButtons(#hPlayer, true)
+    
+    if #hPlayer == 2 then 
+        for i = 1, 2 do 
+            SetCrewCut(i, playerCut[2][i])
+        end
+    elseif #hPlayer == 3 then 
+        for i = 1, 3 do 
+            SetCrewCut(i, playerCut[3][i])
+        end
+    elseif #hPlayer == 4 then 
+        for i = 1, 4 do 
+            SetCrewCut(i, playerCut[4][i])
+        end
+    end
 end
 
 --[[ 
@@ -1078,7 +1123,7 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 44) then -- Q
                 ChangeCam(-1)
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                if (GetButtonId() == 2 and entryIsAvailable) or approach ~= 2 then
+                if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 then
                     SetFocusOnButton()
                 end
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
@@ -1097,12 +1142,24 @@ CreateThread(function()
         Wait(2)
         if isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 174) then -- <--
-                    --if GetButtonId() ~= 2 and imageOrderNum[3][13] ~= 0 and boardUsing == 3 then  
-                if CanChangeImage(GetButtonId(), -1) then 
+                    --if GetButtonId() ~= 2 and imageOrderNum[3][13] ~= 0 and boardUsing == 3 then
+                if boardUsing == 3 and (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
+                    if CanChangeCut(-5) then 
+                        local num = GetButtonId() - 7
+                        playerCut[#hPlayer][num] = playerCut[#hPlayer][num] - 5 
+                        SetCrewCut(num, playerCut[#hPlayer][num])
+                    end
+                elseif CanChangeImage(GetButtonId(), -1) then 
                     ChangeImage(GetButtonId(), -1)
                 end
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
-                if CanChangeImage(GetButtonId(), 1) then 
+                if boardUsing == 3 and (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
+                    if CanChangeCut(5) then 
+                        local num = GetButtonId() - 7
+                        playerCut[#hPlayer][num] = playerCut[#hPlayer][num] + 5
+                        SetCrewCut(num, playerCut[#hPlayer][num])
+                    end
+                elseif CanChangeImage(GetButtonId(), 1) then 
                     ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
