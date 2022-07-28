@@ -71,15 +71,17 @@ take = 8502100
 cash = 5875
 goldbar = 16156
 
-selectedGunman = 1
-selectedDriver = 1
-selectedHacker = 1
-selectedEntrance = 0
-selectedExit = 0
-selectedBuyer  = 0
-selectedEntryDisguise = 0
-selectedExitDisguise = 0
---hackerSelected = 1
+selectedGunman = 0          -- 5
+selectedLoadout = 0         -- 6 per Gunman
+selectedDriver = 0          -- 5
+selectedVehicle = 0         -- 4 per Driver
+selectedHacker = 0          -- 5 
+selectedEntrance = 0        -- 11
+selectedExit = 0            -- 9
+selectedBuyer  = 0          -- 3
+selectedEntryDisguise = 0   -- 4    
+selectedExitDisguise = 0    -- 3
+
 boughtCleanVehicle = false
 boughtDecoy = false
 
