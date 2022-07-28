@@ -119,8 +119,8 @@ RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     end
 end)
 
-RegisterNetEvent("cl:casinoheist:infomessage", InfoMsg)
-RegisterNetEvent("cl:casinoheist:infomessageextra", InfoMsgExtra)
+RegisterNetEvent("cl:casinoheist:infoMessage", InfoMsg)
+RegisterNetEvent("cl:casinoheist:infoMessageExtra", InfoMsgExtra)
 --RegisterCommand("test_anim", function()
 --    HackKeypad(4, 0)
 --end, false)

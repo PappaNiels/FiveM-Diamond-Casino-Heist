@@ -940,6 +940,8 @@ function SetupBoardInfo()
     --end
 end
 
+RegisterNetEvent("cl:casinoheist:syncheistplayerscaleform", PlayerJoinedCrew)
+
 CreateThread(function()
     while true do 
         Wait(0)

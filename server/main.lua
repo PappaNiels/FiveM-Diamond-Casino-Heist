@@ -11,16 +11,16 @@ end, false)
 RegisterCommand("invite_casinoheist", function(src, args)
     if src == hPlayer[1] then 
         if args[1] == nil then 
-            TriggerClientEvent("cl:casinoheist:infomessage", src, "no id")
+            TriggerClientEvent("cl:casinoheist:infoMessage", src, "no id")
         elseif tonumber(args[1]) == src then 
-            TriggerClientEvent("cl:casinoheist:infomessage", src, "same")
+            TriggerClientEvent("cl:casinoheist:infoMessage", src, "same")
         else
             invitedPlayers[#invitedPlayers + 1] = tonumber(args[1]) 
-            TriggerClientEvent("cl:casinoheist:infomessageextra", tonumber(args[1]), src)
-            TriggerClientEvent("cl:casinoheist:infomessage", src, "You have sent an invite to %s", tonumber(args[1]))
+            TriggerClientEvent("cl:casinoheist:infoMessageExtra", tonumber(args[1]), src)
+            TriggerClientEvent("cl:casinoheist:infoMessage", src, "You have sent an invite to %s", tonumber(args[1]))
         end
     else 
-        TriggerClientEvent("cl:casinoheist:infomessage", src, "You are not a heist leader for the Diamond Casino Heist")
+        TriggerClientEvent("cl:casinoheist:infoMessage", src, "You are not a heist leader for the Diamond Casino Heist")
     end
 end, false)
 
@@ -33,20 +33,21 @@ RegisterCommand("join_casinoheist", function(src)
                     hPlayer[#hPlayer + 1] = src 
                     for i = 1, #hPlayer do 
                         TriggerClientEvent("cl:casinoheist:updateHeistPlayers", i, hPlayer)
+                        TriggerClientEvent("cl:casinoheist:syncHeistPlayerScaleform")
                     end
 
                     for i = 1, #hPlayer - 1 do 
-                        TriggerClientEvent("cl:casinoheist:infomessage", i, "%s has joined the crew", src)
+                        TriggerClientEvent("cl:casinoheist:infoMessage", i, "%s has joined the crew", src)
                     end
 
-                    TriggerClientEvent("cl:casinoheist:infomessage", src, "You joined the crew of %s", hPlayer[1])
+                    TriggerClientEvent("cl:casinoheist:infoMessage", src, "You joined the crew of %s", hPlayer[1])
                     break
                 elseif i == #invitedPlayers then
-                    TriggerClientEvent("cl:casinoheist:infomessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
+                    TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
                 end
             end
         else 
-            TriggerClientEvent("cl:casinoheist:infomessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
+            TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
         end
     end
 end, false)
