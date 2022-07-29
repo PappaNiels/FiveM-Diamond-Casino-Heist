@@ -34,13 +34,13 @@ end
 
 function ShowAlertMessage(bool, title, msg, background)
     local setup = true
-    AddTextEntry("warning_message_first_line", title)
+    AddTextEntry("warning_message_first_line", "confirm")
     AddTextEntry("warning_message_second_line", msg)
     if bool then 
         CreateThread(function() 
             while setup do 
                 Wait(0)
-                SetWarningMessage("warning_message_first_line", 36, "warning_message_second_line", 0, -1, true, 0, background, 0)
+                SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 4, 32, "", 0, -1, 0, "", "", background, 0)
             end
         end)
     else 

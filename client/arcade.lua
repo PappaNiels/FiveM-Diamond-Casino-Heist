@@ -805,11 +805,11 @@ end
 
 local function ExecuteButtonFunction(i)
     if boardUsing == 1 then 
-        if i == 2 then 
+        if i == 2 then -- Buy Casino Model
 
-        elseif i == 3 then 
+        elseif i == 3 then -- Buy Door Security
 
-        elseif i == 4 then
+        elseif i == 4 then -- Buy Vault
         
         elseif i == 5 then -- Silent and Sneaky
 
@@ -821,11 +821,11 @@ local function ExecuteButtonFunction(i)
     elseif boardUsing == 2 then 
 
     elseif boardUsing == 3 then 
-        if i == 6 then 
+        if i == 6 then -- Decoy
 
-        elseif i == 7 then
+        elseif i == 7 then  -- Clean Vehicle
 
-        elseif i == 12 then 
+        elseif i == 12 then -- Start Heist
             if CheckTodoList() then 
                 StartHeist()
             else
