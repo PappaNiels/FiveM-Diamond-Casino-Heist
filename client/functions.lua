@@ -32,6 +32,22 @@ function SubtitleMsg(msg, time)
     DrawSubtitleTimed(time, true)
 end
 
+function ShowAlertMessage(bool, title, msg, background)
+    local setup = true
+    AddTextEntry("warning_message_first_line", title)
+    AddTextEntry("warning_message_second_line", msg)
+    if bool then 
+        CreateThread(function() 
+            while setup do 
+                Wait(0)
+                SetWarningMessage("warning_message_first_line", 36, "warning_message_second_line", 0, -1, true, 0, background, 0)
+            end
+        end)
+    else 
+        setup = false 
+    end
+end
+
 function FadeTeleport(x, y, z, h)
     DoScreenFadeOut(800)
 

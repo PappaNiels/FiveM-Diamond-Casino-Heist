@@ -788,19 +788,16 @@ local function CheckTodoList()
 
     for i = 1, count do 
         if i == 1 then 
-            if not if not todoList[1][3][2] then 
+            if not todoList[1][3][2] then 
                 return false 
-                break 
             end
         elseif i < 8  then 
             if not todoList[2][approach][i][2] then 
                 return false 
-                break 
             end
         else
             if not todoList[3][approach][i][2] then 
                 return false 
-                break 
             end
         end
     end
@@ -820,6 +817,7 @@ local function ExecuteButtonFunction(i)
 
         elseif i == 7 then -- Aggressive
 
+        end
     elseif boardUsing == 2 then 
 
     elseif boardUsing == 3 then 
@@ -836,6 +834,14 @@ local function ExecuteButtonFunction(i)
         end
     end 
 end
+
+RegisterCommand("alertMsg", function(src, args)
+    if args[1] == "1" then 
+        ShowAlertMessage(true, "title", "msg", true)
+    else
+        ShowAlertMessage(true, "title", "msg", true)
+    end
+end, false)
 
 function PlayerJoinedCrew(i)
         --print(hPlayer[i])
