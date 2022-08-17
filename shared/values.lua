@@ -12,3 +12,6 @@ potential = { -- Total Take
         3619000
     }
 }
+
+cleanVehiclePrice = 20000
+decoyPrice = 50000
