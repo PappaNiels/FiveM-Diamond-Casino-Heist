@@ -30,23 +30,6 @@ function SubtitleMsg(msg, time)
     DrawSubtitleTimed(time, true)
 end
 
-function ShowAlertMessage(msg, background)
-    local setup = true
-    AddTextEntry("warning_message_first_line", "confirm")
-    AddTextEntry("warning_message_second_line", msg)
-
-    while setup do 
-        Wait(0)
-        SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 36, 0, "", 0, -1, 0, "FM_NXT_RAC", "QM_NO_1", background, 0)
-
-        if IsControlJustPressed(2, 215) then -- Enter    
-            return true
-        elseif IsControlJustPressed(2, 200) then -- Escape   
-            return false
-        end
-    end
-end
-
 function FadeTeleport(x, y, z, h)
     DoScreenFadeOut(800)
 

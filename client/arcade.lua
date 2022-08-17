@@ -733,27 +733,54 @@ local function CheckTodoList()
 end
 
 local function ExecuteButtonFunction(i)
+    Wait(100)
     if boardUsing == 1 then 
         if i == 2 then -- Buy Casino Model
-
+            
         elseif i == 3 then -- Buy Door Security
-
+            
         elseif i == 4 then -- Buy Vault
-        
+            
         elseif i == 5 then -- Silent and Sneaky
-
+            
         elseif i == 6 then -- The Big Con
-
+            
         elseif i == 7 then -- Aggressive
-
+            
         end
     elseif boardUsing == 2 then 
-
+        
     elseif boardUsing == 3 then 
-        if i == 6 and ShowAlertMessage("Are you sure you wish to purchase the clean vehicle for $" .. cleanVehiclePrice, true) then -- Decoy
-            boughtCleanVehicle = true 
-        elseif i == 7 and ShowAlertMessage("Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice, true) then  -- Clean Vehicle
+        if i == 6 then -- Decoy 
+            AddTextEntry("warning_message_second_line", "Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice)
+            CreateThread(function()
+                while true do 
+                    Wait(0)
+                    SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 36, 0, "", 0, -1, 0, "FM_NXT_RAC", "QM_NO_1", true, 0)
 
+                    if IsDisabledControlJustPressed(2, 215) then -- Enter
+                        boughtDecoy = true  
+                        break
+                    elseif IsDisabledControlJustPressed(2, 200) then -- Escape   
+                        break  
+                    end
+                end  
+            end)
+        elseif i == 7 then  -- Clean Vehicle 
+            AddTextEntry("warning_message_second_line", "Are you sure you wish to purchase the clean vehicle for $" .. cleanVehiclePrice)
+            CreateThread(function()
+                while true do 
+                    Wait(0)
+                    SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 36, 0, "", 0, -1, 0, "FM_NXT_RAC", "QM_NO_1", true, 0)
+                
+                    if IsDisabledControlJustReleased(2, 201) or IsDisabledControlJustReleased(2, 217) then -- Enter
+                        boughtCleanVehicle = true 
+                        break
+                    elseif IsDisabledControlJustReleased(2, 202) then -- Escape   
+                        break  
+                    end
+                end 
+            end)
         elseif i == 12 then -- Start Heist
             if CheckTodoList() then 
                 StartHeist()
@@ -1149,7 +1176,9 @@ CreateThread(function()
                 elseif boardUsing == 2 then 
                     SetFocusOnButton()
                 elseif boardUsing == 3 then 
-                    if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
+                    if (GetButtonId() == 6 and not boughtDecoy) or (GetButtonId() and not boughtCleanVehicle) == 7 then 
+                        ExecuteButtonFunction(GetButtonId())
+                    elseif (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
                         GreyOut(3, GetButtonId(), false)
                         SetFocusOnButton()
                     end
@@ -1165,84 +1194,6 @@ CreateThread(function()
         end
     end
 end)
-
---CreateThread(function()
---    while true do 
---        Wait(2)
---        if boardUsing == 2 and camIsUsed and not isFocusedBoard and boe then 
---            if IsDisabledControlJustPressed(0, 32) then -- W
---                --print(prepRow)
---                if prepRow ~= 1 then 
---                    SetMarker(-1, 0)
---                end
---            elseif IsDisabledControlJustPressed(0, 33) then -- S
---                if prepRow ~= 3 then 
---                    SetMarker(1, 0)
---                end
---            elseif IsDisabledControlJustPressed(0, 34) then -- A
---                if prepLine ~= 1 then 
---                    --print(prepLine)
---                    SetMarker(0, -1)
---                end
---            elseif IsDisabledControlJustPressed(0, 35) then -- D
---                if prepLine ~= 6 then 
---                    SetMarker(0, 1)
---                end
---            elseif IsDisabledControlJustPressed(0, 44) then -- Q
---                ChangeCam(-1)
---            elseif IsDisabledControlJustPressed(0, 38) then -- E
---                ChangeCam(1)
---            elseif IsDisabledControlJustPressed(0, 191) then -- Enter
---                SetFocusOnButton()
---            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
---                ExitBoard()
---            elseif IsDisabledControlJustPressed(0, 204) then -- Tab
---
---            end
---        else 
---            Wait(1000)
---        end
---    end
---end)
---
---CreateThread(function()
---    while true do 
---        Wait(2)
---        if boardUsing == 3 and camIsUsed and not isFocusedBoard and boe then 
---            if IsDisabledControlJustPressed(0, 32) then -- W
---                if finalRow ~= 1 --[[and (finalRow ~= 2 and finalLine ~= 2)]] then 
---                    SetMarker(-1, 0)
---                end
---            elseif IsDisabledControlJustPressed(0, 33) then -- S
---                if finalRow ~= 5 then 
---                    SetMarker(1, 0)
---                end
---            elseif IsDisabledControlJustPressed(0, 34) then -- A
---                if finalLine ~= 1 then 
---                    --print(finalLine)
---                    SetMarker(0, -1)
---                end
---            elseif IsDisabledControlJustPressed(0, 35) then -- D
---                if finalLine ~= 3 then 
---                    SetMarker(0, 1)
---                end
---            elseif IsDisabledControlJustPressed(0, 44) then -- Q
---                ChangeCam(-1)
---            elseif IsDisabledControlJustPressed(0, 191) then -- Enter
---                if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
---                    SetFocusOnButton()
---                end
---            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
---                GreyOut(3, GetButtonId(), true)
---                ExitBoard()
---            elseif IsDisabledControlJustPressed(0, 204) then -- Tab
---
---            end
---        else 
---            Wait(1000)
---        end
---    end
---end)
 
 CreateThread(function()
     while true do 
@@ -1262,16 +1213,15 @@ CreateThread(function()
                             SetCrewCut(num, playerCut[#hPlayer][num])
                         end
                     elseif CanChangeImage(GetButtonId(), -1) then 
+                        PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                         ChangeImage(GetButtonId(), -1)
                     end
                 end
-                PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
-                PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                 if boardUsing == 1 then 
                     
                 elseif boardUsing == 2 then 
-
+                    
                 elseif boardUsing == 3 then
                     if (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
                         if CanChangeCut(GetButtonId() - 7, 5) then 
@@ -1280,6 +1230,7 @@ CreateThread(function()
                             SetCrewCut(num, playerCut[#hPlayer][num])
                         end
                     elseif CanChangeImage(GetButtonId(), 1) then 
+                        PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                         ChangeImage(GetButtonId(), 1)
                     end
                 end

@@ -85,6 +85,8 @@ selectedExitDisguise = 1    -- 3
 boughtCleanVehicle = false
 boughtDecoy = false
 
+AddTextEntry("warning_message_first_line", "confirm")
+
 playerCut = {
     [1] = {100},
     [2] = {85, 15},
