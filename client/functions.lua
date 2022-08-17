@@ -25,26 +25,25 @@ function InfoMsgExtra(senderId)
 end 
 
 function SubtitleMsg(msg, time)
-    --SetTextEntry_2("STRING")
-    --AddTextComponentString(msg)
     AddTextEntry("SubtitleMsg", msg)
     BeginTextCommandPrint("SubtitleMsg")
     DrawSubtitleTimed(time, true)
 end
 
-function ShowAlertMessage(bool, title, msg, background)
+function ShowAlertMessage(msg, background)
     local setup = true
     AddTextEntry("warning_message_first_line", "confirm")
     AddTextEntry("warning_message_second_line", msg)
-    if bool then 
-        CreateThread(function() 
-            while setup do 
-                Wait(0)
-                SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 4, 32, "", 0, -1, 0, "", "", background, 0)
-            end
-        end)
-    else 
-        setup = false 
+
+    while setup do 
+        Wait(0)
+        SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 36, 0, "", 0, -1, 0, "FM_NXT_RAC", "QM_NO_1", background, 0)
+
+        if IsControlJustPressed(2, 215) then -- Enter    
+            return true
+        elseif IsControlJustPressed(2, 200) then -- Escape   
+            return false
+        end
     end
 end
 
