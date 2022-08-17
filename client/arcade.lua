@@ -95,9 +95,9 @@ local optionalList = {
         [2] = { -- The Big Con
             {"Patrol Routes", false},
             {"Duggan Shipments", false},
-            {"Security Intel", false},
-            {"Power Drills", false},
-            {"Security Passes", false},
+            {"Security Intel", false}, 
+            {"Power Drills", false}, 
+            {"Security Passes", false}, 
             {"Acquire Masks", false},
             {"Exit Disguise", false}
         },
@@ -193,8 +193,8 @@ local exitString = {
         "EXIT",
         "STAFF LOBBY",
         "WASTE DISPOSAL",
-        "N.W. ROOF TERRACE",
         "N.E. ROOF TERRACE",
+        "N.W. ROOF TERRACE",
         "S.E. ROOF TERRACE",
         "S.W. ROOF TERRACE",
         "SOUTH HELIPAD",
@@ -204,10 +204,10 @@ local exitString = {
         "EXIT",
         "STAFF LOBBY",
         "WASTE DISPOSAL",
-        "S.W. ROOF TERRACE",
-        "S.E. ROOF TERRACE",
         "N.E. ROOF TERRACE",
         "N.W. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "S.W. ROOF TERRACE",
         "SOUTH HELIPAD",
         "NORTH HELIPAD"
     },
@@ -271,44 +271,6 @@ local images = {
     }, 
     [2] = {},
     [3] = {}
-}
-
-local setupBoardPlacement = {
-    [1] = {9, 9, 9, 9, 9},
-    [2] = {10, 10, 10, 10, 10},
-    [3] = {11, 12, 13, 8, 2},
-    [4] = {14, 15, 16, 8, 3},
-    [5] = {5, 6, 7, 0, 4} 
-}
-
-local prepBoardPlacement = {
-    [1] = {10, 11, 12, 0, 14, 15},
-    [2] = {5, 6, 7, 18, 16, 17},
-    [3] = {9, 3, 4, 2, 8, 13}
-}
-
-local finalBoardPlacement = {
-    [1] = {
-        [1] = {2, 0, 8},
-        [2] = {3, 0, 9},
-        [3] = {4, 7, 10},
-        [4] = {0, 6, 11},
-        [5] = {12, 12, 12, 12}
-    },
-    [2] = {
-        [1] = {2, 13, 8},
-        [2] = {3, 14, 9},
-        [3] = {4, 7, 10},
-        [4] = {0, 6, 11},
-        [5] = {12, 12, 12, 12}
-    },
-    [3] = {
-        [1] = {2, 0, 8},
-        [2] = {3, 0, 9},
-        [3] = {4, 7, 10},
-        [4] = {0, 6, 11},
-        [5] = {12, 12, 12, 12}
-    }
 }
 
 local imageOrder = {
@@ -382,13 +344,24 @@ local function ExitBoard()
 end
 
 local function GetButtonId()
-    if boardUsing == 1 then 
-        return setupBoardPlacement[setupRow][setupLine]
-    elseif boardUsing == 2 then
-        return prepBoardPlacement[prepRow][prepLine]
-    elseif boardUsing == 3 then 
-        return finalBoardPlacement[approach][finalRow][finalLine]
+    --if boardUsing == 1 then 
+    --    return setupBoardPlacement[setupRow][setupLine]
+    --elseif boardUsing == 2 then
+    --    return prepBoardPlacement[prepRow][prepLine]
+    --elseif boardUsing == 3 then 
+    --    return finalBoardPlacement[approach][finalRow][finalLine]
+    --end
+
+    BeginScaleformMovieMethod(boardType[boardUsing], "GET_CURRENT_SELECTION")
+    selection = EndScaleformMovieMethodReturnValue()
+
+    while not IsScaleformMovieMethodReturnValueReady(selection) do 
+        Wait(0)
     end
+
+    pos = GetScaleformMovieMethodReturnValueInt(selection)
+    print(pos)
+    return pos
 end
 
 local function CanChangeImage(num, change)
@@ -561,51 +534,6 @@ local function SetLootString()
     EndScaleformMovieMethod()
 end
 
-local function SetMarker(row, line)
-    if boardUsing == 1 then 
-        if setupRow == 5 and setupLine == 3 and line == 1 then 
-            setupLine = 5
-        elseif setupRow == 5 and setupLine == 5 and line == -1 then 
-            setupLine = 3
-        else 
-            setupLine = setupLine + line
-            setupRow = setupRow + row
-        end
-        
-        BeginScaleformMovieMethod(boardType[1], "SET_CURRENT_SELECTION")
-        ScaleformMovieMethodAddParamInt(setupBoardPlacement[setupRow][setupLine])
-        EndScaleformMovieMethod()
-    elseif boardUsing == 2 then 
-        if prepRow == 1 and prepLine == 3 and line == 1 then 
-            prepLine = 5
-        elseif prepRow == 1 and prepLine == 5 and line == -1 then 
-            prepLine = 3
-        else 
-            prepRow = prepRow + row
-            prepLine = prepLine + line
-        end
-
-        BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
-        ScaleformMovieMethodAddParamInt(prepBoardPlacement[prepRow][prepLine])
-        EndScaleformMovieMethod()
-    elseif boardUsing == 3 then 
-        if (finalRow == 1 or finalRow == 2) and finalLine == 1 and line == 1 and approach ~= 2 then 
-            finalLine = 3
-            --print("test1")
-        elseif (finalRow == 1 or finalRow == 2) and finalLine == 3 and line == -1 and approach ~= 2 then
-            finalLine = 1
-            --print("test2")
-        else 
-            finalRow = finalRow + row
-            finalLine = finalLine + line
-            --print("test3")
-        end
-        BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
-        ScaleformMovieMethodAddParamInt(finalBoardPlacement[approach][finalRow][finalLine])
-        EndScaleformMovieMethod()
-    end
-end
-
 local function SetLootAndApproach()
     BeginScaleformMovieMethod(boardType[2], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
@@ -657,9 +585,7 @@ local function MapMarkers()
     EndScaleformMovieMethod()
 end
 
-local function ChangeImage(num, change)
-    --print("change " .. change)
-    
+local function ChangeImage(num, change)  
     if imageOrderNum[boardUsing][num] == 1 and boardUsing == 3 then 
         
         BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
@@ -676,16 +602,11 @@ local function ChangeImage(num, change)
     else 
         imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
 
-        --print("SET_IMAGE")
-
         BeginScaleformMovieMethod(boardType[boardUsing] ,"SET_BUTTON_IMAGE")
         ScaleformMovieMethodAddParamInt(num)
         ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num] - 1])
         EndScaleformMovieMethod()
     end
-
-    --local test = imageOrderNum[boardUsing][num]
-    --print(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num]])
 
     if boardUsing == 3 then 
         
@@ -693,6 +614,7 @@ local function ChangeImage(num, change)
 
         if num == 3 and not todoList[3][2][2]then 
             todoList[3][2][2] = true
+            ClearLists(1)
             if approach == 2 then 
                 for i = 1, #todoList[3] do 
                     ToDoList(i, 3)
@@ -709,6 +631,7 @@ local function ChangeImage(num, change)
             MapMarkers()
             if not todoList[3][3][2] then 
                 todoList[3][3][2] = true
+                ClearLists(1)
                 if approach == 2 then 
                     for i = 1, #todoList[3] do 
                         ToDoList(i, 3)
@@ -744,22 +667,26 @@ local function NotSelected(i)
 end
 
 local function SetFocusOnButton()
+    local button = GetButtonId()
+    
     BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS_VISIBLE")
-    ScaleformMovieMethodAddParamInt(GetButtonId())
+    ScaleformMovieMethodAddParamInt(button)
     ScaleformMovieMethodAddParamBool(true)
     EndScaleformMovieMethod()
-
+    
     isFocusedBoard = true
 end
 
 local function UnFocusOnButton()
+    local button = GetButtonId()
+
     BeginScaleformMovieMethod(boardType[boardUsing], "SET_SELECTION_ARROWS_VISIBLE")
-    ScaleformMovieMethodAddParamInt(GetButtonId())
+    ScaleformMovieMethodAddParamInt(button)
     ScaleformMovieMethodAddParamBool(false)
     EndScaleformMovieMethod()
 
-    BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
-    ScaleformMovieMethodAddParamInt(GetButtonId())
+    BeginScaleformMovieMethod(boardType[boardUsing], "SET_BUTTON_GREYED_OUT")
+    ScaleformMovieMethodAddParamInt(button)
     ScaleformMovieMethodAddParamBool(true)
     EndScaleformMovieMethod()
 end
@@ -772,10 +699,12 @@ local function AppearanceButtons(i, bool)
 end
 
 local function GreyOut(board, i, bool)
-    BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
-    ScaleformMovieMethodAddParamInt(i)
-    ScaleformMovieMethodAddParamBool(bool)
-    EndScaleformMovieMethod()
+    if not (board == 3 and i == 12) then 
+        BeginScaleformMovieMethod(boardType[board], "SET_BUTTON_GREYED_OUT")
+        ScaleformMovieMethodAddParamInt(i)
+        ScaleformMovieMethodAddParamBool(bool)
+        EndScaleformMovieMethod()
+    end
 end
 
 local function CheckTodoList()
@@ -821,9 +750,9 @@ local function ExecuteButtonFunction(i)
     elseif boardUsing == 2 then 
 
     elseif boardUsing == 3 then 
-        if i == 6 then -- Decoy
-
-        elseif i == 7 then  -- Clean Vehicle
+        if i == 6 and ShowAlertMessage("Are you sure you wish to purchase the clean vehicle for $" .. cleanVehiclePrice, true) then -- Decoy
+            boughtCleanVehicle = true 
+        elseif i == 7 and ShowAlertMessage("Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice, true) then  -- Clean Vehicle
 
         elseif i == 12 then -- Start Heist
             if CheckTodoList() then 
@@ -835,11 +764,17 @@ local function ExecuteButtonFunction(i)
     end 
 end
 
-RegisterCommand("alertMsg", function(src, args)
-    if args[1] == "1" then 
-        ShowAlertMessage(true, "title", "msg", true)
+local function MoveMarker(direction)
+    BeginScaleformMovieMethod(boardType[boardUsing], "SET_INPUT_EVENT")
+    ScaleformMovieMethodAddParamInt(direction) 
+    EndScaleformMovieMethod()
+end
+
+RegisterCommand("alertMsg", function()
+    if ShowAlertMessage("Test", true) then 
+        print("yes")
     else
-        ShowAlertMessage(true, "title", "msg", true)
+        print("no")
     end
 end, false)
 
@@ -1066,6 +1001,10 @@ function SetupBoardInfo()
 
         SetPoster(-1)
 
+        BeginScaleformMovieMethod(boardType[1], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt(12)
+        EndScaleformMovieMethod()
+
         BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
         ScaleformMovieMethodAddParamInt(19)
         EndScaleformMovieMethod()
@@ -1105,7 +1044,7 @@ function SetupBoardInfo()
         PlayerJoinedCrew(1)
 
         BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
-        ScaleformMovieMethodAddParamInt(finalBoardPlacement[approach][finalRow][finalLine])
+        ScaleformMovieMethodAddParamInt(2)
         EndScaleformMovieMethod()
 
         BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
@@ -1177,109 +1116,46 @@ CreateThread(function()
     end
 end)
 
+-- 187 down, 188 right, 189 left, 190 up
+
 CreateThread(function()
     while true do 
         Wait(2)
-        if boardUsing == 1 and camIsUsed and not isFocusedBoard then 
+        if boardUsing ~= 0 and camIsUsed and not isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 32) then -- W
-                if setupRow ~= 1 then
-                    SetMarker(-1, 0)
-                end
+                PlaySoundFrontend(-1, "Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                MoveMarker(188)
             elseif IsDisabledControlJustPressed(0, 33) then -- S
-                if setupRow ~= 5 then 
-                    SetMarker(1, 0)
-                end
+                PlaySoundFrontend(-1, "Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                MoveMarker(187)
             elseif IsDisabledControlJustPressed(0, 34) then -- A
-                if setupLine ~= 1 then 
-                    SetMarker(0, -1)
-                end
+                PlaySoundFrontend(-1, "Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                MoveMarker(189)
             elseif IsDisabledControlJustPressed(0, 35) then -- D
-                if setupLine ~= 5 then 
-                    SetMarker(0, 1)
+                PlaySoundFrontend(-1, "Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                MoveMarker(190)
+            elseif IsDisabledControlJustPressed(0, 44) then -- Q
+                if boardUsing ~= 1 then
+                    ChangeCam(-1)
                 end
             elseif IsDisabledControlJustPressed(0, 38) then -- E
-                ChangeCam(1)
+                if boardUsing ~= 3 then
+                    ChangeCam(1)
+                end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                SetFocusOnButton()
-            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
-                ExitBoard()
-            elseif IsDisabledControlJustPressed(0, 204) then -- Tab
-
-            end
-        else 
-            Wait(1000)
-        end
-    end
-end)
-
-CreateThread(function()
-    while true do 
-        Wait(2)
-        if boardUsing == 2 and camIsUsed and not isFocusedBoard then 
-            if IsDisabledControlJustPressed(0, 32) then -- W
-                --print(prepRow)
-                if prepRow ~= 1 then 
-                    SetMarker(-1, 0)
-                end
-            elseif IsDisabledControlJustPressed(0, 33) then -- S
-                if prepRow ~= 3 then 
-                    SetMarker(1, 0)
-                end
-            elseif IsDisabledControlJustPressed(0, 34) then -- A
-                if prepLine ~= 1 then 
-                    --print(prepLine)
-                    SetMarker(0, -1)
-                end
-            elseif IsDisabledControlJustPressed(0, 35) then -- D
-                if prepLine ~= 6 then 
-                    SetMarker(0, 1)
-                end
-            elseif IsDisabledControlJustPressed(0, 44) then -- Q
-                ChangeCam(-1)
-            elseif IsDisabledControlJustPressed(0, 38) then -- E
-                ChangeCam(1)
-            elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                SetFocusOnButton()
-            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
-                ExitBoard()
-            elseif IsDisabledControlJustPressed(0, 204) then -- Tab
-
-            end
-        else 
-            Wait(1000)
-        end
-    end
-end)
-
-CreateThread(function()
-    while true do 
-        Wait(2)
-        if boardUsing == 3 and camIsUsed and not isFocusedBoard then 
-            if IsDisabledControlJustPressed(0, 32) then -- W
-                if finalRow ~= 1 --[[and (finalRow ~= 2 and finalLine ~= 2)]] then 
-                    SetMarker(-1, 0)
-                end
-            elseif IsDisabledControlJustPressed(0, 33) then -- S
-                if finalRow ~= 5 then 
-                    SetMarker(1, 0)
-                end
-            elseif IsDisabledControlJustPressed(0, 34) then -- A
-                if finalLine ~= 1 then 
-                    --print(finalLine)
-                    SetMarker(0, -1)
-                end
-            elseif IsDisabledControlJustPressed(0, 35) then -- D
-                if finalLine ~= 3 then 
-                    SetMarker(0, 1)
-                end
-            elseif IsDisabledControlJustPressed(0, 44) then -- Q
-                ChangeCam(-1)
-            elseif IsDisabledControlJustPressed(0, 191) then -- Enter
-                if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
+                PlaySoundFrontend(-1, "Highlight_Accept", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                if boardUsing == 1 then
                     SetFocusOnButton()
+                elseif boardUsing == 2 then 
+                    SetFocusOnButton()
+                elseif boardUsing == 3 then 
+                    if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
+                        GreyOut(3, GetButtonId(), false)
+                        SetFocusOnButton()
+                    end
                 end
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
-                GreyOut(3, GetButtonId(), true)
+                GreyOut(boardUsing, GetButtonId(), true)
                 ExitBoard()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
@@ -1289,38 +1165,131 @@ CreateThread(function()
         end
     end
 end)
+
+--CreateThread(function()
+--    while true do 
+--        Wait(2)
+--        if boardUsing == 2 and camIsUsed and not isFocusedBoard and boe then 
+--            if IsDisabledControlJustPressed(0, 32) then -- W
+--                --print(prepRow)
+--                if prepRow ~= 1 then 
+--                    SetMarker(-1, 0)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 33) then -- S
+--                if prepRow ~= 3 then 
+--                    SetMarker(1, 0)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 34) then -- A
+--                if prepLine ~= 1 then 
+--                    --print(prepLine)
+--                    SetMarker(0, -1)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 35) then -- D
+--                if prepLine ~= 6 then 
+--                    SetMarker(0, 1)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 44) then -- Q
+--                ChangeCam(-1)
+--            elseif IsDisabledControlJustPressed(0, 38) then -- E
+--                ChangeCam(1)
+--            elseif IsDisabledControlJustPressed(0, 191) then -- Enter
+--                SetFocusOnButton()
+--            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
+--                ExitBoard()
+--            elseif IsDisabledControlJustPressed(0, 204) then -- Tab
+--
+--            end
+--        else 
+--            Wait(1000)
+--        end
+--    end
+--end)
+--
+--CreateThread(function()
+--    while true do 
+--        Wait(2)
+--        if boardUsing == 3 and camIsUsed and not isFocusedBoard and boe then 
+--            if IsDisabledControlJustPressed(0, 32) then -- W
+--                if finalRow ~= 1 --[[and (finalRow ~= 2 and finalLine ~= 2)]] then 
+--                    SetMarker(-1, 0)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 33) then -- S
+--                if finalRow ~= 5 then 
+--                    SetMarker(1, 0)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 34) then -- A
+--                if finalLine ~= 1 then 
+--                    --print(finalLine)
+--                    SetMarker(0, -1)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 35) then -- D
+--                if finalLine ~= 3 then 
+--                    SetMarker(0, 1)
+--                end
+--            elseif IsDisabledControlJustPressed(0, 44) then -- Q
+--                ChangeCam(-1)
+--            elseif IsDisabledControlJustPressed(0, 191) then -- Enter
+--                if (GetButtonId() == 2 and entryIsAvailable) or GetButtonId() ~= 2 or approach ~= 2 then
+--                    SetFocusOnButton()
+--                end
+--            elseif IsDisabledControlJustPressed(0, 200) then -- Esc
+--                GreyOut(3, GetButtonId(), true)
+--                ExitBoard()
+--            elseif IsDisabledControlJustPressed(0, 204) then -- Tab
+--
+--            end
+--        else 
+--            Wait(1000)
+--        end
+--    end
+--end)
 
 CreateThread(function()
     while true do 
         Wait(2)
         if isFocusedBoard then 
             if IsDisabledControlJustPressed(0, 174) then -- <--
+                if boardUsing == 1 then 
+                    
+                elseif boardUsing == 2 then 
+                    
+                elseif boardUsing == 3 then
                     --if GetButtonId() ~= 2 and imageOrderNum[3][13] ~= 0 and boardUsing == 3 then
-                if boardUsing == 3 and (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
-                    if CanChangeCut(GetButtonId() - 7, -5) then 
-                        local num = GetButtonId() - 7
-                        playerCut[#hPlayer][num] = playerCut[#hPlayer][num] - 5 
-                        SetCrewCut(num, playerCut[#hPlayer][num])
+                    if (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
+                        if CanChangeCut(GetButtonId() - 7, -5) then 
+                            local num = GetButtonId() - 7
+                            playerCut[#hPlayer][num] = playerCut[#hPlayer][num] - 5 
+                            SetCrewCut(num, playerCut[#hPlayer][num])
+                        end
+                    elseif CanChangeImage(GetButtonId(), -1) then 
+                        ChangeImage(GetButtonId(), -1)
                     end
-                elseif CanChangeImage(GetButtonId(), -1) then 
-                    ChangeImage(GetButtonId(), -1)
                 end
+                PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
-                if boardUsing == 3 and (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
-                    if CanChangeCut(GetButtonId() - 7, 5) then 
-                        local num = GetButtonId() - 7
-                        playerCut[#hPlayer][num] = playerCut[#hPlayer][num] + 5
-                        SetCrewCut(num, playerCut[#hPlayer][num])
+                PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                if boardUsing == 1 then 
+                    
+                elseif boardUsing == 2 then 
+
+                elseif boardUsing == 3 then
+                    if (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
+                        if CanChangeCut(GetButtonId() - 7, 5) then 
+                            local num = GetButtonId() - 7
+                            playerCut[#hPlayer][num] = playerCut[#hPlayer][num] + 5
+                            SetCrewCut(num, playerCut[#hPlayer][num])
+                        end
+                    elseif CanChangeImage(GetButtonId(), 1) then 
+                        ChangeImage(GetButtonId(), 1)
                     end
-                elseif CanChangeImage(GetButtonId(), 1) then 
-                    ChangeImage(GetButtonId(), 1)
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
                 ExecuteButtonFunction(GetButtonId())
                 UnFocusOnButton()
                 isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
-                GreyOut(3, GetButtonId(), true)
+                PlaySoundFrontend(-1, "Back", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
+                GreyOut(boardUsing, GetButtonId(), true)
                 UnFocusOnButton()
                 isFocusedBoard = false 
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
