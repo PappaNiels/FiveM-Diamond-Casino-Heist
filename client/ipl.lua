@@ -39,6 +39,33 @@ function SetVaultDoorStatus(num)
     Wait(100)
 end
 
+function SetCasinoModel(bool)
+    if bool then 
+        ActivateInteriorEntitySet(arcadeGarage, "casino_prop")
+    else
+        DeactivateInteriorEntitySet(arcadeGarage, "casino_prop")
+    end
+    RefreshInterior(arcadeGarage)
+end 
+
+function SetHackKeypadModel(bool)
+    if bool then 
+        ActivateInteriorEntitySet(arcadeGarage, "hack_device")
+    else
+        DeactivateInteriorEntitySet(arcadeGarage, "hack_device")
+    end
+    RefreshInterior(arcadeGarage)
+end 
+
+function SetVaultModel(bool)
+    if bool then 
+        ActivateInteriorEntitySet(arcadeGarage, "vault_exercise")
+    else
+        DeactivateInteriorEntitySet(arcadeGarage, "vault_exercise")
+    end
+    RefreshInterior(arcadeGarage)
+end 
+
 function SetLoot(loot)
     --loot = math.random(1, 4)
     
