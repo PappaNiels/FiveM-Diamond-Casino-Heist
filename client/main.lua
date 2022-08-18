@@ -82,6 +82,9 @@ selectedBuyer = 0          -- 3
 selectedEntryDisguise = 1   -- 4    
 selectedExitDisguise = 1    -- 3
 
+boughtCasinoModel = false 
+boughtDoorSecurity = false 
+boughtVault = false
 boughtCleanVehicle = false
 boughtDecoy = false
 
