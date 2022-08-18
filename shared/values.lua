@@ -13,6 +13,13 @@ potential = { -- Total Take
     }
 }
 
+lootChances = {
+    40, -- Cash
+    20, -- Gold
+    28, -- Artwork
+    12, -- Diamonds
+}
+
 casinoModelPrice = 130000
 hackKeypadModelPrice = 425000
 vaultModelPrice = 900000
