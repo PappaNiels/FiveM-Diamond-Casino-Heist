@@ -13,5 +13,9 @@ potential = { -- Total Take
     }
 }
 
+casinoModelPrice = 130000
+hackKeypadModelPrice = 425000
+vaultModelPrice = 900000
+
 cleanVehiclePrice = 20000
 decoyPrice = 50000
