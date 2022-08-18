@@ -1,28 +1,28 @@
 gunman = {
     -- Person, Skill, Index, Cut
-    {"Chester McCoy", "Expert", 1, 0.1},
-    {"Gustavo Mota", "Expert", 2, 0.09},
-    {"Patrick McReary", "Expert", 3, 0.08},
+    {"Karl Abolaji", "Poor", 5, 0.05},
     {"Charlie Reed", "Good", 4, 0.07},
-    {"Karl Abolaji", "Poor", 5, 0.05}
+    {"Patrick McReary", "Expert", 3, 0.08},
+    {"Gustavo Mota", "Expert", 2, 0.09},
+    {"Chester McCoy", "Expert", 1, 0.1},
 }
 
 driver = {
     -- Person, Skill, Index, Cut
-    {"Chester McCoy", "Expert", 1, 0.1},
-    {"Eddie Toh", "Expert", 2, 0.09},
-    {"Taliana Martinez", "Good", 3, 0.07},
+    {"Karim Denz", "Poor", 5, 0.05},
     {"Zach Nelson", "Good", 4, 0.06},
-    {"Karim Denz", "Poor", 5, 0.05}
+    {"Taliana Martinez", "Good", 3, 0.07},
+    {"Eddie Toh", "Expert", 2, 0.09},
+    {"Chester McCoy", "Expert", 1, 0.1},
 }
 
 hacker = {
     -- Person, Skill, Time Undetected, Time Detected, Cut
-    {"Avi Schartzman", "Expert", 2000, 146000, 0.1},
-    {"Paige Harris", "Expert", 205000, 143000, 0.09},
-    {"Christian Feltz", "Good", 179000, 125000, 0.07},
-    {"Yohan Blair", "Good", 172000, 121000, 0.05},
     {"Rickie Lukens", "Poor", 146000, 102000, 0.03},
+    {"Yohan Blair", "Good", 172000, 121000, 0.05},
+    {"Christian Feltz", "Good", 179000, 125000, 0.07},
+    {"Paige Harris", "Expert", 205000, 143000, 0.09},
+    {"Avi Schartzman", "Expert", 2000, 146000, 0.1},
 }
 
 weaponLoadout = {
