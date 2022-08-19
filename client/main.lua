@@ -62,8 +62,8 @@ keypads = {
 }
 
 difficulty = 1 -- 1 = Normal, 2 = Hard
-loot = 1 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
-approach = 2 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
+loot = 0 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
+approach = 0 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 vaultLayout = 0
 teamlives = 1
 take = 8502100
@@ -71,16 +71,16 @@ take = 8502100
 cash = 5875
 goldbar = 16156
 
-selectedGunman = 1          -- 5
-selectedLoadout = 1         -- 6 per Gunman
-selectedDriver = 1          -- 5
-selectedVehicle = 1         -- 4 per Driver
-selectedHacker = 1          -- 5 
-selectedEntrance = 1        -- 11
-selectedExit = 1            -- 9
+selectedGunman = 0         -- 5
+selectedLoadout = 0         -- 6 per Gunman
+selectedDriver = 0          -- 5
+selectedVehicle = 0         -- 4 per Driver
+selectedHacker = 0          -- 5 
+selectedEntrance = 0        -- 11
+selectedExit = 0            -- 9
 selectedBuyer = 0          -- 3
-selectedEntryDisguise = 1   -- 4    
-selectedExitDisguise = 1    -- 3
+selectedEntryDisguise = 0   -- 4    
+selectedExitDisguise = 0    -- 3
 
 boughtCasinoModel = false 
 boughtDoorSecurity = false 
