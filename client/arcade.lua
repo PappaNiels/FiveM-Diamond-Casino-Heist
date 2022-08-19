@@ -395,6 +395,7 @@ local imageOrderNum = {
 }
 
 local notSelected = {2, 3, 4, 13, 14}
+local untick = {2, 3, 4, 8, 9, 13}
 
 local weapons = {
     [1] = {2, 8, 14, 4, 11},
@@ -620,11 +621,18 @@ local function Lock(i)
     EndScaleformMovieMethod()
 end
 
-local function SetTick(i)
-    BeginScaleformMovieMethod(boardType[boardUsing], "SET_TICK")
-    ScaleformMovieMethodAddParamInt(i)
-    ScaleformMovieMethodAddParamBool(true)
-    EndScaleformMovieMethod()
+local function SetTick(i, board, bool)
+    if board = nil then 
+        BeginScaleformMovieMethod(boardType[boardUsing], "SET_TICK")
+        ScaleformMovieMethodAddParamInt(i)
+        ScaleformMovieMethodAddParamBool(true)
+        EndScaleformMovieMethod()
+    else 
+        BeginScaleformMovieMethod(boardType[board], "SET_TICK")
+        ScaleformMovieMethodAddParamInt(i)
+        ScaleformMovieMethodAddParamBool(bool)
+        EndScaleformMovieMethod()
+    end
 end
 
 local function SetMission(i)
@@ -1385,11 +1393,17 @@ function SetupBoardInfo(num)
             if approach == 2 then 
                 SetPoster(-1)
             end
+
+            for i = 1, 3 do 
+                SetMission(i)
+            end
+
+            for i = 1, #untick do 
+                SetTick(i, 2, false)
+            end
         end
 
-        for i = 1, 3 do 
-            SetMission(i)
-        end
+        
 
         if selectedGunman == 0 then 
             SetHireableCrew(10, gunman[imageOrderNum[2][10] - 1][1], gunman[imageOrderNum[2][10] - 1][2], gunman[imageOrderNum[2][10] - 1][4], math.floor(gunman[imageOrderNum[2][10] - 1][5] * 100), weapons[approach][1]) -- 1 = big con. 2 = silent, 3 = aggressive
