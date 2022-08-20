@@ -382,7 +382,7 @@ local imageOrder = {
 local imageOrderNum = {
     [2] = {
         [5] = 1,
-        [6] = 2,
+        [6] = 1,
         [10] = 2,
         [11] = 2,
         [12] = 2
@@ -1050,39 +1050,39 @@ local function ExecuteButtonFunction(i)
 
                 if approach == 1 then 
                     if selectedGunman == 1 then 
-                        imageOrder[2][approach][5] = {19, 20}
+                        imageOrder[2][approach][5] = {11, 12} -- 1
                     elseif selectedGunman == 2 then
-                        imageOrder[2][approach][5] = {17, 18}
+                        imageOrder[2][approach][5] = {13, 14} -- 2
                     elseif selectedGunman == 3 then
-                        imageOrder[2][approach][5] = {15, 16}
+                        imageOrder[2][approach][5] = {15, 16} -- 3
                     elseif selectedGunman == 4 then
-                        imageOrder[2][approach][5] = {13, 14}
+                        imageOrder[2][approach][5] = {17, 18} -- 4
                     elseif selectedGunman == 5 then
-                        imageOrder[2][approach][5] = {11, 12}
+                        imageOrder[2][approach][5] = {19, 20} -- 5
                     end
                 elseif approach == 2 then 
                     if selectedGunman == 1 then 
-                        imageOrder[2][approach][5] = {29, 30}
+                        imageOrder[2][approach][5] = {21, 22} -- 1
                     elseif selectedGunman == 2 then
-                        imageOrder[2][approach][5] = {27, 28}
+                        imageOrder[2][approach][5] = {23, 24} -- 2
                     elseif selectedGunman == 3 then
-                        imageOrder[2][approach][5] = {25, 26}
+                        imageOrder[2][approach][5] = {25, 26} -- 3
                     elseif selectedGunman == 4 then
-                        imageOrder[2][approach][5] = {23, 24}
+                        imageOrder[2][approach][5] = {27, 28} -- 4
                     elseif selectedGunman == 5 then
-                        imageOrder[2][approach][5] = {21, 22}
+                        imageOrder[2][approach][5] = {29, 30} -- 5
                     end
                 elseif approach == 3 then 
                     if selectedGunman == 1 then 
-                        imageOrder[2][approach][5] = {9, 10}
+                        imageOrder[2][approach][5] = {1, 2} -- 1
                     elseif selectedGunman == 2 then
-                        imageOrder[2][approach][5] = {7, 8}
+                        imageOrder[2][approach][5] = {3, 4} -- 2
                     elseif selectedGunman == 3 then
-                        imageOrder[2][approach][5] = {5, 6}
+                        imageOrder[2][approach][5] = {5, 6} -- 3
                     elseif selectedGunman == 4 then
-                        imageOrder[2][approach][5] = {3, 4}
+                        imageOrder[2][approach][5] = {7, 8} -- 4
                     elseif selectedGunman == 5 then
-                        imageOrder[2][approach][5] = {1, 2}
+                        imageOrder[2][approach][5] = {9, 10} -- 5
                     end
                 end
 
