@@ -237,50 +237,51 @@ weaponLoadout = {
 availableVehicles = {
     [1] = { -- Driver
         [1] = { -- Getaway Vehicle
-            "zhaba",
-            "vagrant",
-            "outlaw",
-            "everon"
+            -- Model Name, Name on Board
+            {"zhaba", "Zhaba"},
+            {"vagrant", "Vargrant"},
+            {"outlaw", "Outlaw"},
+            {"everon", "Everon"}
         },
         "kamacho", -- Departure Vehicle   
         "mesa3"  -- Switch Vehicle
     },
     [2] = {
         [1] = {
-            "sultan2",
-            "gauntlet3",
-            "ellie",
-            "komoda"
+            {"sultan2", "Sultan Classic"},
+            {"gauntlet3", "Gauntlet Classic"},
+            {"ellie", "Ellie"},
+            {"komoda", "Komoda"}
         },
         "kuruma",
         "taxi"
     },
     [3] = {
         [1] = {
-            "retinue2",
-            "yosemite2",
-            "sugoi",
-            "jugular"
+            {"retinue2", "Retinue MK II"},
+            {"yosemite2", "Drift Yosemite"},
+            {"sugoi", "Sugoi"},
+           {"jugular", "Jugular"}
         },
         "sultan",
         "emperor"
     },
     [4] = {
         [1] = {
-            "manchez",
-            "stryder",
-            "defiler",
-            "lectro"
+            {"manchez", "Manchez"},
+            {"stryder", "Stryder"},
+            {"defiler", "Defiler"},
+            {"lectro", "Lectro"}
         },
         "youga2",
         "pony"
     },
     [5] = {
         [1] = {
-            "issi3",
-            "asbo",
-            "kanjo",
-            "sentinel3"
+            {"issi3", "Issi Classic"},
+            {"asbo", "Asbo"},
+            {"kanjo", "Kanjo"},
+            {"sentinel3", "Sentinal Classic"}
         },
         "rancherxl",
         "regina"
