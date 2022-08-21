@@ -14,12 +14,6 @@ local camHeading = {0.0, 270.0, 180.0}
 
 local boardCam = 0
 local boardUsing = 0
-local setupRow  = 3
-local setupLine = 1
-local prepRow = 1
-local prepLine = 1
-local finalRow = 1
-local finalLine = 1
 local boards = 1
 
 local setupLists = false
@@ -57,7 +51,7 @@ local todoList = {
             {"Getaway Vehicles", false},
             {"Hacking Device", false},
             {"Vault Keycards", false},
-            {"Entry Disguise", false},
+            {"Entry Disguise", true},
             {"Vault Drills", false}
         },
         [3] = { -- Aggressive
@@ -71,6 +65,7 @@ local todoList = {
     },
     [3] = {
         {"Entry Disquise", false},
+
         {"Exit", false},
         {"Buyer", false},
         {"Player Cuts", true}
@@ -103,7 +98,7 @@ local optionalList = {
             {"Power Drills", false}, 
             {"Security Passes", false}, 
             {"Acquire Masks", false},
-            {"Exit Disguise", false}
+            {"Exit Disguise", true}
         },
         [3] = { -- Aggressive
             {"Patrol Routes", false},
@@ -131,10 +126,10 @@ local approachSpecificPreps = {
         {17, 8, "INFILTRATION SUITS", false, false}
     },
     [2] = {
-        {14, 13, "BUGSTARS GEAR", false, true, "ENRTY DISGUISE"},
+        {14, 13, "BUGSTARS GEAR", true, true, "ENRTY DISGUISE"},
         {15, 12, "VAULT DRILLS", false, true},
         {16, 0, "", false, false},
-        {17, 16, "FIREFIGHTER GEAR", false, false, "EXIT DISGUISE"},
+        {17, 16, "FIREFIGHTER GEAR", true, false, "EXIT DISGUISE"},
     },
     [3] = {
         {14, 3, "THERMAL CHARGES", false, true},
@@ -174,10 +169,10 @@ local entranceString = {
         "ENTRANCE",
         "STAFF LOBBY",
         "WASTE DISPOSAL",
-        "S.E. ROOF TERRACE",
-        "S.W. ROOF TERRACE",
         "N.E. ROOF TERRACE",
         "N.W. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "S.W. ROOF TERRACE",
         "SOUTH HELIPAD",
         "NORTH HELIPAD"
     },
@@ -188,7 +183,15 @@ local entranceString = {
         [6] = "SECURITY TUNNEL"
     },
     [3] = {
-        
+        "ENTRANCE",
+        "MAIN DOOR",
+        "SEWER",
+        "STAFF LOBBY",
+        "WASTE DISPOSAL",
+        "N.E. ROOF TERRACE",
+        "N.W. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "S.W. ROOF TERRACE"
     }
 }
 
@@ -216,7 +219,15 @@ local exitString = {
         "NORTH HELIPAD"
     },
     [3] = {
-        
+        "EXIT",
+        "STAFF LOBBY",
+        "WASTE DISPOSAL",
+        "N.E. ROOF TERRACE",
+        "N.W. ROOF TERRACE",
+        "S.E. ROOF TERRACE",
+        "S.W. ROOF TERRACE",
+        "SOUTH HELIPAD",
+        "NORTH HELIPAD"
     }
 }
 
@@ -230,8 +241,8 @@ local buyerString = {
 local entryDisguiseString = {
     "ENTRY DISGUISE",
     "BUGSTARS",
-    "MAINTENANCE",
     "GRUPPE SECHS",
+    "LS WATER & POWER",
     "YUNG ANCESTOR"
 }
 
@@ -341,26 +352,31 @@ local imageOrder = {
             [6] = {},
             [10] = {1, 3, 5, 2, 4},
             [11] = {1, 4, 2, 3, 5},
-            [12] = {1, 3, 2, 5, 4}
+            [12] = {1, 3, 2, 5, 4},
+            [13] = {1, 2}
         },
         [2] = {
             [5] = {},
             [6] = {},
             [10] = {1, 3, 5, 2, 4},
             [11] = {1, 4, 2, 3, 5},
-            [12] = {1, 3, 2, 5, 4}
+            [12] = {1, 3, 2, 5, 4},
+            [13] = {1, 2},
+            [14] = {13, 15, 14, 9},
+            [17] = {16, 17, 18}
         },
         [3] = {
             [5] = {},
             [6] = {},
             [10] = {1, 3, 5, 2, 4},
             [11] = {1, 4, 2, 3, 5},
-            [12] = {1, 3, 2, 5, 4}
+            [12] = {1, 3, 2, 5, 4},
+            [13] = {1, 2}
         }, 
     },
     [3] = {
         [1] = {
-            [2] = {11, 1, 3},
+            [2] = {11, 1, 3, 8, 10, 5, 9, 4},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
             [4] = {1, 2, 3}
         },
@@ -368,11 +384,11 @@ local imageOrder = {
             [2] = {},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
             [4] = {1, 2, 3},
-            [13] = {1, 2, 3, 4},
+            [13] = {1, 3, 2, 4},
             [14] = {1, 2, 3}
         },
         [3] = {
-            [2] = {2, 11, 3, 5, 8, 10, 4, 9},
+            [2] = {2, 7, 11, 1, 3, 5, 8, 10},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
             [4] = {1, 2, 3}
         }
@@ -381,11 +397,14 @@ local imageOrder = {
 
 local imageOrderNum = {
     [2] = {
-        [5] = 1,
-        [6] = 1,
+        [5] = 2,
+        [6] = 2,
         [10] = 2,
         [11] = 2,
-        [12] = 2
+        [12] = 2,
+        [13] = 2,
+        [14] = 2,
+        [17] = 2
     },
     [3] = {
         [2] = 1, -- Entry
@@ -398,6 +417,7 @@ local imageOrderNum = {
 
 local notSelected = {2, 3, 4, 13, 14}
 local untick = {2, 3, 4, 8, 9, 13}
+local weaponLoadoutStrings = {}
 
 local weapons = {
     [1] = {2, 8, 14, 4, 11},
@@ -409,23 +429,29 @@ function StartCamWhiteboard()
     boardCam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", camCoords[boardUsing], 0, 0, camHeading[boardUsing], 20.0, true, 2)
     RenderScriptCams(true, false, 1000, true, false)
 
-    --print(boardUsing)
-    --while not HasScaleformMovieLoaded(boardType[boardUsing]) do 
-    --    Wait(1)
-    --end
-
     DisplayRadar(false)
-    --SetupBoardInfo()
     SetEntityVisible(PlayerPedId(), false)
     
     camIsUsed = true
 end
 
 local function ChangeCam(change)
-    boardUsing = boardUsing + change 
-    
-    SetCamCoord(boardCam, camCoords[boardUsing])
-    SetCamRot(boardCam, 0, 0, camHeading[boardUsing], 2)
+    if boardUsing + change <= boards then 
+        boardUsing = boardUsing + change 
+        
+        SetCamCoord(boardCam, camCoords[boardUsing])
+        SetCamRot(boardCam, 0, 0, camHeading[boardUsing], 2)
+    end
+end
+
+local function SetBarButtons()
+    if boardUsing == 1 then 
+
+    elseif boardUsing == 2 then 
+
+    elseif boardUsing == 3 then 
+
+    end
 end
 
 local function ExitBoard()
@@ -452,16 +478,16 @@ end
 
 local function CanChangeImage(num, change)
     --local num = GetButtonId()
-    print(num)
-    print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
+    --print(num)
+    --print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
     if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] - 1 and change == 1 then 
-        print("too high")     
+        --print("too high")     
         return false
     elseif imageOrderNum[boardUsing][num] <= 2 and change == -1 then 
-        print("too low")
+        --print("too low")
         return false
     else
-        print("can")
+        --print("can")
         return true
     end
 end
@@ -508,13 +534,10 @@ local function SetDataFinal(i)
     ScaleformMovieMethodAddParamInt(potential[difficulty][loot])
     ScaleformMovieMethodAddParamInt(math.floor(cut))
     if approach == 2 and entryIsAvailable and imageOrderNum[3][2] ~= 1 then 
-        print(1)
         ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrder[3][approach][2][imageOrderNum[3][2] - 1]])
     elseif approach == 2 then 
         ScaleformMovieMethodAddParamPlayerNameString("ENTRANCE")
-        print(2)
     else
-        print(3)
         ScaleformMovieMethodAddParamPlayerNameString(entranceString[approach][imageOrderNum[3][2]])
     end
     ScaleformMovieMethodAddParamPlayerNameString(exitString[approach][imageOrderNum[3][3]])
@@ -567,20 +590,20 @@ local function UpdateList(list, button)
     --print("length todo : " .. #todoList[1])
     if list == 1 then 
         if boardUsing == 1 then 
-            --todoList[boardUsing][button][2] = true 
+            todoList[boardUsing][button][2] = true 
 
             for i = 1, #todoList[1] do 
                 ToDoList(i, 1)
                 --print("tick")
             end
         elseif boardUsing == 2 then 
-            --todoList[boardUsing][approach][button][2] = true 
+            todoList[boardUsing][approach][button][2] = true 
 
             for i = 1, #todoList[2][approach] do 
                 ToDoList(i, 2)
             end
         elseif boardUsing == 3 then
-            --todoList[boardUsing][button][2] = true 
+            todoList[boardUsing][button][2] = true 
 
             if approach == 2 then 
                 for i = 1, #todoList[3] do 
@@ -594,19 +617,19 @@ local function UpdateList(list, button)
         end
     else 
         if boardUsing == 1 then 
-            --optionalList[boardUsing][button][2] = true 
+            optionalList[boardUsing][button][2] = true 
 
             for i = 1, #optionalList[1] do 
                 OptionalList(i, 1)
             end
         elseif boardUsing == 2 then 
-            --optionalList[boardUsing][approach][button][2] = true 
+            optionalList[boardUsing][approach][button][2] = true 
 
             for i = 1, #optionalList[2][approach] do 
                 OptionalList(i, 2)
             end
         elseif boardUsing == 3 then
-            --optionalList[boardUsing][button][2] = true 
+            optionalList[boardUsing][button][2] = true 
 
             for i = 1, #optionalList[3] do 
                 OptionalList(i, 3)
@@ -634,6 +657,15 @@ local function SetTick(i, board, bool)
         ScaleformMovieMethodAddParamBool(bool)
         EndScaleformMovieMethod()
     end
+end
+
+local function SetMissionCompletion(btnId)
+    BeginScaleformMovieMethod(boardType[2], "SET_MISSION_COMPLETION")
+    ScaleformMovieMethodAddParamInt(btnId)
+    ScaleformMovieMethodAddParamBool(true)
+    ScaleformMovieMethodAddParamInt(1)
+    ScaleformMovieMethodAddParamInt(1)
+    EndScaleformMovieMethod()
 end
 
 local function SetMission(btnId, image, text)
@@ -707,14 +739,14 @@ local function SetLootAndApproach()
     EndScaleformMovieMethod()
 end
 
-local function SetSpecificPreps(i)
+local function SetSpecificPreps(btnId, image, title, isCompleted, isRequired, tapeLabel)
     BeginScaleformMovieMethod(boardType[2], "ADD_APPROACH")
-    ScaleformMovieMethodAddParamInt(approachSpecificPreps[approach][i][1])
-    ScaleformMovieMethodAddParamInt(approachSpecificPreps[approach][i][2])
-    ScaleformMovieMethodAddParamPlayerNameString(approachSpecificPreps[approach][i][3])
-    ScaleformMovieMethodAddParamBool(approachSpecificPreps[approach][i][4])
-    ScaleformMovieMethodAddParamBool(approachSpecificPreps[approach][i][5])
-    ScaleformMovieMethodAddParamPlayerNameString(approachSpecificPreps[approach][i][6])
+    ScaleformMovieMethodAddParamInt(btnId)
+    ScaleformMovieMethodAddParamInt(image)
+    ScaleformMovieMethodAddParamPlayerNameString(title)
+    ScaleformMovieMethodAddParamBool(isCompleted)
+    ScaleformMovieMethodAddParamBool(isRequired)
+    ScaleformMovieMethodAddParamPlayerNameString(tapeLabel)
     EndScaleformMovieMethod()
 end
 
@@ -770,8 +802,7 @@ local function MapMarkers()
 end
 
 local function ChangeImage(num, change)
-    if imageOrderNum[boardUsing][num] == 1 then 
-        
+    if imageOrderNum[boardUsing][num] == 1 and not (boardUsing == 2 and (num == 5 or num == 6 or num == 10 or num == 11 or num == 12)) then 
         if boardUsing == 3 then 
             BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
             ScaleformMovieMethodAddParamInt(num)
@@ -785,21 +816,24 @@ local function ChangeImage(num, change)
         EndScaleformMovieMethod()
         
         imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
-    elseif boardUsing == 2 and (num == 10 or num == 11 or num == 12) then 
+    elseif boardUsing == 2 and (num == 5 or num == 6 or num == 10 or num == 11 or num == 12 or num == 14 or num == 17) then 
         imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
         local sec = imageOrderNum[2][num] - 1
-        if num == 10 then 
+        if num == 5 then 
+            SetMission(5, imageOrder[2][approach][5][sec], weaponLoadoutStrings[sec])
+        elseif num == 6 then
+            SetMission(6, imageOrder[2][approach][6][sec], availableVehicles[driver[selectedDriver][3]][1][sec][2])
+        elseif num == 10 then 
             SetHireableCrew(10, gunman[sec][1], gunman[sec][2], gunman[sec][4], math.floor(gunman[sec][5] * 100), weapons[approach][sec])
         elseif num == 11 then  
             SetHireableCrew(11, driver[sec][1], driver[sec][2], driver[sec][4], math.floor(driver[sec][5] * 100), weapons[approach][imageOrderNum[2][10] - 1])
         elseif num == 12 then 
             SetHireableCrew(12, hacker[sec][1], hacker[sec][2], hacker[sec][5], math.floor(hacker[sec][6] * 100), weapons[approach][imageOrderNum[2][10] - 1])
+        elseif num == 14 then 
+            SetSpecificPreps(14, imageOrder[2][2][14][sec], entryDisguiseString[sec + 1] .. " GEAR", approachSpecificPreps[2][1][4], true, "ENRTY DISGUISE")
+        elseif num == 17 then 
+            SetSpecificPreps(17, imageOrder[2][2][17][sec], exitDisguiseString[sec + 1] .. " GEAR", approachSpecificPreps[2][4][4], false, "EXIT DISGUISE")
         end 
-    elseif boardUsing == 2 and (num == 6 or num == 7) then 
-        imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
-        --imageOrderNum[2][num] = imageOrderNum[2][num] - 1 
-
-        SetMission(num, imageOrder[2][approach][num][imageOrderNum[2][num] - 1], availableVehicles[driver[selectedDriver][3]][1][imageOrderNum[2][num] - 1][2])
     else 
         imageOrderNum[boardUsing][num] = imageOrderNum[boardUsing][num] + change
 
@@ -807,27 +841,32 @@ local function ChangeImage(num, change)
         ScaleformMovieMethodAddParamInt(num)
         ScaleformMovieMethodAddParamInt(imageOrder[boardUsing][approach][num][imageOrderNum[boardUsing][num] - 1])
         EndScaleformMovieMethod()
-    end
+    end        
 
-    if boardUsing == 2 then 
-        
-
-    elseif boardUsing == 3 then
+    if boardUsing == 3 then
         if num == 3 and not todoList[3][2][2]then 
             UpdateList(1, 2)
-        end
-
-        if num == 4 then 
+        elseif num == 4 then 
             selectedBuyer = selectedBuyer + change 
             MapMarkers()
             if not todoList[3][3][2] then 
                 UpdateList(1, 3)
             end
-        end
+        elseif num == 13 then 
+            if entryIsAvailable then 
+                imageOrderNum[3][2] = 1
 
-        if num == 13 and not entryIsAvailable then 
+                BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
+                ScaleformMovieMethodAddParamInt(2)
+                ScaleformMovieMethodAddParamBool(true)
+                EndScaleformMovieMethod()
+            end
+
             UpdateList(1, 1)
+            InsertEntry()
             entryIsAvailable = true 
+        elseif num == 14 then 
+            UpdateList(2, 3)
         end
 
         SetDataFinal()
@@ -956,6 +995,8 @@ local function ExecuteButtonFunction(i)
                 UpdateList(1, 3)
                 approach = 1
 
+                SetApproachSets()
+
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
                 end
@@ -968,6 +1009,18 @@ local function ExecuteButtonFunction(i)
                 canZoomIn[2][14] = true
                 canZoomIn[2][17] = true
 
+                BeginScaleformMovieMethod(boardType[2], "SET_SELECTION_ARROWS_VISIBLE")
+                ScaleformMovieMethodAddParamInt(14)
+                ScaleformMovieMethodAddParamBool(false)
+                EndScaleformMovieMethod()
+
+                BeginScaleformMovieMethod(boardType[2], "SET_SELECTION_ARROWS_VISIBLE")
+                ScaleformMovieMethodAddParamInt(17)
+                ScaleformMovieMethodAddParamBool(false)
+                EndScaleformMovieMethod()
+
+                SetApproachSets()
+
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
                 end
@@ -977,6 +1030,8 @@ local function ExecuteButtonFunction(i)
                 SetTick(7)
                 UpdateList(1, 3)
                 approach = 3
+
+                SetApproachSets()
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
@@ -1016,32 +1071,43 @@ local function ExecuteButtonFunction(i)
         end
     elseif boardUsing == 2 then 
         if i == 2 then 
-
+            UpdateList(2, 3)
+            SetTick(i)
         elseif i == 3 then 
-
+            UpdateList(2, 1)
+            SetTick(i)
         elseif i == 4 then 
-        
-        elseif i == 5 then 
-
-        elseif i == 6 then 
-            if ShowWarningMessage("Are you sure you wish to choose the " .. availableVehicles[selectedDriver][1][imageOrderNum[2][approach][6]][2] .. " as your getaway vehicle?") then
+            UpdateList(2, 2)
+            SetTick(i)
+        elseif i == 5 and selectedLoadout == 0 then 
+            if ShowWarningMessage("Are you sure you wish to choose the " .. weaponLoadoutStrings[imageOrderNum[2][5] - 1] .. " as your weapon loadout?") then 
+                SetTick(5)
+                UpdateList(1, 1)
+                selectedLoadout = imageOrderNum[2][5]
+                canZoomIn[2][5] = false 
+            end
+        elseif i == 6 and selectedVehicle == 0 then 
+            if ShowWarningMessage("Are you sure you wish to choose the " .. availableVehicles[driver[selectedDriver][3]][1][imageOrderNum[2][6] - 1][2] .. " as your getaway vehicle?") then
                 SetTick(6)
-                selectedVehicle = imageOrderNum[2][approach][6]
+                UpdateList(1, 2)
+                selectedVehicle = imageOrderNum[2][6]
                 canZoomIn[2][6] = false 
             end
-        elseif i == 7 then 
-
-        elseif i == 8 then 
-
-        elseif i == 9 then 
-            
+        elseif i == 7 then --
+            UpdateList(1, 3)
+            SetTick(i)
+        elseif i == 8 then --
+            UpdateList(2, 4)
+            SetTick(i)
+        elseif i == 9 then --
+            UpdateList(1, 4)
+            SetTick(i)
         elseif i == 10 and selectedGunman == 0 then 
             if ShowWarningMessage("Are you sure you wish to recruit " .. gunman[imageOrderNum[2][10] - 1][1] .. " as your gunman?") then 
                 BeginScaleformMovieMethod(boardType[2], "SET_CREW_MEMBER_HIRED")
                 ScaleformMovieMethodAddParamInt(i)
                 ScaleformMovieMethodAddParamBool(true)
                 EndScaleformMovieMethod()
-                --GreyOut(boardUsing, GetButtonId(), true)
                 UnFocusOnButton()
                 SetCrewSpecials(5, true)
                 isFocusedBoard = false
@@ -1051,42 +1117,57 @@ local function ExecuteButtonFunction(i)
                 if approach == 1 then 
                     if selectedGunman == 1 then 
                         imageOrder[2][approach][5] = {11, 12} -- 1
+                        weaponLoadoutStrings = {"Micro SMG Loadout", "Machine Pistol Loadout"}
                     elseif selectedGunman == 2 then
                         imageOrder[2][approach][5] = {13, 14} -- 2
+                        weaponLoadoutStrings = {"SMG Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 3 then
                         imageOrder[2][approach][5] = {15, 16} -- 3
+                        weaponLoadoutStrings = {"SMG Loadout", "Rifle Loadout"}
                     elseif selectedGunman == 4 then
                         imageOrder[2][approach][5] = {17, 18} -- 4
+                        weaponLoadoutStrings = {"Rifle Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 5 then
                         imageOrder[2][approach][5] = {19, 20} -- 5
+                        weaponLoadoutStrings = {"Shotgun Loadout", "Rifle Loadout"}
                     end
                 elseif approach == 2 then 
                     if selectedGunman == 1 then 
                         imageOrder[2][approach][5] = {21, 22} -- 1
+                        weaponLoadoutStrings = {"Micro SMG Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 2 then
                         imageOrder[2][approach][5] = {23, 24} -- 2
+                        weaponLoadoutStrings = {"Machine Pistol Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 3 then
                         imageOrder[2][approach][5] = {25, 26} -- 3
+                        weaponLoadoutStrings = {"Shotgun Loadout", "Rifle Loadout"}
                     elseif selectedGunman == 4 then
                         imageOrder[2][approach][5] = {27, 28} -- 4
+                        weaponLoadoutStrings = {"Rifle Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 5 then
                         imageOrder[2][approach][5] = {29, 30} -- 5
+                        weaponLoadoutStrings = {"SMG Loadout", "Rifle Loadout"}
                     end
                 elseif approach == 3 then 
                     if selectedGunman == 1 then 
                         imageOrder[2][approach][5] = {1, 2} -- 1
+                        weaponLoadoutStrings = {"Shotgun Loadout", "Revolver Loadout"}
                     elseif selectedGunman == 2 then
                         imageOrder[2][approach][5] = {3, 4} -- 2
+                        weaponLoadoutStrings = {"SMG Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 3 then
                         imageOrder[2][approach][5] = {5, 6} -- 3
+                        weaponLoadoutStrings = {"Shotgun Loadout", "Rifle Loadout"}
                     elseif selectedGunman == 4 then
                         imageOrder[2][approach][5] = {7, 8} -- 4
+                        weaponLoadoutStrings = {"Rifle Loadout", "Shotgun Loadout"}
                     elseif selectedGunman == 5 then
                         imageOrder[2][approach][5] = {9, 10} -- 5
+                        weaponLoadoutStrings = {"Shotgun Loadout", "Rifle Loadout"}
                     end
                 end
 
-                SetMission(5, imageOrder[2][approach][5][1], "boo")
+                SetMission(5, imageOrder[2][approach][5][1], weaponLoadoutStrings[1])
 
                 if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
                     FinalBoardInfo()
@@ -1128,7 +1209,6 @@ local function ExecuteButtonFunction(i)
                 ScaleformMovieMethodAddParamInt(i)
                 ScaleformMovieMethodAddParamBool(true)
                 EndScaleformMovieMethod()
-                --GreyOut(boardUsing, GetButtonId(), true)
                 UnFocusOnButton()
                 SetCrewSpecials(7, true)
                 isFocusedBoard = false
@@ -1140,29 +1220,52 @@ local function ExecuteButtonFunction(i)
                 end
             end
         elseif i == 13 then 
+            if ShowWarningMessage("Are you sure you wish to equip the level " .. imageOrderNum[2][13] -1 .. " security pass? (mission does not exist (yet))") then 
+                UpdateList(2, 5)
 
+                BeginScaleformMovieMethod(boardType[2], "SET_SECURITY_PASS_VISIBLE")
+                ScaleformMovieMethodAddParamInt(imageOrderNum[2][13] - 1)
+                EndScaleformMovieMethod()
+
+                selectedKeycard = imageOrderNum[2][13] - 1
+            end
         elseif i == 14 then 
-
+            UpdateList(1, 5)
+            SetTick(i)
         elseif i == 15 then 
-
+            UpdateList(1, 6)
+            SetTick(i)
         elseif i == 16 then 
-
+            if approach ~= 2 then
+                UpdateList(2, 7)
+                SetTick(i)
+            else
+                SetPoster(1)
+            end
         elseif i == 17 then
-        
+            if approach == 2 then 
+                UpdateList(2, 7)
+            else
+                UpdateList(2, 8)
+            end
+            SetTick(i)
+        elseif i == 18 then 
+            UpdateList(2, 6)
+            SetTick(i)
         end
     elseif boardUsing == 3 then 
         if i == 6 and not boughtDecoy then -- Decoy 
             if ShowWarningMessage("Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice .. "?") then 
                 SetTick(6)
-                optionalList[3][1][2] = true
-                UpdateList(2, 6)
+                --optionalList[3][1][2] = true
+                UpdateList(2, 1)
                 boughtDecoy = true
             end
         elseif i == 7 and not boughtCleanVehicle then  -- Clean Vehicle 
             if ShowWarningMessage("Are you sure you wish to purchase the clean vehicle for $" .. cleanVehiclePrice .. "?") then 
                 SetTick(7)
-                optionalList[3][2][2] = true
-                UpdateList(2, 7)
+                --optionalList[3][2][2] = true
+                UpdateList(2, 2)
                 boughtCleanVehicle = true
             end
         elseif i == 12 then -- Start Heist
@@ -1180,14 +1283,6 @@ local function MoveMarker(direction)
     ScaleformMovieMethodAddParamInt(direction) 
     EndScaleformMovieMethod()
 end
-
-RegisterCommand("alertMsg", function()
-    if ShowAlertMessage("Test", true) then 
-        print("yes")
-    else
-        print("no")
-    end
-end, false)
 
 function PlayerJoinedCrew(i)
         --print(hPlayer[i])
@@ -1488,126 +1583,130 @@ function SetupBoardInfo(num)
         EndScaleformMovieMethod()
     end
 
-    if not prepLists and loot ~= 0 and approach ~= 0 then
-        
-    end 
-
-    BeginScaleformMovieMethod(boardType[2] ,"SET_BUTTON_IMAGE")
-    ScaleformMovieMethodAddParamInt(6)
-    ScaleformMovieMethodAddParamInt(17)
-    EndScaleformMovieMethod()
+    --BeginScaleformMovieMethod(boardType[2] ,"SET_BUTTON_IMAGE")
+    --ScaleformMovieMethodAddParamInt(6)
+    --ScaleformMovieMethodAddParamInt(17)
+    --EndScaleformMovieMethod()
     
 
-    if not finalLists and selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
-        
-    end
 end
 
 function PrepBoardInfo()
-    boards = 2
-    prepLists = true
-    
-    for i = 1, #todoList[2][approach] do 
-        ToDoList(i, 2)
-    end 
+    if not prepLists then 
+        boards = 2
+        prepLists = true
+        
+        if approach == 2 then 
+            canZoomIn[2][14] = true
+            canZoomIn[2][17] = true
+        end
 
-    for i = 1, #optionalList[2][approach] do 
-        OptionalList(i, 2)
+        for i = 1, #todoList[2][approach] do 
+            ToDoList(i, 2)
+        end 
+
+        for i = 1, #optionalList[2][approach] do 
+            OptionalList(i, 2)
+        end
+        
+        for i = 1, 4 do 
+            SetSpecificPreps(approachSpecificPreps[approach][i][1], approachSpecificPreps[approach][i][2], approachSpecificPreps[approach][i][3], approachSpecificPreps[approach][i][4], approachSpecificPreps[approach][i][5], approachSpecificPreps[approach][i][6])
+        end
+        
+        if approach == 2 then 
+            SetPoster(-1)
+        end
+        
+        for i = 1, #untick do 
+            SetTick(i, 2, false)
+        end
+        
+        BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt(19)
+        EndScaleformMovieMethod()
+        
+        BeginScaleformMovieMethod(boardType[2], "SET_BUTTON_IMAGE")
+        ScaleformMovieMethodAddParamInt(13)
+        ScaleformMovieMethodAddParamInt(1)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(boardType[2], "SET_SECURITY_PASS_VISIBLE")
+        ScaleformMovieMethodAddParamInt(0)
+        EndScaleformMovieMethod()
+
+        if selectedGunman == 0 then 
+            SetHireableCrew(10, gunman[imageOrderNum[2][10] - 1][1], gunman[imageOrderNum[2][10] - 1][2], gunman[imageOrderNum[2][10] - 1][4], math.floor(gunman[imageOrderNum[2][10] - 1][5] * 100), weapons[approach][1]) -- 1 = big con. 2 = silent, 3 = aggressive
+            SetCrewSpecials(5, false)
+        end 
+
+        if selectedDriver == 0 then
+            SetHireableCrew(11, driver[imageOrderNum[2][11] - 1][1], driver[imageOrderNum[2][11] - 1][2], driver[imageOrderNum[2][11] - 1][4], math.floor(driver[imageOrderNum[2][11] - 1][5] * 100), 1)
+            SetCrewSpecials(6, false)
+        end  
+
+        if selectedHacker == 0 then    
+            SetHireableCrew(12, hacker[imageOrderNum[2][12] - 1][1], hacker[imageOrderNum[2][12] - 1][2], hacker[imageOrderNum[2][12] - 1][5], math.floor(hacker[imageOrderNum[2][12] - 1][6] * 100), 1)
+            SetCrewSpecials(7, false)
+        end 
+
+        SetLootAndApproach()
     end
-
-    BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
-    ScaleformMovieMethodAddParamInt(19)
-    EndScaleformMovieMethod()
-    
-    for i = 1, 4 do 
-        SetSpecificPreps(i)
-    end
-
-    if approach == 2 then 
-        SetPoster(-1)
-    end
-
-    for i = 1, #untick do 
-        SetTick(i, 2, false)
-    end
-    
-    BeginScaleformMovieMethod(boardType[2], "SET_BUTTON_IMAGE")
-    ScaleformMovieMethodAddParamInt(5)
-    ScaleformMovieMethodAddParamInt(11)
-    EndScaleformMovieMethod()
-
-    if selectedGunman == 0 then 
-        SetHireableCrew(10, gunman[imageOrderNum[2][10] - 1][1], gunman[imageOrderNum[2][10] - 1][2], gunman[imageOrderNum[2][10] - 1][4], math.floor(gunman[imageOrderNum[2][10] - 1][5] * 100), weapons[approach][1]) -- 1 = big con. 2 = silent, 3 = aggressive
-        SetCrewSpecials(5, false)
-    end 
-    
-    if selectedDriver == 0 then
-        SetHireableCrew(11, driver[imageOrderNum[2][11] - 1][1], driver[imageOrderNum[2][11] - 1][2], driver[imageOrderNum[2][11] - 1][4], math.floor(driver[imageOrderNum[2][11] - 1][5] * 100), 1)
-        SetCrewSpecials(6, false)
-    end  
-
-    if selectedHacker == 0 then    
-        SetHireableCrew(12, hacker[imageOrderNum[2][12] - 1][1], hacker[imageOrderNum[2][12] - 1][2], hacker[imageOrderNum[2][12] - 1][5], math.floor(hacker[imageOrderNum[2][12] - 1][6] * 100), 1)
-        SetCrewSpecials(7, false)
-    end 
-
-    SetLootAndApproach()
 end
 
 function FinalBoardInfo()
-    boards = 3
-    finalLists = true
+    if not finalLists then
+        boards = 3
+        finalLists = true
 
-    if approach ~= 2 then
-        for i = 1, 2 do 
-            OptionalList(i, 3)
-        end
+        if approach ~= 2 then
+            for i = 1, 2 do 
+                OptionalList(i, 3)
+            end
 
-        for i = 2, #todoList[3] do 
-            ToDoList(i, 3)
-        end
-    else 
-        for i = 1, #optionalList[3] do 
-            OptionalList(i, 3)
+            todoList[3][1] = "Entrance"
+        else 
+            for i = 1, #optionalList[3] do 
+                OptionalList(i, 3)
+            end
         end
 
         for i = 1, #todoList[3] do 
             ToDoList(i, 3)
         end
+
+        BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
+        ScaleformMovieMethodAddParamInt(2)
+        EndScaleformMovieMethod()
+
+        if approach ~= 2 then 
+            AppearanceButtons(6, false)
+            AppearanceButtons(7, false)
+        end
+
+        for i = 2, 4 do 
+            AppearanceButtons(i, false)
+        end
+
+        for i = 1, 14 do 
+            GreyOut(3, i, true)
+        end
+
+        SetDataFinal()
+        SetCrewCut(1, 100)
+        MapMarkers()
+        SetState(1, false, true)
+
+        for i = 1, #notSelected do 
+            NotSelected(i)
+        end
+
+        PlayerJoinedCrew(1)
+
+        BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
+        ScaleformMovieMethodAddParamInt(13)
+        ScaleformMovieMethodAddParamBool(true)
+        EndScaleformMovieMethod()
     end
-
-    BeginScaleformMovieMethod(boardType[3], "SET_CURRENT_SELECTION")
-    ScaleformMovieMethodAddParamInt(2)
-    EndScaleformMovieMethod()
-
-    if approach ~= 2 then 
-        AppearanceButtons(6, false)
-        AppearanceButtons(7, false)
-    end
-
-    for i = 2, 4 do 
-        AppearanceButtons(i, false)
-    end
-
-    for i = 1, 14 do 
-        GreyOut(3, i, true)
-    end
-
-    SetDataFinal()
-    SetCrewCut(1, 100)
-    MapMarkers()
-    SetState(1, false, true)
-
-    for i = 1, #notSelected do 
-        NotSelected(i)
-    end
-
-    PlayerJoinedCrew(1)
-
-    BeginScaleformMovieMethod(boardType[3], "SET_NOT_SELECTED_VISIBLE")
-    ScaleformMovieMethodAddParamInt(13)
-    ScaleformMovieMethodAddParamBool(true)
-    EndScaleformMovieMethod()
 end
 
 RegisterNetEvent("cl:casinoheist:syncHeistPlayerScaleform", PlayerJoinedCrew)
@@ -1678,7 +1777,6 @@ CreateThread(function()
                     SetFocusOnButton()
                 else
                     ExecuteButtonFunction(num)
-
                 end
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 GreyOut(3, GetButtonId(), true)
@@ -1701,7 +1799,7 @@ CreateThread(function()
                     
                 elseif boardUsing == 2 then 
                     if CanChangeImage(GetButtonId(), -1) then 
-                        PlaySoundFrontend(-1, "Paper_Stick", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
+                        PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                         ChangeImage(GetButtonId(), -1)
                     end
                 elseif boardUsing == 3 then
@@ -1738,6 +1836,7 @@ CreateThread(function()
                     end
                 end
             elseif IsDisabledControlJustPressed(0, 191) then -- Enter
+                PlaySoundFrontend(-1, "Highlight_Accept", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                 ExecuteButtonFunction(GetButtonId())
                 UnFocusOnButton()
                 isFocusedBoard = false 

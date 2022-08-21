@@ -71,18 +71,18 @@ take = 8502100
 cash = 5875
 goldbar = 16156
 
-selectedGunman = 0         
+selectedGunman = 1         
 selectedLoadout = 0         
-selectedDriver = 0          
+selectedDriver = 1          
 selectedVehicle = 0         
-selectedHacker = 0          
+selectedHacker = 1          
 selectedKeycard = 0
 selectedEntrance = 0        
 selectedExit = 0            
 selectedBuyer = 0          
 selectedEntryDisguise = 0      
 selectedExitDisguise = 0 
-   
+
 boughtCasinoModel = false 
 boughtDoorSecurity = false 
 boughtVault = false
