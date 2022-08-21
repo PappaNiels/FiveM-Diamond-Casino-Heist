@@ -17,6 +17,25 @@ local arcadeprops = {
     "vault_keycard"
 }
 
+local garageSets = {
+    [1] = {
+        "stealth_clothing",
+        "hack_device",
+        "broken_drone",
+        "laser_drill",
+    },
+    [2] = {
+        "cockroach_tub",
+        "hack_device",
+        "gruppe_sechs_clothing",
+        "regular_drill",
+    },
+    [3] = {
+        "vault_explosive",
+        "hack_device"
+    }
+}
+
 RegisterCommand("set_loot", function(source, args)
     local num = tonumber(args[1])
     SetLoot(num)
@@ -65,6 +84,46 @@ function SetVaultModel(bool)
     end
     RefreshInterior(arcadeGarage)
 end 
+
+function SetApproachSets()
+    if approach == 1 then 
+        for i = 1, #garageSets[2] do 
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[2]i)
+        end
+        
+        for i = 1, #garageSets[3] do 
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[3]i)
+        end
+
+        for i = 1, #garageSets[1] do 
+            ActivateInteriorEntitySet(arcadeGarage, garageSets[1]i)
+        end
+    elseif approach == 2 then 
+        for i = 1, #garageSets[1] do 
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[2]i)
+        end
+        
+        for i = 1, #garageSets[3] do 
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[3]i)
+        end
+
+        for i = 1, #garageSets[2] do 
+            ActivateInteriorEntitySet(arcadeGarage, garageSets[1]i)
+        end
+    elseif approach == 3 then 
+        for i = 1, #garageSets[1] do 
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[2]i)
+        end
+        
+        for i = 1, #garageSets[2] do 
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[3]i)
+        end
+
+        for i = 1, #garageSets[3] do 
+            ActivateInteriorEntitySet(arcadeGarage, garageSets[1]i)
+        end
+    end
+end
 
 function SetLoot(loot)
     --loot = math.random(1, 4)
