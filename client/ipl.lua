@@ -3,7 +3,7 @@ local vault = GetInteriorAtCoords(2488.348, -267.3637, -71.64563)
 local arcade = GetInteriorAtCoords(2731.66, -382.94, -49.38)
 
 local arcadeprops = {
-    "casino_prop",
+    --"casino_prop",
     "master_terminal",
     "hacker_terminal",
     "weapon_terminal",
@@ -50,9 +50,9 @@ end
 
 function SetHackKeypadModel(bool)
     if bool then 
-        ActivateInteriorEntitySet(arcadeGarage, "hack_device")
+        ActivateInteriorEntitySet(arcadeGarage, "fingerprint_exercise")
     else
-        DeactivateInteriorEntitySet(arcadeGarage, "hack_device")
+        DeactivateInteriorEntitySet(arcadeGarage, "fingerprint_exercise")
     end
     RefreshInterior(arcadeGarage)
 end 
