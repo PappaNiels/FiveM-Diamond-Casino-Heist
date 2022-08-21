@@ -15,6 +15,7 @@ local camHeading = {0.0, 270.0, 180.0}
 local boardCam = 0
 local boardUsing = 0
 local boards = 1
+local keys = 0
 
 local setupLists = false
 local prepLists = false
@@ -24,7 +25,9 @@ local isInGarage = false
 local doorOpen = false
 local isInBuilding = false
 local entryIsAvailable = false
+local isFocusedBoard = false
 
+local barMenu = RequestScaleformMovie("")
 local boardType = {
     RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP"),
     RequestScaleformMovie("CASINO_HEIST_BOARD_PREP"),
@@ -444,12 +447,33 @@ local function ChangeCam(change)
     end
 end
 
+local function RemoveAllKeys()
+    for i = 0, keys do 
+        BeginScaleformMovieMethod(barMenu, "SET_DATA_SLOT_EMPTY")
+        ScaleformMovieMethodAddParamInt(i)
+        EndScaleformMovieMethod()
+    end
+end
+
+local function AddButtonToBar(i, key, string)
+    BeginScaleformMovieMethod(barMenu, "SET_DATA_SLOT")
+    ScaleformMovieMethodAddParamInt()
+    ScaleformMovieMethodAddParamInt()
+    ScaleformMovieMethodAddParamPlayerNameString()
+    EndScaleformMovieMethod()
+end
+
 local function SetBarButtons()
-    if boardUsing == 1 then 
+    RemoveAllKeys()
+    if boardUsing == 1 and not isFocusedBoard then 
+        for i = 0, #keys do 
 
-    elseif boardUsing == 2 then 
+        end
+    elseif boardUsing == 2 and not isFocusedBoard then 
 
-    elseif boardUsing == 3 then 
+    elseif boardUsing == 3 and not isFocusedBoard then 
+
+    else 
 
     end
 end
