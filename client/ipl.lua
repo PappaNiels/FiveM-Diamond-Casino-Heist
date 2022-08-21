@@ -88,39 +88,39 @@ end
 function SetApproachSets()
     if approach == 1 then 
         for i = 1, #garageSets[2] do 
-            DeactivateInteriorEntitySet(arcadeGarage, garageSets[2]i)
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
         
         for i = 1, #garageSets[3] do 
-            DeactivateInteriorEntitySet(arcadeGarage, garageSets[3]i)
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
 
         for i = 1, #garageSets[1] do 
-            ActivateInteriorEntitySet(arcadeGarage, garageSets[1]i)
+            ActivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
     elseif approach == 2 then 
         for i = 1, #garageSets[1] do 
-            DeactivateInteriorEntitySet(arcadeGarage, garageSets[2]i)
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
         
         for i = 1, #garageSets[3] do 
-            DeactivateInteriorEntitySet(arcadeGarage, garageSets[3]i)
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
 
         for i = 1, #garageSets[2] do 
-            ActivateInteriorEntitySet(arcadeGarage, garageSets[1]i)
+            ActivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
     elseif approach == 3 then 
         for i = 1, #garageSets[1] do 
-            DeactivateInteriorEntitySet(arcadeGarage, garageSets[2]i)
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
         
         for i = 1, #garageSets[2] do 
-            DeactivateInteriorEntitySet(arcadeGarage, garageSets[3]i)
+            DeactivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
 
         for i = 1, #garageSets[3] do 
-            ActivateInteriorEntitySet(arcadeGarage, garageSets[1]i)
+            ActivateInteriorEntitySet(arcadeGarage, garageSets[i])
         end
     end
 end
