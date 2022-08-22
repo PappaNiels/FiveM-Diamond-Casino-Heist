@@ -40,9 +40,9 @@ function FadeTeleport(x, y, z, h)
     if x ~= nil then
         SetEntityCoords(PlayerPedId(), x, y, z)
         SetEntityHeading(PlayerPedId(), h)
-        
     end
-    DoScreenFadeIn(800)
+    Wait(1500)
+    DoScreenFadeIn(500)
 end
 
 function LoadCutscene(name)
