@@ -27,7 +27,7 @@ local isInBuilding = false
 local entryIsAvailable = false
 local isFocusedBoard = false
 
-local barMenu = RequestScaleformMovie("")
+local barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
 local boardType = {
     RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP"),
     RequestScaleformMovie("CASINO_HEIST_BOARD_PREP"),
@@ -438,12 +438,88 @@ function StartCamWhiteboard()
     camIsUsed = true
 end
 
+local function AddButtonToBar(i, key, string)
+    BeginScaleformMovieMethod(barMenu, "SET_DATA_SLOT")
+    ScaleformMovieMethodAddParamInt(i)
+    ScaleformMovieMethodAddParamPlayerNameString(key)
+    ScaleformMovieMethodAddParamPlayerNameString(string)
+    EndScaleformMovieMethod()
+end
+
+local function SetBarButtons(btnId)
+    --RemoveAllKeys()
+
+    BeginScaleformMovieMethod(barMenu, "CLEAR_ALL")
+    EndScaleformMovieMethod()
+
+    if boardUsing == 1 and not isFocusedBoard then 
+        AddButtonToBar(0, "~INPUT_FRONTEND_ACCEPT~", "Select")
+        AddButtonToBar(1, "~INPUT_FRONTEND_CANCEL~", "Quit")
+        if loot ~= 0 and approach ~= 0 then 
+            AddButtonToBar(2, "~INPUT_CONTEXT~", "Prep Board")
+        end
+        AddButtonToBar(3, GetControlGroupInstructionalButton(2, 20, true), "Navigate")
+    elseif boardUsing == 2 and not isFocusedBoard then 
+        AddButtonToBar(0, "~INPUT_FRONTEND_ACCEPT~", "Select")
+        AddButtonToBar(1, "~INPUT_FRONTEND_CANCEL~", "Quit")
+        if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
+            AddButtonToBar(2, "~INPUT_CONTEXT~", "Finale Board")
+        end
+        AddButtonToBar(3, "~INPUT_COVER~", "Setup Board")
+        AddButtonToBar(4, GetControlGroupInstructionalButton(2, 20, true), "Navigate")
+    elseif boardUsing == 3 and not isFocusedBoard then 
+        AddButtonToBar(0, "~INPUT_FRONTEND_ACCEPT~", "Select")
+        AddButtonToBar(1, "~INPUT_FRONTEND_CANCEL~", "Quit")
+        AddButtonToBar(2, "~INPUT_COVER~", "Prep Board")
+        AddButtonToBar(3, GetControlGroupInstructionalButton(2, 20, true), "Navigate")
+    elseif isFocusedBoard then 
+        local string = ""
+        AddButtonToBar(0, "~INPUT_FRONTEND_ACCEPT~", "Set")
+        AddButtonToBar(1, "~INPUT_FRONTEND_CANCEL~", "Cancel")
+        if boardUsing == 2 then 
+            if btnId == 5 then 
+                string = "Loadout"
+            elseif btnId == 6 then 
+                string = "Getaway Vehicle"
+            elseif btnId == 10 then 
+                string = "Gunman"
+            elseif btnId == 11 then 
+                string = "Driver"
+            elseif btnId == 12 then 
+                string = "Hacker"
+            elseif btnId == 14 then 
+                string = "Entry Disguise"
+            elseif btnId == 17 then 
+                string = "Exit Disguise"
+            end
+        elseif boardUsing == 3 then 
+            if btnId == 2 then 
+                string = "Entrance"
+            elseif btnId == 3 then 
+                string = "Exit"
+            elseif btnId == 4 then 
+                string = "Buyer"
+            elseif btnId == 13 then 
+                string = "Entry Disguise"
+            elseif btnId == 14 then 
+                string = "Exit Disguise"
+            end
+        end
+        AddButtonToBar(2, GetControlGroupInstructionalButton(2, 5, true), "Change " .. string)
+    end
+
+    BeginScaleformMovieMethod(barMenu, "DRAW_INSTRUCTIONAL_BUTTONS")
+    ScaleformMovieMethodAddParamInt(4)
+    EndScaleformMovieMethod()
+end
+
 local function ChangeCam(change)
     if boardUsing + change <= boards then 
         boardUsing = boardUsing + change 
         
         SetCamCoord(boardCam, camCoords[boardUsing])
         SetCamRot(boardCam, 0, 0, camHeading[boardUsing], 2)
+        SetBarButtons()
     end
 end
 
@@ -452,29 +528,6 @@ local function RemoveAllKeys()
         BeginScaleformMovieMethod(barMenu, "SET_DATA_SLOT_EMPTY")
         ScaleformMovieMethodAddParamInt(i)
         EndScaleformMovieMethod()
-    end
-end
-
-local function AddButtonToBar(i, key, string)
-    BeginScaleformMovieMethod(barMenu, "SET_DATA_SLOT")
-    ScaleformMovieMethodAddParamInt()
-    ScaleformMovieMethodAddParamInt()
-    ScaleformMovieMethodAddParamPlayerNameString()
-    EndScaleformMovieMethod()
-end
-
-local function SetBarButtons()
-    RemoveAllKeys()
-    if boardUsing == 1 and not isFocusedBoard then 
-        for i = 0, #keys do 
-
-        end
-    elseif boardUsing == 2 and not isFocusedBoard then 
-
-    elseif boardUsing == 3 and not isFocusedBoard then 
-
-    else 
-
     end
 end
 
@@ -1023,6 +1076,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    SetBarButtons()
                 end
             end
         elseif i == 6 --[[and approach == 0]] then -- The Big Con
@@ -1047,6 +1101,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    SetBarButtons()
                 end
             end
         elseif i == 7 --[[and approach == 0]] then -- Aggressive
@@ -1059,6 +1114,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    SetBarButtons()
                 end
             end
         elseif i == 10 then 
@@ -1090,6 +1146,7 @@ local function ExecuteButtonFunction(i)
                 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    SetBarButtons()
                 end
             end
         end
@@ -1195,6 +1252,7 @@ local function ExecuteButtonFunction(i)
 
                 if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
                     FinalBoardInfo()
+                    SetBarButtons()
                 end
             end
         elseif i == 11 and selectedDriver == 0 then 
@@ -1225,6 +1283,7 @@ local function ExecuteButtonFunction(i)
 
                 if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
                     FinalBoardInfo()
+                    SetBarButtons()
                 end
             end
         elseif i == 12 and selectedHacker == 0 then 
@@ -1241,6 +1300,7 @@ local function ExecuteButtonFunction(i)
 
                 if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
                     FinalBoardInfo()
+                    SetBarButtons()
                 end
             end
         elseif i == 13 then 
@@ -1749,6 +1809,10 @@ CreateThread(function()
             if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
                 DrawScaleformMovie_3dSolid(boardType[3], 2712.58, -372.65, -54.23418, 0.0, 0.0, camHeading[3], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
             end
+
+            if boardUsing ~= 0 then
+                DrawScaleformMovieFullscreen(barMenu, 255, 255, 255, 255)
+            end
         else 
             Wait(3000)
         end
@@ -1797,8 +1861,9 @@ CreateThread(function()
                 local num = GetButtonId() 
 
                 if canZoomIn[boardUsing][num] then 
-                    GreyOut(boardUsing, GetButtonId(), false)
+                    GreyOut(boardUsing, num, false)
                     SetFocusOnButton()
+                    SetBarButtons(num)
                 else
                     ExecuteButtonFunction(num)
                 end
@@ -1864,11 +1929,13 @@ CreateThread(function()
                 ExecuteButtonFunction(GetButtonId())
                 UnFocusOnButton()
                 isFocusedBoard = false 
+                SetBarButtons()
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 PlaySoundFrontend(-1, "Back", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
                 GreyOut(boardUsing, GetButtonId(), true)
                 UnFocusOnButton()
                 isFocusedBoard = false 
+                SetBarButtons()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
             end
@@ -1889,6 +1956,7 @@ CreateThread(function()
                     HelpMsg("Press ~INPUT_CONTEXT~ to use the " .. boardString[i])
                     if IsControlPressed(0, 38) then 
                         boardUsing = i
+                        SetBarButtons()
                         StartCamWhiteboard()
                     end
                 else
