@@ -164,7 +164,7 @@ function SetLoot(loot)
         for i = 1, #add, 1 do 
             ActivateInteriorEntitySet(vault, add[i])
         end 
-    elseif loot == 2 then 
+    elseif loot == 3 then 
         local remove = {
             "money_prop_1",
             "money_prop_2",
@@ -187,7 +187,7 @@ function SetLoot(loot)
         for i = 1, #add, 1 do 
             ActivateInteriorEntitySet(vault, add[i])
         end 
-    elseif loot == 3 then
+    elseif loot == 2 then
         local remove = {
             "money_prop_1",
             "money_prop_2",

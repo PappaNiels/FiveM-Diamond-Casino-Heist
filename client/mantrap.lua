@@ -486,8 +486,8 @@ CreateThread(function()
                 RemoveBlip(exBlip)
                 Wait(2000)
                 SetVaultDoors()
-                loot = 2
-                if loot == 2 then 
+                loot = 3
+                if loot == 3 then 
                     AddArtBlips()
                 else 
                     print("no art :(")

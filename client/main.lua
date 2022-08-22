@@ -1,30 +1,23 @@
 heistInProgress = false
 
-hPlayer = {2}
+hPlayer = {1}
 
 heistType = 0
 entryType = 0
 
 entrypointsCasino = {
     -- Agressive 
-
-    --[[1]]  vector3(923.76, 47.20, 81.11),     -- Front
-    --[[2]]  vector3(893.29, -176.47, 22.58),   -- Sewer
-
-    -- Silent and sneaky + Big con
-
-    --[[3]]  vector3(978.78, 18.64, 80.99),     -- Staff Entry
-    --[[4]]  vector3(993.17, 77.05, 80.99),     -- Garbage Entry
+    --[[4]]  vector3(993.17, 77.05, 80.99),     -- Waste Disposal
+    --[[1]]  vector3(923.76, 47.20, 81.11),     -- Main Entrance
+    --[[9]]  vector3(936.42, 14.51, 112.55),    -- Roof South West
     --[[5]]  vector3(972.15, 25.54, 120.24),    -- Roof Helipad North  
+    --[[10]] vector3(953.40, 79.20, 111.25),    -- Roof North West
+    --[[11]] vector3(1000.4, -54.99, 74.96),     -- Security Tunnel
+    --[[2]]  vector3(893.29, -176.47, 22.58),   -- Sewer
+    --[[8]]  vector3(953.78, 4.02, 111.26),     -- Roof South East 
     --[[6]]  vector3(959.39, 31.75, 120.23),    -- Roof Helipad South 
     --[[7]]  vector3(988.32, 59.03, 111.26),    -- Roof North East
-    --[[8]]  vector3(953.78, 4.02, 111.26),     -- Roof South East 
-    --[[9]]  vector3(936.42, 14.51, 112.55),    -- Roof South West
-    --[[10]] vector3(953.40, 79.20, 111.25),    -- Roof North West
-    
-    -- Gruppe Sechs
-    --[[11]] vector3(1000.4, -54.99, 74.96)     -- Garage
-
+    --[[3]]  vector3(978.78, 18.64, 80.99)     -- Staff Lobby
 }
 
 
@@ -152,7 +145,7 @@ end
 --end
 
 function SetLayout()
-    if loot ~= 2 then 
+    if loot ~= 3 then 
         vaultLayout = math.random(1,6)
     else  
         vaultLayout = math.random(7,10)

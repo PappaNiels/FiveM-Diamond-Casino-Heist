@@ -235,8 +235,8 @@ end
 local function PlaceCarts()
     local cartType = {
         {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-        {"nothing"},
         {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
+        {"nothing"},
         {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
 
@@ -484,15 +484,15 @@ local function GrabTrollyLoot(num)
     local bag = "hei_p_m_bag_var22_arm_s"
     local propType = {
         "ch_prop_20dollar_pile_01a",
-        "nothing",
         "ch_prop_gold_bar_01a",
+        "nothing",
         "ch_prop_dimaondbox_01a"
     }
 
     local cartType = {
         {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-        {"nothing"},
         {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
+        {"nothing"},
         {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
     }
     
@@ -610,7 +610,7 @@ end)
 CreateThread(function()
     while true do 
         Wait(0)
-        if isInVault and loot == 2 then 
+        if isInVault and loot == 3 then 
             for i = 1, #paintingCoords do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - paintingCoords[i])
                 if distance < 2 and not statusArt[i] then 
@@ -635,7 +635,7 @@ end)
 CreateThread(function()
     while true do 
         Wait(0)
-        if isInVault and loot ~= 2 then 
+        if isInVault and loot ~= 3 then 
             for i = 1, #cartLoc[cartLayout] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - cartLoc[cartLayout][i][1])
                 if distance < 1.5 and not statusTrolly[i] then 
@@ -658,7 +658,7 @@ CreateThread(function()
 end)
 
 RegisterCommand("vl_dist_paint", function()
-    isInVault, loot = true, 2
+    isInVault, loot = true, 3
 end, false)
 
 RegisterCommand("vl_dist_end", function()
