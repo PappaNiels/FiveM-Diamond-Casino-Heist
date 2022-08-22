@@ -549,22 +549,15 @@ local function GetButtonId()
     end
 
     pos = GetScaleformMovieMethodReturnValueInt(selection)
-    print(pos)
     return pos
 end
 
 local function CanChangeImage(num, change)
-    --local num = GetButtonId()
-    --print(num)
-    --print(#imageOrder[boardUsing][approach][num], imageOrderNum[boardUsing][num])
-    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] - 1 and change == 1 then 
-        --print("too high")     
+    if #imageOrder[boardUsing][approach][num] == imageOrderNum[boardUsing][num] - 1 and change == 1 then    
         return false
     elseif imageOrderNum[boardUsing][num] <= 2 and change == -1 then 
-        --print("too low")
         return false
     else
-        --print("can")
         return true
     end
 end
@@ -588,7 +581,6 @@ local function IsMinCut(player)
 end
 
 local function CanChangeCut(player, change)
-    print(SumTake())
     if change < 0 and not IsMinCut(player) then 
         return true 
     elseif SumTake() < 100 and change > 0 then 
@@ -602,8 +594,6 @@ end
 
 local function SetDataFinal(i)
     local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][5]) + (potential[difficulty][loot] * driver[selectedDriver][5]) + (potential[difficulty][loot] * hacker[selectedHacker][6])
-    --local num = GetButtonId()
-
     BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
     ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
@@ -664,14 +654,12 @@ end
 
 local function UpdateList(list, button)
     ClearLists(list)
-    --print("length todo : " .. #todoList[1])
     if list == 1 then 
         if boardUsing == 1 then 
             todoList[boardUsing][button][2] = true 
 
             for i = 1, #todoList[1] do 
                 ToDoList(i, 1)
-                --print("tick")
             end
         elseif boardUsing == 2 then 
             todoList[boardUsing][approach][button][2] = true 
@@ -758,11 +746,7 @@ local function InsertEntry()
         imageOrder[3][approach][2][i] = 0
     end
 
-    print(imageOrderNum[3][13])
-
     if imageOrderNum[3][13] == 1 then
-        --imageOrder[3][2][2][1] = 11
-        --imageOrder[3][2][2][2] = 1
         imageOrder[3][2][2] = {11, 1}
     elseif imageOrderNum[3][13] == 2 then
         imageOrder[3][2][2] = {11, 1}
@@ -781,7 +765,6 @@ local function SetImage(i, num)
         ScaleformMovieMethodAddParamInt(images[num][i][2])
         ScaleformMovieMethodAddParamInt(images[num][i][3])
         EndScaleformMovieMethod()
-        --print(images[num][i][3]) 
     else 
         BeginScaleformMovieMethod(boardType[num], "SET_BUTTON_GREYED_OUT")
         ScaleformMovieMethodAddParamInt(images[num][i][2])
@@ -1025,21 +1008,15 @@ end
 
 local function ShowWarningMessage(msg)
     AddTextEntry("warning_message_second_line", msg)
-    --CreateThread(function()
-        while true do 
-            Wait(0)
-            SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 36, 0, "", 0, -1, 0, "FM_NXT_RAC", "QM_NO_1", true, 0)
-
-            if IsDisabledControlJustPressed(2, 215) then -- Enter
-                --boughtDecoy = true 
-                return true 
-                --break
-            elseif IsDisabledControlJustPressed(2, 200) then -- Escape   
-                return false
-                --break  
-            end
-        end  
-    --end)
+    while true do 
+        Wait(0)
+        SetWarningMessageWithAlert("warning_message_first_line", "warning_message_second_line", 36, 0, "", 0, -1, 0, "FM_NXT_RAC", "QM_NO_1", true, 0)
+        if IsDisabledControlJustPressed(2, 215) then -- Enter
+            return true 
+        elseif IsDisabledControlJustPressed(2, 200) then -- Escape   
+            return false
+        end
+    end  
 end
 
 local function ExecuteButtonFunction(i)
@@ -1341,14 +1318,12 @@ local function ExecuteButtonFunction(i)
         if i == 6 and not boughtDecoy then -- Decoy 
             if ShowWarningMessage("Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice .. "?") then 
                 SetTick(6)
-                --optionalList[3][1][2] = true
                 UpdateList(2, 1)
                 boughtDecoy = true
             end
         elseif i == 7 and not boughtCleanVehicle then  -- Clean Vehicle 
             if ShowWarningMessage("Are you sure you wish to purchase the clean vehicle for $" .. cleanVehiclePrice .. "?") then 
                 SetTick(7)
-                --optionalList[3][2][2] = true
                 UpdateList(2, 2)
                 boughtCleanVehicle = true
             end
@@ -1369,8 +1344,6 @@ local function MoveMarker(direction)
 end
 
 function PlayerJoinedCrew(i)
-        --print(hPlayer[i])
-    --print(i)
     BeginScaleformMovieMethod(boardType[3], "SET_CREW_MEMBER")
     ScaleformMovieMethodAddParamInt(7 + i)
     ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(hPlayer[i])))
@@ -1426,14 +1399,7 @@ function SetupBoardInfo(num)
         BeginScaleformMovieMethod(boardType[1], "SET_BLUEPRINT_VISIBLE")
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
-    end
-
-    --BeginScaleformMovieMethod(boardType[2] ,"SET_BUTTON_IMAGE")
-    --ScaleformMovieMethodAddParamInt(6)
-    --ScaleformMovieMethodAddParamInt(17)
-    --EndScaleformMovieMethod()
-    
-
+    end   
 end
 
 function PrepBoardInfo()
@@ -1653,7 +1619,6 @@ CreateThread(function()
                         ChangeImage(GetButtonId(), -1)
                     end
                 elseif boardUsing == 3 then
-                    --if GetButtonId() ~= 2 and imageOrderNum[3][13] ~= 0 and boardUsing == 3 then
                     if (GetButtonId() == 8 or GetButtonId() == 9 or GetButtonId() == 10 or GetButtonId() == 11) then   
                         if CanChangeCut(GetButtonId() - 7, -5) then 
                             local num = GetButtonId() - 7
@@ -1730,10 +1695,49 @@ CreateThread(function()
     end
 end)
 
---RegisterCommand("camarcade", function(src, args)
---    boardUsing = tonumber(args[1])
---    StartCamWhiteboard()
---end, false)
+-- vector3(2737.99, -374.45, -48.5)
+
+CreateThread(function()
+    local ped = PlayerPedId()
+    while true do 
+        Wait(0)
+        if not heistInProgress then 
+            if not isInGarage then 
+                local distance = #(GetEntityCoords(ped) - vector3(759.08, -816.05, 25.3))
+                if distance < 10 then 
+                    DrawMarker(1, 759.08, -816.05, 25.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.75, 0.5, 73, 200, 250, 204, false, false, 2, false)
+
+                    if distance < 1.3 then 
+                        HelpMsg("Press ~INPUT_CONTEXT~ to enter the arcade")
+                        if IsControlPressed(0, 38) then 
+                            FadeTeleport(2737.99, -374.45, -49.0, 175.0)
+                            isInGarage = true
+                        end
+                    end
+                else 
+                    Wait(2000)
+                end
+            else
+                local distance = #(GetEntityCoords(ped) - vector3(2737.99, -374.45, -48.5))
+                if distance < 5 then 
+                    DrawMarker(1, 2737.99, -374.45, -49.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.75, 0.5, 73, 200, 250, 204, false, false, 2, false)
+
+                    if distance < 1.0 then 
+                        HelpMsg("Press ~INPUT_CONTEXT~ to exit the arcade")
+                        if IsControlPressed(0, 38) then 
+                            FadeTeleport(759.08, -816.05, 25.3, 275.0)
+                            isInGarage = false
+                        end
+                    end
+                else 
+                    Wait(2000)
+                end
+            end
+        else 
+            Wait(10000)
+        end
+    end
+end)
 
 RegisterCommand("test_scale", function(src, args)
     --boardUsing = tonumber(args[1])
