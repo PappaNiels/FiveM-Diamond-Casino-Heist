@@ -1337,7 +1337,7 @@ local function ExecuteButtonFunction(i)
                     selectedEntryDisguise = imageOrder[3][approach][13][imageOrderNum[3][13]]
                     selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14]]
                 end
-                
+
                 StartHeist()
             else
                 InfoMsg("You can not start the Diamond Casino Heist just yet. See all the todo items")
@@ -1721,6 +1721,15 @@ CreateThread(function()
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(2737.99, -374.45, -49.0, 175.0)
                             isInGarage = true
+                            SetupBoardInfo()
+
+                            if approach ~= 0 and loot ~= 0 then
+                                PrepBoardInfo()
+                            end 
+                        
+                            if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
+                                FinalBoardInfo()
+                            end
                         end
                     end
                 else 
