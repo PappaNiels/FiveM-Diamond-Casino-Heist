@@ -1328,7 +1328,16 @@ local function ExecuteButtonFunction(i)
                 boughtCleanVehicle = true
             end
         elseif i == 12 then -- Start Heist
-            if CheckTodoList() then 
+            if CheckTodoList() then
+                selectedEntrance = imageOrder[3][approach][2][imageOrderNum[3][2]]
+                selectedExit = imageOrder[3][approach][3][imageOrderNum[3][3]]
+                selectedBuyer = imageOrder[3][approach][4][imageOrderNum[3][4] - 1]
+                
+                if approach == 2 then 
+                    selectedEntryDisguise = imageOrder[3][approach][13][imageOrderNum[3][13]]
+                    selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14]]
+                end
+                
                 StartHeist()
             else
                 InfoMsg("You can not start the Diamond Casino Heist just yet. See all the todo items")
