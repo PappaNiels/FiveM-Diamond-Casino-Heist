@@ -1,5 +1,6 @@
 hPlayer = {2}
 invitedPlayers = {}
+inMarker = {}
 heistInProgress = false
 
 RegisterCommand("test_h", function(source, args)
@@ -61,6 +62,26 @@ end)
 RegisterNetEvent("sv:casinoheist:loadCutscene", function(cutscene)
     for i = 1, #hPlayer do 
         TriggerClientEvent("cl:casinoheist:startCutscene", hPlayer[i], cutscene)
+    end
+end)
+
+RegisterNetEvent("sv:casinoheist:playerIsInMarker", function(string)
+    inMarker[#inMarker + 1] = source 
+
+    if #inMarker == #hPlayer then
+        for i = 1, #hPlayer do 
+            TriggerClientEvent(string, hPlayer[i])
+        end 
+    else 
+        TriggerClientEvent("cl:casinoheist:subtitleMsg", source, string, true)
+    end
+end)
+
+RegisterNetEvent("sv:casinoheist:playerLeftMarker", function() 
+    for i = 1, #inMarker do 
+        if inMarker[i] == source then 
+            inMarker[i] = nil 
+        end
     end
 end)
 
