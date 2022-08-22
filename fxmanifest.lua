@@ -23,7 +23,7 @@ client_scripts {
     "client/vault.lua",
     "client/hud.lua",
     "client/arcade.lua",
-    "client/heist-a/lua"
+    "client/heist-a.lua"
 }
 
 server_scripts { 
