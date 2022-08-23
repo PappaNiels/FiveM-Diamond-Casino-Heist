@@ -1334,8 +1334,8 @@ local function ExecuteButtonFunction(i)
                 selectedBuyer = imageOrder[3][approach][4][imageOrderNum[3][4] - 1]
                 
                 if approach == 2 then 
-                    selectedEntryDisguise = imageOrder[3][approach][13][imageOrderNum[3][13]]
-                    selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14]]
+                    selectedEntryDisguise = imageOrder[3][approach][13][imageOrderNum[3][13] - 1]
+                    selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14] - 1]
                 end
 
                 StartHeist()
