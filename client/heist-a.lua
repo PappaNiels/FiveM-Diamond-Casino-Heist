@@ -283,8 +283,22 @@ local clothes = {
     } 
 }
 
+local function IsCorrectModel(i)
+    local ped = GetPlayerPed(i)
+    if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") or GetEntityModel(ped) ~= GetHashKey("mp_f_freemode_01") then 
+        return false 
+    else
+        return true 
+    end
+end
+
 function SetAllOutfits()
-        
+    for i = 1, #hPlayer do 
+        if not IsCorrectModel(hPlayer[i]) then 
+            SetPlayerModel(GetEntityModel[hPlayer[i]], GetHashKey("mp_m_freemode_01"))
+        end
+    end
+
     if approach == 2 then
 
     else
