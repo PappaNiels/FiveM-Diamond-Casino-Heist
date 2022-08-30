@@ -119,6 +119,7 @@ local clothes = {
         [1] = { -- disguise
             [1] = { -- Bugstar
                 [1] = { 
+                    {0, 0, 0},
                     {3, 4, 0},
                     {4, 38, 0},
                     {5, 82, 8},
@@ -128,6 +129,7 @@ local clothes = {
                     {11, 65, 0}
                 },
                 [2] = {
+                    {0, 0, 0},
                     {3, 4, 0},
                     {4, 39, 0},
                     {5, 82, 8},
@@ -137,6 +139,7 @@ local clothes = {
                     {11, 66, 0}
                 },
                 [3] = {
+                    {0, 0, 0},
                     {3, 4, 0},
                     {4, 38, 0},
                     {5, 82, 8},
@@ -146,6 +149,7 @@ local clothes = {
                     {11, 65, 0}
                 },
                 [4] = {
+                    {0, 0, 0},
                     {3, 4, 0},
                     {4, 39, 0},
                     {5, 82, 8},
@@ -166,7 +170,13 @@ local clothes = {
                     {11, 65, 1}
                 },
                 [2] = {
-        
+                    {0, 2, 0}
+                    {3, 64, 0},
+                    {4, 39, 1},
+                    {5, 82, 3},
+                    {6, 25, 0},
+                    {8, 155, 0},
+                    {11, 66, 1}
                 },
                 [3] = {
                     {0, 143, 0}
@@ -178,7 +188,13 @@ local clothes = {
                     {11, 65, 1}
                 },
                 [4] = {
-        
+                    {0, 143, 0},
+                    {3, 64, 0},
+                    {4, 39, 1},
+                    {5, 82, 3},
+                    {6, 25, 0},
+                    {8, 155, 0},
+                    {11, 66, 1}
                 }
             },
             [3] = { -- Gruppe Sechs
@@ -335,6 +351,13 @@ function SetAllOutfits()
 end 
 
 function SetOutfit(id)
+    for i = 1, #hPlayer do 
+        local ped = GetPlayerped(GetPlayerFromServerId(hPlayer[i]))
+        ClearAllPedProps(ped)
+        ClearPedDecorations(ped)
+        ClearPedFacialDecorations(ped)
+    end
+
     if approach == 1 then 
 
     elseif approach == 2 then 
