@@ -157,13 +157,25 @@ local clothes = {
             },
             [2] = { -- Maintenance
                 [1] = {
-    
+                    {0, 2, 0}
+                    {3, 64, 0},
+                    {4, 38, 1},
+                    {5, 82, 3},
+                    {6, 25, 0},
+                    {8, 155, 0},
+                    {11, 65, 1}
                 },
                 [2] = {
         
                 },
                 [3] = {
-                    
+                    {0, 143, 0}
+                    {3, 64, 0},
+                    {4, 38, 1},
+                    {5, 82, 3},
+                    {6, 25, 0},
+                    {8, 155, 0},
+                    {11, 65, 1}
                 },
                 [4] = {
         
@@ -303,7 +315,9 @@ function SetAllOutfits()
     end
 
     if approach == 2 then
-
+        for i = 1, #hPlayer do 
+            SetPedPropIndex(GetPlayerPed(hPlayer[i]), clothes[approach][1][selectedEntryDisguise][i][1][1], clothes[approach][1][selectedEntryDisguise][i][1][2], clothes[approach][1][selectedEntryDisguise][i][1][3], true)
+        end
     else
         if approach == 1 then 
             for i = 1, #hPlayer do 
@@ -340,7 +354,7 @@ function StartHeist(src, args)
         while not HasModelLoaded("mp_m_freemode_01") do 
             Wait(0)
         end
-        SetPlayerModel(PlayerId(), model)
+        SetPlayerModel(GetPlayerFromServerId(src), model)
 
         ClearAllPedProps(ped)
         ClearPedDecorations(ped)
