@@ -134,7 +134,7 @@ local clothes = {
                     {6, 25, 0},
                     {8, 15, 0},
                     {10, 67, 0},
-                    {10, 66, 0}
+                    {11, 66, 0}
                 },
                 [3] = {
                     {3, 4, 0},
@@ -152,7 +152,7 @@ local clothes = {
                     {6, 25, 0},
                     {8, 15, 0},
                     {10, 67, 0},
-                    {10, 66, 0}
+                    {11, 66, 0}
                 }
             },
             [2] = { -- Maintenance
@@ -284,10 +284,12 @@ local clothes = {
 }
 
 local function IsCorrectModel(i)
-    local ped = GetPlayerPed(i)
-    if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") or GetEntityModel(ped) ~= GetHashKey("mp_f_freemode_01") then 
+    local ped = GetPlayerPed(GetPlayerFromServerId(i))
+    if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") and GetEntityModel(ped) ~= GetHashKey("mp_f_freemode_01") then 
+        print("false")
         return false 
     else
+        print("true")
         return true 
     end
 end
@@ -295,7 +297,8 @@ end
 function SetAllOutfits()
     for i = 1, #hPlayer do 
         if not IsCorrectModel(hPlayer[i]) then 
-            SetPlayerModel(GetEntityModel[hPlayer[i]], GetHashKey("mp_m_freemode_01"))
+            LoadModel("mp_m_freemode_01")
+            SetPlayerModel(GetPlayerFromServerId(hPlayer[i]), GetHashKey("mp_m_freemode_01"))
         end
     end
 
@@ -328,18 +331,35 @@ function SetOutfit(id)
 end
 
 function StartHeist(src, args)
-    local ped = PlayerPedId()
+    local ped = GetPlayerPed(GetPlayerFromServerId(src))
+    --print(ped, PlayerPedId())
+
+    if not IsCorrectModel(src) and IsModelInCdimage("mp_m_freemode_01") then 
+        local model = GetHashKey("mp_m_freemode_01")
+        LoadModel(model)
+        while not HasModelLoaded("mp_m_freemode_01") do 
+            Wait(0)
+        end
+        SetPlayerModel(PlayerId(), model)
+
+        ClearAllPedProps(ped)
+        ClearPedDecorations(ped)
+        ClearPedFacialDecorations(ped)
+
+        SetModelAsNoLongerNeeded(model)
+    end
 
     --SetPedPropIndex(ped, 0, 0, 0, false)
     --SetPedPropIndex(ped, 1, 0, 0, false)
-
     SetPedDefaultComponentVariation(ped)
-    --SetPedComponentVariation(ped, 1, 52, 0, 0)
+    
+
+    SetPedComponentVariation(ped, 1, 0, 0, 0)
     SetPedComponentVariation(ped, 3, 4, 0, 0)
     SetPedComponentVariation(ped, 4, 39, 0, 0)
     SetPedComponentVariation(ped, 5, 82, 8, 0)
     SetPedComponentVariation(ped, 6, 25, 0, 0)
-    --SetPedComponentVariation(ped, 7, 146, 0, 0)
+    SetPedComponentVariation(ped, 7, 0, 0, 0)
     SetPedComponentVariation(ped, 8, 15, 0, 0)
     SetPedComponentVariation(ped, 10, 67, 0, 0)
     SetPedComponentVariation(ped, 11, 66, 0, 0)
