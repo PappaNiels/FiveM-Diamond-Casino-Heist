@@ -450,9 +450,9 @@ function StartHeist(src, args)
         local model = GetHashKey("mp_m_freemode_01")
         LoadModel(model)
 
-        while not HasModelLoaded("mp_m_freemode_01") do 
-            Wait(0)
-        end
+        --while not HasModelLoaded("mp_m_freemode_01") do 
+        --    Wait(0)
+        --end
 
         SetPlayerModel(PlayerId(), model)
 
