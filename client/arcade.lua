@@ -67,8 +67,7 @@ local todoList = {
         }
     },
     [3] = {
-        {"Entry Disquise", false},
-
+        {"Entrance", false},
         {"Exit", false},
         {"Buyer", false},
         {"Player Cuts", true}
@@ -670,15 +669,15 @@ local function UpdateList(list, button)
         elseif boardUsing == 3 then
             todoList[boardUsing][button][2] = true 
 
-            if approach == 2 then 
+            --if approach == 2 then 
                 for i = 1, #todoList[3] do 
                     ToDoList(i, 3)
                 end
-            else 
-                for i = 2, #todoList[3] do 
-                    ToDoList(i, 3)
-                end 
-            end
+            --else 
+                --for i = 2, #todoList[3] do 
+                --    ToDoList(i, 3)
+                --end 
+            --end
         end
     else 
         if boardUsing == 1 then 
@@ -696,8 +695,14 @@ local function UpdateList(list, button)
         elseif boardUsing == 3 then
             optionalList[boardUsing][button][2] = true 
 
-            for i = 1, #optionalList[3] do 
-                OptionalList(i, 3)
+            if approach == 2 then 
+                for i = 1, #optionalList[3] do 
+                    OptionalList(i, 3)
+                end
+            else
+                for i = 1, #optionalList[3] - 1 do 
+                    OptionalList(i, 3)
+                end
             end
         end
     end
@@ -1064,6 +1069,8 @@ local function ExecuteButtonFunction(i)
                 canZoomIn[2][14] = true
                 canZoomIn[2][17] = true
 
+                todoList[3][1][1] = "Entry Disguise"
+
                 BeginScaleformMovieMethod(boardType[2], "SET_SELECTION_ARROWS_VISIBLE")
                 ScaleformMovieMethodAddParamInt(14)
                 ScaleformMovieMethodAddParamBool(false)
@@ -1315,7 +1322,9 @@ local function ExecuteButtonFunction(i)
             SetTick(i)
         end
     elseif boardUsing == 3 then 
-        if i == 6 and not boughtDecoy then -- Decoy 
+        if i == 2 then 
+            UpdateBoard(1, 1)        
+        elseif i == 6 and not boughtDecoy then -- Decoy 
             if ShowWarningMessage("Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice .. "?") then 
                 SetTick(6)
                 UpdateList(2, 1)
@@ -1342,6 +1351,8 @@ local function ExecuteButtonFunction(i)
             else
                 InfoMsg("You can not start the Diamond Casino Heist just yet. See all the todo items")
             end
+        elseif i == 13 then 
+            UpdateBoard(1, 1)
         end
     end 
 end
