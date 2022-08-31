@@ -161,7 +161,7 @@ local clothes = {
             },
             [2] = { -- Maintenance
                 [1] = {
-                    {0, 2, 0}
+                    {0, 2, 0},
                     {3, 64, 0},
                     {4, 38, 1},
                     {5, 82, 3},
@@ -170,7 +170,7 @@ local clothes = {
                     {11, 65, 1}
                 },
                 [2] = {
-                    {0, 2, 0}
+                    {0, 2, 0},
                     {3, 64, 0},
                     {4, 39, 1},
                     {5, 82, 3},
@@ -179,7 +179,7 @@ local clothes = {
                     {11, 66, 1}
                 },
                 [3] = {
-                    {0, 143, 0}
+                    {0, 143, 0},
                     {3, 64, 0},
                     {4, 38, 1},
                     {5, 82, 3},
@@ -371,8 +371,8 @@ local clothes = {
     } 
 }
 
-local function IsCorrectModel(i)
-    local ped = GetPlayerPed(GetPlayerFromServerId(i))
+local function IsCorrectModel()
+    local ped = PlayerPedId()
     if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") and GetEntityModel(ped) ~= GetHashKey("mp_f_freemode_01") then 
         print("false")
         return false 
@@ -427,29 +427,8 @@ function SetOutfit(id)
     end
 end
 
-function StartHeist(src, args)
-    local ped = GetPlayerPed(GetPlayerFromServerId(src))
-    --print(ped, PlayerPedId())
-
-    if not IsCorrectModel(src) and IsModelInCdimage("mp_m_freemode_01") then 
-        local model = GetHashKey("mp_m_freemode_01")
-        LoadModel(model)
-        while not HasModelLoaded("mp_m_freemode_01") do 
-            Wait(0)
-        end
-        SetPlayerModel(GetPlayerFromServerId(src), model)
-
-        ClearAllPedProps(ped)
-        ClearPedDecorations(ped)
-        ClearPedFacialDecorations(ped)
-
-        SetModelAsNoLongerNeeded(model)
-    end
-
-    --SetPedPropIndex(ped, 0, 0, 0, false)
-    --SetPedPropIndex(ped, 1, 0, 0, false)
-    SetPedDefaultComponentVariation(ped)
-    
+function SetPedComponents(command)
+    local ped = PlayerPedId()
 
     SetPedComponentVariation(ped, 1, 0, 0, 0)
     SetPedComponentVariation(ped, 3, 4, 0, 0)
@@ -460,7 +439,36 @@ function StartHeist(src, args)
     SetPedComponentVariation(ped, 8, 15, 0, 0)
     SetPedComponentVariation(ped, 10, 67, 0, 0)
     SetPedComponentVariation(ped, 11, 66, 0, 0)
-    SetPedPropIndex(ped, 0, 140, 0, true)
+    SetPedPropIndex(ped, 0, 140, 0, true) 
+end
+
+function StartHeist(src, args)
+    local ped = PlayerPedId()
+    --print(ped, PlayerPedId())
+
+    if not IsCorrectModel() then 
+        local model = GetHashKey("mp_m_freemode_01")
+        LoadModel(model)
+
+        while not HasModelLoaded("mp_m_freemode_01") do 
+            Wait(0)
+        end
+
+        SetPlayerModel(PlayerId(), model)
+
+        ClearAllPedProps(ped)
+        ClearPedDecorations(ped)
+        ClearPedFacialDecorations(ped)
+
+        SetModelAsNoLongerNeeded(model)
+    end
+
+    --Wait(1000)
+    --SetPedPropIndex(ped, 0, 0, 0, false)
+    --SetPedPropIndex(ped, 1, 0, 0, false)
+    SetPedDefaultComponentVariation(ped)
+    
+    SetPedComponents(tonumber(args[1]))
 end
 
 RegisterCommand("test_start", StartHeist, false)
