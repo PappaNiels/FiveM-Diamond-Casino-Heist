@@ -44,7 +44,7 @@ function FadeTeleport(x, y, z, h)
         SetEntityHeading(PlayerPedId(), h)
     end
     Wait(1500)
-    DoScreenFadeIn(500)
+    DoScreenFadeIn(1000)
 end
 
 function LoadCutscene(name)
