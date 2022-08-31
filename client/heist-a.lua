@@ -119,7 +119,7 @@ local clothes = {
         [1] = { -- disguise
             [1] = { -- Bugstar
                 [1] = { 
-                    {0, 0, 0},
+                    {0, 139, 0},
                     {3, 4, 0},
                     {4, 38, 0},
                     {5, 82, 8},
@@ -129,7 +129,7 @@ local clothes = {
                     {11, 65, 0}
                 },
                 [2] = {
-                    {0, 0, 0},
+                    {0, 139, 0},
                     {3, 4, 0},
                     {4, 39, 0},
                     {5, 82, 8},
@@ -139,7 +139,7 @@ local clothes = {
                     {11, 66, 0}
                 },
                 [3] = {
-                    {0, 0, 0},
+                    {0, 140, 0},
                     {3, 4, 0},
                     {4, 38, 0},
                     {5, 82, 8},
@@ -149,7 +149,7 @@ local clothes = {
                     {11, 65, 0}
                 },
                 [4] = {
-                    {0, 0, 0},
+                    {0, 140, 0},
                     {3, 4, 0},
                     {4, 39, 0},
                     {5, 82, 8},
@@ -252,7 +252,7 @@ local clothes = {
                     {6, 99, 0},
                     {8, 15, 0},
                     {10, 73, 0},
-                    {11, 329, 1}
+                    {11, 329, 0}
                 },
                 [2] = {
                     {0, 140, 2},
@@ -262,7 +262,7 @@ local clothes = {
                     {6, 99, 0},
                     {8, 15, 0},
                     {10, 74, 0},
-                    {11, 330, 1}
+                    {11, 330, 0}
                 },
                 [3] = {
                     {0, 139, 2},
@@ -272,7 +272,7 @@ local clothes = {
                     {6, 99, 0},
                     {8, 15, 0},
                     {10, 74, 0},
-                    {11, 331, 1}
+                    {11, 331, 0}
                 },
                 [4] = {
                     {0, 140, 2},
@@ -282,7 +282,7 @@ local clothes = {
                     {6, 99, 0},
                     {8, 15, 0},
                     {10, 73, 0},
-                    {11, 329, 1}
+                    {11, 329, 0}
                 }
             }
         },
@@ -371,28 +371,28 @@ local clothes = {
             [3] = { -- High roller
                 [1] = {
                     {3, 4, 0},
-                    {4, 116, 1},
+                    {4, 116, 2},
                     {6, 10, 0},
                     {8, 31, 0},
-                    {11, 293, 1}
+                    {11, 293, 3}
                 },
                 [2] = {
                     {3, 4, 0},
-                    {4, 116, 2},
+                    {4, 116, 1},
                     {6, 10, 0},
                     {8, 31, 0},
                     {11, 293, 2}
                 },
                 [3] = {
                     {3, 4, 0},
-                    {4, 116, 1},
+                    {4, 116, 2},
                     {6, 10, 0},
                     {8, 31, 0},
-                    {11, 292, 1}
+                    {11, 292, 3}
                 },
                 [4] = {
                     {3, 4, 0},
-                    {4, 116, 2},
+                    {4, 116, 1},
                     {6, 10, 0},
                     {8, 31, 0},
                     {11, 292, 2}
@@ -420,7 +420,7 @@ local clothes = {
             {11, 324, 13}
         },
         [3] = { -- Green Shard
-            {1, 179, 22},
+            {1, 179, 2},
             {3, 160, 11},
             {4, 124, 11},
             {5, 82, 13},
@@ -442,7 +442,7 @@ local clothes = {
 
 local function IsCorrectModel()
     local ped = PlayerPedId()
-    if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") and GetEntityModel(ped) ~= GetHashKey("mp_f_freemode_01") then 
+    if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") then 
         print("false")
         return false 
     else
@@ -496,48 +496,65 @@ function SetOutfit(id)
     end
 end
 
-function SetPedComponents(command)
+function SetPedComponents(stage, args)
     local ped = PlayerPedId()
+    if stage == 1 then 
+        selectedEntryDisguise = tonumber(args[2])
+    else
+        selectedExitDisguise = tonumber(args[2])
+    end
 
-    SetPedComponentVariation(ped, 1, 0, 0, 0)
-    SetPedComponentVariation(ped, 3, 4, 0, 0)
-    SetPedComponentVariation(ped, 4, 39, 0, 0)
-    SetPedComponentVariation(ped, 5, 82, 8, 0)
-    SetPedComponentVariation(ped, 6, 25, 0, 0)
-    SetPedComponentVariation(ped, 7, 0, 0, 0)
-    SetPedComponentVariation(ped, 8, 15, 0, 0)
-    SetPedComponentVariation(ped, 10, 67, 0, 0)
-    SetPedComponentVariation(ped, 11, 66, 0, 0)
-    SetPedPropIndex(ped, 0, 140, 0, true) 
+    local num = tonumber(args[3])--math.random(1, 4)
+    local index = 1
+
+    if approach == 2 then 
+            if stage == 1 then 
+                SetPedPropIndex(ped, clothes[2][1][selectedEntryDisguise][num][1][1], clothes[2][1][selectedEntryDisguise][num][1][2], clothes[2][1][selectedEntryDisguise][num][1][3], true)
+            elseif stage == 2 and selectedExitDisguise ~= 3 then 
+                SetPedPropIndex(ped, clothes[2][2][selectedExitDisguise][num][1][1], clothes[2][2][selectedExitDisguise][num][1][2], clothes[2][2][selectedExitDisguise][num][1][3], true)
+                index = 2
+            end 
+
+        if stage == 1 then 
+            for i = 2, #clothes[2][1][selectedEntryDisguise][num] do 
+                SetPedComponentVariation(ped, clothes[2][1][selectedEntryDisguise][num][i][1], clothes[2][1][selectedEntryDisguise][num][i][2], clothes[2][1][selectedEntryDisguise][num][i][3], 0)
+            end
+        elseif stage == 2 then 
+            for i = index, #clothes[2][2][selectedExitDisguise][num] do 
+                SetPedComponentVariation(ped, clothes[2][2][selectedExitDisguise][num][i][1], clothes[2][2][selectedExitDisguise][num][i][2], clothes[2][2][selectedExitDisguise][num][i][3], 0)
+            end
+        end
+
+    else
+        if approach == 1 then 
+            SetPedPropIndex(ped, 0, 147, 0, 0)
+        end 
+
+        for i = 1, #clothes[approach][1] do 
+            SetPedComponentVariation(ped, clothes[approach][num][i][1], clothes[approach][num][i][2], clothes[approach][num][i][3], 0)
+        end
+    end
 end
 
 function StartHeist(src, args)
     local ped = PlayerPedId()
-    --print(ped, PlayerPedId())
 
     if not IsCorrectModel() then 
         local model = GetHashKey("mp_m_freemode_01")
         LoadModel(model)
 
-        --while not HasModelLoaded("mp_m_freemode_01") do 
-        --    Wait(0)
-        --end
-
         SetPlayerModel(PlayerId(), model)
-
-        ClearAllPedProps(ped)
-        ClearPedDecorations(ped)
-        ClearPedFacialDecorations(ped)
 
         SetModelAsNoLongerNeeded(model)
     end
 
-    --Wait(1000)
-    --SetPedPropIndex(ped, 0, 0, 0, false)
-    --SetPedPropIndex(ped, 1, 0, 0, false)
+    ClearAllPedProps(ped)
+    ClearPedDecorations(ped)
+    ClearPedFacialDecorations(ped)
+
     SetPedDefaultComponentVariation(ped)
     
-    SetPedComponents(tonumber(args[1]))
+    SetPedComponents(tonumber(args[1]), args)
 end
 
 RegisterCommand("test_start", StartHeist, false)

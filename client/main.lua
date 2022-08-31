@@ -56,7 +56,7 @@ keypads = {
 
 difficulty = 1 -- 1 = Normal, 2 = Hard
 loot = 0 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
-approach = 0 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
+approach = 1 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 vaultLayout = 0
 teamlives = 1
 take = 8502100
@@ -73,8 +73,8 @@ selectedKeycard = 0
 selectedEntrance = 0        
 selectedExit = 0            
 selectedBuyer = 0          
-selectedEntryDisguise = 0      
-selectedExitDisguise = 0 
+selectedEntryDisguise = 1      
+selectedExitDisguise = 1 
 
 boughtCasinoModel = false 
 boughtDoorSecurity = false 
