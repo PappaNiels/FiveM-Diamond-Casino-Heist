@@ -112,6 +112,65 @@ function SetEntityForAll(entity)
     SetNetworkIdExistsOnAllMachines(netId, true)
 end
 
+local function IsCorrectModel()
+    local ped = PlayerPedId()
+    if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") then 
+        print("false")
+        return false 
+    else
+        print("true")
+        return true 
+    end
+end
+
+local function SetPedModel()
+    local model = GetHashKey("mp_m_freemode_01")
+
+    LoadModel(model)
+    SetPlayerModel(PlayerId(), model)
+    SetModelAsNoLongerNeeded(model)
+end
+
+function SetPedComponents(stage, args)
+    local ped = PlayerPedId()
+    local num = math.random(1, 4)
+    local index = 1
+
+    if not IsCorrectModel() then 
+        SetPedModel()
+    end
+
+    ClearAllPedProps(ped)
+    SetPedDefaultComponentVariation(ped)
+
+    if approach == 2 then 
+            if stage == 1 then 
+                SetPedPropIndex(ped, clothes[2][1][selectedEntryDisguise][num][1][1], clothes[2][1][selectedEntryDisguise][num][1][2], clothes[2][1][selectedEntryDisguise][num][1][3], true)
+            elseif stage == 2 and selectedExitDisguise ~= 3 then 
+                SetPedPropIndex(ped, clothes[2][2][selectedExitDisguise][num][1][1], clothes[2][2][selectedExitDisguise][num][1][2], clothes[2][2][selectedExitDisguise][num][1][3], true)
+                index = 2
+            end 
+
+        if stage == 1 then 
+            for i = 2, #clothes[2][1][selectedEntryDisguise][num] do 
+                SetPedComponentVariation(ped, clothes[2][1][selectedEntryDisguise][num][i][1], clothes[2][1][selectedEntryDisguise][num][i][2], clothes[2][1][selectedEntryDisguise][num][i][3], 0)
+            end
+        elseif stage == 2 then 
+            for i = index, #clothes[2][2][selectedExitDisguise][num] do 
+                SetPedComponentVariation(ped, clothes[2][2][selectedExitDisguise][num][i][1], clothes[2][2][selectedExitDisguise][num][i][2], clothes[2][2][selectedExitDisguise][num][i][3], 0)
+            end
+        end
+
+    else
+        if approach == 1 then 
+            SetPedPropIndex(ped, 0, 147, 0, 0)
+        end 
+
+        for i = 1, #clothes[approach][1] do 
+            SetPedComponentVariation(ped, clothes[approach][num][i][1], clothes[approach][num][i][2], clothes[approach][num][i][3], 0)
+        end
+    end
+end
 
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
