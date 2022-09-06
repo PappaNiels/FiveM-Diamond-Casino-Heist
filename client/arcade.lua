@@ -390,7 +390,7 @@ local imageOrder = {
             [14] = {1, 2, 3}
         },
         [3] = {
-            [2] = {2, 7, 11, 1, 3, 5, 8, 10},
+            [2] = {2, 7, 11, 1},
             [3] = {11, 1, 3, 5, 8, 10, 9, 4},
             [4] = {1, 2, 3}
         }
@@ -1718,12 +1718,11 @@ end)
 -- vector3(2737.99, -374.45, -48.5)
 
 CreateThread(function()
-    local ped = PlayerPedId()
     while true do 
         Wait(0)
         if not heistInProgress then 
             if not isInGarage then 
-                local distance = #(GetEntityCoords(ped) - vector3(759.08, -816.05, 25.3))
+                local distance = #(GetEntityCoords(PlayerPedId()) - vector3(759.08, -816.05, 25.3))
                 if distance < 10 then 
                     DrawMarker(1, 759.08, -816.05, 25.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.75, 0.5, 73, 200, 250, 204, false, false, 2, false)
 
@@ -1747,7 +1746,7 @@ CreateThread(function()
                     Wait(2000)
                 end
             else
-                local distance = #(GetEntityCoords(ped) - vector3(2737.99, -374.45, -48.5))
+                local distance = #(GetEntityCoords(PlayerPedId()) - vector3(2737.99, -374.45, -48.5))
                 if distance < 5 then 
                     DrawMarker(1, 2737.99, -374.45, -49.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.75, 0.5, 73, 200, 250, 204, false, false, 2, false)
 
