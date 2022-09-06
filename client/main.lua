@@ -2,9 +2,6 @@ heistInProgress = false
 
 hPlayer = {1}
 
-heistType = 0
-entryType = 0
-
 entrypointsCasino = {
     -- Agressive 
     --[[4]]  vector3(993.17, 77.05, 80.99),     -- Waste Disposal
