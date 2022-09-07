@@ -125,6 +125,18 @@ function GetHeistPlayer()
     return hPlayer 
 end
 
+function GetCurrentHeistPlayer()
+    if PlayerPed() == GetPlayerFromServerId(hPlayer[1]) then 
+        return 1 
+    elseif PlayerPed() == GetPlayerFromServerId(hPlayer[2]) then 
+        return 2
+    elseif PlayerPed() == GetPlayerFromServerId(hPlayer[3]) then 
+        return 3
+    elseif PlayerPed() == GetPlayerFromServerId(hPlayer[4]) then
+        return 4
+    end
+end
+
 function DeletePeds()
     for i = 3, #hPlayer, 1 do 
         DeletePed(hPlayer[i])
