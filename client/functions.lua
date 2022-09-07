@@ -131,9 +131,9 @@ local function SetPedModel()
     SetModelAsNoLongerNeeded(model)
 end
 
-function SetPedComponents(stage, args)
+function SetPedComponents(stage)
     local ped = PlayerPedId()
-    local num = math.random(1, 4)
+    local num = GetCurrentHeistPlayer()
     local index = 1
 
     if not IsCorrectModel() then 
