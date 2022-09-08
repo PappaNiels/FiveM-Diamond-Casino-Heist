@@ -6,11 +6,12 @@
 --}
 
 local cargobob = {}
+local blip = 0
 
 local function FlyToPos()
     TaskHeliMission(cargobob[2], cargobob[1], 0, 0, cargobobFinalCoords, 4, 10.0, 0.0, 300.0, 9, 7, -1.0, 25280)
     
-    while #(GetEntityCoords(cargobob[1]) - cargobobFinalCoords) > 500 do 
+    while #(GetEntityCoords(cargobob[1]) - cargobobFinalCoords) > 200 do 
         Wait(100)
     end
     
@@ -87,9 +88,9 @@ local function SetupCargobob()
     --SetModelAsNoLongerNeeded("s_m_y_pilot_01")
 
     while not IsPedInAnyHeli(PlayerPedId()) do 
-        Wait(0)
+        Wait(50)
         --print("tick")
-        if #(vector3(1060.1, -288.31, 50.81) - GetEntityCoords(PlayerPedId())) < 4 and IsControlJustPressed(0, 23) then 
+        if #(vector3(1060.1, -288.31, 50.81) - GetEntityCoords(PlayerPedId())) < 4 and IsControlPressed(0, 23) then 
             for i = 0, 4 do 
                 if IsVehicleSeatFree(cargobob[1], i) then 
                     TaskEnterVehicle(PlayerPedId(), cargobob[1], 1.0, i, 2.0, 0, 0)
@@ -104,6 +105,20 @@ local function SetupCargobob()
     FlyToPos()
 end
 
+local function DistanceCasino()
+    CreateThread(function()
+        while true do 
+            Wait(200)
+
+            SubtitleMsg("Go to the ~y~Casino.", 210)
+
+            if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
+                KeycardThread()
+                break 
+            end 
+        end
+    end)
+end
 
 function StartHeist()
     local player = GetCurrentHeistPlayer()
@@ -118,27 +133,84 @@ function StartHeist()
 
     FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
-    
+    blip = AddBlipForCoord(957.67, 42.7, 113.3)
+    SetBlipHighDetail(blip, true)
+    SetBlipColour(blip, 5)
+    SetBlipRoute(blip, true)
+    SetBlipRouteColour(blip, 5)
+
+    DistanceCasino()
 end
 
 RegisterCommand("test_vehicle", function()
     --LoadModel("adder")
---
+    --
     --veh = CreateVehicle(GetHashKey("adder"), GetEntityCoords(PlayerPedId()), 0, true, false)
---
+    --
     --SetPedIntoVehicle(PlayerPedId(), veh, -1)
     --SetVehicleColours(veh, 7, 7)
+    blip = AddBlipForCoord(957.67, 42.7, 113.3)
+    SetBlipHighDetail(blip, true)
+    SetBlipColour(blip, 5)
+    SetBlipRoute(blip, true)
+    SetBlipRouteColour(blip, 5)
+    DistanceCasino()
     SetupCargobob()
     --FlyToPos()
 end, false)
 
-RegisterCommand("test_marker", function()
+local keycardAnim = {
+    {
+        "success_var02", 
+        "success_var02_card"
+    }, 
+    0
+}
+
+local function KeypadOne(j)
+    local keycard = "ch_prop_vault_key_card_01a"
+    local animDict = "anim_heist@hs3f@ig3_cardswipe@male@"
+    
+    LoadModel(keycard)
+    LoadAnim(animDict)
+
+    keypadObj = GetClosestObjectOfType(keypads[1][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01a"), false, false, false)
+    keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+
+    keycardAnim[2] = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardAnim[2], animDict, keycardAnim[1][1], 4.0, -4.0, 2000, 0, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(keycardObj, keycardAnim[2], animDict, keycardAnim[1][2], 1.0, -1.0, 114886080)
+
+    NetworkStartSynchronisedScene(keycardAnim[2])
+    Wait(3500)
+    DeleteObject(keycardObj)
+    ClearPedTasks(PlayerPedId())
+end
+
+function KeycardThread()
+    SetBlipCoords(blip, keypads[1][1])
+    SetBlipSprite(blip, 730)
+    SetBlipRoute(blip, false)
+    SetBlipColour(blip, 2)
+    
     CreateThread(function()
         while true do 
-            Wait(0)
-            for i = 1, #entryCoords do 
-                DrawMarker(1, entryCoords[i], 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 58, 230, 242, 160, false, false, 2, false)
+            Wait(30)
+            
+            SubtitleMsg("Enter the ~g~Casino.", 50)
+
+            if #(GetEntityCoords(PlayerPedId()) - keypads[1][1]) < 1.3 then 
+                HelpMsg("Press ~INPUT_CONTEXT~ to swipe your keycard.")
+                if IsControlPressed(0, 38) then
+                    RemoveBlip(blip) 
+                    KeypadOne(1)
+                    break
+                end
             end
         end
     end)
+end
+
+RegisterCommand("test_keypads", function()
+    KeycardThread()
 end, false)
