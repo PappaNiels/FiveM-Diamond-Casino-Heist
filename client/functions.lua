@@ -30,6 +30,10 @@ function SubtitleMsg(msg, time)
     DrawSubtitleTimed(time, true)
 end
 
+function GetHeistPlayerPed(id)
+    return GetPlayerPed(GetPlayerFromServerId(id))
+end
+
 function FadeTeleport(x, y, z, h)
     DoScreenFadeOut(800)
 
@@ -53,16 +57,16 @@ function LoadCutscene(name)
     end
 
     SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[1])), "MP_1", 0, 0, 64)
+    RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[1]), "MP_1", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_2", 0, 1)
-    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[2])), "MP_2", 0, 0, 64)
+    RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[2]), "MP_2", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_3", 0, 1)
-    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[3])), "MP_3", 0, 0, 64)
+    RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[3]), "MP_3", 0, 0, 64)
 
     SetCutsceneEntityStreamingFlags("MP_4", 0, 1)
-    RegisterEntityForCutscene(GetPlayerPed(GetPlayerFromServerId(hPlayer[4])), "MP_4", 0, 0, 64)
+    RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[4]), "MP_4", 0, 0, 64)
 end
 
 function LoadModel(model)
@@ -170,11 +174,11 @@ function SetPedComponents(stage)
     end
 end
 
-function IsPedPlayingAnim(pedId, animDict, animName)
-    if IsEntityPlayingAnim(pedId, animDict, animName, 2) then 
-        return true 
-    else 
-        return false 
+function IsPedPlayingAnim(animDict, animName)
+    for i = 1, #hPlayer do
+        if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[i]), animDict, animName, 2) then 
+            return true 
+        end
     end
 end
 
