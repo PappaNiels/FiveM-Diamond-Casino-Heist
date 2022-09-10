@@ -7,6 +7,7 @@
 
 local cargobob = {}
 local blip = 0
+local veh = 0
 
 local function FlyToPos()
     TaskHeliMission(cargobob[2], cargobob[1], 0, 0, cargobobFinalCoords, 4, 10.0, 0.0, 300.0, 9, 7, -1.0, 25280)
@@ -113,7 +114,11 @@ local function DistanceCasino()
             SubtitleMsg("Go to the ~y~Casino.", 210)
 
             if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
-                KeycardThread()
+                if keypads[1][1] ~= 0 then 
+                    KeycardThread()
+                else 
+
+                end
                 break 
             end 
         end
@@ -129,15 +134,43 @@ function StartHeist()
     SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
     SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
 
+    DoScreenFadeOut(800)
+
+    while not IsScreenFadedOut() do 
+        Wait(100)
+    end
+
     SetPedComponents(1)
 
-    FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
+    --FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
-    blip = AddBlipForCoord(957.67, 42.7, 113.3)
+    blip = AddBlipForCoord(entryCoords[1])
     SetBlipHighDetail(blip, true)
     SetBlipColour(blip, 5)
     SetBlipRoute(blip, true)
     SetBlipRouteColour(blip, 5)
+
+    if player == 1 then 
+        local model = ""
+        if approach == 2 and selectedEntryDisguise ~= 4 then
+            if selectedEntryDisguise == 1 then 
+                model = "burrito"
+            elseif selectedEntryDisguise == 2 then 
+                model = "boxville"
+            elseif selectedEntryDisguise == 3 then 
+                model = "stockade"
+            end 
+        else
+            model = availableVehicles[driver[selectedDriver][3]][2]
+        end
+        
+        LoadModel(model)
+        veh = CreateVehicle(GetHashKey(model), 720.82, -842.88, 23.95, 271.44, true, false)
+
+        if selectedEntryDisguise == 3 and approach == 2 then 
+            SetVehicleColours(veh, 111, 0)
+        end
+    end
 
     DistanceCasino()
 end
@@ -159,13 +192,7 @@ RegisterCommand("test_vehicle", function()
     --FlyToPos()
 end, false)
 
-local keycardAnim = {
-    {
-        "success_var02", 
-        "success_var02_card"
-    }, 
-    0
-}
+local keycardScene = 0
 
 local function KeypadOne(j)
     local keycard = "ch_prop_vault_key_card_01a"
@@ -174,14 +201,14 @@ local function KeypadOne(j)
     LoadModel(keycard)
     LoadAnim(animDict)
 
-    keypadObj = GetClosestObjectOfType(keypads[1][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01a"), false, false, false)
-    keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    local keypadObj = GetClosestObjectOfType(keypads[1][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01a"), false, false, false)
+    local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
 
-    keycardAnim[2] = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
-    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardAnim[2], animDict, keycardAnim[1][1], 4.0, -4.0, 2000, 0, 1000.0, 0)
-    NetworkAddEntityToSynchronisedScene(keycardObj, keycardAnim[2], animDict, keycardAnim[1][2], 1.0, -1.0, 114886080)
+    keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var02", 4.0, -4.0, 2000, 0, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(keycardObj, keycardScene, animDict, "success_var02_card", 1.0, -1.0, 114886080)
 
-    NetworkStartSynchronisedScene(keycardAnim[2])
+    NetworkStartSynchronisedScene(keycardScene)
     Wait(3500)
     DeleteObject(keycardObj)
     ClearPedTasks(PlayerPedId())
@@ -200,12 +227,42 @@ function KeycardThread()
             SubtitleMsg("Enter the ~g~Casino.", 50)
 
             if #(GetEntityCoords(PlayerPedId()) - keypads[1][1]) < 1.3 then 
+
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe your keycard.")
                 if IsControlPressed(0, 38) then
                     RemoveBlip(blip) 
                     KeypadOne(1)
+                end
+            end
+            
+            if IsPedPlayingAnim("anim_heist@hs3f@ig3_cardswipe@male@", "success_var02") then 
+                Wait(4000)
+                SetBlipRoute(blip, false)
+                RemoveBlip(blip)
+                EnterCasino()
+                break
+            end
+        end
+    end)
+end
+
+function TeleportThread()
+    CreateThread(function()
+        while true do 
+            Wait(100)
+
+            if #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 165 and selectedEntry == 7 then 
+                EnterCasinoTunnel()
+                break
+            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 5 then
+                if IsNotClose(5) then
+                    SubtitleMsg("Wait for your team members", 110)
+                else 
+                    EnterCasino()
                     break
                 end
+            else 
+                SubtitleMsg("Enter the ~g~Casino.", 110)
             end
         end
     end)
@@ -213,4 +270,13 @@ end
 
 RegisterCommand("test_keypads", function()
     KeycardThread()
+end, false)
+
+RegisterCommand("test_distance", function()
+    CreateThread(function()
+        while true do 
+            Wait(0)
+            print(#(GetEntityCoords(PlayerPedId()) - entryCoords[7]))
+        end 
+    end)
 end, false)

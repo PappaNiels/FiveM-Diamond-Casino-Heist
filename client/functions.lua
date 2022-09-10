@@ -174,6 +174,16 @@ function SetPedComponents(stage)
     end
 end
 
+function IsNotClose(distance)
+    for i = 1, #hPlayer do 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - entryCoords[selectedEntry]) < distance then 
+            return false  
+        end
+    end
+
+    return true
+end
+
 function IsPedPlayingAnim(animDict, animName)
     for i = 1, #hPlayer do
         if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[i]), animDict, animName, 2) then 

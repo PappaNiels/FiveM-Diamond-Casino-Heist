@@ -127,7 +127,7 @@ RegisterCommand("vl_break", function()
     end
 end, false)
 
-function GetHeistPlayer()
+function GetHeistPlayers()
     Models()
     --hPlayer[2] = CreatePed(7, models[1], 0.0, 0.0, 0.0, 0.0, true, true)
     --hPlayer[3] = CreatePed(7, models[2], 0.0, 0.0, 0.0, 0.0, true, true)
