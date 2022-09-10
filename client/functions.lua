@@ -170,7 +170,13 @@ function SetPedComponents(stage)
     end
 end
 
-
+function IsPedPlayingAnim(pedId, animDict, animName)
+    if IsEntityPlayingAnim(pedId, animDict, animName, 2) then 
+        return true 
+    else 
+        return false 
+    end
+end
 
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
