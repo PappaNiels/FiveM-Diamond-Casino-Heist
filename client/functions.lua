@@ -1,5 +1,3 @@
-functionsLoop = false
-
 function HelpMsg(text, time)
     AddTextEntry("HelpMsg", text)
     BeginTextCommandDisplayHelp("HelpMsg")
@@ -172,20 +170,12 @@ function SetPedComponents(stage)
     end
 end
 
+
+
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
         LoadCutscene(cutscene)
     end
-end)
-
-RegisterNetEvent("cl:casinoheist:subtitleMsg", function(text, bool)
-    functionsLoop = bool 
-    CreateThread(function()
-        while functionsLoop do 
-            Wait(0)
-            SubtitleMsg(text, 1)
-        end
-    end)
 end)
 
 RegisterNetEvent("cl:casinoheist:infoMessage", InfoMsg)
