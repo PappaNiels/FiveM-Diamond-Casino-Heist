@@ -114,7 +114,7 @@ local function DistanceCasino()
             SubtitleMsg("Go to the ~y~Casino.", 210)
 
             if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
-                if keypads[1][selectedEntry] ~= 0 then 
+                if keypads[1][selectedEntrance] ~= 0 then 
                     KeycardThread()
                 else 
 
@@ -144,7 +144,7 @@ function StartHeist()
 
     --FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
-    blip = AddBlipForCoord(entryCoords[selectedEntry])
+    blip = AddBlipForCoord(entryCoords[selectedEntrance])
     SetBlipHighDetail(blip, true)
     SetBlipColour(blip, 5)
     SetBlipRoute(blip, true)
@@ -215,7 +215,7 @@ local function KeypadOne(j)
 end
 
 function KeycardThread()
-    SetBlipCoords(blip, keypads[1][selectedEntry])
+    SetBlipCoords(blip, keypads[1][selectedEntrance])
     SetBlipSprite(blip, 730)
     SetBlipRoute(blip, false)
     SetBlipColour(blip, 2)
@@ -226,7 +226,7 @@ function KeycardThread()
             
             SubtitleMsg("Enter the ~g~Casino.", 50)
 
-            if #(GetEntityCoords(PlayerPedId()) - keypads[1][selectedEntry]) < 1.3 then 
+            if #(GetEntityCoords(PlayerPedId()) - keypads[1][selectedEntrance]) < 1.3 then 
 
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe your keycard.")
                 if IsControlPressed(0, 38) then
@@ -252,10 +252,10 @@ function TeleportThread()
         while true do 
             Wait(100)
 
-            if #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 165 and selectedEntry == 7 then 
+            if #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 165 and selectedEntrance == 7 then 
                 EnterCasinoTunnel()
                 break
-            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntry]) < 5 then
+            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 5 then
                 if IsNotClose(5) then
                     SubtitleMsg("Wait for your team members", 110)
                 else 
