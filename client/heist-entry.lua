@@ -114,7 +114,7 @@ local function DistanceCasino()
             SubtitleMsg("Go to the ~y~Casino.", 210)
 
             if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
-                if keypads[1][1] ~= 0 then 
+                if keypads[1][selectedEntry] ~= 0 then 
                     KeycardThread()
                 else 
 
@@ -144,7 +144,7 @@ function StartHeist()
 
     --FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
-    blip = AddBlipForCoord(entryCoords[1])
+    blip = AddBlipForCoord(entryCoords[selectedEntry])
     SetBlipHighDetail(blip, true)
     SetBlipColour(blip, 5)
     SetBlipRoute(blip, true)
@@ -215,7 +215,7 @@ local function KeypadOne(j)
 end
 
 function KeycardThread()
-    SetBlipCoords(blip, keypads[1][1])
+    SetBlipCoords(blip, keypads[1][selectedEntry])
     SetBlipSprite(blip, 730)
     SetBlipRoute(blip, false)
     SetBlipColour(blip, 2)
@@ -226,12 +226,13 @@ function KeycardThread()
             
             SubtitleMsg("Enter the ~g~Casino.", 50)
 
-            if #(GetEntityCoords(PlayerPedId()) - keypads[1][1]) < 1.3 then 
+            if #(GetEntityCoords(PlayerPedId()) - keypads[1][selectedEntry]) < 1.3 then 
 
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe your keycard.")
                 if IsControlPressed(0, 38) then
                     RemoveBlip(blip) 
                     KeypadOne(1)
+                    break
                 end
             end
             
@@ -254,7 +255,7 @@ function TeleportThread()
             if #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 165 and selectedEntry == 7 then 
                 EnterCasinoTunnel()
                 break
-            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 5 then
+            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntry]) < 5 then
                 if IsNotClose(5) then
                     SubtitleMsg("Wait for your team members", 110)
                 else 
@@ -270,13 +271,4 @@ end
 
 RegisterCommand("test_keypads", function()
     KeycardThread()
-end, false)
-
-RegisterCommand("test_distance", function()
-    CreateThread(function()
-        while true do 
-            Wait(0)
-            print(#(GetEntityCoords(PlayerPedId()) - entryCoords[7]))
-        end 
-    end)
 end, false)
