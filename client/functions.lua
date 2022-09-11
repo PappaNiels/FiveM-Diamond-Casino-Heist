@@ -184,17 +184,6 @@ function IsNotClose(distance)
     return true
 end
 
-function IsPedPlayingAnim(animDict, animName)
-    for i = 1, #hPlayer do
-        if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[i]), animDict, animName, 2) then 
-            print("true")
-            return true
-        else 
-            print("false")
-        end
-    end
-end
-
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
         LoadCutscene(cutscene)
