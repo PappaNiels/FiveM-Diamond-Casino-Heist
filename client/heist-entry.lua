@@ -200,21 +200,22 @@ local function KeypadOne(j)
     
     LoadModel(keycard)
     LoadAnim(animDict)
-
+    
     local keypadObj = GetClosestObjectOfType(keypads[1][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01a"), false, false, false)
     local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
-
+    
     keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var02", 4.0, -4.0, 2000, 0, 1000.0, 0)
     NetworkAddEntityToSynchronisedScene(keycardObj, keycardScene, animDict, "success_var02_card", 1.0, -1.0, 114886080)
-
+    
     NetworkStartSynchronisedScene(keycardScene)
-    Wait(3500)
+    Wait(3700)
     DeleteObject(keycardObj)
     ClearPedTasks(PlayerPedId())
 end
 
 function KeycardThread()
+    blip = AddBlipForCoord(957.67, 42.7, 113.3)
     SetBlipCoords(blip, keypads[1][selectedEntrance])
     SetBlipSprite(blip, 730)
     SetBlipRoute(blip, false)
@@ -225,9 +226,9 @@ function KeycardThread()
             Wait(30)
             
             SubtitleMsg("Enter the ~g~Casino.", 50)
-
+            
             if #(GetEntityCoords(PlayerPedId()) - keypads[1][selectedEntrance]) < 1.3 then 
-
+                
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe your keycard.")
                 if IsControlPressed(0, 38) then
                     RemoveBlip(blip) 
@@ -235,12 +236,18 @@ function KeycardThread()
                     break
                 end
             end
+        end
+    end)
+    
+    CreateThread(function()
+        while true do 
+            Wait(100)
             
-            if IsPedPlayingAnim("anim_heist@hs3f@ig3_cardswipe@male@", "success_var02") then 
+            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig3_cardswipe@male@", "success_var02", 3) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig3_cardswipe@male@", "success_var02", 3) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig3_cardswipe@male@", "success_var02", 3) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig3_cardswipe@male@", "success_var02", 3) then 
                 Wait(4000)
                 SetBlipRoute(blip, false)
                 RemoveBlip(blip)
-                EnterCasino()
+                --EnterCasino()
                 break
             end
         end
