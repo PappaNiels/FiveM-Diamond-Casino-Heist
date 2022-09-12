@@ -1,6 +1,6 @@
 heistInProgress = false
 
-hPlayer = {1}
+hPlayer = {1, 2}
 
 entrypointsCasino = {
     -- Agressive 
@@ -136,13 +136,13 @@ function GetHeistPlayers()
 end
 
 function GetCurrentHeistPlayer()
-    if PlayerPed() == GetPlayerFromServerId(hPlayer[1]) then 
+    if PlayerId() == GetPlayerFromServerId(hPlayer[1]) then 
         return 1 
-    elseif PlayerPed() == GetPlayerFromServerId(hPlayer[2]) then 
+    elseif PlayerId() == GetPlayerFromServerId(hPlayer[2]) then 
         return 2
-    elseif PlayerPed() == GetPlayerFromServerId(hPlayer[3]) then 
+    elseif PlayerId() == GetPlayerFromServerId(hPlayer[3]) then 
         return 3
-    elseif PlayerPed() == GetPlayerFromServerId(hPlayer[4]) then
+    elseif PlayerId() == GetPlayerFromServerId(hPlayer[4]) then
         return 4
     end
 end
