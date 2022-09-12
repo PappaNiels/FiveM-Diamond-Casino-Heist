@@ -51,15 +51,17 @@ local function FlyToPos()
 end
 
 local function IsAllPlayersInHeli()
-    local bool = true
-    while bool do 
-        DisableControlAction(0, 23, true)
-        
-        if IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[1]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[2]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[3]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[4]))) then 
-            FlyToPos()
-            bool = false 
-        end
-    end 
+    CreateThread(function()
+        while true do 
+            Wait(0)
+            DisableControlAction(0, 23, true)
+
+            if IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[1]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[2]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[3]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[4]))) then 
+                FlyToPos()
+                bool = false 
+            end
+        end 
+    end)
 end
 
 local function SetupCargobob()
@@ -117,7 +119,7 @@ local function DistanceCasino()
                 if keypads[1][selectedEntrance] ~= 0 then 
                     KeycardThread()
                 else 
-
+                    TeleportThread()
                 end
                 break 
             end 
@@ -126,21 +128,25 @@ local function DistanceCasino()
 end
 
 function StartHeist()
-    local player = GetCurrentHeistPlayer()
+    local player = 1 --GetCurrentHeistPlayer()
     
+    approach = 2
+    selectedEntryDisguise = 3 
+    selectedEntrance = 6
+
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
     AddRelationshipGroup("GUARDS")
     SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
     SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
     SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
 
-    DoScreenFadeOut(800)
+    --DoScreenFadeOut(800)
+--
+    --while not IsScreenFadedOut() do 
+    --    Wait(100)
+    --end
 
-    while not IsScreenFadedOut() do 
-        Wait(100)
-    end
-
-    SetPedComponents(1)
+    --SetPedComponents(1)
 
     --FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
@@ -154,7 +160,7 @@ function StartHeist()
         local model = ""
         if approach == 2 and selectedEntryDisguise ~= 4 then
             if selectedEntryDisguise == 1 then 
-                model = "burrito"
+                model = "burrito2"
             elseif selectedEntryDisguise == 2 then 
                 model = "boxville"
             elseif selectedEntryDisguise == 3 then 
@@ -173,6 +179,8 @@ function StartHeist()
     end
 
     DistanceCasino()
+
+    --DoScreenFadeIn(1500)
 end
 
 RegisterCommand("test_vehicle", function()
@@ -259,7 +267,7 @@ function TeleportThread()
         while true do 
             Wait(100)
 
-            if #(GetEntityCoords(PlayerPedId()) - entryCoords[7]) < 165 and selectedEntrance == 7 then 
+            if #(GetEntityCoords(veh) - entryCoords[6]) < 50 and selectedEntrance == 6 then 
                 EnterCasinoTunnel()
                 break
             elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 5 then
@@ -270,11 +278,77 @@ function TeleportThread()
                     break
                 end
             else 
-                SubtitleMsg("Enter the ~g~Casino.", 110)
+                SubtitleMsg("Go to the ~y~Casino.", 110)
             end
         end
     end)
 end
+
+function EnterCasinoTunnel()
+    local cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1007.69, -56.7, 75.5, 0, 0, 112.75, 40.0, true, 2)
+    local garageDoor = GetClosestObjectOfType(998.97, -52.5, 73.95, 1.0, GetHashKey("vw_prop_vw_garagedoor_01a"), false, false, false)
+    local player = 1 --GetCurrentHeistPlayer()
+
+    SetCamActive(cam, true)
+    RenderScriptCams(true, false, 0, true, true)
+    PointCamAtEntity(cam, veh, 0.0, 0.0, 0.0, true)
+    
+    SetEntityVisible(garageDoor, false)
+    SetEntityCollision(garageDoor, false, true)
+    if player == 1 then 
+        SetEntityCoords(veh, 974.74, -73.41, 74.65, true, false, false, false)
+        SetEntityHeading(veh, 298.63)
+
+        TaskVehicleDriveToCoord(GetPedInVehicleSeat(veh, -1), veh, 994.32, -63.89, 74.56, 45.0, 1.0, GetHashKey("stockade"), 524320, 0.5, 100.0)
+        
+        while #(GetEntityCoords(veh) - vector3(994.32, -63.89, 74.56)) > 1 do 
+            Wait(10)
+        end
+        
+        TaskVehicleDriveToCoord(GetPedInVehicleSeat(veh, -1), veh, 997.1, -48.63, 74.56, 25.0, 1.0, GetHashKey("stockade"), 786944, 0.5, 100.0)
+    end
+
+    while #(GetEntityCoords(veh) - vector3(997.1, -48.63, 74.56)) > 5 do 
+        Wait(10)
+    end 
+    
+    DoScreenFadeOut(800)
+    
+    while not IsScreenFadedOut() do 
+        Wait(10)
+    end 
+    
+    RenderScriptCams(false, false, 0, true, false)
+    DestroyCam(cam)
+
+    if player == 1 then 
+        SetEntityCoords(veh, 2650.31, -339.48, -65.12, true, false, false, true)
+        SetEntityHeading(veh, 49.55)
+    end
+
+    Wait(5000) 
+    DoScreenFadeIn(1500)
+
+    RemoveBlip(blip)
+end
+
+RegisterNetEvent("test:sync:nj", function()
+    --LoadModel("stockade")
+    --if GetCurrentHeistPlayer() == 1 then 
+    --    veh = CreateVehicle(GetHashKey("stockade"), 974.74, -73.41, 74.65, 298.63, true, false)
+    --    SetPedIntoVehicle(PlayerPedId(), -1)
+    --end 
+--
+    --EnterCasinoTunnel()
+end)
+
+RegisterCommand("test_tunnel", function()
+    --LoadModel("stockade")
+    ----veh = CreateVehicle(GetHashKey("stockade"), 720.82, -842.88, 23.95, 271.44, true, false)
+    --veh = CreateVehicle(GetHashKey("stockade"), 974.74, -73.41, 74.65, 298.63, true, false)
+    --EnterCasinoTunnel()
+    StartHeist()
+end, false)
 
 RegisterCommand("test_keypads", function()
     KeycardThread()

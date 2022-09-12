@@ -89,3 +89,8 @@ RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
     TriggerClientEvent("test:cl:casinoheist:openvaultdoors", -1)
     return true
 end)
+
+
+RegisterCommand("sv_tunnel", function()
+    TriggerClientEvent("test:sync:nj", -1)
+end, false)
