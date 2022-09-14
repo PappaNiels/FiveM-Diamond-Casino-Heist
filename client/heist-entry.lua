@@ -116,7 +116,7 @@ local function DistanceCasino()
             SubtitleMsg("Go to the ~y~Casino.", 210)
 
             if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
-                if keypads[1][selectedEntrance] ~= 0 then 
+                if keypads[1][selectedEntrance] ~= 0 and approach ~= 2 then 
                     KeycardThread()
                 else 
                     TeleportThread()
@@ -131,8 +131,8 @@ function StartHeist()
     local player = 1 --GetCurrentHeistPlayer()
     
     approach = 2
-    selectedEntryDisguise = 3 
-    selectedEntrance = 6
+    selectedEntryDisguise = 2 
+    selectedEntrance = 1
 
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
     AddRelationshipGroup("GUARDS")
@@ -146,8 +146,8 @@ function StartHeist()
     --    Wait(100)
     --end
 
-    --SetPedComponents(1)
-
+    SetPedComponents(1)
+    --SetPedModel()
     --FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
     blip = AddBlipForCoord(entryCoords[selectedEntrance])
@@ -223,7 +223,7 @@ local function KeypadOne(j)
 end
 
 function KeycardThread()
-    blip = AddBlipForCoord(957.67, 42.7, 113.3)
+    --blip = AddBlipForCoord(957.67, 42.7, 113.3)
     SetBlipCoords(blip, keypads[1][selectedEntrance])
     SetBlipSprite(blip, 730)
     SetBlipRoute(blip, false)
