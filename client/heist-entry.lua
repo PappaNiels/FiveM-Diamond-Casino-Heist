@@ -285,6 +285,14 @@ function TeleportThread()
 end
 
 function EnterCasinoTunnel()
+    DoScreenFadeOut(500)
+
+    while not IsScreenFadedOut() do 
+        Wait(0)
+    end
+
+    DoScreenFadeIn(500)
+
     local cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1007.69, -56.7, 75.5, 0, 0, 112.75, 40.0, true, 2)
     local garageDoor = GetClosestObjectOfType(998.97, -52.5, 73.95, 1.0, GetHashKey("vw_prop_vw_garagedoor_01a"), false, false, false)
     local player = 1 --GetCurrentHeistPlayer()
