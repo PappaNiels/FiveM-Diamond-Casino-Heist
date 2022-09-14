@@ -21,7 +21,7 @@
     Where it says 0 it is meant for the helmet / hats.
 ]]
 
-local clothes = {
+clothes = {
     [1] = { -- Silent and Sneaky
         [1] = { -- Player One
             {1, 52, 0},

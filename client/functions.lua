@@ -125,7 +125,7 @@ local function IsCorrectModel()
     end
 end
 
-local function SetPedModel()
+function SetPedModel()
     local model = "mp_m_freemode_01"
     LoadModel(model)
     SetPlayerModel(PlayerId(), GetHashKey(model))
@@ -133,25 +133,29 @@ local function SetPedModel()
 end
 
 function SetPedComponents(stage)
-    local ped = PlayerPedId()
-    local num = GetCurrentHeistPlayer()
-    local index = 1
-
+    
     if not IsCorrectModel() then 
         SetPedModel()
+        print(IsCorrectModel())
     end
-
+    
+    local ped = PlayerPedId()
+    local num = 2 --math.random(1, 4) --GetCurrentHeistPlayer()
+    local index = 1
+    
     ClearAllPedProps(ped)
-    SetPedDefaultComponentVariation(ped)
+    SetPedDefaultComponentVariation(ped)    
+    
+    Wait(100)
 
     if approach == 2 then 
-            if stage == 1 then 
-                SetPedPropIndex(ped, clothes[2][1][selectedEntryDisguise][num][1][1], clothes[2][1][selectedEntryDisguise][num][1][2], clothes[2][1][selectedEntryDisguise][num][1][3], true)
-            elseif stage == 2 and selectedExitDisguise ~= 3 then 
-                SetPedPropIndex(ped, clothes[2][2][selectedExitDisguise][num][1][1], clothes[2][2][selectedExitDisguise][num][1][2], clothes[2][2][selectedExitDisguise][num][1][3], true)
-                index = 2
-            end 
-
+        if stage == 1 then 
+            SetPedPropIndex(ped, clothes[2][1][selectedEntryDisguise][num][1][1], clothes[2][1][selectedEntryDisguise][num][1][2], clothes[2][1][selectedEntryDisguise][num][1][3], true)
+        elseif stage == 2 and selectedExitDisguise ~= 3 then 
+            SetPedPropIndex(ped, clothes[2][2][selectedExitDisguise][num][1][1], clothes[2][2][selectedExitDisguise][num][1][2], clothes[2][2][selectedExitDisguise][num][1][3], true)
+            index = 2
+        end 
+        
         if stage == 1 then 
             for i = 2, #clothes[2][1][selectedEntryDisguise][num] do 
                 SetPedComponentVariation(ped, clothes[2][1][selectedEntryDisguise][num][i][1], clothes[2][1][selectedEntryDisguise][num][i][2], clothes[2][1][selectedEntryDisguise][num][i][3], 0)
@@ -161,13 +165,12 @@ function SetPedComponents(stage)
                 SetPedComponentVariation(ped, clothes[2][2][selectedExitDisguise][num][i][1], clothes[2][2][selectedExitDisguise][num][i][2], clothes[2][2][selectedExitDisguise][num][i][3], 0)
             end
         end
-
     else
         if approach == 1 then 
             SetPedPropIndex(ped, 0, 147, 0, 0)
         end 
 
-        for i = 1, #clothes[approach][1] do 
+        for i = 2, #clothes[approach][1] do 
             SetPedComponentVariation(ped, clothes[approach][num][i][1], clothes[approach][num][i][2], clothes[approach][num][i][3], 0)
         end
     end
