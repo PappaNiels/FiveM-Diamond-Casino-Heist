@@ -5,6 +5,8 @@
     Do note that increasing or decreasing the amount of entries and exits may cause the resource to break.
 ]]
 
+
+-- These are the coords where you enter/leave the Casino (6 and 7 are not exits)
 entryCoords = {
     vector3(993.17, 77.05, 80.99),     -- Waste Disposal 
     vector3(923.76, 47.20, 81.11),     -- Main Entrance 
@@ -23,14 +25,70 @@ entryCoords = {
 cargobobCoords = vector3(1057.56, -292.71, 50.95)
 cargobobFinalCoords = vector3(1303.6, -71.01, 297.33)
 
-exitCoords = {
-    [1] = vector3(993.17, 77.05, 80.99),      -- Waste Disposal
-    [2] = vector3(923.76, 47.20, 81.11),      -- Main Entrance
-    [3] = vector3(936.42, 14.51, 112.55),     -- Roof South West
-    [4] = vector3(972.15, 25.54, 120.24),     -- Roof Helipad North  
-    [5] = vector3(953.40, 79.20, 111.25),     -- Roof North West
-    [8] = vector3(953.78, 4.02, 111.26),      -- Roof South East 
-    [9] = vector3(959.39, 31.75, 120.23),     -- Roof Helipad South 
-    [10] = vector3(988.32, 59.03, 111.26),    -- Roof North East
-    [11] = vector3(978.78, 18.64, 80.99)      -- Staff Lobby
+-- These are the coords where your ped will teleport to when you enter the casino 
+casinoEntryCoords = {
+    { -- Waste Disposal
+        -- Coords, Heading
+        {vector3(2542.56, -213.34, -58.72), 205.7}, -- Player One
+        {vector3(2541.23, -214.05, -58.72), 205.7}, -- Player Two
+        {vector3(2541.78, -211.91, -58.72), 205.7}, -- Player Three
+        {vector3(2540.67, -212.82, -58.72), 205.7}  -- Player Four
+    },
+    {   -- Main Entrance (not for the aggressive approach)
+        {vector3(1090.15, 209.73, -49), 306.11},
+        {vector3(1091.1, 208.53, -49), 306.11},
+        {vector3(1088.69, 208.47, -49), 306.11},
+        {vector3(1089.95, 207.33, -49), 306.11}
+    },
+    {   -- South West Terrace
+        {vector3(2487.44, -291.86, -39.12), 0.0},
+        {vector3(2488.7, -291.86, -39.12), 0.0},
+        {vector3(2487.44, -293.3, -39.12), 0.0},
+        {vector3(2488.7, -293.3, -39.12), 0.0}
+    },
+    {   -- North Helipad
+        {vector3(2523.01, -245.9, -24.91), 178.47},
+        {vector3(2521.7, -245.9, -24.11), 178.47},
+        {vector3(2523.09, -244.43, -24.11), 178.47},
+        {vector3(2521.7, -244.43, -24.11), 178.47}
+    },
+    {   -- North West Terrace
+        {vector3(2527.87, -265.14, -39.12), 90.0},
+        {vector3(2527.87, -263.92, -39.12), 90.0},
+        {vector3(2529.17, -265.14, -39.12), 90.0},
+        {vector3(2529.17, -263.92, -39.12), 90.0}
+    },
+    {   -- Security Tunnel 
+        vector3(2650.31, -339.48, -65.12), 49.55 -- Vehicle
+    }, 
+    {   -- Sewer
+        {vector3(2514.85, -327.85, -70.6), 74.1},
+        {vector3(2515.01, -325.94, -70.61), 74.1},
+        {vector3(2516.7, -327.69, -70.65), 74.1},
+        {vector3(2516.85, -326.27, -70.68), 74.1}
+    },
+    {   -- South East Terrace
+        {vector3(2525.63, -290.65, -39.12), 90.0},
+        {vector3(2525.63, -289.15, -39.12), 90.0},
+        {vector3(2526.98, -290.65, -39.12), 90.0},
+        {vector3(2526.98, -289.15, -39.12), 90.0}
+    },
+    {   -- South Helipad
+        {vector3(2521.22, -263.0, -24.11), 350.94},
+        {vector3(2521.54, -263.0, -24.11), 350.94},
+        {vector3(2521.22, -264.42, -24.11), 350.94},
+        {vector3(2522.54, -264.41, -24.11), 350.94}
+    },
+    {   -- North East Terrace
+        {vector3(2051.75, -232.63, -39.12), 270.0},
+        {vector3(2051.75, -234.01, -39.12), 270.0},
+        {vector3(2500.36, -232.63, -39.12), 270.0},
+        {vector3(2500.36, -234.01, -39.12), 270.0}
+    },
+    {   -- Staff Lobby
+        {vector3(2548.33, -270.06, -58.72), 90.0},
+        {vector3(2548.33, -268.77, -58.72), 90.0},
+        {vector3(2549.77, -270.06, -58.72), 90.0},
+        {vector3(2549.77, -268.77, -58.72), 90.0}
+    },
 }
