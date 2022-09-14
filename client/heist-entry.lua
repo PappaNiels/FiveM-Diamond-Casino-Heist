@@ -270,8 +270,8 @@ function TeleportThread()
             if selectedEntrance == 6 and #(GetEntityCoords(veh) - entryCoords[6]) < 50 then 
                 EnterCasinoTunnel()
                 break
-            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 5 then
-                if IsNotClose(5) then
+            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 3 then
+                if IsNotClose(3) then
                     SubtitleMsg("Wait for your team members", 110)
                 else 
                     EnterCasino()
@@ -282,6 +282,13 @@ function TeleportThread()
             end
         end
     end)
+end
+
+function EnterCasino()
+
+    RemoveBlip(blip)
+    SetEntityCoords(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][1], true, false, false, false)
+    SetEntityHeading(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][2])
 end
 
 function EnterCasinoTunnel()
@@ -330,8 +337,8 @@ function EnterCasinoTunnel()
     DestroyCam(cam)
 
     if player == 1 then 
-        SetEntityCoords(veh, 2650.31, -339.48, -65.12, true, false, false, true)
-        SetEntityHeading(veh, 49.55)
+        SetEntityCoords(veh, casinoEntryCoords[selectedEntrance][1], true, false, false, true)
+        SetEntityHeading(veh, casinoEntryCoords[selectedEntrance][2])
     end
 
     Wait(5000) 
@@ -339,16 +346,6 @@ function EnterCasinoTunnel()
 
     RemoveBlip(blip)
 end
-
-RegisterNetEvent("test:sync:nj", function()
-    --LoadModel("stockade")
-    --if GetCurrentHeistPlayer() == 1 then 
-    --    veh = CreateVehicle(GetHashKey("stockade"), 974.74, -73.41, 74.65, 298.63, true, false)
-    --    SetPedIntoVehicle(PlayerPedId(), -1)
-    --end 
---
-    --EnterCasinoTunnel()
-end)
 
 RegisterCommand("test_tunnel", function()
     --LoadModel("stockade")
