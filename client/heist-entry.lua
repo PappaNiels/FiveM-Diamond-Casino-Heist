@@ -267,7 +267,7 @@ function TeleportThread()
         while true do 
             Wait(100)
 
-            if #(GetEntityCoords(veh) - entryCoords[6]) < 50 and selectedEntrance == 6 then 
+            if selectedEntrance == 6 and #(GetEntityCoords(veh) - entryCoords[6]) < 50 then 
                 EnterCasinoTunnel()
                 break
             elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 5 then
