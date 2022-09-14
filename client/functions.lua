@@ -126,10 +126,9 @@ local function IsCorrectModel()
 end
 
 local function SetPedModel()
-    local model = GetHashKey("mp_m_freemode_01")
-
+    local model = "mp_m_freemode_01"
     LoadModel(model)
-    SetPlayerModel(PlayerId(), model)
+    SetPlayerModel(PlayerId(), GetHashKey(model))
     SetModelAsNoLongerNeeded(model)
 end
 
