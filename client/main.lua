@@ -1,6 +1,6 @@
 heistInProgress = false
 
-hPlayer = {2, 3}
+hPlayer = {1, 2}
 
 entrypointsCasino = {
     -- Agressive 

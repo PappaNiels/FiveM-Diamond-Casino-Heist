@@ -177,13 +177,27 @@ function SetPedComponents(stage)
 end
 
 function IsNotClose(distance)
-    for i = 1, #hPlayer do 
-        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - entryCoords[selectedEntrance]) < distance then 
-            return false  
+    local num = #hPlayer
+
+    if num == 2 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - entryCoords[selectedEntrance]) > distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - entryCoords[selectedEntrance]) > distance then 
+            return true 
+        else 
+            return false
+        end
+    elseif num == 3 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - entryCoords[selectedEntrance]) > distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - entryCoords[selectedEntrance]) > distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - entryCoords[selectedEntrance]) > distance then 
+            return true 
+        else 
+            return false
+        end
+    elseif num == 4 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - entryCoords[selectedEntrance]) > distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - entryCoords[selectedEntrance]) > distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - entryCoords[selectedEntrance]) > distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[4])) - entryCoords[selectedEntrance]) > distance then 
+            return true 
+        else 
+            return false
         end
     end
-
-    return true
 end
 
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
