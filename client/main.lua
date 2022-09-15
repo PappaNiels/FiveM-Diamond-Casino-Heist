@@ -144,6 +144,8 @@ function GetCurrentHeistPlayer()
         return 3
     elseif PlayerId() == GetPlayerFromServerId(hPlayer[4]) then
         return 4
+    else 
+        return nil
     end
 end
 
