@@ -84,7 +84,7 @@ local function IsAllPlayersInHeli()
             Wait(0)
             DisableControlAction(0, 23, true)
 
-            if IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[1]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[2]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[3]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[4]))) then 
+            if IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[1]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[2]))) and (IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[3]))) or hPlayer[3] == nil) and (IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[4])))or hPlayer[4] == nil) then 
                 FlyToPos()
                 break 
             end
