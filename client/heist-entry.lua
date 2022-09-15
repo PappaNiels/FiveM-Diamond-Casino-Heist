@@ -1,18 +1,44 @@
---local startCoords = {
---    {vector3(), },
---    {vector3(), },
---    {vector3(), },
---    {vector3(), }
---}
-
-local cargobob = {}
+local startCoords = {
+    vector3(723.4, -827.73, 24.69),
+    vector3(721.63, -827.73, 24.59),
+    vector3(723.4, -825.58, 24.69),
+    vector3(721.63, -825.58, 24.59)
+}
+    
+local player = 0
 local blip = 0
 local veh = 0
+local keycardScene = 0
+local cargobob = {}
+local netIds = {}
+
+local function KeypadOne(j)
+    local keycard = "ch_prop_vault_key_card_01a"
+    local animDict = "anim_heist@hs3f@ig3_cardswipe@male@"
+    
+    LoadModel(keycard)
+    LoadAnim(animDict)
+    
+    local keypadObj = GetClosestObjectOfType(keypads[1][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01a"), false, false, false)
+    local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    
+    keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var02", 4.0, -4.0, 2000, 0, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(keycardObj, keycardScene, animDict, "success_var02_card", 1.0, -1.0, 114886080)
+    
+    NetworkStartSynchronisedScene(keycardScene)
+    Wait(3700)
+    DeleteObject(keycardObj)
+    ClearPedTasks(PlayerPedId())
+end
 
 local function FlyToPos()
-    TaskHeliMission(cargobob[2], cargobob[1], 0, 0, cargobobFinalCoords, 4, 10.0, 0.0, 300.0, 9, 7, -1.0, 25280)
-    
+    if player == 1 then 
+        TaskHeliMission(cargobob[2], cargobob[1], 0, 0, cargobobFinalCoords, 4, 10.0, 0.0, 300.0, 9, 7, -1.0, 25280)
+    end 
+
     while #(GetEntityCoords(cargobob[1]) - cargobobFinalCoords) > 200 do 
+        DisableControlAction(0, 23, true)
         Wait(100)
     end
     
@@ -22,32 +48,34 @@ local function FlyToPos()
         Wait(500)
     end
 
-    DeleteVehicle(cargobob[1])
-    DeleteEntity(cargobob[2])
-    RemoveBlip(cargobob[3])
+    if player == 1 then 
+        DeleteVehicle(cargobob[1])
+        DeleteEntity(cargobob[2])
+        RemoveBlip(cargobob[3])
 
-    cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobFinalCoords, 250.47, true, false)
-    SetVehicleColours(cargobob[1], 0, 0)
-    
-    cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobFinalCoords, 0, false, false)
-    SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
-    SetVehicleEngineOn(cargobob[1], true, true, true)
+        cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobFinalCoords, 250.47, true, false)
+        SetVehicleColours(cargobob[1], 0, 0)
+        
+        cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobFinalCoords, 0, true, false)
+        SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
+        SetVehicleEngineOn(cargobob[1], true, true, true)
+    end
     
     SetModelAsNoLongerNeeded("cargobob2")
     SetModelAsNoLongerNeeded("s_m_y_pilot_01")
 
     SetVehicleDoorOpen(cargobob[1], 2, false, true)
-
     FreezeEntityPosition(cargobob[1], true)
     
-    Wait(5000)
-
-
-    SetEntityCoords(PlayerPedId(), 1305.6, -70.52, 298.0, true, false, false, false)
-    SetEntityHeading(PlayerPedId(), 69.19)
+    if player == 1 then 
+        SetEntityCoords(PlayerPedId(), 1305.6, -70.52, 298.0, true, false, false, false)
+        SetEntityHeading(PlayerPedId(), 69.19)
+        FreezeEntityPosition(cargobob[1], false)
+    end
     
+    Wait(5000) 
+
     DoScreenFadeIn(1000)
-    FreezeEntityPosition(cargobob[1], false)
 end
 
 local function IsAllPlayersInHeli()
@@ -58,54 +86,62 @@ local function IsAllPlayersInHeli()
 
             if IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[1]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[2]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[3]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[4]))) then 
                 FlyToPos()
-                bool = false 
+                break 
             end
         end 
     end)
 end
 
 local function SetupCargobob()
-    LoadModel("cargobob2")
-    LoadModel("s_m_y_pilot_01")
+    if player == 1 then 
+        LoadModel("cargobob2")
+        LoadModel("s_m_y_pilot_01")
+
+        --ClearArea(cargobobCoords, 100.0, true, false, false, false)
+
+        cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobCoords, 328.34, true, false)
+        SetVehicleColours(cargobob[1], 0, 0)
+        netIds[1] = VehToNet(cargobob[1])
+
+        cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobCoords, 0, false, false)
+        SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
+        SetEntityInvincible(cargobob[2], true)
+        SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
+        netIds[2] = PedToNet(cargobob[2])
+
+        TriggerServerEvent("sv:casinoheist:syncNetIds", netIds)
+    else
+        Wait(2000)
+
+        cargobob[1] = NetToVeh(netIds[1])
+        cargobob[2] = NetToVeh(netIds[2])
+    end
+
+    cargobob[3] = AddBlipForCoord(cargobob[1])
     
-    print(hPlayer[2])
-
-    cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobCoords, 328.34, true, false)
-    SetVehicleColours(cargobob[1], 0, 0)
-    
-    --SetCarBootOpen(cargobob[1])
-    --SetVehicleEngineOn(cargob, true, true, false)
-
-    cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobCoords, 0, false, false)
-    SetEntityForAll(cargobob[2])
-    SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
-    SetEntityInvincible(cargobob[2], true)
-    SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
-
-    cargobob[3] = AddBlipForEntity(cargobob[1])
     SetBlipSprite(cargobob[3], 422)
     SetBlipColour(cargobob[3], 54)
     SetBlipHighDetail(cargobob[3], true)
-
-    --SetModelAsNoLongerNeeded("cargobob2")
-    --SetModelAsNoLongerNeeded("s_m_y_pilot_01")
-
+    
     while not IsPedInAnyHeli(PlayerPedId()) do 
         Wait(50)
-        --print("tick")
         if #(vector3(1060.1, -288.31, 50.81) - GetEntityCoords(PlayerPedId())) < 4 and IsControlPressed(0, 23) then 
             for i = 0, 4 do 
                 if IsVehicleSeatFree(cargobob[1], i) then 
                     TaskEnterVehicle(PlayerPedId(), cargobob[1], 1.0, i, 2.0, 0, 0)
+                    RemoveBlip(cargobob[3])
                     break
                 end
             end
         end
     end
+    
+    SetEntityAsNoLongerNeeded(cargobob[1])
+    SetEntityAsNoLongerNeeded(cargobob[2])
 
     Wait(3000)
     
-    FlyToPos()
+    IsAllPlayersInHeli()
 end
 
 local function DistanceCasino()
@@ -128,11 +164,14 @@ local function DistanceCasino()
 end
 
 function StartHeist()
-    local player = 1 --GetCurrentHeistPlayer()
+    player = GetCurrentHeistPlayer()
+    print(player)
     
-    approach = 2
-    selectedEntryDisguise = 2 
-    selectedEntrance = 1
+    approach = 1
+    --selectedEntryDisguise = 2 
+    selectedDriver = 1
+    selectedVehicle = 1
+    selectedEntrance = 3
 
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
     AddRelationshipGroup("GUARDS")
@@ -140,15 +179,16 @@ function StartHeist()
     SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
     SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
 
-    --DoScreenFadeOut(800)
---
-    --while not IsScreenFadedOut() do 
-    --    Wait(100)
-    --end
+    DoScreenFadeOut(800)
+
+    while not IsScreenFadedOut() do 
+        Wait(100)
+    end
+
+    SetEntityCoords(PlayerPedId(), startCoords[player], true, false, false, true)
+    SetEntityHeading(PlayerPedId(), 180.0)
 
     SetPedComponents(1)
-    --SetPedModel()
-    --FadeTeleport(startCoords[player][1].x, startCoords[player][1].y, startCoords[player][1].z, startCoords[player][2])
 
     blip = AddBlipForCoord(entryCoords[selectedEntrance])
     SetBlipHighDetail(blip, true)
@@ -169,7 +209,7 @@ function StartHeist()
         else
             model = availableVehicles[driver[selectedDriver][3]][2]
         end
-        
+
         LoadModel(model)
         veh = CreateVehicle(GetHashKey(model), 720.82, -842.88, 23.95, 271.44, true, false)
 
@@ -180,50 +220,15 @@ function StartHeist()
 
     DistanceCasino()
 
-    --DoScreenFadeIn(1500)
-end
+    DoScreenFadeIn(1500)
 
-RegisterCommand("test_vehicle", function()
-    --LoadModel("adder")
-    --
-    --veh = CreateVehicle(GetHashKey("adder"), GetEntityCoords(PlayerPedId()), 0, true, false)
-    --
-    --SetPedIntoVehicle(PlayerPedId(), veh, -1)
-    --SetVehicleColours(veh, 7, 7)
-    blip = AddBlipForCoord(957.67, 42.7, 113.3)
-    SetBlipHighDetail(blip, true)
-    SetBlipColour(blip, 5)
-    SetBlipRoute(blip, true)
-    SetBlipRouteColour(blip, 5)
-    DistanceCasino()
-    SetupCargobob()
-    --FlyToPos()
-end, false)
+    if selectedEntrance == 3 or selectedEntrance == 4 or selectedEntrance == 5 or selectedEntrance == 8 or selectedEntrance == 9 or selectedEntrance == 10 then 
+        SetupCargobob()
+    end
 
-local keycardScene = 0
-
-local function KeypadOne(j)
-    local keycard = "ch_prop_vault_key_card_01a"
-    local animDict = "anim_heist@hs3f@ig3_cardswipe@male@"
-    
-    LoadModel(keycard)
-    LoadAnim(animDict)
-    
-    local keypadObj = GetClosestObjectOfType(keypads[1][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01a"), false, false, false)
-    local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
-    
-    keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
-    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var02", 4.0, -4.0, 2000, 0, 1000.0, 0)
-    NetworkAddEntityToSynchronisedScene(keycardObj, keycardScene, animDict, "success_var02_card", 1.0, -1.0, 114886080)
-    
-    NetworkStartSynchronisedScene(keycardScene)
-    Wait(3700)
-    DeleteObject(keycardObj)
-    ClearPedTasks(PlayerPedId())
 end
 
 function KeycardThread()
-    --blip = AddBlipForCoord(957.67, 42.7, 113.3)
     SetBlipCoords(blip, keypads[1][selectedEntrance])
     SetBlipSprite(blip, 730)
     SetBlipRoute(blip, false)
@@ -255,7 +260,7 @@ function KeycardThread()
                 Wait(4000)
                 SetBlipRoute(blip, false)
                 RemoveBlip(blip)
-                --EnterCasino()
+                EnterCasino()
                 break
             end
         end
@@ -285,10 +290,17 @@ function TeleportThread()
 end
 
 function EnterCasino()
+    DoScreenFadeOut(500)
 
-    RemoveBlip(blip)
+    while not IsScreenFadedOut() do 
+        Wait(10)
+    end
+
     SetEntityCoords(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][1], true, false, false, false)
     SetEntityHeading(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][2])
+    RemoveBlip(blip)
+
+    DoScreenFadeIn(500)
 end
 
 function EnterCasinoTunnel()
@@ -302,7 +314,7 @@ function EnterCasinoTunnel()
 
     local cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1007.69, -56.7, 75.5, 0, 0, 112.75, 40.0, true, 2)
     local garageDoor = GetClosestObjectOfType(998.97, -52.5, 73.95, 1.0, GetHashKey("vw_prop_vw_garagedoor_01a"), false, false, false)
-    local player = 1 --GetCurrentHeistPlayer()
+    player = GetCurrentHeistPlayer()
 
     SetCamActive(cam, true)
     RenderScriptCams(true, false, 0, true, true)
@@ -310,6 +322,7 @@ function EnterCasinoTunnel()
     
     SetEntityVisible(garageDoor, false)
     SetEntityCollision(garageDoor, false, true)
+
     if player == 1 then 
         SetEntityCoords(veh, 974.74, -73.41, 74.65, true, false, false, false)
         SetEntityHeading(veh, 298.63)
@@ -345,13 +358,19 @@ function EnterCasinoTunnel()
     DoScreenFadeIn(1500)
 
     RemoveBlip(blip)
+    SetEntityVisible(garageDoor, true)
+    SetEntityCollision(garageDoor, true, true)
 end
 
+RegisterNetEvent("cl:casinoheist:startHeist", StartHeist)
+
+RegisterNetEvent("cl:casinoheist:setNetIds", function(ids)
+    netIds = ids
+end)
+
+--RegisterCommand("test_heli", Test, false)
+
 RegisterCommand("test_tunnel", function()
-    --LoadModel("stockade")
-    ----veh = CreateVehicle(GetHashKey("stockade"), 720.82, -842.88, 23.95, 271.44, true, false)
-    --veh = CreateVehicle(GetHashKey("stockade"), 974.74, -73.41, 74.65, 298.63, true, false)
-    --EnterCasinoTunnel()
     StartHeist()
 end, false)
 

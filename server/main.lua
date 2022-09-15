@@ -1,4 +1,4 @@
-hPlayer = {2}
+hPlayer = {1, 2}
 invitedPlayers = {}
 inMarker = {}
 heistInProgress = false
@@ -90,7 +90,14 @@ RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
     return true
 end)
 
+RegisterNetEvent("sv:casinoheist:syncNetIds", function(ids)
+    for i = 2, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:setNetIds", hPlayer[i], ids)
+    end
+end)
 
 RegisterCommand("sv_tunnel", function()
-    TriggerClientEvent("test:sync:nj", -1)
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i])
+    end
 end, false)
