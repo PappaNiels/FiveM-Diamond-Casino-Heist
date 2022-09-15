@@ -108,13 +108,14 @@ local function SetupCargobob()
         SetEntityInvincible(cargobob[2], true)
         SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
         netIds[2] = PedToNet(cargobob[2])
-
+        
         TriggerServerEvent("sv:casinoheist:syncNetIds", netIds)
     else
         Wait(2000)
-
+        
         cargobob[1] = NetToVeh(netIds[1])
         cargobob[2] = NetToVeh(netIds[2])
+        SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
     end
 
     cargobob[3] = AddBlipForCoord(cargobob[1])
