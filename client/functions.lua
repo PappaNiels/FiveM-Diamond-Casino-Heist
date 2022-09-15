@@ -170,7 +170,7 @@ function SetPedComponents(stage)
             SetPedPropIndex(ped, 0, 147, 0, 0)
         end 
 
-        for i = 2, #clothes[approach][1] do 
+        for i = 1, #clothes[approach][1] do 
             SetPedComponentVariation(ped, clothes[approach][num][i][1], clothes[approach][num][i][2], clothes[approach][num][i][3], 0)
         end
     end
