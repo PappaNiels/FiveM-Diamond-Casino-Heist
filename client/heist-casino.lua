@@ -19,3 +19,53 @@ local function KeypadOne(j)
     DeleteObject(keycardObj)
     ClearPedTasks(PlayerPedId())
 end
+
+function RoofTerraceEntry()
+
+    CreateThread(function()
+        while true do 
+            Wait(0)
+            
+        end
+    end)
+end
+
+function HeliPadEntry()
+
+    CreateThread(function()
+        while true do 
+            Wait(0)
+            
+        end
+    end)
+end
+
+function MainEntry()
+    if approach == 3 then 
+        LoadCutscene("hs3f_dir_ent")
+
+        CreateThread(function()
+            while true do 
+                Wait(0)
+
+            end
+        end)
+    else
+        CreateThread(function()
+            while true do 
+                Wait(0)
+
+            end
+        end)
+    end
+end
+
+function Basement()
+
+    CreateThread(function()
+        while true do 
+            Wait(0)
+            
+        end
+    end)
+end

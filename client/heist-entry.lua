@@ -168,11 +168,11 @@ function StartHeist()
     player = GetCurrentHeistPlayer()
     print(player)
     
-    approach = 1
-    --selectedEntryDisguise = 2 
+    approach = 2
+    selectedEntryDisguise = 3 
     selectedDriver = 1
     selectedVehicle = 1
-    selectedEntrance = 3
+    selectedEntrance = 6
 
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
     AddRelationshipGroup("GUARDS")
@@ -246,7 +246,7 @@ function KeycardThread()
                 HelpMsg("Press ~INPUT_CONTEXT~ to swipe your keycard.")
                 if IsControlPressed(0, 38) then
                     RemoveBlip(blip) 
-                    KeypadOne(1)
+                    KeypadOne(selectedEntrance)
                     break
                 end
             end
