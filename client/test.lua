@@ -194,6 +194,14 @@ RegisterCommand("scaleform", function()
 
 end)
 
+RegisterCommand("test_aggr_entry", function()
+
+    LoadCutscene("hs3f_dir_ent")
+
+    StartCutscene(0)
+    print(GetEntityIndexOfRegisteredEntity("MP_1", 0))
+end, false)
+
 RegisterCommand("vl_exp", function() 
     SetVaultDoorStatus()
     VaultExplosion() 
