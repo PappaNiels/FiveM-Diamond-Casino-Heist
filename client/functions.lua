@@ -51,7 +51,6 @@ end
 
 function LoadCutscene(name)
     RequestCutscene(name, 8)
-
     
     repeat Wait(0) until CanRequestAssetsForCutsceneEntity()
     
@@ -62,8 +61,8 @@ function LoadCutscene(name)
     RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[2]), "MP_2", 0, 0, 64)
     
     if #hPlayer == 3 then 
-        RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[3]), "MP_3", 0, 0, 64)
         SetCutsceneEntityStreamingFlags("MP_3", 0, 1)
+        RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[3]), "MP_3", 0, 0, 64)
     elseif #hPlayer == 4 then 
         SetCutsceneEntityStreamingFlags("MP_3", 0, 1)
         RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[3]), "MP_3", 0, 0, 64)
