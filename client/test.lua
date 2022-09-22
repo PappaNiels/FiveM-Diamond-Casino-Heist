@@ -197,9 +197,26 @@ end)
 RegisterCommand("test_aggr_entry", function()
 
     LoadCutscene("hs3f_dir_ent")
-
     StartCutscene(0)
-    print(GetEntityIndexOfRegisteredEntity("MP_1", 0))
+
+    while not DoesCutsceneEntityExist("Player_SMG_3", 0) do 
+        Wait(0)
+    end
+
+    print("shit: " .. DoesCutsceneEntityExist("Player_SMG_1", 0))
+    print("shit: " .. DoesCutsceneEntityExist("Player_SMG_2", 0))
+    print("shit: " .. DoesCutsceneEntityExist("Player_SMG_3", 0))
+    print("shit: " .. DoesCutsceneEntityExist("Player_SMG_4", 0))
+
+    smg1 = GetEntityIndexOfCutsceneEntity("Player_Mag_3", 0)
+    smg2 = GetEntityIndexOfCutsceneEntity("Player_Mag_4", 0)
+    smg3 = GetEntityIndexOfCutsceneEntity("Player_SMG_3", 0)
+    smg4 = GetEntityIndexOfCutsceneEntity("Player_SMG_4", 0)
+
+    SetEntityVisible(smg1, false, false)
+    SetEntityVisible(smg2, false, false)
+    SetEntityVisible(smg3, false, false)
+    SetEntityVisible(smg4, false, false)
 end, false)
 
 RegisterCommand("vl_exp", function() 
