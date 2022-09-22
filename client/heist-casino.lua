@@ -1,4 +1,5 @@
 local keycardScene = 0
+local player = 0
 
 local function KeypadOne(j)
     local keycard = "ch_prop_vault_key_card_01a"
@@ -41,6 +42,7 @@ function HeliPadEntry()
 end
 
 function MainEntry()
+    player = GetCurrentHeistPlayer()
     --if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
         StartCutscene(0)
@@ -53,7 +55,7 @@ function MainEntry()
         if #hPlayer == 2 then 
             arr = {"MP_3", "Player_SMG_3", "Player_Mag_3", "MP_4", "Player_SMG_4", "Player_Mag_4"}
         elseif #hPlayer == 3 then 
-            arr = { "MP_4", "Player_SMG_4", "Player_Mag_4"}
+            arr = {"MP_4", "Player_SMG_4", "Player_Mag_4"}
         end
         
         if #arr > 0 then 
@@ -65,12 +67,36 @@ function MainEntry()
         repeat Wait(10) until HasCutsceneFinished()
         TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
 
-        --CreateThread(function()
-        --    while true do 
-        --        Wait(0)
-        --
-        --    end
-        --end)
+        blips[1] = AddBlipForCoord(2525.77, -251.71, -60.31)
+        SetBlipColour(blips[1], 5) 
+
+        CreateThread(function()
+            while true do 
+                Wait(100)
+                local distance = #(GetEntityCoords(PlayerPedId()) - 2525.77, -251.71, -60.31) 
+                
+                if distance < 3 then 
+                    if IsNotClose(3) then
+                        SubtitleMsg("Wait for your team members", 110)
+                    else 
+                        DoScreenFadeOut(500)
+
+                        while not IsScreenFadedOut() do 
+                            Wait(0)
+                        end
+
+                        SetEntityCoords(PlayerPedId(), casinoToLobby[player])
+                        SetEntityHeading(PlayerPedId(), 180.0)
+
+                        DoScreenFadeIn(1000)
+                        Basement()
+                        break
+                    end
+                else
+                    SubtitleMsg("Go to the ~y~staff lobby.", 110)
+                end
+            end
+        end)
         --else
         --CreateThread(function()
         --    while true do 
@@ -82,6 +108,14 @@ function MainEntry()
 end
     
 function Basement()
+    for i = 1, 2 do 
+        blips[i] = AddBlipForCoord(staffCoords[1])
+        SetBlipColour(blips[i], 5)
+        SetBlipHighDetail(blips[i], true)
+    end
+
+    SetBlipSprite(blip[1], 63)
+    SetBlipSprite(blip[2], 743)
 
     CreateThread(function()
         while true do 
