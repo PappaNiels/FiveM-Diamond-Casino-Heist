@@ -69,7 +69,7 @@ function LoadCutscene(name)
         RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[3]), "MP_3", 0, 0, 64)
         
         SetCutsceneEntityStreamingFlags("MP_4", 0, 1)
-        RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[2]), "MP_4", 0, 0, 64)
+        RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[4]), "MP_4", 0, 0, 64)
     end
     
     while not HasCutsceneLoaded() do 
