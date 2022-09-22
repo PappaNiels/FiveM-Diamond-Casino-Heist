@@ -99,3 +99,8 @@ casinoToLobby = {
     vector3(2526.85, -254.62, -61.32), 
     vector3(2525.28, -256.17, -61.32) 
 }
+
+staffCoords = {
+    vector3(), -- Elevator
+    vector3()  -- Stairs
+} 
