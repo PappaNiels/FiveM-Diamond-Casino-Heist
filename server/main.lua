@@ -101,3 +101,9 @@ RegisterCommand("sv_tunnel", function()
         TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i])
     end
 end, false)
+
+RegisterCommand("sv_aggr", function()
+    for i = 1, #hPlayer do
+        TriggerClientEvent("cl:casinoheist:testCut", i)
+    end
+end, false)

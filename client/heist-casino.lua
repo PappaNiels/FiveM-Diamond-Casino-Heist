@@ -41,25 +41,46 @@ function HeliPadEntry()
 end
 
 function MainEntry()
-    if approach == 3 then 
+    --if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
+        StartCutscene(0)
 
-        CreateThread(function()
-            while true do 
-                Wait(0)
+        while not DoesCutsceneEntityExist("MP_3") do 
+            Wait(0)
+        end
 
+        local arr = {}
+        if #hPlayer == 2 then 
+            arr = {"MP_3", "Player_SMG_3", "Player_Mag_3", "MP_4", "Player_SMG_4", "Player_Mag_4"}
+        elseif #hPlayer == 3 then 
+            arr = { "MP_4", "Player_SMG_4", "Player_Mag_4"}
+        end
+        
+        if #arr > 0 then 
+            for i = 1, #arr do 
+                SetEntityVisible(GetEntityIndexOfCutsceneEntity(arr[i], 0), false, false)
             end
-        end)
-    else
-        CreateThread(function()
-            while true do 
-                Wait(0)
+        end 
+        
+        repeat Wait(10) until HasCutsceneFinished()
+        TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
 
-            end
-        end)
-    end
+        --CreateThread(function()
+        --    while true do 
+        --        Wait(0)
+        --
+        --    end
+        --end)
+        --else
+        --CreateThread(function()
+        --    while true do 
+        --        Wait(0)
+        --
+        --    end
+        --end)
+    --end
 end
-
+    
 function Basement()
 
     CreateThread(function()
@@ -69,3 +90,9 @@ function Basement()
         end
     end)
 end
+    
+RegisterNetEvent("cl:casinoheist:testCut", MainEntry)
+
+RegisterCommand("test_cut_agg", function()
+    MainEntry()
+end, false)
