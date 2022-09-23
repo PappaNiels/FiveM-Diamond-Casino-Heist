@@ -120,10 +120,10 @@ function MainEntry()
         CreateThread(function()
             while true do 
                 Wait(100)
-                local distance = #(GetEntityCoords(PlayerPedId()) - 2525.77, -251.71, -60.31) 
+                local distance = #(GetEntityCoords(PlayerPedId()) - vector3(2525.77, -251.71, -60.31)) 
                 
                 if distance < 3 then 
-                    if IsNotClose(3) then
+                    if IsNotClose(vector3(2525.77, -251.71, -60.31), 3) then
                         SubtitleMsg("Wait for your team members", 110)
                     else 
                         DoScreenFadeOut(500)
@@ -155,14 +155,18 @@ function MainEntry()
 end
     
 function Basement()
+    if DoesEntityExist(blips[1]) then 
+        RemoveBlip(blips[1])
+    end
+    
     for i = 1, 2 do 
-        blips[i] = AddBlipForCoord(staffCoords[1])
+        blips[i] = AddBlipForCoord(staffCoords[i])
         SetBlipColour(blips[i], 5)
         SetBlipHighDetail(blips[i], true)
     end
 
-    SetBlipSprite(blip[1], 63)
-    SetBlipSprite(blip[2], 743)
+    SetBlipSprite(blips[1], 63)
+    SetBlipSprite(blips[2], 743)
 
     local num = 1
     local zCoord = -61
@@ -180,7 +184,7 @@ function Basement()
                     zCoord = -67
                     num = 2
                 else
-                    SecurityLobby() 
+                    --SecurityLobby() 
                     break
                 end
             end
@@ -202,7 +206,7 @@ function SecurityLobby()
 
             local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - keypads[4][1]), #(GetEntityCoords(PlayerPedId()) - keypads[4][2])
             
-            if distanceL <  or distanceR <  then 
+            if distanceL < 2.0 or distanceR < 2.0 then 
                 HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.") 
                 if IsControlPressed(0, 38) then 
                     if distanceL < distanceR then 
