@@ -277,7 +277,7 @@ function TeleportThread()
                 EnterCasinoTunnel()
                 break
             elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 3 then
-                if IsNotClose(3) then
+                if IsNotClose(entryCoords[selectedEntrance], 3) then
                     SubtitleMsg("Wait for your team members", 110)
                 else 
                     EnterCasino()
