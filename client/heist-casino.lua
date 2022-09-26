@@ -1,5 +1,8 @@
 local keycardScene = 0
 local player = 0
+local keycardObj = 0
+
+local isSwiping = false
 
 local blips = {}
 local keycardSyncAnims = {
@@ -28,6 +31,35 @@ local keycardSyncAnims = {
     {}
 }
 
+local function SetDoors(doorHash, objHash, coords, bool)
+    if not bool then 
+        if IsDoorRegisteredWithSystem(doorHash) then 
+            RemoveDoorFromSystem(doorHash, 0)
+        end
+    else 
+        if not IsDoorRegisteredWithSystem(doorHash)
+            AddDoorToSystem(doorHash, objHash, coords, false, false, false)
+        end 
+
+        if IsDoorRegisteredWithSystem(doorHash) then 
+            DoorSystemSetOpenRatio(doorHash, 0.0, false, false)
+            DoorSystemSetDoorState(doorHash, 1, false, false)
+        end
+    end
+end
+
+local function EnableMantrapDoors(security, vault)
+    local doorHash = {1466913421, -2088850773, 1969557112, -1608031236}
+    local objHash = {GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")}
+    local coords = {vector3(2464.183, -278.2036, -71.6943), vector3(2464.183, -280.2885, -71.6943), vector3(2492.28, -237.4592, -71.7386), vector3(2492.28, -239.544, -71.7386)}
+
+    SetDoors(doorHash[1], objHash[1], coords[1], security)
+    SetDoors(doorHash[2], objHash[2], coords[2], security)
+    
+    SetDoors(doorHash[3], objHash[3], coords[3], vault)
+    SetDoors(doorHash[4], objHash[4], coords[4], vault)
+end
+
 local function KeypadOne(j)
     local keycard = "ch_prop_vault_key_card_01a"
     local animDict = "anim_heist@hs3f@ig3_cardswipe@male@"
@@ -36,7 +68,7 @@ local function KeypadOne(j)
     LoadAnim(animDict)
     
     local keypadObj = GetClosestObjectOfType(keypads[2][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01b"), false, false, false)
-    local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
     
     keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var02", 4.0, -4.0, 2000, 0, 1000.0, 0)
@@ -46,6 +78,25 @@ local function KeypadOne(j)
     Wait(3700)
     DeleteObject(keycardObj)
     ClearPedTasks(PlayerPedId())
+end
+
+local function KeycardReady(num)
+    while true do 
+        Wait(5)
+
+        SetPauseMenuActive(false)
+
+        HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
+        if IsControlJustPressed(0, 18) then 
+            NetworkStartSynchronisedScene(keycardSwipeAnims[2][2])
+            break 
+        elseif IsControlJustPressed(0, 200) then 
+            NetworkStartSynchronisedScene(keycardSwipeAnims[2][4])
+            ClearPedTasks(PlayerPedId())
+            DeleteObject(keycardObj)
+            break
+        end
+    end
 end
 
 local function SyncKeycardEnter(num)
@@ -65,7 +116,9 @@ local function SyncKeycardEnter(num)
     end
 
     NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
+    isSwiping = true
 
+    KeycardReady(num)
 end
 
 function RoofTerraceEntry()
@@ -204,6 +257,8 @@ function SecurityLobby()
         while true do 
             Wait(5)
 
+            SubtitleMsg("Go to one of the ~g~keypads~s~.", 10)
+
             local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - keypads[4][1]), #(GetEntityCoords(PlayerPedId()) - keypads[4][2])
             
             if distanceL < 2.0 or distanceR < 2.0 then 
@@ -214,7 +269,7 @@ function SecurityLobby()
                     else
                         SyncKeycardEnter(2)
                     end
-                    break
+                    --break
                 end
             end 
         end
