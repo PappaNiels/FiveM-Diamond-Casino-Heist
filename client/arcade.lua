@@ -537,6 +537,7 @@ local function ExitBoard()
     RenderScriptCams(false, false, 1000, true, false)
     DisplayRadar(true)
     SetEntityVisible(PlayerPedId(), true)
+    SetPauseMenuActive(true)
 end
 
 local function GetButtonId()
@@ -1571,6 +1572,7 @@ CreateThread(function()
         Wait(0)
         if camIsUsed then 
             DisableAllControlActions(2)
+            SetPauseMenuActive(false) 
         else 
             Wait(3000)
         end
