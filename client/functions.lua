@@ -124,10 +124,8 @@ end
 local function IsCorrectModel()
     local ped = PlayerPedId()
     if GetEntityModel(ped) ~= GetHashKey("mp_m_freemode_01") then 
-        print("false")
         return false 
     else
-        print("true")
         return true 
     end
 end
