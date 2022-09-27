@@ -104,3 +104,6 @@ staffCoords = {
     vector3(2520.97, -279.37, -58.72), -- Elevator
     vector3(2514.67, -280.43, -58.72)  -- Stairs
 } 
+
+mantrapCoords = vector3(2423.94, -254.87, -70.81)
+vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
