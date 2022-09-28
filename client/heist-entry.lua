@@ -1,16 +1,17 @@
+player = 0
+   
+local blip = 0
+local veh = 0
+local keycardScene = 0
+
+local cargobob = {}
+local netIds = {}
 local startCoords = {
     vector3(723.4, -827.73, 24.69),
     vector3(721.63, -827.73, 24.59),
     vector3(723.4, -825.58, 24.69),
     vector3(721.63, -825.58, 24.59)
 }
-    
-local player = 0
-local blip = 0
-local veh = 0
-local keycardScene = 0
-local cargobob = {}
-local netIds = {}
 
 local function KeypadOne(j)
     local keycard = "ch_prop_vault_key_card_01a"
