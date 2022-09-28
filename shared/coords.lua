@@ -107,3 +107,12 @@ staffCoords = {
 
 mantrapCoords = vector3(2423.94, -254.87, -70.81)
 vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
+
+-- Entities
+
+regularVaultDoorCoords = vector3(2499.7, -238.5, -70.0)
+aggressiveVaultDoorCoords = {
+    vector3(2499.7, -238.5, -70.0), -- Door
+    vector3(2499.7, -238.5, -70.0), -- Support Thingy
+    vector3(2504.961, -240.3102, -70.07)  -- Exploded Door 
+}
