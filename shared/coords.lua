@@ -110,9 +110,9 @@ vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
 
 -- Entities
 
-regularVaultDoorCoords = vector3(2499.7, -238.5, -70.0)
+regularVaultDoorCoords = vector3(2504.97, -240.31, -73.691)
 aggressiveVaultDoorCoords = {
-    vector3(2499.7, -238.5, -70.0), -- Door
-    vector3(2499.7, -238.5, -70.0), -- Support Thingy
-    vector3(2504.961, -240.3102, -70.07)  -- Exploded Door 
+    vector3(2504.97, -240.31, -73.691), -- Door
+    vector3(2504.97, -240.31, -75.339), -- Support Thingy
+    vector3(2504.97, -240.31, -71.8)  -- Exploded Door 
 }
