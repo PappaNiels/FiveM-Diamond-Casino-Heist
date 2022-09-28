@@ -1,4 +1,3 @@
-local player = 0
 local keycardObj = 0
 local blip = 0
 local keycardScene = 0
@@ -30,6 +29,16 @@ local keycardSyncAnims = {
             {"ped_b_fail_c", "ped_b_fail_c_keycard"}
         }
     },
+    {}
+}
+
+local regularDrillAnims = {
+    {},
+    {}
+}
+
+local laserDrillAnims = {
+    {},
     {}
 }
 
@@ -183,7 +192,6 @@ function HeliPadEntry()
 end
 
 function MainEntry()
-    player = GetCurrentHeistPlayer()
     --if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
         StartCutscene(0)
@@ -323,13 +331,30 @@ function SecurityLobby()
             end
 
             if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
-                if selectedEntryDisguise ~= 3
+                if selectedEntryDisguise ~= 3 then
                     EnableMantrapDoors(0, 0)
                 else
                     EnableMantrapDoors(0, 1)
                 end
 
                 RemoveAllBlips()
+
+                vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+                SetEntityVisible(vaultObjs[1], false, false)
+
+                if player == 1 then 
+                    if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
+                        LoadModel("ch_prop_ch_vaultdoor01x")
+                        vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, true, false, true)
+                    elseif approach == 3 then 
+                        LoadModel("ch_des_heist3_vault_01")
+                        LoadModel("ch_des_heist3_vault_02")
+                        LoadModel("ch_des_heist3_vault_end")
+                        vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], true, false, true)
+                        vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], true, false, true)
+                        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], true, false, true)
+                    end
+                end
                 break
             end
         end
@@ -342,12 +367,6 @@ function FirstMantrap()
 
 
     CreateThread(function()
-        while true do 
-            Wait(100)
-
-            print(#(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords))
-        end
-
         while true do 
             Wait(100)
 
@@ -396,8 +415,11 @@ function FirstMantrap()
                             end
                         end 
                         break
-                    else 
-                        Bomb()
+                    elseif approach == 3 then  
+                        BombVaultDoor()
+                        break
+                    else
+                        DrillVaultDoor()
                         break
                     end
                 end
@@ -406,6 +428,14 @@ function FirstMantrap()
             end
         end
     end)
+end
+
+function DrillVaultDoor()
+
+end
+
+function BombVaultDoor()
+    
 end
 
 RegisterNetEvent("cl:casinoheist:testCut", MainEntry)
@@ -419,3 +449,76 @@ RegisterCommand("test_basement", FirstMantrap, false)
 RegisterCommand("test_cut_agg", function()
     MainEntry()
 end, false)
+
+RegisterCommand("test_vaultdoors", function()
+    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
+    print("test")
+    LoadModel("ch_des_heist3_vault_01")
+    print("test")
+    LoadModel("ch_des_heist3_vault_02")
+    LoadModel("ch_des_heist3_vault_end")
+    vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
+    vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), 2504.97, -240.31, -75.339, false, false, false)
+    vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_end"), 2504.97, -240.31, -71.8, false, false, true)
+    print("test", GetEntityCoords(vaultObjs[3]))
+    LoadAnim(animDict)
+
+    SetEntityVisible(vaultObjs[3], false, false)
+    SetEntityCollision(vaultObjs[3], false, false)
+    
+    Wait(1000)
+    
+    --PlayEntityAnim(vaultObjs[1], "explosion_vault_01", animDict, 1000.0, false, true, true, 0, 0x4000)
+    --PlayEntityAnim(vaultObjs[2], "explosion_vault_02", animDict, 1000.0, false, true, true, 0, 0x4000)
+    
+    scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
+    PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
+    PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
+    SetSynchronizedScenePhase(scene, 0.056)
+
+    print(GetAnimDuration(animDict, "explosion_vault_01"))
+    Wait(4000)
+    print(GetAnimDuration(animDict, "explosion_vault_01"))
+    
+    SetEntityVisible(vaultObjs[3], true, false)
+    SetEntityCollision(vaultObjs[3], true, true)
+    DeleteEntity(vaultObjs[1])
+    DeleteEntity(vaultObjs[2])
+end, false)
+
+--[[
+    
+Effects:
+    STREAMING::REQUEST_NAMED_PTFX_ASSET("cut_hs3f")
+    GRAPHICS::USE_PARTICLE_FX_ASSET("cut_hs3f");
+    GRAPHICS::START_PARTICLE_FX_NON_LOOPED_AT_COORD("cut_hs3f_exp_vault", 2505f, -238.5f, -70.5f, 0f, 0f, 0f, 1f, false, false, false);
+    AUDIO::PLAY_SOUND_FROM_COORD(-1, "vault_door_explosion", Param0, "dlc_ch_heist_finale_sounds", false, 0, false);
+    GRAPHICS::REMOVE_DECALS_IN_RANGE(2505f, -238.5f, -70.5f, 8f);
+
+On Explosion:
+    ENTITY::SET_ENTITY_COMPLETELY_DISABLE_COLLISION(iLocal_9798, false, false);
+	ENTITY::SET_ENTITY_COMPLETELY_DISABLE_COLLISION(iLocal_9799, true, false);
+	iLocal_9801 = PED::CREATE_SYNCHRONIZED_SCENE(2488.348f, -267.364f, -71.646f, 0f, 0f, 0f, 2);
+	ENTITY::PLAY_SYNCHRONIZED_ENTITY_ANIM(iLocal_9798, iLocal_9801, "explosion_vault_01", "anim_heist@hs3f@ig8_vault_door_explosion@", 1000f, 8f, 0, 1000f);
+	ENTITY::PLAY_SYNCHRONIZED_ENTITY_ANIM(iLocal_9800, iLocal_9801, "explosion_vault_02", "anim_heist@hs3f@ig8_vault_door_explosion@", 1000f, 8f, 0, 1000f);
+	PED::SET_SYNCHRONIZED_SCENE_PHASE(iLocal_9801, 0.056f);
+	MISC::SET_BIT(&uLocal_9795, 1);
+
+React Animation: 
+    case 0:
+        TASK::TASK_PLAY_ANIM(iLocal_932, "anim_heist@hs3f@ig8_vault_explosive_react@left@male@", "player_react_explosive", 8f, -8f, -1, 1048576, 0f, false, false, false);
+        break;
+    
+    case 1:
+        TASK::TASK_PLAY_ANIM(iLocal_932, "anim_heist@hs3f@ig8_vault_explosive_react@right@male@", "player_react_explosive", 8f, -8f, -1, 1048576, 0f, false, false, false);
+        break;
+
+Shake: 
+    PAD::SET_PAD_SHAKE(0, 130, 256);
+    CAM::SHAKE_GAMEPLAY_CAM("LARGE_EXPLOSION_SHAKE", 0.5f);
+    MISC::SET_BIT(&uLocal_9795, 3);
+
+Clear Up:
+    ENTITY::CREATE_MODEL_HIDE(Param0, 25f, joaat("ch_prop_ch_explosive_01a"), false);
+	MISC::CLEAR_AREA_OF_PROJECTILES(Param0, 25f, 0);
+]]
