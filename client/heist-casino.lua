@@ -151,6 +151,7 @@ local function PlantVaultBombs(num)
     local bomb = "ch_prop_ch_explosive_01a"
     local bombObj = {}
     local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+    local camNum = 4 + num 
 
     if num == 2 then 
         animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
@@ -174,6 +175,46 @@ local function PlantVaultBombs(num)
     for i = 1, #bombAnims[1][num] do 
         bombAnims[2][i] = NetworkCreateSynchronisedScene(2504.97, -240.31, -73.691, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
         NetworkAddPedToSynchronisedScene(PlayerPedId(), bombAnims[2][i], animDict, bombAnims[1][num][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(bombObj[1], bombAnims[2][i], animDict, bombAnims[1][num][i][2], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombObj[2], bombAnims[2][i], animDict, bombAnims[1][num][i][3], 1.0, -1.0, 114886080)
+        if num == 2 then 
+            NetworkAddEntityToSynchronisedScene(bombObj[3], bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
+            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][5], 1.0, -1.0, 114886080)
+        else
+            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
+        end
+    end
+
+    NetworkStartSynchronisedScene(bombAnims[2][1])
+    Wait(2000)
+    NetworkStartSynchronisedScene(bombAnims[2][2])
+    
+    local x = 0
+    local numerics = {"first, second, last"}
+
+    while true do 
+        Wait(5)
+        
+        HelpMsg("Press ~INPUT_ATTACK~ to plant the ".. numerics[x + 1] .." explosive")
+        if IsControlPressed(0, 24) then 
+            NetworkStartSynchronisedScene(bombAnims[2][3 + x])
+            FreezeEntityPosition(bombObj[x + 1])
+            if (x + 2) == 4 then
+                SetEntityVisible(bombObj[x + 2])
+            end
+            Wait(2000)
+            x = x + 1
+
+            if x == (1 + num) then 
+                break
+            end
+
+            NetworkStartSynchronisedScene(bombAnims[2][2])
+        end
+    end
+
+
+
 
 
 end
