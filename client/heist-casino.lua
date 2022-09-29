@@ -435,19 +435,19 @@ function SecurityLobby()
                 vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
                 SetEntityVisible(vaultObjs[1], false, false)
 
-                if player == 1 then 
-                    if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
-                        LoadModel("ch_prop_ch_vaultdoor01x")
-                        vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
-                    elseif approach == 3 then 
-                        LoadModel("ch_des_heist3_vault_01")
-                        LoadModel("ch_des_heist3_vault_02")
-                        LoadModel("ch_des_heist3_vault_end")
-                        vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
-                        vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
-                        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
-                    end
+                
+                if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
+                    LoadModel("ch_prop_ch_vaultdoor01x")
+                    vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
+                elseif approach == 3 then 
+                    LoadModel("ch_des_heist3_vault_01")
+                    LoadModel("ch_des_heist3_vault_02")
+                    LoadModel("ch_des_heist3_vault_end")
+                    vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
+                    vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
+                    vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
                 end
+            
                 break
             end
         end
@@ -470,6 +470,7 @@ function FirstMantrap()
                 if IsNotClose(mantrapCoords, 25) then 
                     SubtitleMsg("Wait for your team members to enter the mantrap", 110)
                 else
+                    RemoveBlip(blips[1])
                     break
                 end
             else 
@@ -528,7 +529,36 @@ function DrillVaultDoor()
 end
 
 function BombVaultDoor()
-    
+    for i = 1, 2 do 
+        blips[i] = AddBlipForCoord(0, 0, 0)
+        SetBlipColour(blips[i], 2)
+        SetBlipHighDetail(blips[i], true)
+    end
+
+    CreateThread(function()
+        while true do 
+            Wait(5)
+            
+            if not plantBombs then 
+                local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - vector3()), #(GetEntityCoords(PlayerPedId()) - vector3()) 
+
+                if distanceL < 2 then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the left side.")
+                    if IsControlJustPressed(0, 38) then 
+                        PlantVaultBombs(1)
+                        plantBombs = true
+                    end
+                elseif distanceR < 2 then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the right side.")
+                    if IsControlJustPressed(0, 38) then 
+                        PlantVaultBombs(2)
+                        plantBombs = true
+                    end
+                end
+            end
+        end
+    end)
+
 end
 
 RegisterNetEvent("cl:casinoheist:testCut", MainEntry)
