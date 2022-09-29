@@ -32,6 +32,25 @@ local keycardSyncAnims = {
     {}
 }
 
+local bombAnims = {
+    {
+        {
+            {"player_ig8_vault_explosive_enter",    "semtex_a_ig8_vault_explosive_enter",   "semtex_b_ig8_vault_explosive_enter",   "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
+            {"player_ig8_vault_explosive_idle",     "semtex_a_ig8_vault_explosive_idle",    "semtex_b_ig8_vault_explosive_idle",    "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
+            {"player_ig8_vault_explosive_plant_a",  "semtex_a_ig8_vault_explosive_plant_a", "semtex_b_ig8_vault_explosive_plant_a", "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
+            {"player_ig8_vault_explosive_plant_b",  "semtex_a_ig8_vault_explosive_plant_b", "semtex_b_ig8_vault_explosive_plant_b", "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"} 
+        },
+        { 
+            {"player_ig8_vault_explosive_enter",    "semtex_a_ig8_vault_explosive_enter",    "semtex_b_ig8_vault_explosive_enter",   "semtex_c_ig8_vault_explosive_enter",      "bag_ig8_vault_explosive_enter",    "cam_ig8_vault_explosive_enter"},
+            {"player_ig8_vault_explosive_idle",     "semtex_a_ig8_vault_explosive_idle",     "semtex_b_ig8_vault_explosive_idle",    "semtex_c_ig8_vault_explosive_idle",       "bag_ig8_vault_explosive_idle",     "cam_ig8_vault_explosive_idle"},
+            {"player_ig8_vault_explosive_plant_a",  "semtex_a_ig8_vault_explosive_plant_a",  "semtex_b_ig8_vault_explosive_plant_a", "semtex_c_ig8_vault_explosive_plant_a",    "bag_ig8_vault_explosive_plant_a",  "cam_ig8_vault_explosive_plant_a"},
+            {"player_ig8_vault_explosive_plant_b",  "semtex_a_ig8_vault_explosive_plant_b",  "semtex_b_ig8_vault_explosive_plant_b", "semtex_c_ig8_vault_explosive_plant_b",    "bag_ig8_vault_explosive_plant_b",  "cam_ig8_vault_explosive_plant_b"},
+            {"player_ig8_vault_explosive_plant_c",  "semtex_a_ig8_vault_explosive_plant_c",  "semtex_b_ig8_vault_explosive_plant_c", "semtex_c_ig8_vault_explosive_plant_c",    "bag_ig8_vault_explosive_plant_c",  "cam_ig8_vault_explosive_plant_c"} 
+        }
+    },
+    {}
+}
+
 local regularDrillAnims = {
     {},
     {}
@@ -92,14 +111,15 @@ local function KeypadOne(j)
 end
 
 local function SyncKeycardSwipe(num)
+    local x = 0
     if num == 1 then 
-        num = 2
+        x = 2
     elseif num == 2 then 
-        num = 1
+        x = 1
     end
     
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
-    local animName = keycardSyncAnims[1][num][4]
+    local animName = keycardSyncAnims[1][x][4]
     local syncSwipe = false 
     local x = 0
 
@@ -117,13 +137,45 @@ local function SyncKeycardSwipe(num)
     if syncSwipe then 
         NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
     else 
-        print("hi")
         local random = math.random(1, 3)
         NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
         Wait(2000)
         NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
         KeycardReady(num)
     end
+end
+
+local function PlantVaultBombs(num)
+    local animDict = ""
+    local bag = ""
+    local bomb = "ch_prop_ch_explosive_01a"
+    local bombObj = {}
+    local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+
+    if num == 2 then 
+        animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
+        bombObj[3] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+    else   
+        animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
+    end
+
+    LoadModel(bag)
+    LoadModel(bomb)
+    LoadAnim(animDict)
+
+    local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
+    bombObj[1] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+    bombObj[2] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+    
+    for i = 2, 3 do 
+        SetEntityVisible(bombObj[i], false, false)
+    end
+
+    for i = 1, #bombAnims[1][num] do 
+        bombAnims[2][i] = NetworkCreateSynchronisedScene(2504.97, -240.31, -73.691, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), bombAnims[2][i], animDict, bombAnims[1][num][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
+
+
 end
 
 function KeycardReady(num)
@@ -345,14 +397,14 @@ function SecurityLobby()
                 if player == 1 then 
                     if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
                         LoadModel("ch_prop_ch_vaultdoor01x")
-                        vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, true, false, true)
+                        vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
                     elseif approach == 3 then 
                         LoadModel("ch_des_heist3_vault_01")
                         LoadModel("ch_des_heist3_vault_02")
                         LoadModel("ch_des_heist3_vault_end")
-                        vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], true, false, true)
-                        vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], true, false, true)
-                        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], true, false, true)
+                        vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
+                        vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
+                        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
                     end
                 end
                 break
