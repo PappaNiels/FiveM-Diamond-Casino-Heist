@@ -259,13 +259,13 @@ local function VaultExplosionSetup()
     SetBlipColour(blips[1], 76)
     SetBlipAlpha(blips[1], 175)
 
-    if GetResourceState("ifruit-phone") == "stopped" then 
-        --TriggerEvent("")
-    else 
+    --if GetResourceState("ifruit-phone") == "stopped" then 
+    --    TriggerEvent("")
+    --else 
         SubtitleMsg("Leave the ~r~blast radius.", 5010)
         Wait(5000)
         VaultExplosion()
-    end
+    --end
 end
 
 function KeycardReady(num)
