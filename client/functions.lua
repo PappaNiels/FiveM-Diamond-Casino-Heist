@@ -77,30 +77,36 @@ function LoadCutscene(name)
 end
 
 function LoadModel(model)
-    RequestModel(model)
+    if not HasModelLoaded(model) then 
+       RequestModel(model)
 
-    --print(IsModelInCdimage(model))
+       --print(IsModelInCdimage(model))
 
-    while not HasModelLoaded(model) do 
-        Wait(10)
-    end
+       while not HasModelLoaded(model) do 
+           Wait(10)
+       end
+    nd
 end
 
 function LoadAnim(animDict)
-    RequestAnimDict(animDict)
+    if not HasAnimDictLoaded(animDict) then 
+        RequestAnimDict(animDict)
 
-    --print(DoesAnimDictExist())
+        --print(DoesAnimDictExist())
 
-    while not HasAnimDictLoaded(animDict) do
-        Wait(10)
+        while not HasAnimDictLoaded(animDict) do
+            Wait(10)
+        end
     end
 end
 
 function LoadTexture(ytd)
-    RequestStreamedTextureDict(ytd)
-    
-    while not HasStreamedTextureDictLoaded(ytd) do 
-        Wait(1)
+    if not HasStreamedTextureDictLoaded(ytd) then 
+        RequestStreamedTextureDict(ytd)
+        
+        while not HasStreamedTextureDictLoaded(ytd) do 
+            Wait(1)
+        end
     end
 end
 
