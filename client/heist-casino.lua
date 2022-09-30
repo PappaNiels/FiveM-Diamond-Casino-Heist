@@ -219,6 +219,28 @@ local function PlantVaultBombs(num)
 
 end
 
+local function VaultExplosion()
+    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
+    LoadAnim(animDict)
+    
+    SetEntityVisible(vaultObjs[3], false, false)
+    SetEntityCollision(vaultObjs[3], false, false)
+    
+    Wait(1000)
+        
+    scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
+    PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
+    PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
+    SetSynchronizedScenePhase(scene, 0.056)
+
+    Wait(4000)
+    
+    SetEntityVisible(vaultObjs[3], true, false)
+    SetEntityCollision(vaultObjs[3], true, true)
+    DeleteEntity(vaultObjs[1])
+    DeleteEntity(vaultObjs[2])
+end
+
 function KeycardReady(num)
     while true do 
         Wait(5)
@@ -529,6 +551,9 @@ function DrillVaultDoor()
 end
 
 function BombVaultDoor()
+    local left = false
+    local right = false
+    
     for i = 1, 2 do 
         blips[i] = AddBlipForCoord(0, 0, 0)
         SetBlipColour(blips[i], 2)
@@ -539,22 +564,37 @@ function BombVaultDoor()
         while true do 
             Wait(5)
             
+            SubtitleMsg("Plant the ~g~explosives.", 10)
+
             if not plantBombs then 
                 local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - vector3()), #(GetEntityCoords(PlayerPedId()) - vector3()) 
 
-                if distanceL < 2 then 
+                if distanceL < 2 and not left then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the left side.")
                     if IsControlJustPressed(0, 38) then 
                         PlantVaultBombs(1)
-                        plantBombs = true
                     end
-                elseif distanceR < 2 then 
+                elseif distanceR < 2 and not right then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the right side.")
                     if IsControlJustPressed(0, 38) then 
                         PlantVaultBombs(2)
-                        plantBombs = true
                     end
                 end
+            end
+
+            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_enter", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_enter", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_enter", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_enter", 2) then 
+                RemoveBlip(blips[1])
+                left = true
+            end
+
+            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_enter", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_enter", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_enter", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_enter", 2) then 
+                RemoveBlip(blips[2])
+                right = true
+            end
+
+            if left and right then 
+                VaultExplosion()
+                break
             end
         end
     end)
@@ -574,7 +614,6 @@ RegisterCommand("test_cut_agg", function()
 end, false)
 
 RegisterCommand("test_vaultdoors", function()
-    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
     print("test")
     LoadModel("ch_des_heist3_vault_01")
     print("test")
@@ -584,24 +623,20 @@ RegisterCommand("test_vaultdoors", function()
     vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), 2504.97, -240.31, -75.339, false, false, false)
     vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_end"), 2504.97, -240.31, -71.8, false, false, true)
     print("test", GetEntityCoords(vaultObjs[3]))
+    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
     LoadAnim(animDict)
-
+    
     SetEntityVisible(vaultObjs[3], false, false)
     SetEntityCollision(vaultObjs[3], false, false)
     
     Wait(1000)
-    
-    --PlayEntityAnim(vaultObjs[1], "explosion_vault_01", animDict, 1000.0, false, true, true, 0, 0x4000)
-    --PlayEntityAnim(vaultObjs[2], "explosion_vault_02", animDict, 1000.0, false, true, true, 0, 0x4000)
-    
+        
     scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
     PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
     PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
     SetSynchronizedScenePhase(scene, 0.056)
 
-    print(GetAnimDuration(animDict, "explosion_vault_01"))
     Wait(4000)
-    print(GetAnimDuration(animDict, "explosion_vault_01"))
     
     SetEntityVisible(vaultObjs[3], true, false)
     SetEntityCollision(vaultObjs[3], true, true)
