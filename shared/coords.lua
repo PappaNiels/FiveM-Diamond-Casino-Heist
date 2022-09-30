@@ -116,3 +116,12 @@ aggressiveVaultDoorCoords = {
     vector3(2504.97, -240.31, -75.339), -- Support Thingy
     vector3(2504.97, -240.31, -71.8)  -- Exploded Door 
 }
+
+-- Blips 
+
+vaultCheckpointBlips = {
+    vector3(2504.5, -236.85, -70.74),
+    vector3(2504.5, -239.98, -70.71)
+}
+
+aggressiveAreaBlip = vector3(2502.51, -238.75, -70.2, 5.0)
