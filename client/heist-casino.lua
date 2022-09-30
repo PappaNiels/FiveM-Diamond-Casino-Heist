@@ -221,17 +221,30 @@ end
 
 local function VaultExplosion()
     local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
+    local ptfx = "cut_hs3f"
+
+    RequestNamedPtfxAsset(ptfx)
+
+    repeat Wait(10) until HasPtfxAssetLoaded()
+    
     LoadAnim(animDict)
     
     SetEntityVisible(vaultObjs[3], false, false)
     SetEntityCollision(vaultObjs[3], false, false)
     
     Wait(1000)
-        
+    
+    UseParticleFxAsset(ptfx)
     scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
     PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
     PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
     SetSynchronizedScenePhase(scene, 0.056)
+    StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
+    ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
+    PlaySoundFromCoord(-1, "vault_door_explosion", 2505.0, -238.5, -70.5, "dlc_ch_heist_finale_sounds", false, 0, false)
+    SetPadShake(0, 130, 256)
+    
+    RemoveDecalsInRange(2505.0, -238.5, -70.5, 8.0)
 
     Wait(4000)
     
@@ -239,6 +252,20 @@ local function VaultExplosion()
     SetEntityCollision(vaultObjs[3], true, true)
     DeleteEntity(vaultObjs[1])
     DeleteEntity(vaultObjs[2])
+end
+
+local function VaultExplosionSetup()
+    blips[1] = AddBlipForArea()
+    SetBlipColour(blips[1], 76)
+    SetBlipAlpha(blips[1], 175)
+
+    if GetResourceState("ifruit-phone") == "stopped" then 
+        --TriggerEvent("")
+    else 
+        SubtitleMsg("Leave the ~r~blast radius.", 5010)
+        Wait(5000)
+        VaultExplosion()
+    end
 end
 
 function KeycardReady(num)
@@ -555,7 +582,7 @@ function BombVaultDoor()
     local right = false
     
     for i = 1, 2 do 
-        blips[i] = AddBlipForCoord(0, 0, 0)
+        blips[i] = AddBlipForCoord(vaultCheckpointBlips[i])
         SetBlipColour(blips[i], 2)
         SetBlipHighDetail(blips[i], true)
     end
@@ -593,7 +620,7 @@ function BombVaultDoor()
             end
 
             if left and right then 
-                VaultExplosion()
+                VaultExplosionSetup()
                 break
             end
         end
