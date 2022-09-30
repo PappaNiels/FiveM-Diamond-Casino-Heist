@@ -221,13 +221,22 @@ end
 
 local function VaultExplosion()
     local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
+    local reactAnimDict = ""
+    local reactAnimName = "player_react_explosive"
     local ptfx = "cut_hs3f"
 
     RequestNamedPtfxAsset(ptfx)
 
     repeat Wait(10) until HasPtfxAssetLoaded()
     
+    if math.random(1, 2) == 1 then 
+        reactAnimDict = "anim_heist@hs3f@ig8_vault_explosive_react@left@male@"
+    else 
+        reactAnimDict = "anim_heist@hs3f@ig8_vault_explosive_react@right@male@"
+    end
+
     LoadAnim(animDict)
+    LoadAnim(reactAnimDict)
     
     SetEntityVisible(vaultObjs[3], false, false)
     SetEntityCollision(vaultObjs[3], false, false)
@@ -243,8 +252,8 @@ local function VaultExplosion()
     ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
     PlaySoundFromCoord(-1, "vault_door_explosion", 2505.0, -238.5, -70.5, "dlc_ch_heist_finale_sounds", false, 0, false)
     SetPadShake(0, 130, 256)
-    
     RemoveDecalsInRange(2505.0, -238.5, -70.5, 8.0)
+    TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8f, -8f, -1, 1048576, 0f, false, false, false)
 
     Wait(4000)
     
