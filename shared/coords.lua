@@ -124,4 +124,4 @@ vaultCheckpointBlips = {
     vector3(2504.5, -239.98, -70.71)
 }
 
-aggressiveAreaBlip = vector3(2502.51, -238.75, -70.2, 5.0)
+aggressiveAreaBlip = vector3(2502.51, -238.75, -70.2)

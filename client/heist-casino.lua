@@ -253,7 +253,7 @@ local function VaultExplosion()
     PlaySoundFromCoord(-1, "vault_door_explosion", 2505.0, -238.5, -70.5, "dlc_ch_heist_finale_sounds", false, 0, false)
     SetPadShake(0, 130, 256)
     RemoveDecalsInRange(2505.0, -238.5, -70.5, 8.0)
-    TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8f, -8f, -1, 1048576, 0f, false, false, false)
+    TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
 
     Wait(4000)
     
@@ -264,7 +264,7 @@ local function VaultExplosion()
 end
 
 local function VaultExplosionSetup()
-    blips[1] = AddBlipForArea()
+    blips[1] = AddBlipForArea(aggressiveAreaBlip, 5.0)
     SetBlipColour(blips[1], 76)
     SetBlipAlpha(blips[1], 175)
 

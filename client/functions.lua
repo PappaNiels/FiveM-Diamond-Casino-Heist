@@ -85,7 +85,7 @@ function LoadModel(model)
        while not HasModelLoaded(model) do 
            Wait(10)
        end
-    nd
+    end
 end
 
 function LoadAnim(animDict)
