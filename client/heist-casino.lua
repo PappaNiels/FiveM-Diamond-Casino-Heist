@@ -32,6 +32,17 @@ local keycardSyncAnims = {
     {}
 }
 
+local hackKeypadAnims = { 
+    {    
+        {'action_var_01', 'action_var_01_ch_prop_ch_usb_drive01x', 'action_var_01_prop_phone_ing'},
+        {'hack_loop_var_01', 'hack_loop_var_01_ch_prop_ch_usb_drive01x', 'hack_loop_var_01_prop_phone_ing'},
+        {'success_react_exit_var_01', 'success_react_exit_var_01_ch_prop_ch_usb_drive01x', 'success_react_exit_var_01_prop_phone_ing'},
+        {'fail_react', 'fail_react_ch_prop_ch_usb_drive01x', 'fail_react_prop_phone_ing'},
+        {'reattempt', 'reattempt_ch_prop_ch_usb_drive01x', 'reattempt_prop_phone_ing'}
+    },
+    {}
+} 
+
 local bombAnims = {
     {
         {
@@ -90,14 +101,14 @@ local function EnableMantrapDoors(security, vault)
     SetDoors(doorHash[4], objHash[2], coords[4], vault)
 end
 
-local function KeypadOne(j)
+local function KeypadOne(level, j)
     local keycard = "ch_prop_vault_key_card_01a"
     local animDict = "anim_heist@hs3f@ig3_cardswipe@male@"
     
     LoadModel(keycard)
     LoadAnim(animDict)
     
-    local keypadObj = GetClosestObjectOfType(keypads[2][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01b"), false, false, false)
+    local keypadObj = GetClosestObjectOfType(keypads[level][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01b"), false, false, false)
     local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
     
     keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
@@ -108,6 +119,42 @@ local function KeypadOne(j)
     Wait(3700)
     DeleteObject(keycardObj)
     ClearPedTasks(PlayerPedId())
+end
+
+local function HackKeyPad(level, j)
+    if level > selectedKeycard and level ~= 4 then 
+        local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
+        local hackDevice = "ch_prop_ch_usb_drive01x"
+        local phoneDevice = "prop_phone_ing"
+
+        LoadAnim(animDict)
+        LoadModel(hackDevice)
+        LoadModel(phoneDevice)
+
+        local keypad = GetClosestObjectOfType(keypads[level][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
+        local hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
+        local phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
+        
+        for i = 1, #hackKeypadAnims[1], 1 do 
+            hackKeypadAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
+            NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
+        end
+
+        NetworkStartSynchronisedScene(hackKeypadAnims[2][1])
+        Wait(4000)
+        NetworkStartSynchronisedScene(hackKeypadAnims[2][2])
+        Wait(2000)
+        -- Hack Minigame
+        Wait(3000)
+        NetworkStartSynchronisedScene(hackKeypadAnims[2][3])
+        Wait(4000)
+        DeleteObject(hackUsb)
+        DeleteObject(phone)
+    else 
+        KeypadOne(level, j)
+    end
 end
 
 local function SyncKeycardSwipe(num)
