@@ -110,6 +110,46 @@ vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
 
 -- Entities
 
+keypads = {
+    [1] = {
+        vector3(991.47, 76.80, 81.14),  -- Waste Disposal
+        0,                              -- Does not exist
+        vector3(936.75, 13.07, 112.79), -- Roof South West
+        vector3(972.24, 50.96, 120.38), -- Roof Helipad North
+        vector3(953.68, 77.94, 111.39), -- Roof North West
+        0,                              -- Does not exist
+        0,                              -- Does not exist
+        vector3(953.58, 5.25, 111.54),  -- Roof South West
+        vector3(959.02, 33.13, 120.42), -- Roof Helipad South
+        vector3(986.94, 58.68, 111.54), -- Roof North East
+        vector3(978.39, 19.83, 81.13)   -- Staff Lobby
+    },
+
+    [2] = {
+
+    },
+
+    [3] = {
+        -- Main Doors
+        vector3(2519.80, -226.47, -70.40),
+        vector3(2533.10, -237.28, -70.40),
+        vector3(2519.72, -250.60, -70.40)
+
+        -- Other Doors
+        vector3(2514.85, -223.50, -70.40),
+        vector3(2536.07, -232.34, -70.40),
+        vector3(2536.06, -244.72, -70.40),
+        vector3(2514.85, -253.55, -70.40)
+    },
+
+    [4]  = {
+        vector3(2464.828, -282.2930, -70.4072),
+        vector3(2464.845, -276.1607, -70.4072),
+        vector3(2492.825, -241.5286, -70.4072),
+        vector3(2492.829, -235.4994, -70.4072)
+    } 
+}
+
 regularVaultDoorCoords = vector3(2504.97, -240.31, -73.691)
 aggressiveVaultDoorCoords = {
     vector3(2504.97, -240.31, -73.691), -- Door
