@@ -396,7 +396,7 @@ function MainEntry()
         StartCutscene(0)
 
         while not DoesCutsceneEntityExist("MP_3") do 
-            Wait(0)
+            Wait(10)
         end
 
         local arr = {}
@@ -412,7 +412,7 @@ function MainEntry()
             end
         end 
         
-        repeat Wait(10) until HasCutsceneFinished()
+        repeat Wait(100) until HasCutsceneFinished()
 
         TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
 
