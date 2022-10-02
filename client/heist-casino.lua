@@ -556,6 +556,8 @@ function SecurityLobby()
                     
                     SetEntityVisible(vaultObjs[3], false, false)
                     SetEntityCollision(vaultObjs[3], false, true)
+                elseif approach == 2 and selectedEntryDisguise == 3 then 
+                    LoadCutscene("hs3f_sub_vlt")
                 end
             
                 break
