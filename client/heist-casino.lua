@@ -273,8 +273,6 @@ local function VaultExplosion()
     local ptfx = "cut_hs3f"
 
     RequestNamedPtfxAsset(ptfx)
-
-    repeat Wait(10) until HasPtfxAssetLoaded()
     
     if math.random(1, 2) == 1 then 
         reactAnimDict = "anim_heist@hs3f@ig8_vault_explosive_react@left@male@"
@@ -285,10 +283,12 @@ local function VaultExplosion()
     LoadAnim(animDict)
     LoadAnim(reactAnimDict)
     
+    RemoveBlip(blips[1])
+
     SetEntityVisible(vaultObjs[3], false, false)
     SetEntityCollision(vaultObjs[3], false, false)
     
-    Wait(1000)
+    --Wait(1000)
     
     UseParticleFxAsset(ptfx)
     scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
@@ -296,8 +296,8 @@ local function VaultExplosion()
     PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
     SetSynchronizedScenePhase(scene, 0.056)
     StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
+    PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
     ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
-    PlaySoundFromCoord(-1, "vault_door_explosion", 2505.0, -238.5, -70.5, "dlc_ch_heist_finale_sounds", false, 0, false)
     SetPadShake(0, 130, 256)
     RemoveDecalsInRange(2505.0, -238.5, -70.5, 8.0)
     TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
@@ -311,17 +311,18 @@ local function VaultExplosion()
 end
 
 local function VaultExplosionSetup()
-    blips[1] = AddBlipForArea(aggressiveAreaBlip, 5.0)
+    blips[1] = AddBlipForRadius(aggressiveAreaBlip)
     SetBlipColour(blips[1], 76)
     SetBlipAlpha(blips[1], 175)
 
-    if GetResourceState("ifruit-phone") == "stopped" and player == 1 then 
-        TriggerEvent("cl:ifruit:setBombContact", true, "sv:casinoheist:vaultExplosion", true)
-    else 
+    print(DoesBlipExist(blips[1]))
+    --if GetResourceState("ifruit-phone") == "stopped" and player == 1 then 
+    --    TriggerEvent("cl:ifruit:setBombContact", true, "sv:casinoheist:vaultExplosion", true)
+    --else 
         SubtitleMsg("Leave the ~r~blast radius.", 5010)
         Wait(5000)
         VaultExplosion()
-    end
+    --end
 end
 
 function KeycardReady(num)
@@ -548,9 +549,13 @@ function SecurityLobby()
                     LoadModel("ch_des_heist3_vault_01")
                     LoadModel("ch_des_heist3_vault_02")
                     LoadModel("ch_des_heist3_vault_end")
+
                     vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
                     vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
                     vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
+                    
+                    SetEntityVisible(vaultObjs[3], false, false)
+                    SetEntityCollision(vaultObjs[3], false, true)
                 end
             
                 break
@@ -699,32 +704,15 @@ RegisterCommand("test_cut_agg", function()
 end, false)
 
 RegisterCommand("test_vaultdoors", function()
-    print("test")
     LoadModel("ch_des_heist3_vault_01")
-    print("test")
     LoadModel("ch_des_heist3_vault_02")
     LoadModel("ch_des_heist3_vault_end")
     vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
     vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), 2504.97, -240.31, -75.339, false, false, false)
     vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_end"), 2504.97, -240.31, -71.8, false, false, true)
-    print("test", GetEntityCoords(vaultObjs[3]))
-    local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
-    LoadAnim(animDict)
-    
-    SetEntityVisible(vaultObjs[3], false, false)
-    SetEntityCollision(vaultObjs[3], false, false)
-    
-    Wait(1000)
-        
-    scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
-    PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
-    PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
-    SetSynchronizedScenePhase(scene, 0.056)
 
-    Wait(4000)
-    
-    SetEntityVisible(vaultObjs[3], true, false)
-    SetEntityCollision(vaultObjs[3], true, true)
-    DeleteEntity(vaultObjs[1])
-    DeleteEntity(vaultObjs[2])
+    SetEntityVisible(vaultObjs[3], false, false)
+    SetEntityCollision(vaultObjs[3], false, true)
+
+    VaultExplosionSetup()
 end, false)
