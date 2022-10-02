@@ -3,6 +3,7 @@ local blip = 0
 local keycardScene = 0
 
 local isSwiping = false
+local timerStarted = false
 
 local vaultObjs = {}
 local blips = {}
@@ -166,16 +167,19 @@ local function SyncKeycardSwipe(num)
     end
     
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
-    local animName = keycardSyncAnims[1][x][4]
+    local animName = keycardSyncAnims[1][x][3][1]
+    print(keycardSyncAnims[1][x][4][1])
     local syncSwipe = false 
     local x = 0
 
-    while x <= 10 do 
+    while x <= 10 and not timerStarted do 
         if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animName, 2) then 
             syncSwipe = true
             break 
 
         end 
+
+        print(IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animName, 2))
 
         x = x + 1
         Wait(300)
@@ -187,6 +191,8 @@ local function SyncKeycardSwipe(num)
         local random = math.random(1, 3)
         NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
         Wait(2000)
+        NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
+        Wait(1000)
         NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
         KeycardReady(num)
     end
@@ -266,6 +272,38 @@ local function PlantVaultBombs(num)
 
 end
 
+local function SetupVault()
+    if selectedEntryDisguise ~= 3 then
+        EnableMantrapDoors(0, 0)
+    else
+        EnableMantrapDoors(0, 1)
+    end
+
+    RemoveAllBlips()
+
+    vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+    SetEntityVisible(vaultObjs[1], false, false)
+
+    
+    if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
+        LoadModel("ch_prop_ch_vaultdoor01x")
+        vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
+    elseif approach == 3 then 
+        LoadModel("ch_des_heist3_vault_01")
+        LoadModel("ch_des_heist3_vault_02")
+        LoadModel("ch_des_heist3_vault_end")
+
+        vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
+        vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
+        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
+        
+        SetEntityVisible(vaultObjs[3], false, false)
+        SetEntityCollision(vaultObjs[3], false, true)
+    elseif approach == 2 and selectedEntryDisguise == 3 then 
+        LoadCutscene("hs3f_sub_vlt")
+    end
+end
+
 local function VaultExplosion()
     local animDict = "anim_heist@hs3f@ig8_vault_door_explosion@"
     local reactAnimDict = ""
@@ -336,7 +374,9 @@ function KeycardReady(num)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][3])
             Wait(2000)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][4])
-            SyncKeycardSwipe(num)
+            if not timerStarted then 
+                SyncKeycardSwipe(num)
+            end
             break 
         elseif IsControlJustPressed(0, 200) then 
             ClearPedTasks(PlayerPedId())
@@ -414,11 +454,15 @@ function MainEntry()
         
         repeat Wait(100) until HasCutsceneFinished()
 
+        Wait(100)
+
         TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
 
         blips[1] = AddBlipForCoord(2525.77, -251.71, -60.31)
         SetBlipColour(blips[1], 5) 
         
+        player = GetCurrentHeistPlayer()
+
         CreateThread(function()
             while true do 
                 Wait(100)
@@ -459,12 +503,11 @@ function MainEntry()
     end
     
     function Basement()
+        RemoveAllBlips()
         local sprite = {63, 743}
         
-        SetBlipCoords(blips[1], staffCoords[1])
-        blips[2] = AddBlipForCoord(staffCoords[2])
-        
         for i = 1, 2 do 
+            blips[i] = AddBlipForCoord(staffCoords[i])
             SetBlipHighDetail(blips[i], true)
             SetBlipSprite(blips[i], sprite[i])
             SetBlipColour(blips[i], 5)
@@ -495,6 +538,8 @@ function MainEntry()
 end
     
 function SecurityLobby()
+    RemoveAllBlips()
+
     for i = 1, 2 do 
         blips[i] = AddBlipForCoord(keypads[4][i])
         SetBlipSprite(blips[i], 733)
@@ -530,37 +575,33 @@ function SecurityLobby()
             end
 
             if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
-                if selectedEntryDisguise ~= 3 then
-                    EnableMantrapDoors(0, 0)
-                else
-                    EnableMantrapDoors(0, 1)
+                if not timerStarted and isSwiping then 
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
+                    SetupVault()
+                    break
+                else 
+                    local random = math.random(1, 3)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
+                    Wait(2000)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
+                    Wait(1000)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
+                    KeycardReady(num)
                 end
-
-                RemoveAllBlips()
-
-                vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
-                SetEntityVisible(vaultObjs[1], false, false)
-
-                
-                if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
-                    LoadModel("ch_prop_ch_vaultdoor01x")
-                    vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
-                elseif approach == 3 then 
-                    LoadModel("ch_des_heist3_vault_01")
-                    LoadModel("ch_des_heist3_vault_02")
-                    LoadModel("ch_des_heist3_vault_end")
-
-                    vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
-                    vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
-                    vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
-                    
-                    SetEntityVisible(vaultObjs[3], false, false)
-                    SetEntityCollision(vaultObjs[3], false, true)
-                elseif approach == 2 and selectedEntryDisguise == 3 then 
-                    LoadCutscene("hs3f_sub_vlt")
+            elseif IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
+                if not timerStarted and isSwiping then 
+                    NetworkStartSynchronisedScene(keycardSyncAnims[1][5])
+                    SetupVault()
+                    break
+                else 
+                    local random = math.random(1, 3)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[1][5 + random])
+                    Wait(2000)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[1][1])
+                    Wait(1000)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[1][2])
+                    KeycardReady(num)
                 end
-            
-                break
             end
         end
     end)
@@ -704,6 +745,8 @@ RegisterCommand("test_basement", FirstMantrap, false)
 RegisterCommand("test_cut_agg", function()
     MainEntry()
 end, false)
+
+RegisterNetEvent("cl:testt", SecurityLobby)
 
 RegisterCommand("test_vaultdoors", function()
     LoadModel("ch_des_heist3_vault_01")
