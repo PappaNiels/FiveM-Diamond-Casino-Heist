@@ -133,7 +133,7 @@ keypads = {
         -- Main Doors
         vector3(2519.80, -226.47, -70.40),
         vector3(2533.10, -237.28, -70.40),
-        vector3(2519.72, -250.60, -70.40)
+        vector3(2519.72, -250.60, -70.40),
 
         -- Other Doors
         vector3(2514.85, -223.50, -70.40),
@@ -164,4 +164,4 @@ vaultCheckpointBlips = {
     vector3(2504.5, -239.98, -70.71)
 }
 
-aggressiveAreaBlip = vector3(2502.51, -238.75, -70.2)
+aggressiveAreaBlip = vector4(2502.51, -238.75, -70.2, 5.0)
