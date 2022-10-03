@@ -5,8 +5,12 @@ local lvlFour = 0
 
 local isSwiping = false
 local timerStarted = false
+local plantBombs = false
+local leftBombs = false                        
+local rightBombs = false                        
 
 local vaultObjs = {}
+local bombObjs = {}
 local blips = {}
 local keycardSyncAnims = {
     {
@@ -77,6 +81,12 @@ local laserDrillAnims = {
 local function RemoveAllBlips()
     for i = 1, #blips do 
         RemoveBlip(blips[i])
+    end
+end
+
+local function RemoveAllBombs()
+    for i = 1, #bombObjs do 
+        DeleteEntity(bombObjs[i])
     end
 end
 
@@ -179,6 +189,7 @@ local function KeycardReady(num)
             DeleteObject(keycardObj)
             isSwiping = false
             lvlFour = 0
+            SecurityLobby(false, true)
             break
         end
     end
@@ -187,25 +198,23 @@ end
 local function SyncKeycardEnter(num)
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
     local keycard = "ch_prop_vault_key_card_01a"
+
     LoadAnim(animDict)
     
     lvlFour = num
 
-    if not keycardSyncAnims[2][1] then
-        local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
-        keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
-
-        for i = 1, #keycardSyncAnims[1][2] do 
-            keycardSyncAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 0, 0, 1.3)
-            NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-            NetworkAddEntityToSynchronisedScene(keycardObj, keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][2], 1.0, -1.0, 114886080)
-        end
+    local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
+    keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+    
+    for i = 1, #keycardSyncAnims[1][2] do 
+        keycardSyncAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 0, 0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(keycardObj, keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][2], 1.0, -1.0, 114886080)
     end
-
+    
     NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
     Wait(1000)
     NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
-    
     KeycardReady(num)
 end
 
@@ -257,7 +266,13 @@ local function VaultExplosion()
 
     LoadAnim(animDict)
     LoadAnim(reactAnimDict)
+
+    RequestMissionAudioBank("dlc_ch_heist_finale_sounds", true)
+    RequestScriptAudioBank("dlc_ch_heist_finale_sounds", true)
+    RequestAmbientAudioBank("dlc_ch_heist_finale_sounds", true)
     
+    Wait(1000)
+
     RemoveBlip(blips[1])
 
     SetEntityVisible(vaultObjs[3], false, false)
@@ -274,8 +289,8 @@ local function VaultExplosion()
     StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
     ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
     SetPadShake(0, 130, 256)
-    RemoveDecalsInRange(2505.0, -238.5, -70.5, 8.0)
     TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
+    RemoveAllBombs()
 
     Wait(4000)
     
@@ -300,38 +315,53 @@ end
 
 local function PlantVaultBombs(num)
     local animDict = ""
-    local bag = ""
+    local bag = "hei_p_m_bag_var22_arm_s"
     local bomb = "ch_prop_ch_explosive_01a"
-    local bombObj = {}
-    local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+    --local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
     local camNum = 4 + num 
+    
+    LoadModel(bomb)
+    LoadModel(bag)
+
+    plantBombs = true
+
+    if DoesEntityExist(bombObj[1]) and num == 1 then 
+        bombObj[4] = bombObj[1]
+        bombObj[5] = bombObj[2]
+    elseif DoesEntityExist(bombObj[1]) and num == 2 then 
+        bombObj[3] = bombObj[1]
+        bombObj[4] = bombObj[2]
+        bombObj[5] = bombObj[3]
+    end
+
 
     if num == 2 then 
         animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
-        bombObj[3] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+        
+        for i = 1, 3 do 
+            bombObjs[i] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+        end
     else   
         animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
+        bombObjs[1] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+        bombObjs[2] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
     end
 
-    LoadModel(bag)
-    LoadModel(bomb)
     LoadAnim(animDict)
 
     local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
-    bombObj[1] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
-    bombObj[2] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
     
     for i = 2, 3 do 
-        SetEntityVisible(bombObj[i], false, false)
+        SetEntityVisible(bombObjs[i], false, false)
     end
 
     for i = 1, #bombAnims[1][num] do 
-        bombAnims[2][i] = NetworkCreateSynchronisedScene(2504.97, -240.31, -73.691, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
+        bombAnims[2][i] = NetworkCreateSynchronisedScene(2504.97, -240.2, -70.20, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
         NetworkAddPedToSynchronisedScene(PlayerPedId(), bombAnims[2][i], animDict, bombAnims[1][num][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
-        NetworkAddEntityToSynchronisedScene(bombObj[1], bombAnims[2][i], animDict, bombAnims[1][num][i][2], 1.0, -1.0, 114886080)
-        NetworkAddEntityToSynchronisedScene(bombObj[2], bombAnims[2][i], animDict, bombAnims[1][num][i][3], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombObjs[1], bombAnims[2][i], animDict, bombAnims[1][num][i][2], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombObjs[2], bombAnims[2][i], animDict, bombAnims[1][num][i][3], 1.0, -1.0, 114886080)
         if num == 2 then 
-            NetworkAddEntityToSynchronisedScene(bombObj[3], bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
+            NetworkAddEntityToSynchronisedScene(bombObjs[3], bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
             NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][5], 1.0, -1.0, 114886080)
         else
             NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
@@ -343,18 +373,17 @@ local function PlantVaultBombs(num)
     NetworkStartSynchronisedScene(bombAnims[2][2])
     
     local x = 0
-    local numerics = {"first, second, last"}
+    local numerics = {"first", "second", "last"}
 
     while true do 
-        Wait(5)
+        Wait(10)
         
         HelpMsg("Press ~INPUT_ATTACK~ to plant the ".. numerics[x + 1] .." explosive")
         if IsControlPressed(0, 24) then 
             NetworkStartSynchronisedScene(bombAnims[2][3 + x])
-            FreezeEntityPosition(bombObj[x + 1])
-            if (x + 2) == 4 then
-                SetEntityVisible(bombObj[x + 2])
-            end
+            FreezeEntityPosition(bombObjs[x + 1])
+            SetEntityVisible(bombObjs[x + 2], true, true)
+
             Wait(2000)
             x = x + 1
 
@@ -366,10 +395,18 @@ local function PlantVaultBombs(num)
         end
     end
 
+    Wait(1000)
+    ClearPedTasks(PlayerPedId())
+    DeleteEntity(bagObj)
+    plantBombs = false
 
-
-
-
+    if num == 1 then 
+        RemoveBlip(blips[1])
+        leftBombs = true 
+    else 
+        RemoveBlip(blips[2])
+        rightBombs = true 
+    end
 end
 
 function RoofTerraceEntry()
@@ -491,7 +528,7 @@ function MainEntry()
                     zCoord = -67
                     num = 2
                 else
-                    SecurityLobby() 
+                    SecurityLobby(true, false) 
                     break
                 end
             end
@@ -499,14 +536,15 @@ function MainEntry()
     end)
 end
     
-function SecurityLobby()
+function SecurityLobby(blip, old)
     --RemoveAllBlips()
-
-    for i = 1, 2 do 
-        blips[i] = AddBlipForCoord(keypads[4][i])
-        SetBlipSprite(blips[i], 733)
-        SetBlipColour(blips[i], 2)
-        SetBlipHighDetail(blips[i], true)
+    if blip then 
+        for i = 1, 2 do 
+            blips[i] = AddBlipForCoord(keypads[4][i])
+            SetBlipSprite(blips[i], 733)
+            SetBlipColour(blips[i], 2)
+            SetBlipHighDetail(blips[i], true)
+        end
     end
 
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
@@ -534,76 +572,62 @@ function SecurityLobby()
                             SyncKeycardEnter(2)
                         end
                         isSwiping = true
+                        break
                     end
                 end 
             end
-
-            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then 
-                swiped = true
-                while x < 30 do 
-                    if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
-                        sync = true 
-                    end
-                    Wait(100)
-                    x = x + 1
-                end 
-            elseif IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
-                swiped = true
-                while x < 30 do 
-                    if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
-                        sync = true 
-                    end 
-                    Wait(100)
-                    x = x + 1
-                end
-            end
-
-            if sync and swiped then 
-                if isSwiping then 
-                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
-                    Wait(2000)
-                    ClearPedTasks(PlayerPedId())
-                    DeleteEntity(keycardObj)
-                end 
-                
-                swiped = false
-                SetupVault()
-                break
-            elseif swiped then 
-                local random = math.random(1, 3)
-                NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
-                Wait(2000)
-                NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
-                Wait(1000)
-                NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
-                KeycardReady(lvlFour)
-                swiped = false
-            end
-            
-            --    if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
-            --    if not timerStarted and isSwiping then 
-            --        
-            --        break
-            --    else 
-            --        
-            --    end
-            --elseif IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
-            --    if not timerStarted and isSwiping then 
-            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][5])
-            --        SetupVault()
-            --        break
-            --    else 
-            --        local random = math.random(1, 3)
-            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][5 + random])
-            --        Wait(2000)
-            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][1])
-            --        Wait(1000)
-            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][2])
-            --        KeycardReady(num)
-            --    end
-            --end
         end
     end)
+
+    if not old then 
+        CreateThread(function()
+            while true do 
+                Wait(100)
+                if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then 
+                    swiped = true
+                    while x < 30 do 
+                        if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
+                            sync = true 
+                        end
+                        Wait(100)
+                        x = x + 1
+                    end 
+                elseif IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
+                    swiped = true
+                    while x < 30 do 
+                        if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
+                            sync = true 
+                        end 
+                        Wait(100)
+                        x = x + 1
+                    end
+                end
+
+                if sync and swiped then 
+                    if isSwiping then 
+                        NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
+                        Wait(2000)
+                        ClearPedTasks(PlayerPedId())
+                        DeleteEntity(keycardObj)
+                    end 
+
+                    swiped = false
+                    isSwiping = true
+                    SetupVault()
+                    break
+                elseif swiped then 
+                    local random = math.random(1, 3)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
+                    Wait(2000)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
+                    Wait(1000)
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
+                    KeycardReady(lvlFour)
+                    swiped = false
+                end
+            end
+        end)
+    end
 end
 
 function FirstMantrap()
@@ -681,8 +705,7 @@ function DrillVaultDoor()
 end
 
 function BombVaultDoor()
-    local left = false
-    local right = false
+    local distanceL, distanceR 
     
     for i = 1, 2 do 
         blips[i] = AddBlipForCoord(vaultCheckpointBlips[i])
@@ -693,36 +716,62 @@ function BombVaultDoor()
     CreateThread(function()
         while true do 
             Wait(5)
+            print("tick1")
             
-            SubtitleMsg("Plant the ~g~explosives.", 10)
+            SubtitleMsg("Plant the ~g~explosives.", 110)
 
             if not plantBombs then 
-                local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - vector3()), #(GetEntityCoords(PlayerPedId()) - vector3()) 
-
-                if distanceL < 2 and not left then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the left side.")
-                    if IsControlJustPressed(0, 38) then 
-                        PlantVaultBombs(1)
-                    end
-                elseif distanceR < 2 and not right then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the right side.")
-                    if IsControlJustPressed(0, 38) then 
-                        PlantVaultBombs(2)
-                    end
+                
+                if not leftBombs then 
+                    distanceL = #(GetEntityCoords(PlayerPedId()) - vaultCheckpointBlips[1])
                 end
-            end
 
-            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) then 
+                if not rightBombs then 
+                    distanceR = #(GetEntityCoords(PlayerPedId()) - vaultCheckpointBlips[2]) 
+                end
+
+                if distanceL < 2 and not leftBombs then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the left side.")
+                    if IsControlPressed(0, 38) then 
+                        PlantVaultBombs(1)
+                    else 
+                        Wait(10)
+                    end
+                elseif distanceR < 2 and not rightBombs then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the right side.")
+                    if IsControlPressed(0, 38) then 
+                        PlantVaultBombs(2)
+                    else 
+                        Wait(10)
+                    end
+                else 
+                    Wait(100)
+                end
+
+            end
+            
+            if leftBombs and rightBombs then 
+                break
+            end
+        end
+    end)
+    
+    CreateThread(function()
+        while true do
+            Wait(100)
+            print("tick2")
+            if not leftBombs and (IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2)) then 
                 RemoveBlip(blips[1])
-                left = true
+                leftBombs = true
             end
 
-            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) then 
+            if not rightBombs and (IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2)) then 
                 RemoveBlip(blips[2])
-                right = true
+                rightBombs = true
             end
 
-            if left and right then 
+            if leftBombs and rightBombs then 
+                Wait(2000)
                 VaultExplosionSetup()
                 break
             end
@@ -733,7 +782,10 @@ end
 
 RegisterNetEvent("cl:casinoheist:testCut", MainEntry)
 
-RegisterNetEvent("cl:casinoheist:vaultExplosion", VaultExplosion)
+RegisterNetEvent("cl:casinoheist:vaultExplosion", function()
+    Wait(1000)
+    VaultExplosion()
+end)
 
 RegisterCommand("test_doors", function(src, args)
     EnableMantrapDoors(tonumber(args[1]), tonumber(args[2]))
@@ -745,7 +797,12 @@ RegisterCommand("test_cut_agg", function()
     MainEntry()
 end, false)
 
-RegisterNetEvent("cl:testt", SecurityLobby)
+RegisterNetEvent("cl:testt", function()
+    LoadModel("ch_des_heist3_vault_01")
+    vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
+    
+    BombVaultDoor()
+end)
 
 RegisterCommand("test_vaultdoors", function()
     LoadModel("ch_des_heist3_vault_01")
@@ -754,9 +811,17 @@ RegisterCommand("test_vaultdoors", function()
     vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
     vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), 2504.97, -240.31, -75.339, false, false, false)
     vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_end"), 2504.97, -240.31, -71.8, false, false, true)
-
+    
     SetEntityVisible(vaultObjs[3], false, false)
     SetEntityCollision(vaultObjs[3], false, true)
-
+    
     VaultExplosionSetup()
+end, false)
+
+RegisterCommand("test_bombs", function()
+    LoadModel("ch_des_heist3_vault_01")
+    vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
+    
+    
+    BombVaultDoor()
 end, false)

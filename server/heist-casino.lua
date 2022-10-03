@@ -4,6 +4,6 @@ RegisterNetEvent("sv:casinoheist:vaultExplosion", function()
     end
 end)
 
-RegisterCommand("test_sync_keypad", function()
+RegisterCommand("test_vaultExp", function()
     TriggerClientEvent("cl:testt", -1)
 end, false)
