@@ -159,78 +159,54 @@ local function HackKeyPad(level, j)
     end
 end
 
-local function PlantVaultBombs(num)
-    local animDict = ""
-    local bag = ""
-    local bomb = "ch_prop_ch_explosive_01a"
-    local bombObj = {}
-    local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
-    local camNum = 4 + num 
-
-    if num == 2 then 
-        animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
-        bombObj[3] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
-    else   
-        animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
-    end
-
-    LoadModel(bag)
-    LoadModel(bomb)
-    LoadAnim(animDict)
-
-    local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
-    bombObj[1] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
-    bombObj[2] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
-    
-    for i = 2, 3 do 
-        SetEntityVisible(bombObj[i], false, false)
-    end
-
-    for i = 1, #bombAnims[1][num] do 
-        bombAnims[2][i] = NetworkCreateSynchronisedScene(2504.97, -240.31, -73.691, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
-        NetworkAddPedToSynchronisedScene(PlayerPedId(), bombAnims[2][i], animDict, bombAnims[1][num][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
-        NetworkAddEntityToSynchronisedScene(bombObj[1], bombAnims[2][i], animDict, bombAnims[1][num][i][2], 1.0, -1.0, 114886080)
-        NetworkAddEntityToSynchronisedScene(bombObj[2], bombAnims[2][i], animDict, bombAnims[1][num][i][3], 1.0, -1.0, 114886080)
-        if num == 2 then 
-            NetworkAddEntityToSynchronisedScene(bombObj[3], bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
-            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][5], 1.0, -1.0, 114886080)
-        else
-            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
-        end
-    end
-
-    NetworkStartSynchronisedScene(bombAnims[2][1])
-    Wait(2000)
-    NetworkStartSynchronisedScene(bombAnims[2][2])
-    
-    local x = 0
-    local numerics = {"first, second, last"}
-
+local function KeycardReady(num)
     while true do 
         Wait(5)
         
-        HelpMsg("Press ~INPUT_ATTACK~ to plant the ".. numerics[x + 1] .." explosive")
-        if IsControlPressed(0, 24) then 
-            NetworkStartSynchronisedScene(bombAnims[2][3 + x])
-            FreezeEntityPosition(bombObj[x + 1])
-            if (x + 2) == 4 then
-                SetEntityVisible(bombObj[x + 2])
-            end
+        SetPauseMenuActive(false)
+        
+        HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
+        if IsControlJustPressed(0, 18) then 
+            NetworkStartSynchronisedScene(keycardSyncAnims[2][3])
             Wait(2000)
-            x = x + 1
+            NetworkStartSynchronisedScene(keycardSyncAnims[2][4])
+            --if not timerStarted then 
+            --    SyncKeycardSwipe(num)
+            --end
+            break 
+        elseif IsControlJustPressed(0, 200) then 
+            ClearPedTasks(PlayerPedId())
+            DeleteObject(keycardObj)
+            isSwiping = false
+            lvlFour = 0
+            break
+        end
+    end
+end
 
-            if x == (1 + num) then 
-                break
-            end
+local function SyncKeycardEnter(num)
+    local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
+    local keycard = "ch_prop_vault_key_card_01a"
+    LoadAnim(animDict)
+    
+    lvlFour = num
 
-            NetworkStartSynchronisedScene(bombAnims[2][2])
+    if not keycardSyncAnims[2][1] then
+        local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
+        keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
+
+        for i = 1, #keycardSyncAnims[1][2] do 
+            keycardSyncAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 0, 0, 1.3)
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(keycardObj, keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][2], 1.0, -1.0, 114886080)
         end
     end
 
-
-
-
-
+    NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
+    Wait(1000)
+    NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
+    
+    KeycardReady(num)
 end
 
 local function SetupVault()
@@ -313,8 +289,6 @@ local function VaultExplosionSetup()
     blips[1] = AddBlipForRadius(aggressiveAreaBlip)
     SetBlipColour(blips[1], 76)
     SetBlipAlpha(blips[1], 175)
-
-    print(DoesBlipExist(blips[1]))
     --if GetResourceState("ifruit-phone") == "stopped" and player == 1 then 
     --    TriggerEvent("cl:ifruit:setBombContact", true, "sv:casinoheist:vaultExplosion", true)
     --else 
@@ -324,54 +298,78 @@ local function VaultExplosionSetup()
     --end
 end
 
-function KeycardReady(num)
+local function PlantVaultBombs(num)
+    local animDict = ""
+    local bag = ""
+    local bomb = "ch_prop_ch_explosive_01a"
+    local bombObj = {}
+    local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+    local camNum = 4 + num 
+
+    if num == 2 then 
+        animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
+        bombObj[3] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+    else   
+        animDict = "anim_heist@hs3f@ig8_vault_explosives@left@male@"
+    end
+
+    LoadModel(bag)
+    LoadModel(bomb)
+    LoadAnim(animDict)
+
+    local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
+    bombObj[1] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+    bombObj[2] = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+    
+    for i = 2, 3 do 
+        SetEntityVisible(bombObj[i], false, false)
+    end
+
+    for i = 1, #bombAnims[1][num] do 
+        bombAnims[2][i] = NetworkCreateSynchronisedScene(2504.97, -240.31, -73.691, 0.0, 0.0, 0.0, 2, true, false, 1065353216, 0.0, 1.3)
+        NetworkAddPedToSynchronisedScene(PlayerPedId(), bombAnims[2][i], animDict, bombAnims[1][num][i][1], 4.0, -4.0, 18, 0, 1000.0, 0)
+        NetworkAddEntityToSynchronisedScene(bombObj[1], bombAnims[2][i], animDict, bombAnims[1][num][i][2], 1.0, -1.0, 114886080)
+        NetworkAddEntityToSynchronisedScene(bombObj[2], bombAnims[2][i], animDict, bombAnims[1][num][i][3], 1.0, -1.0, 114886080)
+        if num == 2 then 
+            NetworkAddEntityToSynchronisedScene(bombObj[3], bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
+            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][5], 1.0, -1.0, 114886080)
+        else
+            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
+        end
+    end
+
+    NetworkStartSynchronisedScene(bombAnims[2][1])
+    Wait(2000)
+    NetworkStartSynchronisedScene(bombAnims[2][2])
+    
+    local x = 0
+    local numerics = {"first, second, last"}
+
     while true do 
         Wait(5)
         
-        SetPauseMenuActive(false)
-        
-        HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
-        if IsControlJustPressed(0, 18) then 
-            NetworkStartSynchronisedScene(keycardSyncAnims[2][3])
+        HelpMsg("Press ~INPUT_ATTACK~ to plant the ".. numerics[x + 1] .." explosive")
+        if IsControlPressed(0, 24) then 
+            NetworkStartSynchronisedScene(bombAnims[2][3 + x])
+            FreezeEntityPosition(bombObj[x + 1])
+            if (x + 2) == 4 then
+                SetEntityVisible(bombObj[x + 2])
+            end
             Wait(2000)
-            NetworkStartSynchronisedScene(keycardSyncAnims[2][4])
-            --if not timerStarted then 
-            --    SyncKeycardSwipe(num)
-            --end
-            break 
-        elseif IsControlJustPressed(0, 200) then 
-            ClearPedTasks(PlayerPedId())
-            DeleteObject(keycardObj)
-            isSwiping = false
-            lvlFour = 0
-            break
-        end
-    end
-end
+            x = x + 1
 
-local function SyncKeycardEnter(num)
-    local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
-    local keycard = "ch_prop_vault_key_card_01a"
-    LoadAnim(animDict)
-    
-    lvlFour = num
+            if x == (1 + num) then 
+                break
+            end
 
-    if not keycardSyncAnims[2][1] then
-        local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
-        keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
-
-        for i = 1, #keycardSyncAnims[1][2] do 
-            keycardSyncAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 0, 0, 1.3)
-            NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-            NetworkAddEntityToSynchronisedScene(keycardObj, keycardSyncAnims[2][i], animDict, keycardSyncAnims[1][num][i][2], 1.0, -1.0, 114886080)
+            NetworkStartSynchronisedScene(bombAnims[2][2])
         end
     end
 
-    NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
-    Wait(1000)
-    NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
-    
-    KeycardReady(num)
+
+
+
+
 end
 
 function RoofTerraceEntry()
