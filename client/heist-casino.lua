@@ -1,6 +1,7 @@
 local keycardObj = 0
 local blip = 0
 local keycardScene = 0
+local lvlFour = 0
 
 local isSwiping = false
 local timerStarted = false
@@ -158,46 +159,6 @@ local function HackKeyPad(level, j)
     end
 end
 
-local function SyncKeycardSwipe(num)
-    local x = 0
-    if num == 1 then 
-        x = 2
-    elseif num == 2 then 
-        x = 1
-    end
-    
-    local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
-    local animName = keycardSyncAnims[1][x][3][1]
-    print(keycardSyncAnims[1][x][4][1])
-    local syncSwipe = false 
-    local x = 0
-
-    while x <= 10 and not timerStarted do 
-        if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animName, 2) then 
-            syncSwipe = true
-            break 
-
-        end 
-
-        print(IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animName, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animName, 2))
-
-        x = x + 1
-        Wait(300)
-    end
-
-    if syncSwipe then 
-        NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
-    else 
-        local random = math.random(1, 3)
-        NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
-        Wait(2000)
-        NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
-        Wait(1000)
-        NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
-        KeycardReady(num)
-    end
-end
-
 local function PlantVaultBombs(num)
     local animDict = ""
     local bag = ""
@@ -333,8 +294,8 @@ local function VaultExplosion()
     PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
     PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
     SetSynchronizedScenePhase(scene, 0.056)
-    StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
     PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
+    StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
     ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
     SetPadShake(0, 130, 256)
     RemoveDecalsInRange(2505.0, -238.5, -70.5, 8.0)
@@ -374,14 +335,15 @@ function KeycardReady(num)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][3])
             Wait(2000)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][4])
-            if not timerStarted then 
-                SyncKeycardSwipe(num)
-            end
+            --if not timerStarted then 
+            --    SyncKeycardSwipe(num)
+            --end
             break 
         elseif IsControlJustPressed(0, 200) then 
             ClearPedTasks(PlayerPedId())
             DeleteObject(keycardObj)
             isSwiping = false
+            lvlFour = 0
             break
         end
     end
@@ -392,6 +354,8 @@ local function SyncKeycardEnter(num)
     local keycard = "ch_prop_vault_key_card_01a"
     LoadAnim(animDict)
     
+    lvlFour = num
+
     if not keycardSyncAnims[2][1] then
         local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
         keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
@@ -538,7 +502,7 @@ function MainEntry()
 end
     
 function SecurityLobby()
-    RemoveAllBlips()
+    --RemoveAllBlips()
 
     for i = 1, 2 do 
         blips[i] = AddBlipForCoord(keypads[4][i])
@@ -548,9 +512,11 @@ function SecurityLobby()
     end
 
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
-    local animNameOne = keycardSyncAnims[1][1][5]
-    local animNameTwo = keycardSyncAnims[1][2][5]
-
+    local animNameOne = keycardSyncAnims[1][1][4][1]
+    local animNameTwo = keycardSyncAnims[1][2][4][1]
+    local swiped = false
+    local sync = false
+    local x = 0
 
     CreateThread(function()
         while true do 
@@ -563,7 +529,7 @@ function SecurityLobby()
                 
                 if distanceL < 2.0 or distanceR < 2.0 then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.") 
-                    if IsControlPressed(0, 38) then 
+                    if IsControlJustPressed(0, 38) then 
                         if distanceL < distanceR then 
                             SyncKeycardEnter(1)
                         else
@@ -574,35 +540,70 @@ function SecurityLobby()
                 end 
             end
 
-            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
-                if not timerStarted and isSwiping then 
-                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
-                    SetupVault()
-                    break
-                else 
-                    local random = math.random(1, 3)
-                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
-                    Wait(2000)
-                    NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
-                    Wait(1000)
-                    NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
-                    KeycardReady(num)
-                end
+            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then 
+                swiped = true
+                while x < 30 do 
+                    if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
+                        sync = true 
+                    end
+                    Wait(100)
+                    x = x + 1
+                end 
             elseif IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
-                if not timerStarted and isSwiping then 
-                    NetworkStartSynchronisedScene(keycardSyncAnims[1][5])
-                    SetupVault()
-                    break
-                else 
-                    local random = math.random(1, 3)
-                    NetworkStartSynchronisedScene(keycardSyncAnims[1][5 + random])
-                    Wait(2000)
-                    NetworkStartSynchronisedScene(keycardSyncAnims[1][1])
-                    Wait(1000)
-                    NetworkStartSynchronisedScene(keycardSyncAnims[1][2])
-                    KeycardReady(num)
+                swiped = true
+                while x < 30 do 
+                    if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
+                        sync = true 
+                    end 
+                    Wait(100)
+                    x = x + 1
                 end
             end
+
+            if sync and swiped then 
+                if isSwiping then 
+                    NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
+                    Wait(2000)
+                    ClearPedTasks(PlayerPedId())
+                    DeleteEntity(keycardObj)
+                end 
+                
+                swiped = false
+                SetupVault()
+                break
+            elseif swiped then 
+                local random = math.random(1, 3)
+                NetworkStartSynchronisedScene(keycardSyncAnims[2][5 + random])
+                Wait(2000)
+                NetworkStartSynchronisedScene(keycardSyncAnims[2][1])
+                Wait(1000)
+                NetworkStartSynchronisedScene(keycardSyncAnims[2][2])
+                KeycardReady(lvlFour)
+                swiped = false
+            end
+            
+            --    if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameOne, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameOne, 2) then
+            --    if not timerStarted and isSwiping then 
+            --        
+            --        break
+            --    else 
+            --        
+            --    end
+            --elseif IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), animDict, animNameTwo, 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), animDict, animNameTwo, 2) then
+            --    if not timerStarted and isSwiping then 
+            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][5])
+            --        SetupVault()
+            --        break
+            --    else 
+            --        local random = math.random(1, 3)
+            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][5 + random])
+            --        Wait(2000)
+            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][1])
+            --        Wait(1000)
+            --        NetworkStartSynchronisedScene(keycardSyncAnims[1][2])
+            --        KeycardReady(num)
+            --    end
+            --end
         end
     end)
 end
