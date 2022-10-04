@@ -173,10 +173,8 @@ local function KeycardReady(num)
     while true do 
         Wait(5)
         
-        SetPauseMenuActive(false)
-        
         HelpMsg("Both Players must insert their keycards simultaneously. Press ~INPUT_FRONTEND_RDOWN~ when you are both ready. to back out press ~INPUT_FRONTEND_PAUSE_ALTERNATE~.")
-        if IsControlJustPressed(0, 18) then 
+        if IsControlPressed(0, 18) then 
             NetworkStartSynchronisedScene(keycardSyncAnims[2][3])
             Wait(2000)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][4])
@@ -184,13 +182,15 @@ local function KeycardReady(num)
             --    SyncKeycardSwipe(num)
             --end
             break 
-        elseif IsControlJustPressed(0, 200) then 
+        elseif IsControlPressed(0, 200) then 
             ClearPedTasks(PlayerPedId())
             DeleteObject(keycardObj)
             isSwiping = false
             lvlFour = 0
             SecurityLobby(false, true)
             break
+        else 
+            Wait(10)
         end
     end
 end
@@ -429,6 +429,14 @@ function HeliPadEntry()
     end)
 end
 
+function SewerEntry()
+
+end
+
+function TunnelEntry()
+
+end
+
 function MainEntry()
     --if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
@@ -478,7 +486,7 @@ function MainEntry()
                         end
                         
                         SetEntityCoords(PlayerPedId(), casinoToLobby[player])
-                        SetEntityHeading(PlayerPedId(), 180.0)
+                        SetEntityHeading(PlayerPedId(), casinoToLobby[player].w)
                         
                         Wait(3000)
                         
@@ -527,6 +535,9 @@ function MainEntry()
                 if num == 1 then
                     zCoord = -67
                     num = 2
+                elseif num == 2 then 
+                    zCoord = -70
+                    num = 3
                 else
                     SecurityLobby(true, false) 
                     break
@@ -559,13 +570,13 @@ function SecurityLobby(blip, old)
             Wait(5)
 
             if not isSwiping then 
-                SubtitleMsg("Go to one of the ~g~keypads~s~.", 10)
+                SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
 
                 local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - keypads[4][1]), #(GetEntityCoords(PlayerPedId()) - keypads[4][2])
                 
                 if distanceL < 2.0 or distanceR < 2.0 then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.") 
-                    if IsControlJustPressed(0, 38) then 
+                    if IsControlPressed(0, 38) then 
                         if distanceL < distanceR then 
                             SyncKeycardEnter(1)
                         else
@@ -620,6 +631,7 @@ function SecurityLobby(blip, old)
                     swiped = false
                     isSwiping = true
                     SetupVault()
+                    FirstMantrap()
                     break
                 elseif swiped then 
                     local random = math.random(1, 3)
@@ -648,7 +660,6 @@ function FirstMantrap()
             local distance = #(GetEntityCoords(PlayerPedId()) - mantrapCoords)
 
             if distance < 20 then 
-                break
                 if IsNotClose(mantrapCoords, 25) then 
                     SubtitleMsg("Wait for your team members to enter the mantrap", 110)
                 else
@@ -801,10 +812,12 @@ RegisterCommand("test_cut_agg", function()
 end, false)
 
 RegisterNetEvent("cl:testt", function()
-    LoadModel("ch_des_heist3_vault_01")
-    vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
-    
-    BombVaultDoor()
+    --LoadModel("ch_des_heist3_vault_01")
+    --vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
+    --
+    --BombVaultDoor()
+
+    SecurityLobby(true, false)
 end)
 
 RegisterCommand("test_vaultdoors", function()
