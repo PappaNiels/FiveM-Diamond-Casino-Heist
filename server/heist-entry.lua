@@ -1,0 +1,17 @@
+RegisterNetEvent("sv:casinoheist:syncNetIds", function(ids)
+    for i = 2, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:setNetIds", hPlayer[i], ids)
+    end
+end)
+
+RegisterCommand("sv_tunnel", function()
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i])
+    end
+end, false)
+
+RegisterCommand("sv_aggr", function()
+    for i = 1, #hPlayer do
+        TriggerClientEvent("cl:casinoheist:testCut", i)
+    end
+end, false)

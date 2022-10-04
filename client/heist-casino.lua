@@ -573,8 +573,14 @@ function SecurityLobby(blip, old)
                         end
                         isSwiping = true
                         break
+                    else 
+                        Wait(10)
                     end
+                else 
+                    Wait(100)
                 end 
+            else 
+                Wait(1000)
             end
         end
     end)
@@ -716,7 +722,6 @@ function BombVaultDoor()
     CreateThread(function()
         while true do 
             Wait(5)
-            print("tick1")
             
             SubtitleMsg("Plant the ~g~explosives.", 110)
 
@@ -747,7 +752,6 @@ function BombVaultDoor()
                 else 
                     Wait(100)
                 end
-
             end
             
             if leftBombs and rightBombs then 
@@ -759,7 +763,7 @@ function BombVaultDoor()
     CreateThread(function()
         while true do
             Wait(100)
-            print("tick2")
+            
             if not leftBombs and (IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2)) then 
                 RemoveBlip(blips[1])
                 leftBombs = true
@@ -777,7 +781,6 @@ function BombVaultDoor()
             end
         end
     end)
-
 end
 
 RegisterNetEvent("cl:casinoheist:testCut", MainEntry)

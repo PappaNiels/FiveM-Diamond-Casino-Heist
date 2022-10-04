@@ -169,11 +169,11 @@ function StartHeist()
     player = GetCurrentHeistPlayer()
     print(player)
     
-    approach = 2
+    approach = 3
     selectedEntryDisguise = 3 
     selectedDriver = 1
     selectedVehicle = 1
-    selectedEntrance = 6
+    selectedEntrance = 2
 
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
     AddRelationshipGroup("GUARDS")
