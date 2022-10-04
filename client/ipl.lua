@@ -243,8 +243,8 @@ CreateThread(function()
     RequestIpl("ch_mph3_add")
 
     ActivateInteriorEntitySet(vault, "standard_props")
-    ActivateInteriorEntitySet(vault, "cabinet_1")
-    ActivateInteriorEntitySet(vault, "cabinet_art")
+    DeactivateInteriorEntitySet(vault, "cabinet_1")
+    DeactivateInteriorEntitySet(vault, "cabinet_art")
     
     DeactivateInteriorEntitySet(vault, "cabinet_2")
 

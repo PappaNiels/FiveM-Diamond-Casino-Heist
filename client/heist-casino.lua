@@ -11,6 +11,10 @@ local rightBombs = false
 
 local vaultObjs = {}
 local bombObjs = {}
+local cartObjs = {}
+local trollyIds = {}
+local artCabinetObjs = {}
+local paintingObjs = {}
 local blips = {}
 local keycardSyncAnims = {
     {
@@ -81,10 +85,73 @@ local drillAnims = { -- Laser: "anim_heist@hs3f@ig9_vault_drill@laser_drill@", "
     {}
 }
 
-local laserDrillAnims = { -- 
-    {},
+local cartAnims = {
+    {
+        -- Player, Bag, Trolly, Cam
+        {"intro", "bag_intro"},
+        {"grab", "bag_grab", "cart_cash_dissapear"},
+        {"grab_idle", "bag_grab_idle"},
+        {"exit", "bag_exit"}
+    },
     {}
 }
+
+local function CartType(i)
+    j = 0
+    if i > 3 and i < 7 then 
+        j = i - 3 
+    elseif i > 6 then 
+        j = i - 6
+    else 
+        j = i
+    end
+
+    return j
+end
+
+local function PlaceCarts()
+    if player == 1 then 
+        local cartType = {
+            {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
+            {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
+            {"ch_prop_ch_sec_cabinet_02a"},
+            {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
+        }
+
+        for i = 1, #cartType[loot] do 
+            LoadModel(cartType[loot][i])
+        end
+        if loot ~= 3 then 
+            if vaultLayout < 3 then 
+                cartLayout = 1
+            else 
+                cartLayout = 2
+            end
+
+            for i = 1, #cartLoc[cartLayout] do 
+                j = CartDefine(i)
+
+                cartObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
+                SetEntityHeading(cartObjs[i], carts[cartLayout][i].w)
+                print("i: " .. i)
+                print("j: " .. j)
+                print("---")
+            end
+        end
+    end
+end
+
+local function PlaceArt()
+    LoadModel("ch_prop_ch_sec_cabinet_02a")
+    LoadModel("ch_prop_vault_painting_01a")
+
+    for i = 1, #artCabinets do 
+        artCabinetObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, false, false, false)
+        SetEntityHeading(artCabinetObjs[i], artCabinets[i].w)
+        paintingObjs[i] = CreateObject(GetHashKey("ch_prop_vault_painting_01a"), paintings[i], false, false, false)
+        SetEntityHeading(paintingObjs[i], artCabinets[i].w)
+    end
+end
 
 local function RemoveAllBlips()
     for i = 1, #blips do 
@@ -235,10 +302,6 @@ local function SetupVault()
 
     RemoveAllBlips()
 
-    vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
-    SetEntityVisible(vaultObjs[1], false, false)
-
-    
     if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
         LoadModel("ch_prop_ch_vaultdoor01x")
         vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
@@ -331,15 +394,14 @@ local function PlantVaultBombs(num)
 
     plantBombs = true
 
-    if DoesEntityExist(bombObj[1]) and num == 1 then 
-        bombObj[4] = bombObj[1]
-        bombObj[5] = bombObj[2]
-    elseif DoesEntityExist(bombObj[1]) and num == 2 then 
-        bombObj[3] = bombObj[1]
-        bombObj[4] = bombObj[2]
-        bombObj[5] = bombObj[3]
+    if DoesEntityExist(bombObjs[1]) and num == 1 then 
+        bombObjs[4] = bombObjs[1]
+        bombObjs[5] = bombObjs[2]
+    elseif DoesEntityExist(bombObjs[1]) and num == 2 then 
+        bombObjs[3] = bombObjs[1]
+        bombObjs[4] = bombObjs[2]
+        bombObjs[5] = bombObjs[3]
     end
-
 
     if num == 2 then 
         animDict = "anim_heist@hs3f@ig8_vault_explosives@right@male@"
@@ -666,7 +728,7 @@ function FirstMantrap()
             local distance = #(GetEntityCoords(PlayerPedId()) - mantrapCoords)
 
             if distance < 20 then 
-                if IsNotClose(mantrapCoords, 25) then 
+                if IsNotClose(mantrapCoords, 35) then 
                     SubtitleMsg("Wait for your team members to enter the mantrap", 110)
                 else
                     RemoveBlip(blips[1])
@@ -681,12 +743,17 @@ function FirstMantrap()
             Wait(100)
             
             local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
-
+            
             if distance < 7 then 
                 if IsNotClose(vaultEntryDoorCoords, 7) then 
                     SubtitleMsg("Wait for your team members to reach the vault door", 110)
                 else
-                    if selectedEntryDisguise ~= 3 then 
+                    EnableMantrapDoors(1, 1)
+                    if not DoesEntityExist(vaultObjs[1]) then 
+                        vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+                        SetEntityVisible(vaultObjs[1], false, false)
+                    end
+                    if selectedEntryDisguise == 3 then 
                         LoadCutscene("hs3f_sub_vlt")
                         StartCutscene(0)
 
@@ -844,6 +911,22 @@ RegisterCommand("test_bombs", function()
     LoadModel("ch_des_heist3_vault_01")
     vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
     
-    
     BombVaultDoor()
+end, false)
+
+local test = {}
+
+RegisterCommand("test_art", function()
+    
+    PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
+
+    LoadModel("ch_prop_ch_sec_cabinet_02a")
+    LoadModel("ch_prop_vault_painting_01a")
+
+    for i = 1, #artCabinets do 
+        artCabinetObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, false, false, false)
+        SetEntityHeading(artCabinetObjs[i], artCabinets[i].w)
+        paintingObjs[i] = CreateObject(GetHashKey("ch_prop_vault_painting_01a"), paintings[i], false, false, false)
+        SetEntityHeading(paintingObjs[i], artCabinets[i].w)
+    end
 end, false)
