@@ -217,10 +217,14 @@ function StartHeist()
 
         if selectedEntryDisguise == 3 and approach == 2 then 
             SetVehicleColours(veh, 111, 0)
+        elseif approach ~= 2 then 
+            SetVehicleColours(veh, 0, 11) 
         end
     end
 
     DistanceCasino()
+
+    Wait(1000)
 
     DoScreenFadeIn(1500)
 
@@ -298,11 +302,29 @@ function EnterCasino()
         Wait(10)
     end
 
-    SetEntityCoords(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][1], true, false, false, false)
-    SetEntityHeading(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][2])
+    if approach == 3 and selectedEntrance == 2 then 
+        SetEntityCoords(PlayerPedId(), aggressiveMainEntry, true, false, false, false)
+    else
+        SetEntityCoords(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][1], true, false, false, false)
+        SetEntityHeading(PlayerPedId(), casinoEntryCoords[selectedEntrance][player][2])
+    end 
+    
     RemoveBlip(blip)
+    Wait(2000)
 
     DoScreenFadeIn(500)
+    
+    if selectedEntrance == 2 then 
+        MainEntry()
+    elseif selectedEntrance == 4 or selectedEntrance == 9 then 
+        HeliPadEntry()
+    elseif selectedEntrance == 3 or selectedEntrance == 5 or selectedEntrance == 8 or selectedEntrance == 10 then 
+        RoofTerraceEntry()
+    elseif selectedEntrance == 7 then 
+        SewerEntry()
+    elseif selectedEntrance == 1 or selectedEntrance == 11 then 
+        Basement()
+    end
 end
 
 function EnterCasinoTunnel()
@@ -362,6 +384,8 @@ function EnterCasinoTunnel()
     RemoveBlip(blip)
     SetEntityVisible(garageDoor, true)
     SetEntityCollision(garageDoor, true, true)
+
+    TunnelEntry()
 end
 
 RegisterNetEvent("cl:casinoheist:startHeist", StartHeist)
