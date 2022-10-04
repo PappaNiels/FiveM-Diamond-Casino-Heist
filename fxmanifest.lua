@@ -32,7 +32,8 @@ server_scripts {
     "server/security.lua",
     "server/mantrap.lua",
     "server/hud.lua",
-    "server/heist-casino.lua"
+    "server/heist-casino.lua",
+    "server/heist-entry.lua"
 }
 
 shared_scripts {
