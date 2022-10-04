@@ -68,12 +68,20 @@ local bombAnims = {
     {}
 }
 
-local regularDrillAnims = {
-    {},
+local drillAnims = { -- Laser: "anim_heist@hs3f@ig9_vault_drill@laser_drill@", "ch_prop_laserdrill_01a" Regular: "anim_heist@hs3f@ig9_vault_drill@drill@", "hei_prop_heist_drill"
+    {   -- Ped, Drill, Bag, Cam
+        {"intro", "intro_drill_bit", "bag_intro", "intro_cam"},
+        {"drill_straight_start", "drill_straight_start_drill_bit", "bag_drill_straight_start", "drill_straight_start_cam"},
+        {"drill_straight_idle", "drill_straight_idle_drill_bit", "bag_drill_straight_idle", "drill_straight_idle_cam"},
+        {"drill_straight_end", "drill_straight_end_drill_bit", "bag_drill_straight_end", "drill_straight_end_cam"},
+        {"drill_straight_end_idle", "drill_straight_end_idle_drill_bit", "bag_drill_straight_end_idle", "drill_straight_end_idle_cam"},
+        {"drill_straight_fail", "", "", ""},
+        {"exit", "exit_drill_bit", "bag_exit", "exit_cam"}
+    },
     {}
 }
 
-local laserDrillAnims = {
+local laserDrillAnims = { -- 
     {},
     {}
 }
@@ -245,8 +253,6 @@ local function SetupVault()
         
         SetEntityVisible(vaultObjs[3], false, false)
         SetEntityCollision(vaultObjs[3], false, true)
-    elseif approach == 2 and selectedEntryDisguise == 3 then 
-        LoadCutscene("hs3f_sub_vlt")
     end
 end
 
