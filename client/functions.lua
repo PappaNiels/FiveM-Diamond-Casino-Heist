@@ -210,7 +210,25 @@ function IsNotClose(coords, distance)
 end
 
 function IsAnyCrewNear(coords, distance)
-    
+    if playerAmount == 2 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - coords) < distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - coords) < distance then 
+            return true 
+        else 
+            return false 
+        end
+    elseif playerAmount == 3 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - coords) < distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - coords) < distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - coords) < distance then 
+            return true 
+        else 
+            return false 
+        end
+    elseif playerAmount == 4 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - coords) < distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - coords) < distance or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - coords) < distance #(GetEntityCoords(GetHeistPlayerPed(hPlayer[4])) - coords) < distance then 
+            return true 
+        else 
+            return false 
+        end
+    end
 end
 
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
