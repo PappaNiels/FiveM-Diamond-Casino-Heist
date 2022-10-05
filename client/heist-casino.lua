@@ -2,6 +2,8 @@ local keycardObj = 0
 local blip = 0
 local keycardScene = 0
 local lvlFour = 0
+local cartLayout = 0
+local vaultLayout = 0
 
 local isSwiping = false
 local timerStarted = false
@@ -11,9 +13,7 @@ local rightBombs = false
 
 local vaultObjs = {}
 local bombObjs = {}
-local cartObjs = {}
-local trollyIds = {}
-local artCabinetObjs = {}
+local takeObjs = {}
 local paintingObjs = {}
 local blips = {}
 local keycardSyncAnims = {
@@ -129,7 +129,7 @@ local function PlaceCarts()
             end
 
             for i = 1, #cartLoc[cartLayout] do 
-                j = CartDefine(i)
+                j = CartType(i)
 
                 cartObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
                 SetEntityHeading(cartObjs[i], carts[cartLayout][i].w)
@@ -477,6 +477,76 @@ local function PlantVaultBombs(num)
     end
 end
 
+local function SetVaultObjs()
+    if loot == 3 then
+        local paintingNames = {
+            "ch_prop_vault_painting_01a",
+            "ch_prop_vault_painting_01d",
+            "ch_prop_vault_painting_01f",
+            "ch_prop_vault_painting_01g",
+            "ch_prop_vault_painting_01h",
+            "ch_prop_vault_painting_01i",
+        }
+        
+        LoadModel("ch_prop_ch_sec_cabinet_02a")
+
+        for i = 1, #paintingNames do 
+            LoadModel(paintingNames[i])
+        end 
+
+        for i = 1, #artCabinets do 
+            takeObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, false, false, false)
+            SetEntityHeading(artCabinetObjs[i], artCabinets[i].w)
+            paintingObjs[i] = CreateObject(GetHashKey(paintingNames[i]), paintings[i], false, false, false)
+            SetEntityHeading(paintingObjs[i], artCabinets[i].w)
+
+            blips[i] == AddBlipForEntity(artCabinetObjs[i])
+            SetBlipSprite(blips[i], 534 + i)
+            SetBlipScale(blips[i], 0.8)
+            SetBlipColour(blips[i], 3)
+        end
+
+        for i = 1, #paintingNames do 
+            SetModelAsNoLongerNeeded(paintingNames[i]) 
+        end
+
+        SetModelAsNoLongerNeeded("ch_prop_ch_sec_cabinet_02a") 
+    else 
+        local cartType = {
+            {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
+            {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
+            {},
+            {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
+        }
+    
+        for i = 1, #cartType[loot] do 
+            LoadModel(cartType[loot][i])
+        end
+        
+        if vaultLayout < 3 then 
+            cartLayout = 1
+        else 
+            cartLayout = 2
+        end
+        
+        for i = 1, #carts[cartLayout] do 
+            j = CartType(i)
+            
+            takeObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
+            SetEntityHeading(test[i], carts[cartLayout][i].w)
+            
+            blips[i] = AddBlipForCoord(carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z)
+            SetBlipSprite(blips[i], 534 + i)
+            SetBlipColour(blips[i], 2)
+            SetBlipScale(blips[i], 0.8)
+        end
+        
+        for i = 1, #cartType[loot] do 
+            SetModelAsNoLongerNeeded(cartType[loot][i])
+        end
+    end
+end
+
 function RoofTerraceEntry()
 
     CreateThread(function()
@@ -745,7 +815,34 @@ function FirstMantrap()
             local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
             
             if distance < 7 then 
-                if IsNotClose(vaultEntryDoorCoords, 7) then 
+                if approach == 2 and selectedEntryDisguise == 3 then 
+                    if not DoesEntityExist(vaultObjs[1]) then 
+                        vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
+                        SetEntityVisible(vaultObjs[1], false, false)
+                    end
+                    LoadCutscene("hs3f_sub_vlt")
+                    StartCutscene(0)
+
+                    while not DoesCutsceneEntityExist("MP_3", 0) do 
+                        Wait(0)
+                    end
+
+                    local arr = {}
+
+                    if #playerAmount == 2 then 
+                        arr = {"MP_3", "MP_4"}
+                    elseif #playerAmount == 3 then 
+                        arr = {"MP_4"}
+                    end
+
+                    if #arr > 0 then 
+                        for i = 1, #arr do 
+                            SetEntityVisible(GetEntityIndexOfCutsceneEntity(arr[i], 0), false, false)
+                        end
+                    end
+                    SetVaultObjs()
+                    break
+                elseif IsNotClose(vaultEntryDoorCoords, 7) then 
                     SubtitleMsg("Wait for your team members to reach the vault door", 110)
                 else
                     EnableMantrapDoors(1, 1)
@@ -753,29 +850,10 @@ function FirstMantrap()
                         vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
                         SetEntityVisible(vaultObjs[1], false, false)
                     end
-                    if selectedEntryDisguise == 3 then 
-                        LoadCutscene("hs3f_sub_vlt")
-                        StartCutscene(0)
+                    
+                    SetVaultObjs()
 
-                        while not DoesCutsceneEntityExist("MP_3", 0) do 
-                            Wait(0)
-                        end
-
-                        local arr = {}
-
-                        if #hPlayer == 2 then 
-                            arr = {"MP_3", "MP_4"}
-                        elseif #hPlayer == 3 then 
-                            arr = {"MP_4"}
-                        end
-
-                        if #arr > 0 then 
-                            for i = 1, #arr do 
-                                SetEntityVisible(GetEntityIndexOfCutsceneEntity(arr[i], 0), false, false)
-                            end
-                        end 
-                        break
-                    elseif approach == 3 then  
+                    if approach == 3 then  
                         BombVaultDoor()
                         break
                     else
@@ -867,6 +945,10 @@ function BombVaultDoor()
     end)
 end
 
+function Vault()
+
+end
+
 RegisterNetEvent("cl:casinoheist:testCut", MainEntry)
 
 RegisterNetEvent("cl:casinoheist:vaultExplosion", function()
@@ -924,9 +1006,44 @@ RegisterCommand("test_art", function()
     LoadModel("ch_prop_vault_painting_01a")
 
     for i = 1, #artCabinets do 
-        artCabinetObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, false, false, false)
+        artCabinetObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, true, false, false)
         SetEntityHeading(artCabinetObjs[i], artCabinets[i].w)
         paintingObjs[i] = CreateObject(GetHashKey("ch_prop_vault_painting_01a"), paintings[i], false, false, false)
         SetEntityHeading(paintingObjs[i], artCabinets[i].w)
+    end
+end, false)
+
+local test = {}
+
+RegisterCommand("test_trolly", function()
+    local cartType = {
+        {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
+        {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
+        {},
+        {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
+    }
+
+    for i = 1, #cartType[loot] do 
+        LoadModel(cartType[loot][i])
+    end
+
+    if vaultLayout < 3 then 
+        cartLayout = 1
+    else 
+        cartLayout = 2
+    end
+
+    local sprites = {}
+
+    for i = 1, #carts[cartLayout] do 
+        j = CartType(i)
+
+        test[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
+        SetEntityHeading(test[i], carts[cartLayout][i].w)
+        
+        blips[i] = AddBlipForCoord(carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z)
+        SetBlipSprite(blips[i], 534 + i)
+        SetBlipColour(blips[i], 2)
+        SetBlipScale(blips[i], 0.8)
     end
 end, false)
