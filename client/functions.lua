@@ -232,6 +232,19 @@ function IsAnyCrewNear(coords, distance)
     end
 end
 
+function GetEntityOffset(entity, bool)
+    local coords = GetEntityCoords(entity)
+    local heading = GetEntityHeading(entity) / 180 * math.pi
+    local plus = vector3(0.0, 0.0, 0.0)
+    if bool then 
+        plus = vector3(math.cos(heading), math.sin(heading), 0.0)
+    else 
+        plus = vector3(math.cos(heading + (0.5 * math.pi)), math.sin(heading + (0.5 * math.pi)), 0.0)
+    end
+
+    return plus
+end
+
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
         LoadCutscene(cutscene)
