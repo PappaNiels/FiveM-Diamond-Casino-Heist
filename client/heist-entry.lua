@@ -169,11 +169,11 @@ function StartHeist()
     player = GetCurrentHeistPlayer()
     print(player)
     
-    approach = 3
-    selectedEntryDisguise = 0 
+    approach = 2
+    selectedEntryDisguise = 3 
     selectedDriver = 1
     selectedVehicle = 1
-    selectedEntrance = 2
+    selectedEntrance = 6
     playerAmount = #hPlayer
     
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
@@ -275,14 +275,17 @@ function KeycardThread()
 end
 
 function TeleportThread()
+    veh = GetVehiclePedIsIn(GetHeistPlayerPed(hPlayer[1]), false)
     CreateThread(function()
         while true do 
             Wait(100)
 
+            print(#(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - entryCoords[6]))
+
             if selectedEntrance == 6 and #(GetEntityCoords(veh) - entryCoords[6]) < 50 then 
                 EnterCasinoTunnel()
                 break
-            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 3 then
+            elseif #(GetEntityCoords(PlayerPedId()) - entryCoords[selectedEntrance]) < 3 and selectedEntrance ~= 6 then
                 if IsNotClose(entryCoords[selectedEntrance], 3) then
                     SubtitleMsg("Wait for your team members", 110)
                 else 
@@ -329,11 +332,15 @@ function EnterCasino()
 end
 
 function EnterCasinoTunnel()
-    DoScreenFadeOut(500)
 
+    DoScreenFadeOut(500)
+    
     while not IsScreenFadedOut() do 
         Wait(0)
     end
+
+    SetEntityCoords(veh, 974.74, -73.41, 74.65, true, false, false, false)
+    
 
     DoScreenFadeIn(500)
 
@@ -361,7 +368,7 @@ function EnterCasinoTunnel()
         TaskVehicleDriveToCoord(GetPedInVehicleSeat(veh, -1), veh, 997.1, -48.63, 74.56, 25.0, 1.0, GetHashKey("stockade"), 786944, 0.5, 100.0)
     end
 
-    while #(GetEntityCoords(veh) - vector3(997.1, -48.63, 74.56)) > 5 do 
+    while #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - vector3(997.1, -48.63, 74.56)) > 10 do 
         Wait(10)
     end 
     
@@ -373,19 +380,48 @@ function EnterCasinoTunnel()
     
     RenderScriptCams(false, false, 0, true, false)
     DestroyCam(cam)
-
+    
     if player == 1 then 
-        SetEntityCoords(veh, casinoEntryCoords[selectedEntrance][1], true, false, false, true)
-        SetEntityHeading(veh, casinoEntryCoords[selectedEntrance][2])
+        SetEntityCoords(PlayerPedId(), casinoEntryCoords[selectedEntrance][1], true, false, false, true)
+        SetEntityHeading(PlayerPedId(), casinoEntryCoords[selectedEntrance][2])
     end
+    --for i = 1, #hPlayer do 
+    --    if PlayerPedId() ~= GetHeistPlayerPed(hPlayer[i]) then 
+    --        SetEntityVisible(GetHeistPlayerPed(hPlayer[i]), true, true)
+    --    end
+    --end
 
+    --if player == 1 then 
+    --    veh = CreateVehicle(GetHashKey("stockade"), casinoEntryCoords[selectedEntrance][1], 0.0, true, false)
+    --    SetVehicleColours(veh, 111, 0)
+    --    SetEntityHeading(veh, casinoEntryCoords[selectedEntrance][2])
+    --    --NetworkRegisterEntityAsNetworked(veh)
+    --    local id = SetEntityForAll(veh)
+    --    SetPedIntoVehicle(PlayerPedId(), veh, 0)
+    --    TriggerServerEvent("sv:casinoheist:syncStockade", id)
+    --else 
+    --    veh = GetClosestVehicle(casinoEntryCoords[selectedEntrance][1], 5.0, GetHashKey("stockade"), 70)
+    --    local i = 0
+    --
+    --    if GetCurrentHeistPlayer() == 2 then 
+    --        i = 0
+    --    elseif GetCurrentHeistPlayer() == 3 then 
+    --        i = 1
+    --    elseif GetCurrentHeistPlayer() == 4 then 
+    --        i = 2 
+    --    end
+    --
+    --    SetPedIntoVehicle(PlayerPedId(), veh, i)
+    --end
+
+    
     Wait(5000) 
     DoScreenFadeIn(1500)
 
     RemoveBlip(blip)
     SetEntityVisible(garageDoor, true)
     SetEntityCollision(garageDoor, true, true)
-
+    
     TunnelEntry()
 end
 
@@ -394,6 +430,7 @@ RegisterNetEvent("cl:casinoheist:startHeist", StartHeist)
 RegisterNetEvent("cl:casinoheist:setNetIds", function(ids)
     netIds = ids
 end)
+
 
 --RegisterCommand("test_heli", Test, false)
 
@@ -404,3 +441,50 @@ end, false)
 RegisterCommand("test_keypads", function()
     KeycardThread()
 end, false)
+
+RegisterCommand("test_sync", function()
+    LoadModel("stockade")
+    veh = CreateVehicle(GetHashKey("stockade"), GetEntityCoords(PlayerPedId()), 0.0, true, false)
+    SetVehicleColours(veh, 111, 0)
+    SetEntityHeading(veh, 0.0)
+    --local id = SetEntityForAll(veh)
+
+    SetPedIntoVehicle(PlayerPedId(), veh, 1)
+    print(NetworkGetEntityFromNetworkId(id))
+    TriggerServerEvent("sv:casinoheist:syncStockade", id, veh)
+end, false)
+
+RegisterNetEvent("cl:casinoheist:syncStockadeNet", function(id, entity, source)
+    print("test", id)
+    print("entity: ", entity, DoesEntityExist(entity))
+    local vehId = NetToVeh(id)
+    Wait(1000)
+    local i = 0
+    local veh = entity
+    NetworkRequestControlOfEntity(vehId)
+    NetworkRequestControlOfNetworkId(id)
+    
+    print("test")
+    --while not NetworkHasControlOfEntity(vehId) do 
+    --    Wait(0)
+    --end
+    print("test")
+
+    if GetCurrentHeistPlayer() == 2 then 
+        i = 0
+    elseif GetCurrentHeistPlayer() == 3 then 
+        i = 1
+    elseif GetCurrentHeistPlayer() == 4 then 
+        i = 2 
+    end
+
+    print("net: " .. vehId)
+    print(DoesEntityExist(vehId))
+    
+    veh = GetVehiclePedIsIn(GetPlayerPed(GetPlayerFromServerId(source)), false)
+    print("test: " .. veh)
+    if GetPlayerFromServerId(source) ~= PlayerId() then
+        print()
+        SetPedIntoVehicle(PlayerPedId(), veh, 0)
+    end
+end)

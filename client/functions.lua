@@ -125,6 +125,7 @@ function SetEntityForAll(entity)
     netId = NetworkGetNetworkIdFromEntity(entity)
     SetNetworkIdCanMigrate(netId, true)
     SetNetworkIdExistsOnAllMachines(netId, true)
+    return netId
 end
 
 local function IsCorrectModel()

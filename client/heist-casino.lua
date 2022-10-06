@@ -15,6 +15,7 @@ local vaultObjs = {}
 local bombObjs = {}
 local takeObjs = {}
 local paintingObjs = {}
+local slideDoorObjs = {}
 local blips = {}
 local keycardSyncAnims = {
     {
@@ -44,11 +45,11 @@ local keycardSyncAnims = {
 
 local hackKeypadAnims = { 
     {    
-        {'action_var_01', 'action_var_01_ch_prop_ch_usb_drive01x', 'action_var_01_prop_phone_ing'},
-        {'hack_loop_var_01', 'hack_loop_var_01_ch_prop_ch_usb_drive01x', 'hack_loop_var_01_prop_phone_ing'},
-        {'success_react_exit_var_01', 'success_react_exit_var_01_ch_prop_ch_usb_drive01x', 'success_react_exit_var_01_prop_phone_ing'},
-        {'fail_react', 'fail_react_ch_prop_ch_usb_drive01x', 'fail_react_prop_phone_ing'},
-        {'reattempt', 'reattempt_ch_prop_ch_usb_drive01x', 'reattempt_prop_phone_ing'}
+        {"action_var_01", "action_var_01_ch_prop_ch_usb_drive01x", "action_var_01_prop_phone_ing"},
+        {"hack_loop_var_01", "hack_loop_var_01_ch_prop_ch_usb_drive01x", "hack_loop_var_01_prop_phone_ing"},
+        {"success_react_exit_var_01", "success_react_exit_var_01_ch_prop_ch_usb_drive01x", "success_react_exit_var_01_prop_phone_ing"},
+        {"fail_react", "fail_react_ch_prop_ch_usb_drive01x", "fail_react_prop_phone_ing"},
+        {"reattempt", "reattempt_ch_prop_ch_usb_drive01x", "reattempt_prop_phone_ing"}
     },
     {}
 } 
@@ -348,21 +349,22 @@ local function VaultExplosion()
     SetEntityCollision(vaultObjs[3], false, false)
     
     --Wait(1000)
-    
-    UseParticleFxAsset(ptfx)
-    scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
-    PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
-    PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
-    SetSynchronizedScenePhase(scene, 0.056)
-    PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
-    StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
-    ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
-    SetPadShake(0, 130, 256)
-    TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
-    RemoveAllBombs()
-
+    CreateThread(function()
+        UseParticleFxAsset(ptfx)
+        scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
+        PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
+        PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
+        SetSynchronizedScenePhase(scene, 0.056)
+        PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
+        StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
+        ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
+        SetPadShake(0, 130, 256)
+        TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
+        RemoveAllBombs()
+    end)
     Wait(4000)
     
+    SetEntityVisible(vaultObjs[1], true, false)
     SetEntityVisible(vaultObjs[3], true, false)
     SetEntityCollision(vaultObjs[3], true, true)
     DeleteEntity(vaultObjs[1])
@@ -500,7 +502,7 @@ local function SetVaultObjs()
             paintingObjs[i] = CreateObject(GetHashKey(paintingNames[i]), paintings[i], false, false, false)
             SetEntityHeading(paintingObjs[i], artCabinets[i].w)
 
-            blips[i] == AddBlipForEntity(artCabinetObjs[i])
+            blips[i] = AddBlipForEntity(artCabinetObjs[i])
             SetBlipSprite(blips[i], 534 + i)
             SetBlipScale(blips[i], 0.8)
             SetBlipColour(blips[i], 3)
@@ -512,6 +514,8 @@ local function SetVaultObjs()
 
         SetModelAsNoLongerNeeded("ch_prop_ch_sec_cabinet_02a") 
     else 
+        loot = 1
+        cartLayout = 1
         local cartType = {
             {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
             {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
@@ -523,17 +527,13 @@ local function SetVaultObjs()
             LoadModel(cartType[loot][i])
         end
         
-        if vaultLayout < 3 then 
-            cartLayout = 1
-        else 
-            cartLayout = 2
-        end
+        
         
         for i = 1, #carts[cartLayout] do 
             j = CartType(i)
             
             takeObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
-            SetEntityHeading(test[i], carts[cartLayout][i].w)
+            SetEntityHeading(takeObjs[i], carts[cartLayout][i].w)
             
             blips[i] = AddBlipForCoord(carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z)
             SetBlipSprite(blips[i], 534 + i)
@@ -544,6 +544,52 @@ local function SetVaultObjs()
         for i = 1, #cartType[loot] do 
             SetModelAsNoLongerNeeded(cartType[loot][i])
         end
+    end
+end
+
+local function SetVaultLayout()
+    local layouts = {
+        {2, 3, 5, 7},
+        {1, 5, 7},
+        {2, 3, 4, 5},
+        {1, 5, 7},
+        {2, 3, 4},
+        {4, 5},
+        {2, 3, 4, 5},
+        {1, 6, 7},
+        {2, 3, 5},
+        {5, 7}
+    }
+    
+    if loot == 3 then 
+        vaultLayout = math.random(7, 10)
+    else
+        vaultLayout = math.random(1, 6)
+        
+        if vaultLayout < 3 then 
+            cartLayout = 1
+        else 
+            cartLayout = 2
+        end
+    end
+
+    vaultLayout = 1
+
+    for i = 1, 7 do 
+        if i < 4 then 
+            slideDoorObjs[i] = GetClosestObjectOfType(slideDoors[i], 1.0, GetHashKey("ch_prop_ch_vault_slide_door_lrg"), false, false, false)
+        else
+            slideDoorObjs[i] = GetClosestObjectOfType(slideDoors[i], 1.0, GetHashKey("ch_prop_ch_vault_slide_door_sm"), false, false, false)
+        end
+    end 
+
+    for i = 1, #layouts[vaultLayout] do 
+        --print(DoesEntityExist(slideDoorObjs[layouts[vaultLayout][i]]))
+        local coords = GetEntityCoords(slideDoorObjs[layouts[vaultLayout][i]])
+        local heading = GetEntityHeading(slideDoorObjs[layouts[vaultLayout][i]]) / 180 * math.pi
+        local plus = vector3(math.cos(heading), math.sin(heading), 0.0)
+        
+        SetEntityCoords(slideDoorObjs[layouts[vaultLayout][i]], coords + (plus * 2), true, false, false, false)
     end
 end
 
@@ -1047,3 +1093,5 @@ RegisterCommand("test_trolly", function()
         SetBlipScale(blips[i], 0.8)
     end
 end, false)
+
+RegisterCommand("test_door", SetVaultLayout, false)
