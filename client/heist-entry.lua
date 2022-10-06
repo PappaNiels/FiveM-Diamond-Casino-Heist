@@ -175,7 +175,19 @@ function StartHeist()
     selectedVehicle = 1
     selectedEntrance = 6
     playerAmount = #hPlayer
-    
+
+    if loot == 3 then 
+        vaultLayout = math.random(7, 10)
+    else
+        vaultLayout = math.random(1, 6)
+        
+        if vaultLayout < 3 then 
+            cartLayout = 1
+        else 
+            cartLayout = 2
+        end
+    end
+
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
     AddRelationshipGroup("GUARDS")
     SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
@@ -280,8 +292,6 @@ function TeleportThread()
         while true do 
             Wait(100)
 
-            print(#(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - entryCoords[6]))
-
             if selectedEntrance == 6 and #(GetEntityCoords(veh) - entryCoords[6]) < 50 then 
                 EnterCasinoTunnel()
                 break
@@ -332,15 +342,15 @@ function EnterCasino()
 end
 
 function EnterCasinoTunnel()
-
     DoScreenFadeOut(500)
     
     while not IsScreenFadedOut() do 
         Wait(0)
     end
 
-    SetEntityCoords(veh, 974.74, -73.41, 74.65, true, false, false, false)
-    
+    if player == 1 then 
+        SetEntityCoords(veh, 974.74, -73.41, 74.65, true, false, false, false)
+    end
 
     DoScreenFadeIn(500)
 
