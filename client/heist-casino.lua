@@ -182,14 +182,15 @@ end
 
 function HackKeyPad(level, j)
     if level > selectedKeycard and level ~= 4 then 
+        isHacking = true
         local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
         local hackDevice = "ch_prop_ch_usb_drive01x"
         local phoneDevice = "prop_phone_ing"
-
+        
         LoadAnim(animDict)
         LoadModel(hackDevice)
         LoadModel(phoneDevice)
-
+        
         local keypad = GetClosestObjectOfType(keypads[level][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01c"), false, false, false)
         local hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, true, false)
         local phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, true, false)
@@ -200,7 +201,7 @@ function HackKeyPad(level, j)
             NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
             NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
         end
-
+        
         NetworkStartSynchronisedScene(hackKeypadAnims[2][1])
         Wait(4000)
         NetworkStartSynchronisedScene(hackKeypadAnims[2][2])
@@ -211,6 +212,7 @@ function HackKeyPad(level, j)
         Wait(4000)
         DeleteObject(hackUsb)
         DeleteObject(phone)
+        isHacking = false
     else 
         KeypadOne(level, j)
     end
