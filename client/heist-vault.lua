@@ -231,7 +231,7 @@ function Vault()
         while true do 
             Wait(5)
 
-            for k, v in pairs(slideDoors) do 
+            for k, v in pairs(keypads[3]) do 
                 local distance = 0
             end
         end
