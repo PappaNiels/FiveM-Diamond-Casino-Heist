@@ -1,8 +1,7 @@
 cartLayout = 0
 vaultLayout = 0
 
-isHacking = false
-isStealing = false
+isBusy = false
 
 local test = {}
 local takeObjs = {}
@@ -71,6 +70,31 @@ local function CartType(i)
     return j
 end
 
+local function OpenSlideDoors(size, num, hash)
+    if not IsDoorRegisteredWithSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size)) then
+        AddDoorToSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), GetHashKey(hash), slideDoors[num], false, false, false)
+    end
+
+    DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 0, false, false)
+    
+    print(#(GetEntityCoords(slideDoorObjs[num]) - (slideDoors[num] + (GetEntityOffset(slideDoorObjs[num], true) * 2)) ) < 1.0) 
+    --repeat 
+    --    Wait(10) 
+    --    print("loop")
+    --until #(GetEntityCoords(slideDoorObjs[num]) - (slideDoors[num] + (GetEntityOffset(slideDoorObjs[num], true) * 1.75)) < 1.0)
+    
+    Wait(4000)
+
+    
+    RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
+    FreezeEntityPosition(slideDoorObjs[num], true)
+    --DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 1, false, false)
+end
+
+RegisterCommand("test_doorslide", function() 
+    OpenSlideDoors("A", 1, "ch_prop_ch_vault_slide_door_lrg")
+end, false)
+
 local function GetVaultObjs()
     if loot == 3 then 
         for i = 1, #artCabinets do 
@@ -130,7 +154,7 @@ local function SetVaultObjs()
             LoadModel(cartType[loot][i])
         end
         
-        LoadModel("prop_weed_01")
+        --LoadModel("prop_weed_01")
         
         for i = 1, #carts[cartLayout] do 
             local j = CartType(i)
@@ -138,8 +162,8 @@ local function SetVaultObjs()
             takeObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, false, false)
             SetEntityHeading(takeObjs[i], carts[cartLayout][i].w)
 
-            test[i] = CreateObject(GetHashKey("prop_weed_01"), GetEntityCoords(takeObjs[i]) + GetEntityOffset(takeObjs[i], false) * 0.5, false, false, false)
-            SetEntityHeading(test[i], carts[cartLayout][i].w)
+            --test[i] = CreateObject(GetHashKey("prop_weed_01"), GetEntityCoords(takeObjs[i]) + GetEntityOffset(takeObjs[i], false) * 0.5, false, false, false)
+            --SetEntityHeading(test[i], carts[cartLayout][i].w)
             
             blips[i] = AddBlipForCoord(carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z)
             SetBlipSprite(blips[i], 534 + i)
@@ -196,6 +220,11 @@ local function SetVaultLayout()
         --local plus = vector3(math.cos(heading), math.sin(heading), 0.0)
         
         SetEntityCoords(slideDoorObjs[layouts[vaultLayout][i]], coords + (GetEntityOffset(slideDoorObjs[layouts[vaultLayout][i]], true) * 2), true, false, false, false)
+        status[2][layouts[vaultLayout][i]] = true
+    end
+
+    for i = 1, 7 do 
+        print(status[2][i])
     end
 end
 
@@ -205,14 +234,14 @@ function Vault()
     cartLayout = 1
     player = 1 
 
-    local lootObj = {}
+    --local lootObj = {}
     local txt = {
-        "begin grabbing the cash.",
-        "begin grabbing the gold.",
+        "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
+        "Press ~INPUT_CONTEXT~ to begin grabbing the gold.",
         "cut the painting.",
-        "begin grabbing the diamonds."
+        "Press ~INPUT_CONTEXT~ to begin grabbing the diamonds."
     }
-    local grabMsg = "Press ~INPUT_CONTEXT~ to "
+    
     SetVaultLayout()
 
     if player == 1 then 
@@ -222,18 +251,18 @@ function Vault()
         GetVaultObjs()
     end
 
-    if loot == 3 then 
-        lootObj = artCabinets
-    else 
-        lootObj = carts[cartLayout]
-    end
+    --if loot == 3 then 
+    --    lootObj = artCabinets
+    --else 
+    --    lootObj = carts[cartLayout]
+    --end
 
     if loot == 3 then 
         CreateThread(function()
             while true do 
                 Wait(5)
 
-                if not isStealing then 
+                if not isBusy then 
                     for k, v in pairs(artCabinets) do 
                         if not status[1][k] then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - v.xyz)
@@ -244,6 +273,8 @@ function Vault()
                                     CutPainting(k)
                                 end
                             end
+                        else 
+                            Wait(10)
                         end
                     end
                 else 
@@ -251,21 +282,25 @@ function Vault()
                 end
             end
         end)
-    else 
+    elseif loot == 1 then 
         CreateThread(function()
             while true do 
                 Wait(5)
-                if not isStealing then
+                if not isBusy then
                     for k, v in pairs(carts[cartLayout]) do 
                         if not status[1][k] then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - (v.xyz + GetEntityOffset(takeObjs[k], false)))
 
-                            if distance < 1 then 
-                                HelpMsg("Press ~INPUT_CONTEXT~ to cut the paintings.")
+                            --print(distance)
+
+                            if distance < 1.2 then
+                                HelpMsg(txt[loot])
                                 if IsControlPressed(0, 38) then 
                                     GrabLoot(k)
                                 end
                             end
+                        else 
+                            Wait(10)
                         end
                     end
                 else 
@@ -276,40 +311,38 @@ function Vault()
     end
 
     CreateThread(function()
-        print(keypads[1][2])
         while true do 
             Wait(5)
 
-            if not isHacking then 
-               --for k, v in pairs(keypads[3]) do 
-               --    if not status[2][k] then 
-               --        print(k, v[k])
-               --        local distance = #(GetEntityCoords(PlayerPedId()) - v[k])
-
-               --        if distance < 1 then 
-               --            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad")
-               --            if IsControlPressed(0, 38) then 
-               --                HackKeyPad(3, k)
-               --            end
-               --        end
-               --    end
-               --end
-
-                print(keypads[3][1][2])
-
-                for i = 1, #keypads[3] do 
-                    if not status[2][i] then 
-                        print(i, keypads[3][i])
-                        local distance = #(GetEntityCoords(PlayerPedId()) - keypads[3][i])
-
-                        if distance < 1 then 
+            if not isBusy then 
+                for k, v in pairs(keypads[3]) do
+                    if not status[2][k] then 
+                        --print(k, v[k])
+                        local distance = #(GetEntityCoords(PlayerPedId()) - v)
+                        if distance < 1.0 then 
                             HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad")
                             if IsControlPressed(0, 38) then 
-                                HackKeyPad(3, i)
+                               HackKeypad(3, k, OpenSlideDoors)
                             end
                         end
+                    else 
+                        Wait(10)
                     end
                 end
+
+                --for i = 1, #keypads[3] do 
+                --    if not status[2][i] then 
+                --        print(i, keypads[3][i])
+                --        local distance = #(GetEntityCoords(PlayerPedId()) - keypads[3][i])
+--
+                --        if distance < 1 then 
+                --            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad")
+                --            if IsControlPressed(0, 38) then 
+                --                HackKeyPad(3, i)
+                --            end
+                --        end
+                --    end
+                --end
             else 
                 Wait(1000)
             end
