@@ -25,7 +25,9 @@ client_scripts {
     "client/arcade.lua",
     "client/heist-entry.lua",
     "client/heist-casino.lua",
-    "client/heist-vault.lua"
+    "client/heist-vault.lua",
+    "client/heist-drilling.lua",
+    "client/heist-hacking.lua"
 }
 
 server_scripts { 
