@@ -84,96 +84,16 @@ local test = {
     }
 }
 
-local combinations = {
-    {
-        {
-            {7, false},
-            {3, true},
-            {6, false},
-            {1, true},
-            {4, true},
-            {8, false},
-            {5, false},
-            {2, true},
-        },
-        {
-            {1, true},
-            {5, false},
-            {8, false},
-            {6, false},
-            {4, true},
-            {2, true},
-            {3, true},
-            {7, false},
-        }
-    },
-    {
-        {
-            {1, true},
-            {2, true},
-            {8, false},
-            {7, false},
-            {5, false},
-            {4, true},
-            {6, false},
-            {3, true},
-        },
-        {
-            {5, false},
-            {6, false},
-            {4, true},
-            {3, true},
-            {2, true},
-            {1, true},
-            {8, false},
-            {7, false},
-        }
-    },
-    {
-        {
-            {2, true},
-            {8, false},
-            {1, true},
-            {5, false},
-            {3, true},
-            {7, false},
-            {4, true},
-            {6, false},
-        },
-        {
-            {8, false},
-            {3, true},
-            {6, false},
-            {4, true},
-            {1, true},
-            {2, true},
-            {5, false},
-            {7, false},
-        }
-    },
-    {
-        {
-            {5, false},
-            {3, true},
-            {1, true},
-            {7, false},
-            {6, false},
-            {2, true},
-            {8, false},
-            {4, true},
-        },
-        {
-            {7, false},
-            {5, false},
-            {2, true},
-            {1, true},
-            {6, false},
-            {4, true},
-            {8, false},
-            {3, true},
-        }
-    }
-}
+local combinations = {{{{7, true}, {3, false}, {6, true}, {1, true}, {4, true}, {8, false}, {5, false}, {2, false}},{{1, true},{5, false}, {8, false}, {6, true}, {4, true}, {2, false}, {3, false}, {7, true}, }}, {{{1, true}, {2, true}, {8, false}, {7, false}, {5, false}, {4, true}, {6, false}, {3, true}}, {{5, false}, {6, false}, {4, true}, {3, true}, {2, true}, {1, true}, {8, false}, {7, false}}},{{{2, true}, {8, false}, {1, true}, {5, false}, {3, true}, {7, false}, {4, true}, {6, false}}, {{8, false}, {3, true}, {6, false}, {4, true}, {1, true}, {2, true}, {5, false}, {7, false}}}, {{{5, false}, {3, true}, {1, true}, {7, false}, {6, false}, {2, true}, {8, false}, {4, true}}, {{7, false}, {5, false}, {2, true}, {1, true}, {6, false}, {4, true}, {8, false}, {3, true}}}}
+
+--[[
+    AUDIO::PLAY_SOUND_FRONTEND(-1, "Play_Start", uParam0->f_741, true);
+    AUDIO::PLAY_SOUND_FRONTEND(-1, "Cursor_Choose_Good", uParam0->f_741, true);
+    AUDIO::PLAY_SOUND_FRONTEND(-1, "Cursor_Choose_Bad", uParam0->f_741, true);
+    AUDIO::PLAY_SOUND_FRONTEND(-1, "Hack_Failed", uParam1->f_741, true);
+    AUDIO::PLAY_SOUND_FRONTEND(-1, "Hack_Success", uParam1->f_741, true);
+    AUDIO::PLAY_SOUND_FRONTEND(-1, "deSelect_Print_Tile", uParam0->f_741, true)
+]]
 
 local function DrawSpriteCut(dict, name, x, y, width, height, a)
     DrawSprite(dict, name, (0.5 - ((0.5 - x) / ratio)), y, (width / 1920.0) * ratioR, height / 1920, 0.0, 255, 255, 255, a, 0)
@@ -259,8 +179,11 @@ local function CheckPrint()
     isChecking = 1
     local obj = GetSelected()
 
-    print(fingerprints[1])
-    print(combinations[fingerprints[progress]][layout][obj[1]][2], combinations[fingerprints[progress]][layout][obj[2]][2], combinations[fingerprints[progress]][layout][obj[3]][2], combinations[fingerprints[progress]][layout][obj[4]][2])
+    print(combinations[fingerprints[progress]][layout][obj[1]][2] , combinations[fingerprints[progress]][layout][obj[2]][2] , combinations[fingerprints[progress]][layout][obj[1]][2] , combinations[fingerprints[progress]][layout][obj[4]][2])
+
+    for i = 1, #obj do 
+        print(obj[i])
+    end
 
     if combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[2]][2] and combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[4]][2] then
         ProgressBar(true)
@@ -296,10 +219,14 @@ function StartHack(cb)
         end 
     end
 
-    fingerprints[1] = 4
-    fingerprints[2] = 3
-    layout = 1 --math.random(1, 2)
-    msg = "correct"
+    layout = math.random(1, 2)
+
+    --print(fingerprints[1], fingerprints[2])
+
+    fingerprints[1] = 1
+    fingerprints[2] = 2
+    --layout = 1 --math.random(1, 2)
+    --msg = "correct"
 
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do
@@ -466,6 +393,12 @@ end
 RegisterCommand("test_hack", function()
     StartHack(function(bool)
         print("done")
+
+        Wait(1000)
+
+        progress = 1
+        position = 1
+        lives = 6
     end)
 end, false)  
 
