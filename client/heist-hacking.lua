@@ -4,6 +4,11 @@ local position = 1
 local lives = 6
 local barNum = 30
 local layout = 0 
+local msgType = 0 
+local isChecking = 0
+
+local rectX = 0.401
+local rectW = 0.0
 
 local min = 4 
 local tenSec = 0
@@ -14,7 +19,10 @@ local hundredthSec = 0
 local ratio = GetAspectRatio(0) 
 local ratioR = 1.778 / ratio
 
-local fingerprints = {1, 2, 0} 
+local msg = ""
+
+
+local fingerprints = {1, 2, 1} 
 
 local dicts = {
     "mphackinggamebg", 
@@ -32,7 +40,7 @@ local dicts = {
     "mpfclone_print3" 
 }
 
-local partA = { 120, 120, 120, 120, 120, 120, 120, 120 }
+local partA = { 120, 120, 120, 120, 120, 120, 120, 120, 0 }
 
 local bars = { 0.0025, 0.0136, 0.0247, 0.0358, 0.0469, 0.0580, 0.0691, 0.0802, 0.0913, 0.1024, 0.1135, 0.1246, 0.1357, 0.1468, 0.1579, 0.1690, 0.1801, 0.1912, 0.2023, 0.2134, 0.2245, 0.2356, 0.2467, 0.2578, 0.2689, 0.2790, 0.2901, 0.3012, 0.3123, 0.3234, 0.3345 }
 
@@ -53,92 +61,115 @@ local selector = {
 
 local selectedA = { 120, 120, 120, 120, 120, 120, 120, 120 }
 
+local test = {
+    {
+        0.106, 
+        0.2393,
+        0.106, 
+        0.2393,
+        0.106, 
+        0.2393,
+        0.106, 
+        0.2393,
+    },
+    {
+        0.315,
+        0.315,
+        0.440,
+        0.440,
+        0.569,
+        0.569,
+        0.697,
+        0.697
+    }
+}
+
 local combinations = {
     {
         {
-            {7, 0},
+            {7, false},
             {3, true},
-            {6, 0},
+            {6, false},
             {1, true},
             {4, true},
-            {8, 0},
-            {5, 0},
+            {8, false},
+            {5, false},
             {2, true},
         },
         {
             {1, true},
-            {0, 0},
-            {0, 0},
-            {0, 0},
+            {5, false},
+            {8, false},
+            {6, false},
             {4, true},
             {2, true},
             {3, true},
-            {0, 0},
+            {7, false},
         }
     },
     {
         {
             {1, true},
             {2, true},
-            {0, 0},
-            {0, 0},
-            {0, 0},
+            {8, false},
+            {7, false},
+            {5, false},
             {4, true},
-            {0, 0},
+            {6, false},
             {3, true},
         },
         {
-            {0, 0},
-            {0, 0},
+            {5, false},
+            {6, false},
             {4, true},
             {3, true},
             {2, true},
             {1, true},
-            {0, 0},
-            {0, 0},
+            {8, false},
+            {7, false},
         }
     },
     {
         {
             {2, true},
-            {8, 0},
+            {8, false},
             {1, true},
-            {5, 0},
+            {5, false},
             {3, true},
-            {7, 0},
+            {7, false},
             {4, true},
-            {6, 0},
+            {6, false},
         },
         {
-            {0, 0},
+            {8, false},
             {3, true},
-            {0, 0},
+            {6, false},
             {4, true},
             {1, true},
             {2, true},
-            {0, 0},
-            {0, 0},
+            {5, false},
+            {7, false},
         }
     },
     {
         {
-            {5, 0},
+            {5, false},
             {3, true},
             {1, true},
-            {7, 0},
-            {6, 0},
+            {7, false},
+            {6, false},
             {2, true},
-            {8, 0},
+            {8, false},
             {4, true},
         },
         {
-            {0, 0},
-            {0, 0},
+            {7, false},
+            {5, false},
             {2, true},
             {1, true},
-            {0, 0},
+            {6, false},
             {4, true},
-            {0, 0},
+            {8, false},
             {3, true},
         }
     }
@@ -158,11 +189,17 @@ local function LoadHackDicts()
     end
 end
 
+local function UnloadHackDicts()
+    for i = 1, #dicts do
+        SetStreamedTextureDictAsNoLongerNeeded(dicts[i])
+    end 
+end
+
 local function GetSelected()
     local obj = {}
     
     for i = 1, 8 do 
-        if selectedA ~= 120 then 
+        if selectedA[i] ~= 120 then 
             obj[#obj + 1] = i
         end
     end
@@ -190,22 +227,63 @@ local function SelectPart()
     end
 end
 
+local function ProgressBar(bool)
+    if bool then 
+        msg = "correct"
+    else
+        msg = "incorrect"
+    end
+
+    while rectW < 380 do
+        rectX = rectX + 0.00099
+        rectW = rectW + 3.8
+        Wait(20)
+    end
+
+    isChecking = 2
+
+    for i = 1, 6 do 
+        if msgType == 0 then 
+            msgType = 1
+        else
+            msgType = 0
+        end
+
+        Wait(500)
+    end
+
+    msg = ""
+end
+
 local function CheckPrint()
+    isChecking = 1
     local obj = GetSelected()
 
+    print(fingerprints[1])
+    print(combinations[fingerprints[progress]][layout][obj[1]][2], combinations[fingerprints[progress]][layout][obj[2]][2], combinations[fingerprints[progress]][layout][obj[3]][2], combinations[fingerprints[progress]][layout][obj[4]][2])
+
     if combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[2]][2] and combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[4]][2] then
-        
-        for i = 1, #selectedA do 
-            selectedA[i] = 120
-        end
+        ProgressBar(true)
         
         progress = progress + 1
     else
+        ProgressBar(false)
 
+        lives = lives - 1
     end
+
+    for i = 1, #selectedA do 
+        selectedA[i] = 120
+    end
+
+    isChecking = 0
+    rectX = 0.401
+    rectW = 0.0
 end
 
-local function StartHackKeyPress()
+function StartHack(cb)
+    LoadHackDicts()
+
     for i = 1, 2 do 
         fingerprints[i] = math.random(1, 4)
     end
@@ -221,41 +299,11 @@ local function StartHackKeyPress()
     fingerprints[1] = 4
     fingerprints[2] = 3
     layout = 1 --math.random(1, 2)
-    
-    --print(fingerprints[progress])
-
-    local test = {
-        {
-            0.106, 
-            0.2393,
-            0.106, 
-            0.2393,
-            0.106, 
-            0.2393,
-            0.106, 
-            0.2393,
-        },
-        {
-            0.315,
-            0.315,
-            0.440,
-            0.440,
-            0.569,
-            0.569,
-            0.697,
-            0.697
-        }
-    }
-
-    for i = 1, 8 do 
-        print("mpfclone_print" .. fingerprints[progress] - 1, "fp" .. fingerprints[progress] .. "_comp_" .. combinations[fingerprints[progress]][layout][i][1])
-    end
+    msg = "correct"
 
     CreateThread(function()
-        while progress < 3 and lives >= 0 and min >= 0 and tenSec >= 0 and sec >= 0 do
+        while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do
             Wait(3)
-
-            print(progress < 3 and lives >= 0 and min >= 0 and tenSec >= 0 and sec >= 0)
 
             DrawSpriteCut("mphackinggamebg", "bg", 0.5, 0.5, 1920.0, 1920.0, 255)
             DrawSpriteCut("mphackinggamewin", "tech_3_0", 0.090, 0.489, 980.0, 1000.0, 255)
@@ -302,28 +350,9 @@ local function StartHackKeyPress()
             -- Pixels
             DrawSpriteCut("mphackinggameoverlay", "grid_rgb_pixels", 0.5, 0.5, 1920.0, 1920.0, 150)
 
-            -- Fingerprints Part 1
-
-            if progress < 3 then 
-                for i = 1, 8 do 
-                    DrawSpriteCut("mpfclone_print" .. fingerprints[progress] - 1, "fp" .. fingerprints[progress] .. "_comp_" .. combinations[fingerprints[progress]][layout][i][1], test[1][i], test[2][i], 128.0, 220.0, selectedA[i])
-                end
+            for i = 1, 8 do 
+                DrawSpriteCut("mpfclone_print" .. fingerprints[progress] - 1, "fp" .. fingerprints[progress] .. "_comp_" .. combinations[fingerprints[progress]][layout][i][1], test[1][i], test[2][i], 128.0, 220.0, selectedA[i])
             end
-
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.106, 0.315, 128.0, 220.0, selectedA[1])
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.2393, 0.315, 128.0, 220.0, selectedA[2])
-            --
-            ---- Fingerprints Part 2
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.106, 0.440, 128.0, 220.0, selectedA[3])
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.2393, 0.440, 128.0, 220.0, selectedA[4])
-            --
-            ---- Fingerprints Part 3
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.106, 0.569, 128.0, 220.0, selectedA[5])
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.2393, 0.569, 128.0, 220.0, selectedA[6])
-            --
-            ---- Fingerprints Part 4
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.106, 0.697, 128.0, 220.0, selectedA[7])
-            --DrawSpriteCut("mpfclone_print0", "fp".."1".."_comp_".."1", 0.2393, 0.697, 128.0, 220.0, selectedA[8])
             
             -- Selector
             DrawSpriteCut("mpfclone_common", "component_selector", selector[position][1], selector[position][2], 180.0, 305.0, 250)
@@ -332,6 +361,24 @@ local function StartHackKeyPress()
             for i = 1, 8 do 
                 DrawSpriteCut("mpfclone_print" .. fingerprints[progress] - 1, "fp" .. fingerprints[progress] .. "_" .. i, 0.674, 0.382, 400.0, 850.0, partA[i])
             end
+
+            
+            
+            -- Success / Failed Message
+            if isChecking == 1 then 
+                DrawSpriteCut("mphackinggame", "loading_window", 0.5, 0.5, 475.0, 220.0, 255)
+                DrawRect(rectX, 0.517, (rectW / 1920.0) * ratioR, 0.03125, 255, 255, 255, 220)
+            elseif isChecking == 2 then 
+                DrawSpriteCut("mphackinggame", msg .. "_" .. msgType, 0.5, 0.5, 600.0, 220.0, 255)
+            end
+        end
+
+        if lives <= 0 then 
+            cb(false)
+        elseif min <= 0 and tenSec <= 0 and sec <= 0 then 
+            cb(false)
+        else
+            cb(true)
         end
     end)
 
@@ -339,30 +386,34 @@ local function StartHackKeyPress()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do 
             Wait(0)
 
-            if IsDisabledControlJustPressed(0, 172) then -- Up
-                if position ~= 1 and position ~= 2 then 
-                    position = position - 2
+            if isChecking == 0 then 
+                if IsDisabledControlJustPressed(0, 172) then -- Up
+                    if position ~= 1 and position ~= 2 then 
+                        position = position - 2
+                    end
+                elseif IsDisabledControlJustPressed(0, 173) then -- Down
+                    if position ~= 7 and position ~= 8 then 
+                        position = position + 2
+                    end
+                elseif IsDisabledControlJustPressed(0, 174) then -- Left
+                    if position ~= 1 and position ~= 3 and position ~= 5 and position ~= 7 then 
+                        position = position - 1
+                    end
+                elseif IsDisabledControlJustPressed(0, 175) then -- Right
+                    if position ~= 2 and position ~= 4 and position ~= 6 and position ~= 8 then 
+                        position = position + 1
+                    end
+                elseif GetSelectedAmount() == 4 then 
+                    if IsDisabledControlJustPressed(0, 192) then -- Tab
+                        CheckPrint()
+                    end
+                else
+                    if IsDisabledControlJustPressed(0, 191) then -- Enter 
+                        SelectPart()
+                    end
                 end
-            elseif IsDisabledControlJustPressed(0, 173) then -- Down
-                if position ~= 7 and position ~= 8 then 
-                    position = position + 2
-                end
-            elseif IsDisabledControlJustPressed(0, 174) then -- Left
-                if position ~= 1 and position ~= 3 and position ~= 5 and position ~= 7 then 
-                    position = position - 1
-                end
-            elseif IsDisabledControlJustPressed(0, 175) then -- Right
-                if position ~= 2 and position ~= 4 and position ~= 6 and position ~= 8 then 
-                    position = position + 1
-                end
-            elseif GetSelectedAmount() == 4 then 
-                if IsDisabledControlJustPressed(0, 192) then -- Tab
-                    CheckPrint()
-                end
-            else
-                if IsDisabledControlJustPressed(0, 191) then -- Enter 
-                    SelectPart()
-                end
+            else 
+                Wait(1000)
             end
         end
     end)
@@ -405,13 +456,62 @@ local function StartHackKeyPress()
     end)
 end
 
-function StartHack()
-    LoadHackDicts()
-
-    StartHackKeyPress()
-
-end
+--function StartHack()
+--    LoadHackDicts()
+--    
+--    StartHackKeyPress()
+--    
+--end
 
 RegisterCommand("test_hack", function()
-    StartHack()
+    StartHack(function(bool)
+        print("done")
+    end)
+end, false)  
+
+RegisterCommand("test_msg", function()
+    
+    
+    LoadHackDicts()
+    CreateThread(function()
+        msg = ""
+        while true do 
+            Wait(0)
+
+            --print("tick")
+            DrawSpriteCut("mphackinggame", "loading_window", 0.5, 0.5, 475.0, 220.0, 255)
+
+            --DrawRect(0.5, 0.517, 0.5, 0.035, 255, 255, 255, 200)
+
+            --print(testO, testT)
+
+            DrawRect(testO, 0.517, (testT / 1920.0) * ratioR, 0.03125, 255, 255, 255, 220)
+            
+            --DrawSpriteCut("mphackinggame", "loading_bar_segment", 0.4, 0.6, 1920.0, 1920.0, 255)
+        end
+    end)
+    
+    CreateThread(function()
+        while testT < 380 do
+            --print(testT)
+            testO = testO + 0.00099
+            testT = testT + 3.8
+            Wait(20)
+        end
+
+
+        print(testT)
+        --for i = 1, 100 do 
+        --    
+        --end
+        --while true do 
+        --    if msgType == 0 then 
+        --        msgType = 1
+        --    else 
+        --        msgType = 0
+        --    end
+    --
+        --    Wait(500)
+        --end
+    end)
 end, false)
