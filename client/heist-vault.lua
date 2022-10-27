@@ -3,13 +3,7 @@ vaultLayout = 0
 
 isBusy = false
 
-local test = {}
-local takeObjs = {}
-local paintingObjs = {}
-local slideDoorObjs = {}
-local blips = {}
-
-local status = {
+status = {
     {
         false,
         false,
@@ -30,6 +24,12 @@ local status = {
         false,
     }
 }
+
+local test = {}
+local takeObjs = {}
+local paintingObjs = {}
+local slideDoorObjs = {}
+local blips = {}
 
 local paintingNames = {
     "ch_prop_vault_painting_01a",
@@ -274,7 +274,7 @@ function Vault()
                                 end
                             end
                         else 
-                            Wait(10)
+                            Wait(100)
                         end
                     end
                 else 
@@ -322,7 +322,7 @@ function Vault()
                         if distance < 1.0 then 
                             HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad")
                             if IsControlPressed(0, 38) then 
-                               HackKeypad(3, k, OpenSlideDoors)
+                               HackKeypad(3, k, true)
                             end
                         end
                     else 

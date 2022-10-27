@@ -107,6 +107,9 @@ local function LoadHackDicts()
         Wait(10)
     end
 
+    BeginScaleformMovieMethod(scaleformBar, "CLEAR_ALL")
+    EndScaleformMovieMethod()
+
     BeginScaleformMovieMethod(scaleformBar, "SET_DATA_SLOT")
     ScaleformMovieMethodAddParamInt(0)
     ScaleformMovieMethodAddParamPlayerNameString("~INPUT_FRONTEND_ACCEPT~")
@@ -363,6 +366,11 @@ function StartFingerprintHack(cb)
             StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
             UnloadHackDicts()
             
+            progress = 1
+            position = 1
+            lives = 6
+            min = 4
+
             cb(true)
         else
             failBink = SetBinkMovie("fail_fc")
@@ -378,6 +386,10 @@ function StartFingerprintHack(cb)
             StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
             UnloadHackDicts()
             
+            progress = 1
+            position = 1
+            lives = 6
+            min = 4
             
             cb(false)
         end

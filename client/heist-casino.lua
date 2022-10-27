@@ -180,7 +180,7 @@ local function KeypadOne(level, j)
     ClearPedTasks(PlayerPedId())
 end
 
-function HackKeypad(level, j, cb)
+function HackKeypad(level, j, start)
     if level > selectedKeycard and level ~= 4 then 
         isBusy = true
         local animDict = "anim_heist@hs3f@ig1_hack_keypad@arcade@male@"
@@ -196,32 +196,46 @@ function HackKeypad(level, j, cb)
             keypadHash = "ch_prop_fingerprint_scanner_01c"
         end
 
-        LoadAnim(animDict)
-        LoadModel(hackDevice)
-        LoadModel(phoneDevice)
-        
-        local keypad = GetClosestObjectOfType(keypads[level][j], 1.0, GetHashKey(keypadHash), false, false, false)
-        local hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, false, false)
-        local phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, false, false)
+        if start then 
+            LoadAnim(animDict)
+            LoadModel(hackDevice)
+            LoadModel(phoneDevice)
+            
+            local keypad = GetClosestObjectOfType(keypads[level][j], 1.0, GetHashKey(keypadHash), false, false, false)
+            hackUsb = CreateObject(GetHashKey(hackDevice), GetEntityCoords(PlayerPedId()), true, false, false)
+            phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, false, false)
 
-        for i = 1, #hackKeypadAnims[1], 1 do 
-            hackKeypadAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
-            NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-            NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
-            NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
+            for i = 1, #hackKeypadAnims[1], 1 do 
+                hackKeypadAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
+                NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+                NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
+                NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
+            end
+
+            NetworkStartSynchronisedScene(hackKeypadAnims[2][1])
+            Wait(4000)
+            NetworkStartSynchronisedScene(hackKeypadAnims[2][2])
+            Wait(1500)
         end
-        
-        NetworkStartSynchronisedScene(hackKeypadAnims[2][1])
-        Wait(4000)
-        NetworkStartSynchronisedScene(hackKeypadAnims[2][2])
-        Wait(2000)
         -- Hack Minigame
-        Wait(3000)
-        NetworkStartSynchronisedScene(hackKeypadAnims[2][3])
-        Wait(4000)
-        DeleteObject(hackUsb)
-        DeleteObject(phone)
-        isHacking = false
+        StartFingerprintHack(function(bool)
+            if bool then 
+                NetworkStartSynchronisedScene(hackKeypadAnims[2][3])
+                --Wait(3000)
+                Wait(3000)
+                DeleteObject(hackUsb)
+                DeleteObject(phone)
+                ClearPedTasks(PlayerPedId())
+                status[2][j] = true
+                isBusy = false
+            else
+                NetworkStartSynchronisedScene(hackKeypadAnims[2][4])
+                Wait(2000)
+                NetworkStartSynchronisedScene(hackKeypadAnims[2][4])
+                Wait(2000)
+                HackKeypad(level, j, false)
+            end
+        end)
     else 
         KeypadOne(level, j)
     end
@@ -315,11 +329,12 @@ local function VaultExplosion()
     else 
         reactAnimDict = "anim_heist@hs3f@ig8_vault_explosive_react@right@male@"
     end
+    
+    RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
 
     LoadAnim(animDict)
     LoadAnim(reactAnimDict)
 
-    RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
     
     Wait(1000)
 
@@ -344,6 +359,7 @@ local function VaultExplosion()
     end)
     Wait(4000)
     
+    ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
     SetEntityVisible(vaultObjs[1], true, true)
     SetEntityVisible(vaultObjs[3], true, false)
     SetEntityCollision(vaultObjs[3], true, true)
