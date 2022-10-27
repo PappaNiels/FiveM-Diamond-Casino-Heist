@@ -91,6 +91,12 @@ local function DrawSpriteCut(dict, name, x, y, width, height, a)
 end
 
 local function LoadHackDicts()
+    scaleformBar = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
+
+    while not HasScaleformMovieLoaded(scaleformBar) do 
+        Wait(0)
+    end
+
     for i = 1, #dicts do
         RequestStreamedTextureDict(dicts[i])
     end 
@@ -100,6 +106,28 @@ local function LoadHackDicts()
     while not HasStreamedTextureDictLoaded(dicts[#dicts]) do 
         Wait(10)
     end
+
+    BeginScaleformMovieMethod(scaleformBar, "SET_DATA_SLOT")
+    ScaleformMovieMethodAddParamInt(0)
+    ScaleformMovieMethodAddParamPlayerNameString("~INPUT_FRONTEND_ACCEPT~")
+    ScaleformMovieMethodAddParamPlayerNameString("Select")
+    EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleformBar, "SET_DATA_SLOT")
+    ScaleformMovieMethodAddParamInt(1)
+    ScaleformMovieMethodAddParamPlayerNameString("~INPUT_SELECT_WEAPON~")
+    ScaleformMovieMethodAddParamPlayerNameString("Run Check")
+    EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleformBar, "SET_DATA_SLOT")
+    ScaleformMovieMethodAddParamInt(2)
+    ScaleformMovieMethodAddParamPlayerNameString(GetControlGroupInstructionalButton(2, 3, true)) -- 240
+    ScaleformMovieMethodAddParamPlayerNameString("Move Selector")
+    EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleformBar, "DRAW_INSTRUCTIONAL_BUTTONS")
+    ScaleformMovieMethodAddParamInt(4)
+    EndScaleformMovieMethod()
 end
 
 local function UnloadHackDicts()
@@ -108,6 +136,7 @@ local function UnloadHackDicts()
     end 
 
     ReleaseNamedScriptAudioBank("DLC_HEIST3/Fingerprint_Match")
+    SetScaleformMovieAsNoLongerNeeded(scaleformBar)
 end
 
 local function GetSelected()
@@ -189,12 +218,6 @@ local function CheckPrint()
     isChecking = 1
     local obj = GetSelected()
     
-    print(combinations[fingerprints[progress]][layout][obj[1]][2] , combinations[fingerprints[progress]][layout][obj[2]][2] , combinations[fingerprints[progress]][layout][obj[1]][2] , combinations[fingerprints[progress]][layout][obj[4]][2])
-    
-    for i = 1, #obj do 
-        print(obj[i])
-    end
-    
     if combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[2]][2] and combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[4]][2] then
         ProgressBar(true)
         
@@ -218,7 +241,7 @@ local function CheckPrint()
     rectW = 0.0
 end
 
-function StartHack(cb)
+function StartFingerprintHack(cb)
     LoadHackDicts()
     
     for i = 1, 2 do 
@@ -234,13 +257,6 @@ function StartHack(cb)
     end
     
     layout = math.random(1, 2)
-    
-    --print(fingerprints[1], fingerprints[2])
-    
-    --fingerprints[1] = 1
-    --fingerprints[2] = 2
-    --layout = 1 --math.random(1, 2)
-    --msg = "correct"
     
     introBink = SetBinkMovie("intro_fc")
     PlayBinkMovie(introBink)
@@ -361,8 +377,8 @@ function StartHack(cb)
             ReleaseBinkMovie(failBink)
             StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
             UnloadHackDicts()
-
-
+            
+            
             cb(false)
         end
     end)
@@ -371,6 +387,7 @@ function StartHack(cb)
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do 
             Wait(0)
             
+            DrawScaleformMovieFullscreen(scaleformBar, 255, 255, 255, 255)
             if isChecking == 0 then 
                 if IsDisabledControlJustPressed(0, 172) then -- Up
                     if position ~= 1 and position ~= 2 then 
@@ -439,19 +456,13 @@ function StartHack(cb)
             Wait(0)
 
             DisableAllControlActions(0)
+            DrawScaleformMovieFullscreen(scaleformBar, 255, 255, 255, 255)
         end
     end)
 end
 
---function StartHack()
---    LoadHackDicts()
---    
---    StartHackKeyPress()
---    
---end
-
 RegisterCommand("test_hack", function()
-    StartHack(function(result)
+    StartFingerprintHack(function(result)
         bool = result
         
         print("done")
