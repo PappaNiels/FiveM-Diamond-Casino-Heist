@@ -22,7 +22,6 @@ local ratioR = 1.778 / ratio
 
 local msg = ""
 
-
 local fingerprints = {1, 2, 1} 
 
 local dicts = {
@@ -87,15 +86,6 @@ local test = {
 
 local combinations = {{{{7, true}, {3, false}, {6, true}, {1, true}, {4, true}, {8, false}, {5, false}, {2, false}},{{1, true},{5, false}, {8, false}, {6, true}, {4, true}, {2, false}, {3, false}, {7, true}, }}, {{{1, true}, {2, true}, {8, false}, {7, false}, {5, false}, {4, true}, {6, false}, {3, true}}, {{5, false}, {6, false}, {4, true}, {3, true}, {2, true}, {1, true}, {8, false}, {7, false}}},{{{2, true}, {8, false}, {1, true}, {5, false}, {3, true}, {7, false}, {4, true}, {6, false}}, {{8, false}, {3, true}, {6, false}, {4, true}, {1, true}, {2, true}, {5, false}, {7, false}}}, {{{5, false}, {3, true}, {1, true}, {7, false}, {6, false}, {2, true}, {8, false}, {4, true}}, {{7, false}, {5, false}, {2, true}, {1, true}, {6, false}, {4, true}, {8, false}, {3, true}}}}
 
---[[
-    AUDIO::PLAY_SOUND_FRONTEND(-1, "Play_Start", uParam0->f_741, true);
-    AUDIO::PLAY_SOUND_FRONTEND(-1, "Cursor_Choose_Good", uParam0->f_741, true);
-    AUDIO::PLAY_SOUND_FRONTEND(-1, "Cursor_Choose_Bad", uParam0->f_741, true);
-    AUDIO::PLAY_SOUND_FRONTEND(-1, "Hack_Failed", uParam1->f_741, true);
-    AUDIO::PLAY_SOUND_FRONTEND(-1, "Hack_Success", uParam1->f_741, true);
-    AUDIO::PLAY_SOUND_FRONTEND(-1, "deSelect_Print_Tile", uParam0->f_741, true)
-]]
-
 local function DrawSpriteCut(dict, name, x, y, width, height, a)
     DrawSprite(dict, name, (0.5 - ((0.5 - x) / ratio)), y, (width / 1920.0) * ratioR, height / 1920, 0.0, 255, 255, 255, a, 0)
 end
@@ -116,6 +106,8 @@ local function UnloadHackDicts()
     for i = 1, #dicts do
         SetStreamedTextureDictAsNoLongerNeeded(dicts[i])
     end 
+
+    ReleaseNamedScriptAudioBank("DLC_HEIST3/Fingerprint_Match")
 end
 
 local function GetSelected()
@@ -353,6 +345,7 @@ function StartHack(cb)
             
             ReleaseBinkMovie(successBink)
             StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
+            UnloadHackDicts()
             
             cb(true)
         else
@@ -367,7 +360,9 @@ function StartHack(cb)
             
             ReleaseBinkMovie(failBink)
             StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
-            
+            UnloadHackDicts()
+
+
             cb(false)
         end
     end)
@@ -397,13 +392,11 @@ function StartHack(cb)
                         PlaySoundFrontend(-1, "Cursor_Move", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
                         position = position + 1
                     end
+                elseif IsDisabledControlJustPressed(0, 191) then -- Enter 
+                    SelectPart()
                 elseif GetSelectedAmount() == 4 then 
                     if IsDisabledControlJustPressed(0, 192) then -- Tab
                         CheckPrint()
-                    end
-                else
-                    if IsDisabledControlJustPressed(0, 191) then -- Enter 
-                        SelectPart()
                     end
                 end
             else 
@@ -458,7 +451,9 @@ end
 --end
 
 RegisterCommand("test_hack", function()
-    StartHack(function(bool)
+    StartHack(function(result)
+        bool = result
+        
         print("done")
 
         Wait(1000)
@@ -466,54 +461,6 @@ RegisterCommand("test_hack", function()
         progress = 1
         position = 1
         lives = 6
+        min = 4
     end)
 end, false)  
-
-RegisterCommand("test_msg", function()
-    
-    
-
-
-    --LoadHackDicts()
-    --CreateThread(function()
-    --    msg = ""
-    --    while true do 
-    --        Wait(0)
---
-    --        --print("tick")
-    --        DrawSpriteCut("mphackinggame", "loading_window", 0.5, 0.5, 475.0, 220.0, 255)
---
-    --        --DrawRect(0.5, 0.517, 0.5, 0.035, 255, 255, 255, 200)
---
-    --        --print(testO, testT)
---
-    --        DrawRect(testO, 0.517, (testT / 1920.0) * ratioR, 0.03125, 255, 255, 255, 220)
-    --        
-    --        --DrawSpriteCut("mphackinggame", "loading_bar_segment", 0.4, 0.6, 1920.0, 1920.0, 255)
-    --    end
-    --end)
-    --
-    --CreateThread(function()
-    --    while testT < 380 do
-    --        --print(testT)
-    --        testO = testO + 0.00099
-    --        testT = testT + 3.8
-    --        Wait(20)
-    --    end
---
---
-    --    print(testT)
-    --    --for i = 1, 100 do 
-    --    --    
-    --    --end
-    --    --while true do 
-    --    --    if msgType == 0 then 
-    --    --        msgType = 1
-    --    --    else 
-    --    --        msgType = 0
-    --    --    end
-    ----
-    --    --    Wait(500)
-    --    --end
-    --end)
-end, false)
