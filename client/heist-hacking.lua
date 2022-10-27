@@ -6,6 +6,7 @@ local barNum = 30
 local layout = 0 
 local msgType = 0 
 local isChecking = 0
+local sId = 0
 
 local rectX = 0.401
 local rectW = 0.0
@@ -104,6 +105,8 @@ local function LoadHackDicts()
         RequestStreamedTextureDict(dicts[i])
     end 
     
+    RequestScriptAudioBank("DLC_HEIST3/Fingerprint_Match", false, -1)
+
     while not HasStreamedTextureDictLoaded(dicts[#dicts]) do 
         Wait(10)
     end
@@ -141,64 +144,83 @@ end
 
 local function SelectPart()
     if selectedA[position] == 120 then 
+        PlaySoundFrontend(-1, "Select_Print_Tile", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
         selectedA[position] = 250
     else
+        PlaySoundFrontend(-1, "Deselect_Print_Tile", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
         selectedA[position] = 120
     end
 end
 
 local function ProgressBar(bool)
+    local soundName = ""
+    
+    if sId == 0 then 
+        sId = GetSoundId()
+    end
+    
     if bool then 
         msg = "correct"
+        soundName = "Target_Match"
     else
         msg = "incorrect"
+        soundName = "No_Match"
     end
-
+    
+    PlaySoundFrontend(sId, "Processing", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+    
     while rectW < 380 do
         rectX = rectX + 0.00099
         rectW = rectW + 3.8
         Wait(20)
     end
-
+    
     isChecking = 2
-
+    StopSound(sId)
+    PlaySoundFrontend(sId, soundName, "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+    
     for i = 1, 6 do 
         if msgType == 0 then 
             msgType = 1
         else
             msgType = 0
         end
-
-        Wait(500)
+        
+        Wait(415)
     end
-
+    
     msg = ""
+    StopSound(sId)
 end
 
 local function CheckPrint()
     isChecking = 1
     local obj = GetSelected()
-
+    
     print(combinations[fingerprints[progress]][layout][obj[1]][2] , combinations[fingerprints[progress]][layout][obj[2]][2] , combinations[fingerprints[progress]][layout][obj[1]][2] , combinations[fingerprints[progress]][layout][obj[4]][2])
-
+    
     for i = 1, #obj do 
         print(obj[i])
     end
-
+    
     if combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[2]][2] and combinations[fingerprints[progress]][layout][obj[1]][2] and combinations[fingerprints[progress]][layout][obj[4]][2] then
         ProgressBar(true)
+        
+        if progress < 3 then 
+            PlaySoundFrontend(-1, "Print_Appears", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+        end
         
         progress = progress + 1
     else
         ProgressBar(false)
-
+        
         lives = lives - 1
     end
-
+    
     for i = 1, #selectedA do 
         selectedA[i] = 120
     end
-
+    
     isChecking = 0
     rectX = 0.401
     rectW = 0.0
@@ -206,7 +228,7 @@ end
 
 function StartHack(cb)
     LoadHackDicts()
-
+    
     for i = 1, 2 do 
         fingerprints[i] = math.random(1, 4)
     end
@@ -218,20 +240,39 @@ function StartHack(cb)
             fingerprints[2] = fingerprints[2] - 1
         end 
     end
-
+    
     layout = math.random(1, 2)
-
+    
     --print(fingerprints[1], fingerprints[2])
-
-    fingerprints[1] = 1
-    fingerprints[2] = 2
+    
+    --fingerprints[1] = 1
+    --fingerprints[2] = 2
     --layout = 1 --math.random(1, 2)
     --msg = "correct"
-
+    
+    introBink = SetBinkMovie("intro_fc")
+    PlayBinkMovie(introBink)
+    
+    StartAudioScene("DLC_H3_Fingerprint_Hack_Scene")
+    
+    PlaySoundFrontend(-1, "Startup_Sequence", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+    
+    while GetBinkMovieTime(introBink) <= 99 do 
+        Wait(0)
+        DrawBinkMovie(introBink, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
+    end
+    
+    ReleaseBinkMovie(introBink)
+    
+    backHum = GetSoundId()
+    
+    PlaySoundFrontend(backHum, "Background_hum", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+    PlaySoundFrontend(-1, "Print_Appears", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+    
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do
             Wait(3)
-
+            
             DrawSpriteCut("mphackinggamebg", "bg", 0.5, 0.5, 1920.0, 1920.0, 255)
             DrawSpriteCut("mphackinggamewin", "tech_3_0", 0.090, 0.489, 980.0, 1000.0, 255)
             DrawSpriteCut("mphackinggamewin3", "tech_4_1", 0.065, 0.670, 950.0, 1000.0, 255)
@@ -245,24 +286,24 @@ function StartHack(cb)
             -- Colons
             DrawSpriteCut("mphackinggame", "Numbers_Colon", 0.122, 0.159, 40.0, 110.0, 250)
             DrawSpriteCut("mphackinggame", "Numbers_Colon", 0.215, 0.159, 40.0, 110.0, 250)
-
+            
             -- Minutes
             DrawSpriteCut("mphackinggame", "numbers_0", 0.06, 0.159, 40.0, 110.0, 250)
             DrawSpriteCut("mphackinggame", "numbers_".. min, 0.091, 0.159, 40.0, 110.0, 250)
-
+            
             -- Seconds
             DrawSpriteCut("mphackinggame", "numbers_".. tenSec, 0.153, 0.159, 40.0, 110.0, 250)
             DrawSpriteCut("mphackinggame", "numbers_".. sec, 0.184, 0.159, 40.0, 110.0, 250)
-
+            
             -- Milliseconds
             DrawSpriteCut("mphackinggame", "numbers_".. tenthSec, 0.246, 0.159, 40.0, 110.0, 250)
             DrawSpriteCut("mphackinggame", "numbers_".. hundredthSec, 0.277, 0.159, 40.0, 110.0, 250)
-
+            
             -- Lives
             for i = 1, lives, 1 do
                 DrawSpriteCut("mphackinggame", "Life", 0.9825, livesPos[i], 60.0, 101.0, 250)
             end
-
+            
             -- Fingerprints Not Used
             DrawSpriteCut("mpfclone_common", "disabled_signal", 0.785, 0.818, 120.0, 210.0, 255)
             DrawSpriteCut("mpfclone_common", "disabled_signal", 0.908, 0.818, 120.0, 210.0, 255)
@@ -270,13 +311,13 @@ function StartHack(cb)
             -- Fingerprints Small
             DrawSpriteCut("mpfclone_common", "decypher_" .. fingerprints[1], 0.539, 0.818, 120.0, 210.0, 255)
             DrawSpriteCut("mpfclone_common", "decypher_" .. fingerprints[2], 0.662, 0.818, 120.0, 210.0, 255)
-
+            
             -- Selector Small Fingerprints
             DrawSpriteCut("mpfclone_common", "Decyphered_Selector", smallSelector[progress], 0.818, 170.0, 290.0, 255)
-
+            
             -- Pixels
             DrawSpriteCut("mphackinggameoverlay", "grid_rgb_pixels", 0.5, 0.5, 1920.0, 1920.0, 150)
-
+            
             for i = 1, 8 do 
                 DrawSpriteCut("mpfclone_print" .. fingerprints[progress] - 1, "fp" .. fingerprints[progress] .. "_comp_" .. combinations[fingerprints[progress]][layout][i][1], test[1][i], test[2][i], 128.0, 220.0, selectedA[i])
             end
@@ -288,8 +329,6 @@ function StartHack(cb)
             for i = 1, 8 do 
                 DrawSpriteCut("mpfclone_print" .. fingerprints[progress] - 1, "fp" .. fingerprints[progress] .. "_" .. i, 0.674, 0.382, 400.0, 850.0, partA[i])
             end
-
-            
             
             -- Success / Failed Message
             if isChecking == 1 then 
@@ -299,35 +338,63 @@ function StartHack(cb)
                 DrawSpriteCut("mphackinggame", msg .. "_" .. msgType, 0.5, 0.5, 600.0, 220.0, 255)
             end
         end
-
-        if lives <= 0 then 
-            cb(false)
-        elseif min <= 0 and tenSec <= 0 and sec <= 0 then 
-            cb(false)
-        else
+        
+        StopSound(backHum)
+        
+        if lives >= 0 and min >= 0 and tenSec >= 0 and sec >= 0 then 
+            successBink = SetBinkMovie("success_fc")
+            PlayBinkMovie(successBink)
+            PlaySoundFrontend(-1, "Hack_Success", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+            
+            while GetBinkMovieTime(successBink) <= 99 do 
+                Wait(0)
+                DrawBinkMovie(successBink, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
+            end
+            
+            ReleaseBinkMovie(successBink)
+            StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
+            
             cb(true)
+        else
+            failBink = SetBinkMovie("fail_fc")
+            PlayBinkMovie(failBink)
+            PlaySoundFrontend(-1, "Hack_Failed", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
+            
+            while GetBinkMovieTime(failBink) <= 99 do 
+                Wait(0)
+                DrawBinkMovie(failBink, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
+            end
+            
+            ReleaseBinkMovie(failBink)
+            StopAudioScene("DLC_H3_Fingerprint_Hack_Scene")
+            
+            cb(false)
         end
     end)
-
+    
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do 
             Wait(0)
-
+            
             if isChecking == 0 then 
                 if IsDisabledControlJustPressed(0, 172) then -- Up
                     if position ~= 1 and position ~= 2 then 
+                        PlaySoundFrontend(-1, "Cursor_Move", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
                         position = position - 2
                     end
                 elseif IsDisabledControlJustPressed(0, 173) then -- Down
                     if position ~= 7 and position ~= 8 then 
+                        PlaySoundFrontend(-1, "Cursor_Move", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
                         position = position + 2
                     end
                 elseif IsDisabledControlJustPressed(0, 174) then -- Left
                     if position ~= 1 and position ~= 3 and position ~= 5 and position ~= 7 then 
+                        PlaySoundFrontend(-1, "Cursor_Move", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
                         position = position - 1
                     end
                 elseif IsDisabledControlJustPressed(0, 175) then -- Right
                     if position ~= 2 and position ~= 4 and position ~= 6 and position ~= 8 then 
+                        PlaySoundFrontend(-1, "Cursor_Move", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
                         position = position + 1
                     end
                 elseif GetSelectedAmount() == 4 then 
@@ -344,11 +411,11 @@ function StartHack(cb)
             end
         end
     end)
-
+    
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do
             Wait(10)
-
+            
             if hundredthSec == 0 then 
                 hundredthSec = 9
                 if tenthSec == 0 then 
@@ -405,46 +472,48 @@ end, false)
 RegisterCommand("test_msg", function()
     
     
-    LoadHackDicts()
-    CreateThread(function()
-        msg = ""
-        while true do 
-            Wait(0)
-
-            --print("tick")
-            DrawSpriteCut("mphackinggame", "loading_window", 0.5, 0.5, 475.0, 220.0, 255)
-
-            --DrawRect(0.5, 0.517, 0.5, 0.035, 255, 255, 255, 200)
-
-            --print(testO, testT)
-
-            DrawRect(testO, 0.517, (testT / 1920.0) * ratioR, 0.03125, 255, 255, 255, 220)
-            
-            --DrawSpriteCut("mphackinggame", "loading_bar_segment", 0.4, 0.6, 1920.0, 1920.0, 255)
-        end
-    end)
-    
-    CreateThread(function()
-        while testT < 380 do
-            --print(testT)
-            testO = testO + 0.00099
-            testT = testT + 3.8
-            Wait(20)
-        end
 
 
-        print(testT)
-        --for i = 1, 100 do 
-        --    
-        --end
-        --while true do 
-        --    if msgType == 0 then 
-        --        msgType = 1
-        --    else 
-        --        msgType = 0
-        --    end
+    --LoadHackDicts()
+    --CreateThread(function()
+    --    msg = ""
+    --    while true do 
+    --        Wait(0)
+--
+    --        --print("tick")
+    --        DrawSpriteCut("mphackinggame", "loading_window", 0.5, 0.5, 475.0, 220.0, 255)
+--
+    --        --DrawRect(0.5, 0.517, 0.5, 0.035, 255, 255, 255, 200)
+--
+    --        --print(testO, testT)
+--
+    --        DrawRect(testO, 0.517, (testT / 1920.0) * ratioR, 0.03125, 255, 255, 255, 220)
+    --        
+    --        --DrawSpriteCut("mphackinggame", "loading_bar_segment", 0.4, 0.6, 1920.0, 1920.0, 255)
+    --    end
+    --end)
     --
-        --    Wait(500)
-        --end
-    end)
+    --CreateThread(function()
+    --    while testT < 380 do
+    --        --print(testT)
+    --        testO = testO + 0.00099
+    --        testT = testT + 3.8
+    --        Wait(20)
+    --    end
+--
+--
+    --    print(testT)
+    --    --for i = 1, 100 do 
+    --    --    
+    --    --end
+    --    --while true do 
+    --    --    if msgType == 0 then 
+    --    --        msgType = 1
+    --    --    else 
+    --    --        msgType = 0
+    --    --    end
+    ----
+    --    --    Wait(500)
+    --    --end
+    --end)
 end, false)
