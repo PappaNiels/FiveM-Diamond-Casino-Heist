@@ -1,3 +1,6 @@
+local ratio = GetAspectRatio(0) 
+local ratioR = 1.778 / ratio
+
 function HelpMsg(text, time)
     AddTextEntry("HelpMsg", text)
     BeginTextCommandDisplayHelp("HelpMsg")
@@ -243,6 +246,14 @@ function GetEntityOffset(entity, bool)
     end
 
     return plus
+end
+
+function DrawSpriteCut(dict, name, x, y, width, height, a)
+    DrawSprite(dict, name, (0.5 - ((0.5 - x) / ratio)), y, (width / 1920.0) * ratioR, height / 1920, 0.0, 255, 255, 255, a, 0)
+end
+
+function GetXTextPlace(x, y)
+    return (0.5 - ((0.5 - x) / ratio))
 end
 
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
