@@ -17,9 +17,6 @@ local sec = 0
 local tenthSec = 0
 local hundredthSec = 0
 
-local ratio = GetAspectRatio(0) 
-local ratioR = 1.778 / ratio
-
 local msg = ""
 
 local fingerprints = {1, 2, 1} 
@@ -85,10 +82,6 @@ local test = {
 }
 
 local combinations = {{{{7, true}, {3, false}, {6, true}, {1, true}, {4, true}, {8, false}, {5, false}, {2, false}},{{1, true},{5, false}, {8, false}, {6, true}, {4, true}, {2, false}, {3, false}, {7, true}, }}, {{{1, true}, {2, true}, {8, false}, {7, false}, {5, false}, {4, true}, {6, false}, {3, true}}, {{5, false}, {6, false}, {4, true}, {3, true}, {2, true}, {1, true}, {8, false}, {7, false}}},{{{2, true}, {8, false}, {1, true}, {5, false}, {3, true}, {7, false}, {4, true}, {6, false}}, {{8, false}, {3, true}, {6, false}, {4, true}, {1, true}, {2, true}, {5, false}, {7, false}}}, {{{5, false}, {3, true}, {1, true}, {7, false}, {6, false}, {2, true}, {8, false}, {4, true}}, {{7, false}, {5, false}, {2, true}, {1, true}, {6, false}, {4, true}, {8, false}, {3, true}}}}
-
-local function DrawSpriteCut(dict, name, x, y, width, height, a)
-    DrawSprite(dict, name, (0.5 - ((0.5 - x) / ratio)), y, (width / 1920.0) * ratioR, height / 1920, 0.0, 255, 255, 255, a, 0)
-end
 
 local function LoadHackDicts()
     scaleformBar = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
