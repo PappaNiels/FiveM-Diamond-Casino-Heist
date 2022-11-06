@@ -238,7 +238,7 @@ function Vault()
     local txt = {
         "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
         "Press ~INPUT_CONTEXT~ to begin grabbing the gold.",
-        "cut the painting.",
+        "Press ~INPUT_CONTEXT~ to cut the paintings.",
         "Press ~INPUT_CONTEXT~ to begin grabbing the diamonds."
     }
     
@@ -250,12 +250,6 @@ function Vault()
         Wait(100)
         GetVaultObjs()
     end
-
-    --if loot == 3 then 
-    --    lootObj = artCabinets
-    --else 
-    --    lootObj = carts[cartLayout]
-    --end
 
     if loot == 3 then 
         CreateThread(function()
@@ -329,20 +323,6 @@ function Vault()
                         Wait(10)
                     end
                 end
-
-                --for i = 1, #keypads[3] do 
-                --    if not status[2][i] then 
-                --        print(i, keypads[3][i])
-                --        local distance = #(GetEntityCoords(PlayerPedId()) - keypads[3][i])
---
-                --        if distance < 1 then 
-                --            HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad")
-                --            if IsControlPressed(0, 38) then 
-                --                HackKeyPad(3, i)
-                --            end
-                --        end
-                --    end
-                --end
             else 
                 Wait(1000)
             end
@@ -352,7 +332,6 @@ end
 
 RegisterNetEvent("cl:casinoheist:syncAccessibleLoot", function(num)
     status[1][num] = true
-
 end) 
 
 RegisterNetEvent("cl:casinoheist:syncSlideDoors", function(num)
