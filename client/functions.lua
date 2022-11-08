@@ -236,7 +236,6 @@ function IsAnyCrewNear(coords, distance)
 end
 
 function GetEntityOffset(entity, bool)
-    local coords = GetEntityCoords(entity)
     local heading = GetEntityHeading(entity) / 180 * math.pi
     local plus = vector3(0.0, 0.0, 0.0)
     if bool then 
