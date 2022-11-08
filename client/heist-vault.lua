@@ -70,27 +70,6 @@ local function CartType(i)
     return j
 end
 
-local function OpenSlideDoors(size, num, hash)
-    if not IsDoorRegisteredWithSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size)) then
-        AddDoorToSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), GetHashKey(hash), slideDoors[num], false, false, false)
-    end
-
-    DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 0, false, false)
-    
-    print(#(GetEntityCoords(slideDoorObjs[num]) - (slideDoors[num] + (GetEntityOffset(slideDoorObjs[num], true) * 2)) ) < 1.0) 
-    --repeat 
-    --    Wait(10) 
-    --    print("loop")
-    --until #(GetEntityCoords(slideDoorObjs[num]) - (slideDoors[num] + (GetEntityOffset(slideDoorObjs[num], true) * 1.75)) < 1.0)
-    
-    Wait(4000)
-
-    
-    RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
-    FreezeEntityPosition(slideDoorObjs[num], true)
-    --DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 1, false, false)
-end
-
 RegisterCommand("test_doorslide", function() 
     OpenSlideDoors("A", 1, "ch_prop_ch_vault_slide_door_lrg")
 end, false)
@@ -154,17 +133,12 @@ local function SetVaultObjs()
             LoadModel(cartType[loot][i])
         end
         
-        --LoadModel("prop_weed_01")
-        
         for i = 1, #carts[cartLayout] do 
             local j = CartType(i)
             
             takeObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, false, false)
             SetEntityHeading(takeObjs[i], carts[cartLayout][i].w)
 
-            --test[i] = CreateObject(GetHashKey("prop_weed_01"), GetEntityCoords(takeObjs[i]) + GetEntityOffset(takeObjs[i], false) * 0.5, false, false, false)
-            --SetEntityHeading(test[i], carts[cartLayout][i].w)
-            
             blips[i] = AddBlipForCoord(carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z)
             SetBlipSprite(blips[i], 534 + i)
             SetBlipColour(blips[i], 2)
@@ -214,11 +188,8 @@ local function SetVaultLayout()
     end 
 
     for i = 1, #layouts[vaultLayout] do 
-        --print(DoesEntityExist(slideDoorObjs[layouts[vaultLayout][i]]))
         local coords = GetEntityCoords(slideDoorObjs[layouts[vaultLayout][i]])
-        --local heading = GetEntityHeading(slideDoorObjs[layouts[vaultLayout][i]]) / 180 * math.pi
-        --local plus = vector3(math.cos(heading), math.sin(heading), 0.0)
-        
+
         SetEntityCoords(slideDoorObjs[layouts[vaultLayout][i]], coords + (GetEntityOffset(slideDoorObjs[layouts[vaultLayout][i]], true) * 2), true, false, false, false)
         status[2][layouts[vaultLayout][i]] = true
     end
@@ -226,6 +197,170 @@ local function SetVaultLayout()
     for i = 1, 7 do 
         print(status[2][i])
     end
+end
+
+local function GrabLoot(i)
+    local animTime = 0.0
+    local grabbing = false
+    local quit = false
+    local animDict = "anim@heists@ornate_bank@grab_cash"
+    local bag = "hei_p_m_bag_var22_arm_s"
+    local propType = {
+        "ch_prop_20dollar_pile_01a",
+        "ch_prop_gold_bar_01a",
+        "",
+        "ch_prop_dimaondbox_01a"
+    }
+    local lootStrings = {
+        "cash",
+        "gold",
+        "",
+        "diamonds"
+    }
+    
+    isBusy = true
+    
+    local cartCoords = GetEntityCoords(takeObjs[i])
+    local cartHeading = GetEntityHeading(takeObjs[i]) / 180 * math.pi
+    local camCoords = (1.25 * vector3(math.cos(cartHeading + ((14 / 12) * math.pi)), math.sin(cartHeading + ((14 / 12) * math.pi)), 1.0)) + cartCoords
+
+
+    LoadAnim(animDict)
+    LoadModel(propType[loot])
+    LoadModel(bag)
+        
+    if loot == 2 or loot == 4 then 
+        animTime = 0.5037
+    end
+
+    bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
+    boxObj = CreateObject(propType[loot], GetEntityCoords(PlayerPedId()), true, false, false)
+
+    AttachEntityToEntity(boxObj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 0, true)
+    SetEntityVisible(boxObj, false, false)
+    cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
+    --AttachCamToEntity(cam, trollyObj, 1.0, 1.0, 1.0, true)
+    SetCamCoord(cam, camCoords)
+    PointCamAtCoord(cam, cartCoords.xy, cartCoords.z + 0.5)
+    SetCamActive(cam, true)
+    RenderScriptCams(true, true, 1000, true, false)
+    
+    
+    y = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 0.0)
+    NetworkAddEntityToSynchronisedScene(takeObjs[i], y, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
+    ForceEntityAiAndAnimationUpdate(takeObjs[i])
+    NetworkStartSynchronisedScene(y)
+    
+    x = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, 0.0, 1.0)
+    NetworkAddEntityToSynchronisedScene(bagObj, x, animDict, "bag_intro", 1000.0, -1000.0, 0)
+    ForceEntityAiAndAnimationUpdate(bagObj)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), x, animDict, "intro", 1.5, -8.0, 13, 16, 1.5, 0)
+    ForcePedAiAndAnimationUpdate(PlayerPedId(), false, true)
+    NetworkStartSynchronisedScene(x)
+    
+    Wait(2000)
+    
+    z = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, false, true, 1.0, 0.0, 1.0)
+    NetworkAddEntityToSynchronisedScene(bagObj, z, animDict, "bag_grab_idle", 1000.0, -1000.0, 0)
+    ForceEntityAiAndAnimationUpdate(bagObj)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), z, animDict, "grab_idle", 2.0, -8.0, 13, 16, 1000.0, 0)
+    ForcePedAiAndAnimationUpdate(PlayerPedId(), false, true)
+    NetworkStartSynchronisedScene(z)
+    
+    Wait(1000)
+    
+    CreateThread(function()
+        while animTime < 1.0 or not quit do 
+            Wait(5)
+            HelpMsg("Repeatedly tap ~INPUT_CURSOR_ACCEPT~ to quickly grab the \n" .. lootStrings[loot] .. ". Press ~INPUT_CURSOR_CANCEL~ to stop grabbing the \n" .. lootStrings[loot] .. ".")
+        end
+    end)
+    
+    while animTime < 1.0 do 
+        Wait(100)
+
+
+        if IsControlPressed(0, 237) and not grabbing then 
+            grabbing = true
+            
+            a = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 1.0)
+            NetworkAddEntityToSynchronisedScene(bagObj, a, animDict, "bag_grab", 1000.0, -1000.0, 0)
+            ForceEntityAiAndAnimationUpdate(bagObj)
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), a, animDict, "grab", 4.0, -4.0, 13, 16, 1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(takeObjs[i], a, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
+            ForceEntityAiAndAnimationUpdate(takeObjs[i])
+            NetworkStartSynchronisedScene(a)
+            
+            while not HasAnimEventFired(PlayerPedId(), GetHashKey("CASH_APPEAR")) do 
+                Wait(1)
+            end
+            
+            SetEntityVisible(boxObj, true, false)            
+
+            while not HasAnimEventFired(PlayerPedId(), GetHashKey("RELEASE_CASH_DESTROY")) do 
+                Wait(1)
+            end
+            
+            SetEntityVisible(boxObj, false, false)            
+            
+            SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
+            animTime = GetSynchronizedScenePhase(NetworkGetLocalSceneFromNetworkId(a))
+            
+            grabbing = false
+        elseif IsControlPressed(0, 238) then 
+            quit = true
+            break
+        else
+            y = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 0.0)
+            NetworkAddEntityToSynchronisedScene(takeObjs[i], y, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
+            ForceEntityAiAndAnimationUpdate(takeObjs[i])
+            NetworkStartSynchronisedScene(y)
+            
+            z = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, false, true, 1.0, 0.0, 1.0)
+            NetworkAddEntityToSynchronisedScene(bagObj, z, animDict, "bag_grab_idle", 1000.0, -1000.0, 0)
+            ForceEntityAiAndAnimationUpdate(bagObj)
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), z, animDict, "grab_idle", 2.0, -8.0, 13, 16, 1000.0, 0)
+            ForcePedAiAndAnimationUpdate(PlayerPedId(), false, true)
+            NetworkStartSynchronisedScene(z)
+        end
+    end 
+
+    y = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 0.0)
+    NetworkAddEntityToSynchronisedScene(takeObjs[i], y, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
+    ForceEntityAiAndAnimationUpdate(takeObjs[i])
+    NetworkStartSynchronisedScene(y)
+
+
+    exit = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, false, false, 1.0, animTime, 1.0)
+    NetworkAddEntityToSynchronisedScene(bagObj, exit, animDict, "bag_exit", 1000.0, -1000.0, 0)
+    ForceEntityAiAndAnimationUpdate(bagObj)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), exit, animDict, "exit", 4.0, -1.5, 13, 16, 1000.0, 0)
+    ForcePedAiAndAnimationUpdate(PlayerPedId(), false, true)
+    NetworkStartSynchronisedScene(exit)
+    
+    RenderScriptCams(false, true, 2000, true, false)
+    DeleteEntity(bagObj)
+    DeleteEntity(boxObj)
+
+    if animTime >= 1 then 
+        status[1][i] = true
+        RemoveBlip(blips[i])
+    end
+    
+    isBusy = false
+end
+
+function OpenSlideDoors(size, num, hash)
+    if not IsDoorRegisteredWithSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size)) then
+        AddDoorToSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), GetHashKey(hash), slideDoors[num], false, false, false)
+    end
+    
+    DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 0, false, false)
+    
+    Wait(4000)
+    
+    RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
+    FreezeEntityPosition(slideDoorObjs[num], true)
 end
 
 function Vault()
@@ -250,6 +385,18 @@ function Vault()
         Wait(100)
         GetVaultObjs()
     end
+
+    --iVar1 = NETWORK::NETWORK_CREATE_SYNCHRONISED_SCENE(ENTITY::GET_ENTITY_COORDS(bParam1, true), ENTITY::GET_ENTITY_ROTATION(bParam1, 2), 2, true, false, 1f, fVar0, 0f);
+	--	if (ENTITY::DOES_ENTITY_EXIST(bParam1))
+	--	{
+	--		NETWORK::NETWORK_ADD_ENTITY_TO_SYNCHRONISED_SCENE(bParam1, iVar1, "anim@heists@ornate_bank@grab_cash", "cart_cash_dissapear", 1000f, -4f, 1);
+	--		ENTITY::FORCE_ENTITY_AI_AND_ANIMATION_UPDATE(bParam1);
+	--	}
+	--	NETWORK::NETWORK_START_SYNCHRONISED_SCENE(iVar1);
+
+    LoadAnim("anim@heists@ornate_bank@grab_cash")
+
+    
 
     if loot == 3 then 
         CreateThread(function()
