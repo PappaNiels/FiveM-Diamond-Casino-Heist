@@ -277,7 +277,7 @@ local function GrabLoot(i)
     end)
     
     while animTime < 1.0 do 
-        Wait(100)
+        Wait(10)
 
 
         if IsControlPressed(0, 237) and not grabbing then 
@@ -331,7 +331,7 @@ local function GrabLoot(i)
     NetworkStartSynchronisedScene(y)
 
 
-    exit = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, false, false, 1.0, animTime, 1.0)
+    exit = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 1.0)
     NetworkAddEntityToSynchronisedScene(bagObj, exit, animDict, "bag_exit", 1000.0, -1000.0, 0)
     ForceEntityAiAndAnimationUpdate(bagObj)
     NetworkAddPedToSynchronisedScene(PlayerPedId(), exit, animDict, "exit", 4.0, -1.5, 13, 16, 1000.0, 0)
