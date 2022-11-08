@@ -5,14 +5,14 @@ isBusy = false
 
 status = {
     {
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
     },
     {
         false,
@@ -200,7 +200,15 @@ local function SetVaultLayout()
 end
 
 local function GrabLoot(i)
-    local animTime = 0.0
+    if loot == 2 or loot == 4 then 
+        if status[1][1] == 0.0 then 
+            for j = 1, 8 do 
+                status[1][j] = 0.5037
+            end
+        end
+    end
+
+    local animTime = status[1][i]
     local grabbing = false
     local quit = false
     local animDict = "anim@heists@ornate_bank@grab_cash"
@@ -224,15 +232,10 @@ local function GrabLoot(i)
     local cartHeading = GetEntityHeading(takeObjs[i]) / 180 * math.pi
     local camCoords = (1.25 * vector3(math.cos(cartHeading + ((14 / 12) * math.pi)), math.sin(cartHeading + ((14 / 12) * math.pi)), 1.0)) + cartCoords
 
-
     LoadAnim(animDict)
     LoadModel(propType[loot])
     LoadModel(bag)
         
-    if loot == 2 or loot == 4 then 
-        animTime = 0.5037
-    end
-
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
     boxObj = CreateObject(propType[loot], GetEntityCoords(PlayerPedId()), true, false, false)
 
@@ -244,7 +247,6 @@ local function GrabLoot(i)
     PointCamAtCoord(cam, cartCoords.xy, cartCoords.z + 0.5)
     SetCamActive(cam, true)
     RenderScriptCams(true, true, 1000, true, false)
-    
     
     y = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 0.0)
     NetworkAddEntityToSynchronisedScene(takeObjs[i], y, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
@@ -270,7 +272,7 @@ local function GrabLoot(i)
     Wait(1000)
     
     CreateThread(function()
-        while animTime < 1.0 or not quit do 
+        while animTime < 1.0 and not quit do 
             Wait(5)
             HelpMsg("Repeatedly tap ~INPUT_CURSOR_ACCEPT~ to quickly grab the \n" .. lootStrings[loot] .. ". Press ~INPUT_CURSOR_CANCEL~ to stop grabbing the \n" .. lootStrings[loot] .. ".")
         end
@@ -331,22 +333,23 @@ local function GrabLoot(i)
     NetworkStartSynchronisedScene(y)
 
 
-    exit = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 1.0)
+    exit = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, 0.0, 1.0)
     NetworkAddEntityToSynchronisedScene(bagObj, exit, animDict, "bag_exit", 1000.0, -1000.0, 0)
     ForceEntityAiAndAnimationUpdate(bagObj)
     NetworkAddPedToSynchronisedScene(PlayerPedId(), exit, animDict, "exit", 4.0, -1.5, 13, 16, 1000.0, 0)
     ForcePedAiAndAnimationUpdate(PlayerPedId(), false, true)
     NetworkStartSynchronisedScene(exit)
-    
     RenderScriptCams(false, true, 2000, true, false)
+    TriggerServerEvent("sv:casinoheist:syncLStatus", i, animTime)
+
+    Wait(1000)
+
     DeleteEntity(bagObj)
     DeleteEntity(boxObj)
+    DestroyCam(cam)
 
-    if animTime >= 1 then 
-        status[1][i] = true
-        RemoveBlip(blips[i])
-    end
-    
+    print(animTime)
+
     isBusy = false
 end
 
@@ -386,17 +389,7 @@ function Vault()
         GetVaultObjs()
     end
 
-    --iVar1 = NETWORK::NETWORK_CREATE_SYNCHRONISED_SCENE(ENTITY::GET_ENTITY_COORDS(bParam1, true), ENTITY::GET_ENTITY_ROTATION(bParam1, 2), 2, true, false, 1f, fVar0, 0f);
-	--	if (ENTITY::DOES_ENTITY_EXIST(bParam1))
-	--	{
-	--		NETWORK::NETWORK_ADD_ENTITY_TO_SYNCHRONISED_SCENE(bParam1, iVar1, "anim@heists@ornate_bank@grab_cash", "cart_cash_dissapear", 1000f, -4f, 1);
-	--		ENTITY::FORCE_ENTITY_AI_AND_ANIMATION_UPDATE(bParam1);
-	--	}
-	--	NETWORK::NETWORK_START_SYNCHRONISED_SCENE(iVar1);
-
     LoadAnim("anim@heists@ornate_bank@grab_cash")
-
-    
 
     if loot == 3 then 
         CreateThread(function()
@@ -405,7 +398,7 @@ function Vault()
 
                 if not isBusy then 
                     for k, v in pairs(artCabinets) do 
-                        if not status[1][k] then 
+                        if status[1][k] < 1.0 then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - v.xyz)
 
                             if distance < 1 then 
@@ -429,7 +422,7 @@ function Vault()
                 Wait(5)
                 if not isBusy then
                     for k, v in pairs(carts[cartLayout]) do 
-                        if not status[1][k] then 
+                        if status[1][k] < 1.0 then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - (v.xyz + GetEntityOffset(takeObjs[k], false)))
 
                             --print(distance)
@@ -476,6 +469,11 @@ function Vault()
         end
     end)
 end
+
+RegisterNetEvent("cl:casinoheist:syncLStatus", function(key, time)
+    status[1][key] = time
+    RemoveBlip(blips[key])
+end)
 
 RegisterNetEvent("cl:casinoheist:syncAccessibleLoot", function(num)
     status[1][num] = true
