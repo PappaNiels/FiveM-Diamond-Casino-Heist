@@ -46,6 +46,19 @@ local function LoadDrilling()
     end
 end
 
+local function UnloadDrilling()
+    SetScaleformMovieAsNoLongerNeeded(scaleformDrill)
+    RemoveAnimDict(animDict)
+    SetModelAsNoLongerNeeded(drillName)
+    
+    if approach == 1 then 
+        ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_LASER_DRILL")
+    else 
+        ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL")
+        ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL_2")
+    end
+end
+
 local function EnterPosition(num)
     if not drillAnims[2][1] then 
 
