@@ -17,12 +17,12 @@ driver = {
 }
 
 hacker = {
-    -- Person, Skill, Time Undetected, Time Detected, Image, Cut
-    {"Rickie Lukens", "Poor", 146000, 102000, 1, 0.03},
-    {"Yohan Blair", "Good", 172000, 121000, 3, 0.05},
-    {"Christian Feltz", "Good", 179000, 125000, 2, 0.07},
-    {"Paige Harris", "Expert", 205000, 143000, 5, 0.09},
-    {"Avi Schartzman", "Expert", 2000, 146000, 4, 0.1},
+    -- Person, Skill, Time Undetected, Time Detected, Image, Cut | Time is in seconds
+    {"Rickie Lukens", "Poor", 146, 102, 1, 0.03},
+    {"Yohan Blair", "Good", 172, 121, 3, 0.05},
+    {"Christian Feltz", "Good", 179, 125, 2, 0.07},
+    {"Paige Harris", "Expert", 205, 143, 5, 0.09},
+    {"Avi Schartzman", "Expert", 210, 146, 4, 0.1},
 }
 
 weaponLoadout = {
