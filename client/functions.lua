@@ -1,5 +1,5 @@
 local ratio = GetAspectRatio(0) 
-local ratioR = 1.778 / ratio
+ratioR = 1.778 / ratio
 
 function HelpMsg(text, time)
     AddTextEntry("HelpMsg", text)
