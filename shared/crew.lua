@@ -1,19 +1,19 @@
 gunman = {
-    -- Person, Skill, Index, Image, Cut
-    {"Karl Abolaji", "Poor", 5, 1, 0.05},
-    {"Charlie Reed", "Good", 4, 3, 0.07},
-    {"Patrick McReary", "Expert", 3, 5, 0.08},
-    {"Gustavo Mota", "Expert", 2, 2, 0.09},
-    {"Chester McCoy", "Expert", 1, 4, 0.1},
+    -- Person, Skill, Image, Cut
+    {"Karl Abolaji", "Poor", 1, 0.05},
+    {"Charlie Reed", "Good", 3, 0.07},
+    {"Patrick McReary", "Expert", 5, 0.08},
+    {"Gustavo Mota", "Expert", 2, 0.09},
+    {"Chester McCoy", "Expert", 4, 0.1},
 }
 
 driver = {
     -- Person, Skill, Index, Image Cut
-    {"Karim Denz", "Poor", 5, 1, 0.05},
-    {"Zach Nelson", "Good", 4, 4, 0.06},
-    {"Taliana Martinez", "Good", 3, 2, 0.07},
-    {"Eddie Toh", "Expert", 2, 3, 0.09},
-    {"Chester McCoy", "Expert", 1, 5, 0.1},
+    {"Karim Denz", "Poor", 1, 0.05},
+    {"Zach Nelson", "Good", 4, 0.06},
+    {"Taliana Martinez", "Good", 2, 0.07},
+    {"Eddie Toh", "Expert", 3, 0.09},
+    {"Chester McCoy", "Expert", 5, 0.1},
 }
 
 hacker = {
@@ -26,245 +26,224 @@ hacker = {
 }
 
 weaponLoadout = {
-    [1] = { -- Approach
-        [1] = { -- Gunman
-            [1] = { -- Loadout 1
-                "WEAPON_PUMPSHOTGUN_MK2",
-                "WEAPON_PISTOL50",
+    { -- Approach
+        { -- Gunman 
+            { -- Loadout 1
+                "WEAPON_MICROSMG",
+                "WEAPON_VINTAGEPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
-            [2] = { -- Loadout 2
-                "WEAPON_CARBINERIFLE_MK2",
-                "WEAPON_PISTOL50",
+            { -- Loadout 2
+                "WEAPON_MACHINEPISTOL",
+                "WEAPON_COMBATPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             }
         },
-        [2] = {
-            [1] = {
-                "WEAPON_CARBINERIFLE",
-                "WEAPON_HEAVYPISTOL",
-                "WEAPON_STUNGUN",
-                "WEAPON_KNIFE"
-            },
-            [2] = {
-                "WEAPON_ASSAULTSHOTGUN",
-                "WEAPON_PISTOL50",
-                "WEAPON_STUNGUN",
-                "WEAPON_KNIFE"
-            }
-        },
-        [3] = {
-            [1] = {
-                "WEAPON_COMBATPDW",
-                "WEAPON_PISTOL50",
-                "WEAPON_STUNGUN",
-                "WEAPON_KNIFE"
-            },
-            [2] = {
-                "WEAPON_ASSAULTRIFLE",
-                "WEAPON_PISTOL50",
-                "WEAPON_STUNGUN",
-                "WEAPON_KNIFE"
-            }
-        },
-        [4] = {
-            [1] = {
+        {
+            { 
                 "WEAPON_ASSAULTSMG",
                 "WEAPON_COMBATPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
-            [2] = {
+            {
                 "WEAPON_BULLPUPSHOTGUN",
                 "WEAPON_HEAVYPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             }
         },
-        [5] = {
-            [1] = {
-                "WEAPON_MICROSMG",
-                "WEAPON_VINTAGEPISTOL",
+        {
+            { 
+                "WEAPON_COMBATPDW",
+                "WEAPON_PISTOL50",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
-            [2] = {
-                "WEAPON_MACHINEPISTOL",
-                "WEAPON_COMBATPISTOL",
+            {
+                "WEAPON_ASSAULTRIFLE",
+                "WEAPON_PISTOL50",
+                "WEAPON_STUNGUN",
+                "WEAPON_KNIFE"
+            }
+        },
+        {
+            { 
+                "WEAPON_CARBINERIFLE",
+                "WEAPON_HEAVYPISTOL",
+                "WEAPON_STUNGUN",
+                "WEAPON_KNIFE"
+            },
+            {
+                "WEAPON_ASSAULTSHOTGUN",
+                "WEAPON_PISTOL50",
+                "WEAPON_STUNGUN",
+                "WEAPON_KNIFE"
+            }
+        },
+        { 
+            {  
+                "WEAPON_PUMPSHOTGUN_MK2",
+                "WEAPON_PISTOL50",
+                "WEAPON_STUNGUN",
+                "WEAPON_KNIFE"
+            },
+            { 
+                "WEAPON_CARBINERIFLE_MK2",
+                "WEAPON_PISTOL50",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             }
         }
     },
-    [2] = {
-        [1] = {
-            [1] = {
-                "WEAPON_SMG_MK2",
+    {
+        {
+            {
+                "WEAPON_MICROSMG",
                 "WEAPON_CERAMICPISTOL",
                 "WEAPON_SWITCHBLADE"
             },
-            [2] = {
-                "WEAPON_BULLPUPRIFLE_MK2",
+            {
+                "WEAPON_DBSHOTGUN",
                 "WEAPON_CERAMICPISTOL",
                 "WEAPON_SWITCHBLADE"
             }
         },
-        [2] = {
-            [1] = {
-                "WEAPON_CARBINERIFLE",
-                "WEAPON_CERAMICPISTOL",
-                "WEAPON_SWITCHBLADE"
-            },
-            [2] = {
-                "WEAPON_ASSAULTSHOTGUN",
-                "WEAPON_CERAMICPISTOL",
-                "WEAPON_SWITCHBLADE"
-            }
-        },
-        [3] = {
-            [1] = {
-                "WEAPON_SAWNOFFSHOTGUN",
-                "WEAPON_CERAMICPISTOL",
-                "WEAPON_SWITCHBLADE"
-            },
-            [2] = {
-                "WEAPON_COMPACTRIFLE",
-                "WEAPON_CERAMICPISTOL",
-                "WEAPON_SWITCHBLADE"
-            }
-        },
-        [4] = {
-            [1] = {
+        {
+            {
                 "WEAPON_MACHINEPISTOL",
                 "WEAPON_CERAMICPISTOL",
                 "WEAPON_SWITCHBLADE"
             },
-            [2] = {
+            {
                 "WEAPON_AUTOSHOTGUN",
                 "WEAPON_CERAMICPISTOL",
                 "WEAPON_SWITCHBLADE"
             }
         },
-        [5] = {
-            [1] = {
-                "WEAPON_MICROSMG",
+        {
+            {
+                "WEAPON_SAWNOFFSHOTGUN",
                 "WEAPON_CERAMICPISTOL",
                 "WEAPON_SWITCHBLADE"
             },
-            [2] = {
-                "WEAPON_DBSHOTGUN",
+            {
+                "WEAPON_COMPACTRIFLE",
+                "WEAPON_CERAMICPISTOL",
+                "WEAPON_SWITCHBLADE"
+            }
+        },
+        {
+            {
+                "WEAPON_CARBINERIFLE",
+                "WEAPON_CERAMICPISTOL",
+                "WEAPON_SWITCHBLADE"
+            },
+            {
+                "WEAPON_ASSAULTSHOTGUN",
+                "WEAPON_CERAMICPISTOL",
+                "WEAPON_SWITCHBLADE"
+            }
+        },
+        {
+            {
+                "WEAPON_SMG_MK2",
+                "WEAPON_CERAMICPISTOL",
+                "WEAPON_SWITCHBLADE"
+            },
+            {
+                "WEAPON_BULLPUPRIFLE_MK2",
                 "WEAPON_CERAMICPISTOL",
                 "WEAPON_SWITCHBLADE"
             }
         }
     },
-    [3] = {
-        [1] = {
-            [1] = {
-                "WEAPON_PUMPSHOTGUN_MK2",
-                "WEAPON_SMG_MK2",
-                "WEAPON_PIPEBOMB",
-                "WEAPON_WRENCH"
+    {
+        {
+            {
+                "WEAPON_SAWNOFFSHOTGUN",
+                "WEAPON_SMG",
+                "WEAPON_MOLOTOV",
+                "WEAPON_KNUCKLE"
             },
-            [2] = {
-                "WEAPON_ASSAULTRIFLE_MK2",
-                "WEAPON_SMG_MK2",
-                "WEAPON_PIPEBOMB",
-                "WEAPON_WRENCH"
+            {
+                "WEAPON_REVOLVER",
+                "WEAPON_SMG",
+                "WEAPON_MOLOTOV",
+                "WEAPON_KNUCKLE"
             }
         },
-        [2] = {
-            [1] = {
-                "WEAPON_CARBINERIFLE",
-                "WEAPON_SMG",
-                "WEAPON_PROXMINE",
-                "WEAPON_MACHETE"
-            },
-            [2] = {
-                "WEAPON_ASSAULTSHOTGUN",
-                "WEAPON_SMG",
-                "WEAPON_PROXMINE",
-                "WEAPON_MACHETE"
-            }
-        },
-        [3] = {
-            [1] = {
-                "WEAPON_HEAVYSHOTGUN",
-                "WEAPON_SMG",
-                "WEAPON_STICKYBOMB",
-                "WEAPON_CROWBAR"
-            },
-            [2] = {
-                "WEAPON_COMBATMG",
-                "WEAPON_SMG",
-                "WEAPON_STICKYBOMB",
-                "WEAPON_CROWBAR"
-            }
-        },
-        [4] = {
-            [1] = {
+        {
+            {
                 "WEAPON_ASSAULTSMG",
                 "WEAPON_SMG",
                 "WEAPON_GRENADE",
                 "WEAPON_HAMMER"
             },
-            [2] = {
+            {
                 "WEAPON_PUMPSHOTGUN",
                 "WEAPON_SMG",
                 "WEAPON_GRENADE",
                 "WEAPON_HAMMER"
             }
         },
-        [5] = {
-            [1] = {
-                "WEAPON_SAWNOFFSHOTGUN",
+        {
+            {
+                "WEAPON_HEAVYSHOTGUN",
                 "WEAPON_SMG",
-                "WEAPON_MOLOTOV",
-                "WEAPON_KNUCKLE"
+                "WEAPON_STICKYBOMB",
+                "WEAPON_CROWBAR"
             },
-            [2] = {
-                "WEAPON_REVOLVER",
+            {
+                "WEAPON_COMBATMG",
                 "WEAPON_SMG",
-                "WEAPON_MOLOTOV",
-                "WEAPON_KNUCKLE"
+                "WEAPON_STICKYBOMB",
+                "WEAPON_CROWBAR"
+            }
+        },
+        {
+            {
+                "WEAPON_CARBINERIFLE",
+                "WEAPON_SMG",
+                "WEAPON_PROXMINE",
+                "WEAPON_MACHETE"
+            },
+            {
+                "WEAPON_ASSAULTSHOTGUN",
+                "WEAPON_SMG",
+                "WEAPON_PROXMINE",
+                "WEAPON_MACHETE"
+            }
+        },
+        {
+            {
+                "WEAPON_PUMPSHOTGUN_MK2",
+                "WEAPON_SMG_MK2",
+                "WEAPON_PIPEBOMB",
+                "WEAPON_WRENCH"
+            },
+            {
+                "WEAPON_ASSAULTRIFLE_MK2",
+                "WEAPON_SMG_MK2",
+                "WEAPON_PIPEBOMB",
+                "WEAPON_WRENCH"
             }
         }
     }
 }
 
 availableVehicles = {
-    [1] = { -- Driver
-        { -- Getaway Vehicle
-            -- Model Name, Name on Board
-            {"zhaba", "Zhaba"},
-            {"vagrant", "Vargrant"},
-            {"outlaw", "Outlaw"},
-            {"everon", "Everon"}
-        },
-        "kamacho", -- Departure Vehicle   
-        "mesa3"  -- Switch Vehicle
-    },
-    [2] = {
+    [5] = {
         {
-            {"sultan2", "Sultan Classic"},
-            {"gauntlet3", "Gauntlet Classic"},
-            {"ellie", "Ellie"},
-            {"komoda", "Komoda"}
+            {"issi3", "Issi Classic"},
+            {"asbo", "Asbo"},
+            {"kanjo", "Kanjo"},
+            {"sentinel3", "Sentinal Classic"}
         },
-        "kuruma",
-        "taxi"
-    },
-    [3] = {
-        {
-            {"retinue2", "Retinue MK II"},
-            {"yosemite2", "Drift Yosemite"},
-            {"sugoi", "Sugoi"},
-           {"jugular", "Jugular"}
-        },
-        "sultan",
-        "emperor"
+        "rancherxl",
+        "regina"
     },
     [4] = {
         {
@@ -276,14 +255,35 @@ availableVehicles = {
         "youga2",
         "pony"
     },
-    [5] = {
+    [3] = {
         {
-            {"issi3", "Issi Classic"},
-            {"asbo", "Asbo"},
-            {"kanjo", "Kanjo"},
-            {"sentinel3", "Sentinal Classic"}
+            {"retinue2", "Retinue MK II"},
+            {"yosemite2", "Drift Yosemite"},
+            {"sugoi", "Sugoi"},
+           {"jugular", "Jugular"}
         },
-        "rancherxl",
-        "regina"
+        "sultan",
+        "emperor"
+    },
+    [2] = {
+        {
+            {"sultan2", "Sultan Classic"},
+            {"gauntlet3", "Gauntlet Classic"},
+            {"ellie", "Ellie"},
+            {"komoda", "Komoda"}
+        },
+        "kuruma",
+        "taxi"
+    },
+    [1] = { -- Driver
+        { -- Getaway Vehicle
+            -- Model Name, Name on Board
+            {"zhaba", "Zhaba"},
+            {"vagrant", "Vargrant"},
+            {"outlaw", "Outlaw"},
+            {"everon", "Everon"}
+        },
+        "kamacho", -- Departure Vehicle   
+        "mesa3"  -- Switch Vehicle
     }
 }

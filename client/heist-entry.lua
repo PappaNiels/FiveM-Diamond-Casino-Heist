@@ -222,7 +222,7 @@ function StartHeist()
                 model = "stockade"
             end 
         else
-            model = availableVehicles[driver[selectedDriver][3]][2]
+            model = availableVehicles[selectedDriver][2]
         end
 
         LoadModel(model)

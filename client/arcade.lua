@@ -593,7 +593,7 @@ local function CanChangeCut(player, change)
 end
 
 local function SetDataFinal(i)
-    local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][5]) + (potential[difficulty][loot] * driver[selectedDriver][5]) + (potential[difficulty][loot] * hacker[selectedHacker][6])
+    local cut = (potential[difficulty][loot] * 0.05) + (potential[difficulty][loot] * gunman[selectedGunman][4]) + (potential[difficulty][loot] * driver[selectedDriver][4]) + (potential[difficulty][loot] * hacker[selectedHacker][6])
     BeginScaleformMovieMethod(boardType[3], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
     ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
@@ -888,11 +888,11 @@ local function ChangeImage(num, change)
         if num == 5 then 
             SetMission(5, imageOrder[2][approach][5][sec], weaponLoadoutStrings[sec])
         elseif num == 6 then
-            SetMission(6, imageOrder[2][approach][6][sec], availableVehicles[driver[selectedDriver][3]][1][sec][2])
+            SetMission(6, imageOrder[2][approach][6][sec], availableVehicles[selectedDriver][1][sec][2])
         elseif num == 10 then 
-            SetHireableCrew(10, gunman[sec][1], gunman[sec][2], gunman[sec][4], math.floor(gunman[sec][5] * 100), weapons[approach][sec])
+            SetHireableCrew(10, gunman[sec][1], gunman[sec][2], gunman[sec][3], math.floor(gunman[sec][4] * 100), weapons[approach][sec])
         elseif num == 11 then  
-            SetHireableCrew(11, driver[sec][1], driver[sec][2], driver[sec][4], math.floor(driver[sec][5] * 100), weapons[approach][imageOrderNum[2][10] - 1])
+            SetHireableCrew(11, driver[sec][1], driver[sec][2], driver[sec][3], math.floor(driver[sec][3] * 100), weapons[approach][imageOrderNum[2][10] - 1])
         elseif num == 12 then 
             SetHireableCrew(12, hacker[sec][1], hacker[sec][2], hacker[sec][5], math.floor(hacker[sec][6] * 100), weapons[approach][imageOrderNum[2][10] - 1])
         elseif num == 14 then 
@@ -1153,7 +1153,7 @@ local function ExecuteButtonFunction(i)
                 canZoomIn[2][5] = false 
             end
         elseif i == 6 and selectedVehicle == 0 then 
-            if ShowWarningMessage("Are you sure you wish to choose the " .. availableVehicles[driver[selectedDriver][3]][1][imageOrderNum[2][6] - 1][2] .. " as your getaway vehicle?") then
+            if ShowWarningMessage("Are you sure you wish to choose the " .. availableVehicles[selectedDriver][1][imageOrderNum[2][6] - 1][2] .. " as your getaway vehicle?") then
                 SetTick(6)
                 UpdateList(1, 2)
                 selectedVehicle = imageOrderNum[2][6]
@@ -1467,12 +1467,12 @@ function PrepBoardInfo()
         EndScaleformMovieMethod()
 
         if selectedGunman == 0 then 
-            SetHireableCrew(10, gunman[imageOrderNum[2][10] - 1][1], gunman[imageOrderNum[2][10] - 1][2], gunman[imageOrderNum[2][10] - 1][4], math.floor(gunman[imageOrderNum[2][10] - 1][5] * 100), weapons[approach][1]) -- 1 = big con. 2 = silent, 3 = aggressive
+            SetHireableCrew(10, gunman[imageOrderNum[2][10] - 1][1], gunman[imageOrderNum[2][10] - 1][2], gunman[imageOrderNum[2][10] - 1][3], math.floor(gunman[imageOrderNum[2][10] - 1][4] * 100), weapons[approach][1]) -- 1 = big con. 2 = silent, 3 = aggressive
             SetCrewSpecials(5, false)
         end 
 
         if selectedDriver == 0 then
-            SetHireableCrew(11, driver[imageOrderNum[2][11] - 1][1], driver[imageOrderNum[2][11] - 1][2], driver[imageOrderNum[2][11] - 1][4], math.floor(driver[imageOrderNum[2][11] - 1][5] * 100), 1)
+            SetHireableCrew(11, driver[imageOrderNum[2][11] - 1][1], driver[imageOrderNum[2][11] - 1][2], driver[imageOrderNum[2][11] - 1][3], math.floor(driver[imageOrderNum[2][11] - 1][4] * 100), 1)
             SetCrewSpecials(6, false)
         end  
 
