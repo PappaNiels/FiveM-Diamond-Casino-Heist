@@ -1,6 +1,6 @@
-enableTeamLives = false 
-enableTake = false 
-enableTimer = false 
+showTeamLives = false 
+showTake = false 
+showTimer = false 
 
 local test = false
 
@@ -12,18 +12,23 @@ local tw = 1.35
 local takef = ""
 
 local timeExpired = 0
-local min = 1
+local min = 0
 local ten = 0
 local sec = 0
 local timerColour = {255, 255, 255, 500}
 
 local function StartTimer()
     local timerActive = true
+    selectedHacker = 1
+    local timeTot = hacker[selectedHacker][3 + alarmTriggered]
 
+    min = math.floor(timeTot / 60)
+    ten = math.floor((timeTot - (min * 60)) / 10)
+    sec = math.floor(timeTot - (min * 60) - (ten * 10))
+    
     CreateThread(function()
         while timerActive do 
             Wait(1000)
-            timeExpired = timeExpired + 1000
 
             if sec == 0 then 
                 sec = 9
@@ -37,9 +42,9 @@ local function StartTimer()
                 sec = sec - 1
             end
 
-            if timeExpired >= --[[hacker[hackerSelected][3 + alarmTriggered]] 60000 - 5000 then 
+            if min == 0 and ten == 0 and sec < 5 then 
                 timerColour = {201, 37, 37, 255}
-                if timeExpired == --[[hacker[hackerSelected][3 + alarmTriggered]] 60000 then 
+                if sec == 0 then 
                     timerActive = false
                 end
             end
@@ -48,8 +53,6 @@ local function StartTimer()
 end
 
 local function FormatTake()
-    -- 4 = 1.285 5 = 1.2675 6 = 1.25 7 = 1.253
-    --local take = 000
     local len = string.len(tostring(take))
 
     if len == 4 then 
@@ -87,10 +90,10 @@ end)
 
 function DrawTeamlives()
     LoadTexture("timerbars")
-    enableTeamLives = true
+    showTeamLives = true
 
     CreateThread(function()
-        while enableTeamLives do 
+        while showTeamLives do 
             Wait(5)
 
             SetTextColour(teamlivesColour[1], teamlivesColour[2], teamlivesColour[3], teamlivesColour[4])
@@ -116,10 +119,10 @@ end
 
 function DrawTake()
     FormatTake()
-    enableTake = true
+    showTake = true
 
     CreateThread(function()
-        while enableTake do 
+        while showTake do 
             Wait(5)
 
             SetTextScale(0.28, 0.28)
@@ -142,17 +145,17 @@ function DrawTake()
 end
 
 function DrawTimer()
-    enableTimer = true
+    showTimer = true
     StartTimer()
 
     CreateThread(function()
-        while enableTimer do 
+        while showTimer do 
             Wait(5)
             
             SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
             SetTextScale(0.28, 0.28)
             BeginTextCommandDisplayText("STRING")
-            AddTextComponentSubstringPlayerName("TAKE")
+            AddTextComponentSubstringPlayerName("TIME")
             EndTextCommandDisplayText(0.8815, 0.875)
 
             SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
