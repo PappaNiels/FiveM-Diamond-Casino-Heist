@@ -1,6 +1,6 @@
-loadTeamlives = false 
-loadTake = false 
-loadTimer = false 
+enableTeamLives = false 
+enableTake = false 
+enableTimer = false 
 
 local test = false
 
@@ -71,64 +71,6 @@ local function FormatTake()
     end
 end
 
-local function DrawTeamlives() 
-    SetTextColour(teamlivesColour[1], teamlivesColour[2], teamlivesColour[3], teamlivesColour[4])
-    SetTextScale(0.28, 0.28)
-    BeginTextCommandDisplayText("STRING")
-    AddTextComponentSubstringPlayerName("TEAM LIVES")
-    EndTextCommandDisplayText(GetXTextPlace(1.126), 0.954)
-
-    SetTextColour(teamlivesColour[1], teamlivesColour[2], teamlivesColour[3], teamlivesColour[4])
-    SetTextScale(0.47, 0.47)
-    BeginTextCommandDisplayText("STRING")
-    AddTextComponentSubstringPlayerName(tostring(teamlives))
-    EndTextCommandDisplayText(GetXTextPlace(tw), 0.945)
-    
-    if teamlives > 1 then 
-        DrawSpriteCut("timerbars", "all_red_bg", 1.094, 0.962, 600.0, 65.0, 255)
-    else 
-        DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.962, 300.0, 65.0, 140)
-    end 
-end
-
-local function DrawTake()
-    SetTextScale(0.28, 0.28)
-    BeginTextCommandDisplayText("STRING")
-    AddTextComponentSubstringPlayerName("TAKE")
-    EndTextCommandDisplayText(GetXTextPlace(1.174), 0.915)
-
-    BeginTextCommandGetWidth("STRING")
-    AddTextComponentSubstringPlayerName("$" .. takef) -- 1.2
-    w = EndTextCommandGetWidth(1)
-    
-    SetTextScale(0.0, amountSize)
-    BeginTextCommandDisplayText("STRING")
-    AddTextComponentSubstringPlayerName("$" .. takef)
-    EndTextCommandDisplayText(GetXTextPlace(-0.5226 * w + 1.3458), height)
-
-    DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.922, 300.0, 65.0, 140)
-end
-
-local function DrawTimer()
-    SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
-    SetTextScale(0.28, 0.28)
-    BeginTextCommandDisplayText("timertxt")
-    EndTextCommandDisplayText(0.8815, 0.875)
-
-    SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
-    
-    BeginTextCommandGetWidth("STRING")
-    AddTextComponentSubstringPlayerName("0" .. min .. ":" .. ten .. sec)
-    w = EndTextCommandGetWidth(1)
-    
-    SetTextScale(0.5, 0.5)
-    BeginTextCommandDisplayText("STRING")
-    AddTextComponentSubstringPlayerName("0" .. min .. ":" .. ten .. sec)
-    EndTextCommandDisplayText(GetXTextPlace(-0.8097 * w + 1.3673181), 0.864)
-
-    DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.882, 300.0, 65.0, 140)
-end
-
 RegisterNetEvent("cl:casinoheist:syncteamlives", function(lives)
     teamlives = lives
 
@@ -143,68 +85,100 @@ RegisterNetEvent("cl:casinoheist:synctake", function(_take)
     FormatTake()
 end)
 
---CreateThread(function()
---    while true do 
---        Wait(4)
---
---
---            if loadTeamlives then 
---                DrawTeamlives()
---            end
---
---            if loadTake then 
---                DrawTake()
---            end
---
---            if loadTimer then 
---                DrawTimer()
---            end
---        else 
---            Wait(1000)
---
---    end
---end)
+function DrawTeamlives()
+    LoadTexture("timerbars")
+    enableTeamLives = true
 
-CreateThread(function()
-    while true do 
-        Wait(5)
-        if loadTeamlives then 
-            DrawTeamlives()
-        else 
-            Wait(500)
-        end
-    end
-end)
+    CreateThread(function()
+        while enableTeamLives do 
+            Wait(5)
 
-CreateThread(function()
-    while true do 
-        Wait(5)
-        if loadTake then 
-            DrawTake()
-        else 
-            Wait(500)
-        end
-    end
-end)
+            SetTextColour(teamlivesColour[1], teamlivesColour[2], teamlivesColour[3], teamlivesColour[4])
+            SetTextScale(0.28, 0.28)
+            BeginTextCommandDisplayText("STRING")
+            AddTextComponentSubstringPlayerName("TEAM LIVES")
+            EndTextCommandDisplayText(GetXTextPlace(1.126), 0.954)
 
-CreateThread(function()
-    while true do 
-        Wait(5)
-        if loadTimer then 
-            DrawTimer()
-        else 
-            Wait(500)
+            SetTextColour(teamlivesColour[1], teamlivesColour[2], teamlivesColour[3], teamlivesColour[4])
+            SetTextScale(0.47, 0.47)
+            BeginTextCommandDisplayText("STRING")
+            AddTextComponentSubstringPlayerName(tostring(teamlives))
+            EndTextCommandDisplayText(GetXTextPlace(tw), 0.945)
+
+            if teamlives > 1 then 
+                DrawSpriteCut("timerbars", "all_red_bg", 1.094, 0.962, 600.0, 65.0, 255)
+            else 
+                DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.962, 300.0, 65.0, 140)
+            end 
         end
-    end
-end)
+    end)
+end
+
+function DrawTake()
+    FormatTake()
+    enableTake = true
+
+    CreateThread(function()
+        while enableTake do 
+            Wait(5)
+
+            SetTextScale(0.28, 0.28)
+            BeginTextCommandDisplayText("STRING")
+            AddTextComponentSubstringPlayerName("TAKE")
+            EndTextCommandDisplayText(GetXTextPlace(1.174), 0.915)
+
+            BeginTextCommandGetWidth("STRING")
+            AddTextComponentSubstringPlayerName("$" .. takef) -- 1.2
+            w = EndTextCommandGetWidth(1)
+
+            SetTextScale(0.0, amountSize)
+            BeginTextCommandDisplayText("STRING")
+            AddTextComponentSubstringPlayerName("$" .. takef)
+            EndTextCommandDisplayText(GetXTextPlace(-0.5226 * w + 1.3458), height)
+
+            DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.922, 300.0, 65.0, 140)
+        end
+    end)
+end
+
+function DrawTimer()
+    enableTimer = true
+    StartTimer()
+
+    CreateThread(function()
+        while enableTimer do 
+            Wait(5)
+            
+            SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
+            SetTextScale(0.28, 0.28)
+            BeginTextCommandDisplayText("STRING")
+            AddTextComponentSubstringPlayerName("TAKE")
+            EndTextCommandDisplayText(0.8815, 0.875)
+
+            SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
+
+            BeginTextCommandGetWidth("STRING")
+            AddTextComponentSubstringPlayerName("0" .. min .. ":" .. ten .. sec)
+            w = EndTextCommandGetWidth(1)
+
+            SetTextScale(0.5, 0.5)
+            BeginTextCommandDisplayText("STRING")
+            AddTextComponentSubstringPlayerName("0" .. min .. ":" .. ten .. sec)
+            EndTextCommandDisplayText(GetXTextPlace(-0.8097 * w + 1.3673181), 0.864)
+
+            DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.882, 300.0, 65.0, 140)
+        end
+    end)
+end
 
 RegisterCommand("test_sec", function() 
-    LoadTexture("timerbars")
-    FormatTake()
     --FormatTimer()
     --test = true
-    loadTeamlives = true 
-    loadTake = true 
-    loadTimer = true
-    StartTimer()
+    DrawTeamlives()
+    DrawTake()
+    DrawTimer()
+    --loadTeamlives = true 
+    --loadTake = true 
+    --loadTimer = true
+    --StartTimer()
  end, false)
