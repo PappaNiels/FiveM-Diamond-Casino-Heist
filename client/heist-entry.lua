@@ -239,6 +239,8 @@ function StartHeist()
 
     Wait(1000)
 
+    DrawTeamlives()
+
     DoScreenFadeIn(1500)
 
     if selectedEntrance == 3 or selectedEntrance == 4 or selectedEntrance == 5 or selectedEntrance == 8 or selectedEntrance == 9 or selectedEntrance == 10 then 
@@ -392,8 +394,8 @@ function EnterCasinoTunnel()
     DestroyCam(cam)
     
     if player == 1 then 
-        SetEntityCoords(PlayerPedId(), casinoEntryCoords[selectedEntrance][1], true, false, false, true)
-        SetEntityHeading(PlayerPedId(), casinoEntryCoords[selectedEntrance][2])
+        SetEntityCoords(veh, casinoEntryCoords[selectedEntrance][1], true, false, false, true)
+        SetEntityHeading(veh, casinoEntryCoords[selectedEntrance][2])
     end
     --for i = 1, #hPlayer do 
     --    if PlayerPedId() ~= GetHeistPlayerPed(hPlayer[i]) then 

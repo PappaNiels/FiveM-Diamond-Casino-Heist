@@ -21,7 +21,7 @@ status = {
         false,
         false,
         false,
-        false,
+        false
     }
 }
 
@@ -40,21 +40,29 @@ local paintingNames = {
     "ch_prop_vault_painting_01i",
 }
 
+local paintingAnims = {
+    {
+        -- Player, Knife, Painting, Bag, Cam
+        {"ver_01_top_left_enter",               "ver_01_top_left_enter_w_me_switchblade",                   "ver_01_top_left_enter_ch_prop_vault_painting_01a",                 "ver_01_top_left_enter_hei_p_m_bag_var22_arm_s",                "ver_01_top_left_enter_ch_prop_ch_sec_cabinet_02a",                "ver_01_top_left_enter_cam"}, -- Enter top left
+        {"ver_01_cutting_top_left_idle",        "ver_01_cutting_top_left_idle_w_me_switchblade",            "ver_01_cutting_top_left_idle_ch_prop_vault_painting_01a",          "ver_01_cutting_top_left_idle_hei_p_m_bag_var22_arm_s",         "ver_01_cutting_top_left_idle_ch_prop_ch_sec_cabinet_02a",         "ver_01_cutting_top_left_idle_cam"}, -- Idle top left
+        {"ver_01_cutting_top_left_to_right",    "ver_01_cutting_top_left_to_right_w_me_switchblade",        "ver_01_cutting_top_left_to_right_ch_prop_vault_painting_01a",      "ver_01_cutting_top_left_to_right_hei_p_m_bag_var22_arm_s",     "ver_01_cutting_top_left_to_right_ch_prop_ch_sec_cabinet_02a",     "ver_01_cutting_top_left_to_right_cam"}, -- Cut top left to right
+        {"ver_01_cutting_top_right_idle",       "ver_01_cutting_top_right_idle_w_me_switchblade",           "ver_01_cutting_top_right_idle_ch_prop_vault_painting_01a",         "ver_01_cutting_top_right_idle_hei_p_m_bag_var22_arm_s",        "ver_01_cutting_top_right_idle_ch_prop_ch_sec_cabinet_02a",        "ver_01_cutting_top_right_idle_cam"}, -- Idle top right
+        {"ver_01_cutting_right_top_to_bottom",  "ver_01_cutting_right_top_to_bottom_w_me_switchblade",      "ver_01_cutting_right_top_to_bottom_ch_prop_vault_painting_01a",    "ver_01_cutting_right_top_to_bottom_hei_p_m_bag_var22_arm_s",   "ver_01_cutting_right_top_to_bottom_ch_prop_ch_sec_cabinet_02a",   "ver_01_cutting_right_top_to_bottom_cam"}, -- Cut top right to bottom
+        {"ver_01_cutting_bottom_right_idle",    "ver_01_cutting_bottom_right_idle_w_me_switchblade",        "ver_01_cutting_bottom_right_idle_ch_prop_vault_painting_01a",      "ver_01_cutting_bottom_right_idle_hei_p_m_bag_var22_arm_s",     "ver_01_cutting_bottom_right_idle_ch_prop_ch_sec_cabinet_02a",     "ver_01_cutting_bottom_right_idle_cam"}, -- Idle bottom right
+        {"ver_01_cutting_bottom_right_to_left", "ver_01_cutting_bottom_right_to_left_w_me_switchblade",     "ver_01_cutting_bottom_right_to_left_ch_prop_vault_painting_01a",   "ver_01_cutting_bottom_right_to_left_hei_p_m_bag_var22_arm_s",  "ver_01_cutting_bottom_right_to_left_ch_prop_ch_sec_cabinet_02a",  "ver_01_cutting_bottom_right_to_left_cam"}, -- Cut top right to bottom
+        {"ver_01_cutting_bottom_left_idle",     "ver_01_cutting_bottom_left_idle_w_me_switchblade",         "ver_01_cutting_bottom_left_idle_ch_prop_vault_painting_01a",       "ver_01_cutting_bottom_left_idle_hei_p_m_bag_var22_arm_s",      "ver_01_cutting_bottom_left_idle_ch_prop_ch_sec_cabinet_02a",      "ver_01_cutting_bottom_left_idle_cam"}, -- Idle bottom right
+        {"ver_01_cutting_left_top_to_bottom",   "ver_01_cutting_left_top_to_bottom_w_me_switchblade",       "ver_01_cutting_left_top_to_bottom_ch_prop_vault_painting_01a",     "ver_01_cutting_left_top_to_bottom_hei_p_m_bag_var22_arm_s",    "ver_01_cutting_left_top_to_bottom_ch_prop_ch_sec_cabinet_02a",    "ver_01_cutting_left_top_to_bottom_cam"}, -- Cut top right to bottom
+        {"ver_01_with_painting_exit",           "ver_01_with_painting_exit_w_me_switchblade",               "ver_01_with_painting_exit_ch_prop_vault_painting_01a",             "ver_01_with_painting_exit_hei_p_m_bag_var22_arm_s",            "ver_01_with_painting_exit_ch_prop_ch_sec_cabinet_02a",            "ver_01_with_painting_exit_cam"}, -- Cut top right to bottom
+        
+    }, 
+    {}
+}
+
 local cartType = {
     {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
     {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
     {},
     {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
-}
-
-local cartAnims = {
-    {
-        {"intro", "bag_intro"},
-        {"grab", "bag_grab", "cart_cash_dissapear"},
-        {"grab_idle", "bag_grab_idle"},
-        {"exit", "bag_exit"}
-    },
-    {}
 }
 
 local function CartType(i)
@@ -80,10 +88,10 @@ local function GetVaultObjs()
             takeObjs[i] = GetClosestObjectOfType(artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, 1.0, GetHashKey("ch_prop_ch_sec_cabinet_02a"), false, false, false)
             paintingObjs[i] = GetClosestObjectOfType(paintings[i], 1.0, GetHashKey(paintingNames[i]), false, false, false)
             
-            blips[i] = AddBlipForEntity(artCabinetObjs[i])
+            blips[i] = AddBlipForEntity(takeObjs[i])
             SetBlipSprite(blips[i], 534 + i)
             SetBlipScale(blips[i], 0.8)
-            SetBlipColour(blips[i], 3)
+            SetBlipColour(blips[i], 2)
         end 
     else 
         for i = 1, #carts[cartLayout] do 
@@ -100,7 +108,7 @@ local function GetVaultObjs()
 end
 
 local function SetVaultObjs()
-    loot = 1
+    --loot = 1
     if loot == 3 then        
         LoadModel("ch_prop_ch_sec_cabinet_02a")
 
@@ -114,10 +122,10 @@ local function SetVaultObjs()
             paintingObjs[i] = CreateObject(GetHashKey(paintingNames[i]), paintings[i], true, false, false)
             SetEntityHeading(paintingObjs[i], artCabinets[i].w)
 
-            blips[i] = AddBlipForEntity(artCabinetObjs[i])
+            blips[i] = AddBlipForEntity(takeObjs[i])
             SetBlipSprite(blips[i], 534 + i)
             SetBlipScale(blips[i], 0.8)
-            SetBlipColour(blips[i], 3)
+            SetBlipColour(blips[i], 2)
         end
 
         for i = 1, #paintingNames do 
@@ -165,19 +173,19 @@ local function SetVaultLayout()
         {5, 7}
     }
     
-    --if loot == 3 then 
-    --    vaultLayout = math.random(7, 10)
-    --else
-    --    vaultLayout = math.random(1, 6)
-    --    
-    --    if vaultLayout < 3 then 
-    --        cartLayout = 1
-    --    else 
-    --        cartLayout = 2
-    --    end
-    --end
+    if loot == 3 then 
+        vaultLayout = math.random(7, 10)
+    else
+        vaultLayout = math.random(1, 6)
+        
+        if vaultLayout < 3 then 
+            cartLayout = 1
+        else 
+            cartLayout = 2
+        end
+    end
 
-    vaultLayout = 1
+    --vaultLayout = 1
 
     for i = 1, 7 do 
         if i < 4 then 
@@ -193,10 +201,6 @@ local function SetVaultLayout()
         SetEntityCoords(slideDoorObjs[layouts[vaultLayout][i]], coords + (GetEntityOffset(slideDoorObjs[layouts[vaultLayout][i]], true) * 2), true, false, false, false)
         status[2][layouts[vaultLayout][i]] = true
     end
-
-    for i = 1, 7 do 
-        print(status[2][i])
-    end
 end
 
 local function GrabLoot(i)
@@ -211,6 +215,7 @@ local function GrabLoot(i)
     local animTime = status[1][i]
     local grabbing = false
     local quit = false
+    local waiting = false
     local animDict = "anim@heists@ornate_bank@grab_cash"
     local bag = "hei_p_m_bag_var22_arm_s"
     local propType = {
@@ -281,8 +286,8 @@ local function GrabLoot(i)
     while animTime < 1.0 do 
         Wait(10)
 
-
         if IsControlPressed(0, 237) and not grabbing then 
+            waiting = false
             grabbing = true
             
             a = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 1.0)
@@ -298,21 +303,25 @@ local function GrabLoot(i)
             end
             
             SetEntityVisible(boxObj, true, false)            
-
+            
             while not HasAnimEventFired(PlayerPedId(), GetHashKey("RELEASE_CASH_DESTROY")) do 
                 Wait(1)
             end
             
             SetEntityVisible(boxObj, false, false)            
             
+            Wait(100)
+
             SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
             animTime = GetSynchronizedScenePhase(NetworkGetLocalSceneFromNetworkId(a))
             
             grabbing = false
         elseif IsControlPressed(0, 238) then 
+            waiting = false
             quit = true
             break
-        else
+        elseif not waiting then 
+            waiting = true 
             y = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 0.0)
             NetworkAddEntityToSynchronisedScene(takeObjs[i], y, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
             ForceEntityAiAndAnimationUpdate(takeObjs[i])
@@ -348,12 +357,91 @@ local function GrabLoot(i)
     DeleteEntity(boxObj)
     DestroyCam(cam)
 
-    print(animTime)
-
     isBusy = false
 end
 
-function OpenSlideDoors(size, num, hash)
+local function CutPainting(j)
+    local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
+    local blade = "w_me_switchblade"
+    local bag = "hei_p_m_bag_var22_arm_s"
+    local x = 2
+    local quit = false
+    local txt = {
+        [2] = "~INPUT_MOVE_RIGHT_ONLY~ to cut right.",
+        [4] = "~INPUT_MOVE_DOWN_ONLY~ to cut down.",
+        [6] = "~INPUT_MOVE_LEFT_ONLY~ to cut left.",
+        [8] = "~INPUT_MOVE_DOWN_ONLY~ to cut down."
+    }
+    local keys = { [2] = 35, [4] =  33, [6] = 34, [8] = 33}
+
+    isBusy = true
+    
+    LoadAnim(animDict)
+    LoadModel(blade)
+    LoadModel(bag)
+    
+    bladeObj = CreateObject(GetHashKey(blade), GetEntityCoords(PlayerPedId()), true, false, false)
+    bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
+
+    for i = 1, #paintingAnims[1] do 
+        if i == 2 or i == 4 or i == 6 or i == 8 then 
+            paintingAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, false, true, 0, 0.0, 1.0)
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims[2][i], animDict, paintingAnims[1][i][1], 4.0, -1.5, 13, 16, 1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(bladeObj, paintingAnims[2][i], animDict, paintingAnims[1][i][2], 1000.0, -1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(paintingObjs[j], paintingAnims[2][i], animDict, paintingAnims[1][i][3], 1000.0, -1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims[2][i], animDict, paintingAnims[1][i][4], 1000.0, -1000.0, 0)
+        else 
+            paintingAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, true, false, 0, 0.0, 1.0)
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims[2][i], animDict, paintingAnims[1][i][1], 4.0, -1.5, 13, 16, 1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(bladeObj, paintingAnims[2][i], animDict, paintingAnims[1][i][2], 1000.0, -1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(paintingObjs[j], paintingAnims[2][i], animDict, paintingAnims[1][i][3], 1000.0, -1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims[2][i], animDict, paintingAnims[1][i][4], 1000.0, -1000.0, 0)
+        end
+    end
+
+    NetworkStartSynchronisedScene(paintingAnims[2][1])
+    Wait(2000)
+    NetworkStartSynchronisedScene(paintingAnims[2][2])
+
+    while x < 10 or not quit do 
+        Wait(10)
+
+        HelpMsg(txt[x])
+        if IsControlPressed(0, keys[x]) then 
+            NetworkStartSynchronisedScene(paintingAnims[2][x])
+            x = x + 1
+            Wait(GetAnimDuration(animDict, paintingAnims[1][x][1]) * 1000)
+            NetworkStartSynchronisedScene(paintingAnims[2][x])
+            x = x + 1
+            print(x)
+        end
+    end
+
+    --Wait(3000)
+    --NetworkStartSynchronisedScene(paintingAnims[2][4])
+    --Wait(2000)
+    --NetworkStartSynchronisedScene(paintingAnims[2][5])
+    --Wait(2500)
+    --NetworkStartSynchronisedScene(paintingAnims[2][6])
+    --Wait(2000)
+    --NetworkStartSynchronisedScene(paintingAnims[2][7])
+    --Wait(2000)
+    --NetworkStartSynchronisedScene(paintingAnims[2][8])
+    --Wait(2400)
+    --NetworkStartSynchronisedScene(paintingAnims[2][9])
+    --Wait(3000)
+--
+--
+    --NetworkStartSynchronisedScene(paintingAnims[2][10])
+    --Wait(6000)
+    --ClearPedTasks(PlayerPedId())
+
+    DeleteEntity(bagObj)
+    DeleteEntity(bladeObj)
+    isBusy = false
+end
+
+local function OpenSlideDoors(size, num, hash)
     if not IsDoorRegisteredWithSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size)) then
         AddDoorToSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), GetHashKey(hash), slideDoors[num], false, false, false)
     end
@@ -367,10 +455,12 @@ function OpenSlideDoors(size, num, hash)
 end
 
 function Vault()
-    loot = 1
+    loot = 3
     vaultLayout = 1
     cartLayout = 1
-    player = 1 
+    player = 1--GetCurrentHeistPlayer() -- 1 
+
+    
 
     --local lootObj = {}
     local txt = {
@@ -389,7 +479,13 @@ function Vault()
         GetVaultObjs()
     end
 
-    LoadAnim("anim@heists@ornate_bank@grab_cash")
+    LoadTexture("timerbars")
+
+    DrawTimer()
+
+    if not showTake then 
+        DrawTake()
+    end
 
     if loot == 3 then 
         CreateThread(function()
@@ -400,8 +496,7 @@ function Vault()
                     for k, v in pairs(artCabinets) do 
                         if status[1][k] < 1.0 then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - v.xyz)
-
-                            if distance < 1 then 
+                            if distance < 1.2 then 
                                 HelpMsg("Press ~INPUT_CONTEXT~ to cut the paintings.")
                                 if IsControlPressed(0, 38) then 
                                     CutPainting(k)
@@ -424,9 +519,6 @@ function Vault()
                     for k, v in pairs(carts[cartLayout]) do 
                         if status[1][k] < 1.0 then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - (v.xyz + GetEntityOffset(takeObjs[k], false)))
-
-                            --print(distance)
-
                             if distance < 1.2 then
                                 HelpMsg(txt[loot])
                                 if IsControlPressed(0, 38) then 
@@ -451,7 +543,6 @@ function Vault()
             if not isBusy then 
                 for k, v in pairs(keypads[3]) do
                     if not status[2][k] then 
-                        --print(k, v[k])
                         local distance = #(GetEntityCoords(PlayerPedId()) - v)
                         if distance < 1.0 then 
                             HelpMsg("Press ~INPUT_CONTEXT~ to hack the keypad")
@@ -475,12 +566,17 @@ RegisterNetEvent("cl:casinoheist:syncLStatus", function(key, time)
     RemoveBlip(blips[key])
 end)
 
-RegisterNetEvent("cl:casinoheist:syncAccessibleLoot", function(num)
-    status[1][num] = true
-end) 
-
-RegisterNetEvent("cl:casinoheist:syncSlideDoors", function(num)
+RegisterNetEvent("cl:casinoheist:syncDStatus", function(num)
     status[2][num] = true
+    if num < 4 then 
+        OpenSlideDoors("A", num, "ch_prop_ch_vault_slide_door_lrg")
+        --SetEntityCoords(slideDoorObjs[num], GetEntityCoords(slideDoorObjs[num]) + (2 * GetEntityOffset(slideDoorObjs[num], true)), true, false, false, false)
+    else 
+        OpenSlideDoors("A", num, "ch_prop_ch_vault_slide_door_sm")
+        --SetEntityCoords(slideDoorObjs[num], GetEntityCoords(slideDoorObjs[num]) + (1.5 * GetEntityOffset(slideDoorObjs[num], true)), true, false, false, false)
+    end    
 end)
+
+RegisterNetEvent("test:cl:vault", Vault)
 
 RegisterCommand("test_offset", Vault, false)

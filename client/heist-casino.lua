@@ -206,32 +206,40 @@ function HackKeypad(level, j, start)
             phone = CreateObject(GetHashKey(phoneDevice), GetEntityCoords(PlayerPedId()), true, false, false)
 
             for i = 1, #hackKeypadAnims[1], 1 do 
-                hackKeypadAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
-                NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-                NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
-                NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
+                if i == 2 then
+                    hackKeypadAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, false, true, 1065353216, 0, 1.3) 
+                    NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+                    NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
+                    NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
+                else
+                    hackKeypadAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(keypad), GetEntityRotation(keypad), 2, true, false, 1065353216, 0, 1.3) 
+                    NetworkAddPedToSynchronisedScene(PlayerPedId(), hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
+                    NetworkAddEntityToSynchronisedScene(hackUsb, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][2], 1.0, -1.0, 1148846080)
+                    NetworkAddEntityToSynchronisedScene(phone, hackKeypadAnims[2][i], animDict, hackKeypadAnims[1][i][3], 1.0, -1.0, 1148846080)
+                end
             end
 
             NetworkStartSynchronisedScene(hackKeypadAnims[2][1])
             Wait(4000)
-            NetworkStartSynchronisedScene(hackKeypadAnims[2][2])
-            Wait(1500)
         end
+        NetworkStartSynchronisedScene(hackKeypadAnims[2][2])
+        Wait(1500)
         -- Hack Minigame
         StartFingerprintHack(function(bool)
             if bool then 
                 NetworkStartSynchronisedScene(hackKeypadAnims[2][3])
-                --Wait(3000)
                 Wait(3000)
                 DeleteObject(hackUsb)
                 DeleteObject(phone)
                 ClearPedTasks(PlayerPedId())
-                status[2][j] = true
+                TriggerServerEvent("sv:casinoheist:syncDStatus", j)
+                
+                --status[2][j] = true
                 isBusy = false
             else
                 NetworkStartSynchronisedScene(hackKeypadAnims[2][4])
                 Wait(2000)
-                NetworkStartSynchronisedScene(hackKeypadAnims[2][4])
+                NetworkStartSynchronisedScene(hackKeypadAnims[2][5])
                 Wait(2000)
                 HackKeypad(level, j, false)
             end
