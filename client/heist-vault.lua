@@ -437,6 +437,8 @@ local function CutPainting(j)
         end
     end
 
+    TriggerServerEvent("sv:casinoheist:syncLStatus", i, 1.0)
+
     ClearPedTasks(PlayerPedId())
 
     DeleteEntity(bagObj)
