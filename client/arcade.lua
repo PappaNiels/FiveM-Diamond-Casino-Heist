@@ -1735,6 +1735,8 @@ CreateThread(function()
                             isInGarage = true
                             SetupBoardInfo()
 
+                            RequestScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD", false, -1)
+
                             if approach ~= 0 and loot ~= 0 then
                                 PrepBoardInfo()
                             end 
@@ -1756,6 +1758,8 @@ CreateThread(function()
                         HelpMsg("Press ~INPUT_CONTEXT~ to exit the arcade")
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(759.08, -816.05, 25.3, 275.0)
+                            ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD")
+
                             isInGarage = false
                         end
                     end
