@@ -46,6 +46,7 @@ local function StartTimer()
                 timerColour = {201, 37, 37, 255}
                 if sec == 0 then 
                     timerActive = false
+                    VaultCheck()
                 end
             end
         end

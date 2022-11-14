@@ -110,6 +110,8 @@ staffCoords = {
 mantrapCoords = vector3(2423.94, -254.87, -70.81)
 vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
 
+vaultMiddle = vector3(2521.0, -238.5, -70.74)
+
 -- Entities
 
 keypads = {

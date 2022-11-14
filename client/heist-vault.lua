@@ -25,6 +25,7 @@ status = {
     }
 }
 
+local ptfx = {}
 local test = {}
 local takeObjs = {}
 local paintingObjs = {}
@@ -104,6 +105,24 @@ local function GetVaultObjs()
             SetBlipScale(blips[i], 0.8)
         end
     end
+end
+
+local function GetGasCoords(num)
+    if num == 1 then 
+        return vector3(2521.0, -226.2, -71.7)
+    elseif num == 2 then 
+        return vector3(2533.4, -238.5, -71.7)
+    elseif num == 3 then
+        return vector3(2521.0, -250.9, -71.7)
+    end 
+end
+
+local function GetGasRot(num)
+    if num == 2 then 
+        return vector3(0.0, 0.0, 90.0)
+    else
+        return vector3(0.0, 0.0, 0.0)
+    end 
 end
 
 local function SetVaultObjs()
@@ -460,6 +479,160 @@ local function OpenSlideDoors(size, num, hash)
     FreezeEntityPosition(slideDoorObjs[num], true)
 end
 
+local function VaultGas()
+    local x = 0.0
+    local cough = {
+        {"COUGH_A", "COUGH_A_FACIAL"},
+        {"COUGH_B", "COUGH_B_FACIAL"},
+        {"COUGH_C", "COUGH_C_FACIAL"}
+    }
+    --local arr1 = {
+    --    [0] = 1,
+    --    [1] = "anim@fidgets@coughs",
+    --    [2] = "",
+    --    [3] = 0.0,
+    --    [4] = 1065353216,
+    --    [5] = 1065353216,
+    --    [6] = 0,
+    --    [7] = 0,
+    --    [8] = 0,
+    --    [9] = 1065353216,
+    --    [10] = 1065353216,
+    --    [11] = 0,
+    --    [12] = 0,
+    --    [13] = 0,
+    --    [14] = 1065353216,
+    --    [15] = 1065353216,
+    --    [16] = GetHashKey("BONEMASK_UPPERONLY"),
+    --    [17] = 1040187392,
+    --    [18] = 1040187392,
+    --    [19] = -1,
+    --    [20] = 304
+    --}
+    --local arr2 = {
+    --    [0] = 0,
+    --    [1] = 0,
+    --    [2] = 0,
+    --    [3] = 0,
+    --    [4] = 1065353216,
+    --    [5] = 1065353216,
+    --    [6] = 0,
+    --    [7] = 0,
+    --    [8] = 0,
+    --    [9] = 1065353216,
+    --    [10] = 1065353216,
+    --    [11] = 0,
+    --    [12] = 0,
+    --    [13] = 0,
+    --    [14] = 1065353216,
+    --    [15] = 1065353216,
+    --    [16] = 0,
+    --    [17] = 1040187392,
+    --    [18] = 1040187392,
+    --    [19] = -1
+    --}
+    --local arr3 = {
+    --    [0] = 0,
+    --    [1] = 0,
+    --    [2] = 0,
+    --    [3] = 0,
+    --    [4] = 1065353216,
+    --    [5] = 1065353216,
+    --    [6] = 0,
+    --    [7] = 0,
+    --    [8] = 0,
+    --    [9] = 1065353216,
+    --    [10] = 1065353216,
+    --    [11] = 0,
+    --    [12] = 0,
+    --    [13] = 0,
+    --    [14] = 1065353216,
+    --    [15] = 1065353216,
+    --    [16] = 0,
+    --    [17] = 1040187392,
+    --    [18] = 1040187392,
+    --    [19] = -1
+    --}
+
+    RequestAnimSet(arr1[1])
+    RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
+
+    while not HasAnimSetLoaded(arr1[1]) do 
+        Wait(0)
+    end
+
+    LoadAnim(arr1[1])
+
+    if not HasPtfxAssetLoaded("scr_ch_finale") then 
+        RequestNamedPtfxAsset("scr_ch_finale")
+    end
+
+    
+    for i = 1, 3 do 
+        UseParticleFxAsset("scr_ch_finale")
+        ptfx[i] = StartParticleFxLoopedAtCoord("scr_ch_finale_poison_gas", GetGasCoords(i), GetGasRot(i), 1.0, false, false, false, true)
+        SetParticleFxLoopedColour(ptfx[i], 255.0, 255.0, 255.0, true)
+        SetParticleFxLoopedAlpha(ptfx[i], 255.0)
+    end
+
+    UseParticleFxAsset("scr_ch_finale")
+    ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
+
+    while x < .01 do 
+        Wait(10)
+
+        x = x + (GetFrameTime() * 0.01)
+        
+        if x > 1.0 then 
+            x = 1.0
+        elseif x < 0.0 then 
+            x = 0.0
+        end
+
+        SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
+        SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
+        print(x)
+    end
+
+
+    
+    if num == 1 then 
+        arr1[2] = "COUGH_A"
+        --coughF = "COUGH_A_FACIAL"
+    elseif num == 2 then
+        arr1[2] = "COUGH_B"
+        --coughF = "COUGH_B_FACIAL"
+    elseif num == 3 then  
+        arr1[2] = "COUGH_C"
+        --coughF = "COUGH_C_FACIAL"
+    end
+    
+    --TaskScriptedAnimation(PlayerPedId(), arr1, arr2, arr3, 0.125, 0.125)
+    --sId = GetSoundId()
+    CreateThread(function()
+        while #(GetEntityCoords()) do 
+            Wait(4000)
+            local num = math.random(1, 3)
+
+            TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 1000.0, 0, 0, false, false, false)
+            PlayFacialAnim(PlayerPedId(), cough[2][num], "anim@fidgets@coughs")
+            PlaySoundFromEntity(-1, "Male_0".. math.random(1, 3), PlayerPedId(), "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500)
+        end
+    end)
+    --end
+end
+
+RegisterCommand("test_gas", VaultGas, false)
+
+function VaultCheck()
+    for i = 1, #hPlayer do 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultMiddle) < 12 then 
+            VaultGas()
+            return 
+        end
+    end
+end
+
 function Vault()
     loot = 1
     vaultLayout = 1
@@ -483,6 +656,7 @@ function Vault()
     end
 
     LoadTexture("timerbars") -- Needs to be removed
+    RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
 
     DrawTimer()
 
@@ -584,11 +758,20 @@ RegisterNetEvent("test:cl:vault", Vault)
 
 RegisterCommand("test_offset", Vault, false)
 
+RegisterCommand("dist", function()
+    CreateThread(function()
+        while true do 
+            Wait(0)
+            print(#(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultMiddle))
+        end
+    end)
+end, false)
+
 RegisterCommand("test_time", function()
     loot = 3
     vaultLayout = 1
     cartLayout = 1
-    player = 1--GetCurrentHeistPlayer() -- 1 
+    player = 1 --GetCurrentHeistPlayer() -- 1 
 
     local txt = {
         "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
@@ -611,4 +794,73 @@ end, false)
 --[[
     AUDIO::PLAY_SOUND_FROM_ENTITY(-1, func_11831(), iLocal_932, "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500);
 
+    -- Gas
+
+    void func_11838(int iParam0)//Position - 0x3D2C89
+{
+	GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
+	iLocal_9769[iParam0] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_poison_gas", func_11840(iParam0), func_11839(iParam0), 1f, false, false, false, true);
+	GRAPHICS::SET_PARTICLE_FX_LOOPED_COLOUR(iLocal_9769[iParam0], 255f, 255f, 255f, true);
+	GRAPHICS::SET_PARTICLE_FX_LOOPED_ALPHA(iLocal_9769[iParam0], 255f);
+}
+
+Vector3 func_11839(int iParam0)//Position - 0x3D2CE6
+{
+	switch (iParam0)
+	{
+		case 1:
+			return 0f, 0f, 90f;
+		
+		default:
+	}
+	return 0f, 0f, 0f;
+}
+
+Vector3 func_11840(int iParam0)//Position - 0x3D2D08
+{
+	switch (iParam0)
+	{
+		case 0:
+			return 2521f, -226.2f, -71.7f;
+		
+		case 1:
+			return 2533.4f, -238.5f, -71.7f;
+		
+		case 2:
+			return 2521f, -250.9f, -71.7f;
+		
+		default:
+	}
+	return 0f, 0f, 0f;
+
+Kuch Animatie
+
+    fLocal_9771 = (fLocal_9771 + (MISC::GET_FRAME_TIME() * 0.01f));
+    fLocal_9771 = func_2619(fLocal_9771, 0f, 1f);
+    GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(iLocal_9768, "fill", fLocal_9771, true);
+    GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(iLocal_9768, "fade", fLocal_9771, true);
+
+    iLocal_9777 = MISC::GET_RANDOM_INT_IN_RANGE(0, 3);
+    switch (iLocal_9777)
+    {
+        case 0:
+            Var2.f_2 = "COUGH_A";
+            sVar5 = "COUGH_A_FACIAL";
+            break;
+    
+        case 1:
+            Var2.f_2 = "COUGH_B";
+            sVar5 = "COUGH_B_FACIAL";
+            break;
+    
+        case 2:
+            Var2.f_2 = "COUGH_C";
+            sVar5 = "COUGH_C_FACIAL";
+            break;
+    }
+    TASK::TASK_SCRIPTED_ANIMATION(iLocal_932, &Var2, &Var3, &Var4, 0.125f, 0.125f);
+    PED::PLAY_FACIAL_ANIM(iLocal_932, sVar5, Var2.f_1);
+    func_319(&uLocal_9775, 0, 0);
+    MISC::SET_BIT(&uLocal_4178, 11);
+    MISC::CLEAR_BIT(&bLocal_4179, 0);
 ]]

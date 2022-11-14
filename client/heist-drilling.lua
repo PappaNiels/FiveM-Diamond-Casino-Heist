@@ -230,8 +230,6 @@ function StartDrilling(cb)
     --RequestScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL", false, -1)
     --repeat Wait(10) print("tick") until RequestScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL_2", false, -1)
 
-    
-
     LoadDrilling()
 
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
@@ -257,3 +255,52 @@ RegisterCommand("scaleform_max", function()
         print(bool)
     end)
 end, false)
+
+--[[
+    STREAMING::REQUEST_NAMED_PTFX_ASSET("scr_ch_finale");
+    if (STREAMING::HAS_NAMED_PTFX_ASSET_LOADED("scr_ch_finale"))
+    {
+        if (BitTest(Global_1966339[iParam3], 3))
+        {
+            if ((uParam0->f_47[iParam3] == 0 && ENTITY::DOES_ENTITY_EXIST(Global_1966438[iParam3])) && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_47[iParam3]))
+            {
+                Var1 = { -0.00375f, -0.3f, 0.015f };
+                GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
+                uParam0->f_47[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_ON_ENTITY("scr_ch_finale_laser", Global_1966438[iParam3], Var1, 0f, 0f, -90f, 1f, false, false, false);
+                bVar0 = false;
+            }
+            if (uParam0->f_80[iParam3] == 0 && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_80[iParam3]))
+            {
+                GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
+                Var2 = { ENTITY::GET_ENTITY_COORDS(iParam1, true) };
+                Var3 = { ENTITY::GET_ENTITY_COORDS(Global_1966438[iParam3], true) };
+                Var2.f_2 = (Var3.f_2 + 0.0225f);
+                Var4 = { ENTITY::GET_ENTITY_ROTATION(iParam1, 2) + Vector(0f, 0f, 90f) };
+                uParam0->f_80[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_laser_sparks", Var2, Var4, 1f, false, false, false, true);
+                GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(uParam0->f_80[iParam3], "power", 0f, false);
+                bVar0 = false;
+            }
+        }
+        else if (uParam0->f_80[iParam3] == 0 && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_80[iParam3]))
+        {
+            GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
+            Var5 = { ENTITY::GET_ENTITY_COORDS(iParam1, true) };
+            Var6 = { ENTITY::GET_ENTITY_COORDS(Global_1966438[iParam3], true) };
+            Var5.f_2 = (Var6.f_2 + 0.0225f);
+            Var7 = { ENTITY::GET_ENTITY_ROTATION(iParam1, 2) + Vector(0f, 0f, 90f) };
+            uParam0->f_80[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_drill_sparks", Var5, Var7, 1f, false, false, false, true);
+            GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(uParam0->f_80[iParam3], "power", 0f, false);
+            bVar0 = false;
+        }
+        if (uParam0->f_113[iParam3] == 0 && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_113[iParam3]))
+        {
+            GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
+            Var8 = { ENTITY::GET_ENTITY_COORDS(iParam1, true) };
+            Var9 = { ENTITY::GET_ENTITY_COORDS(Global_1966438[iParam3], true) };
+            Var8.f_2 = (Var9.f_2 + 0.0225f);
+            Var10 = { ENTITY::GET_ENTITY_ROTATION(iParam1, 2) + Vector(0f, 0f, 90f) };
+            uParam0->f_113[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_drill_overheat", Var8, Var10, 1f, false, false, false, true);
+            GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(uParam0->f_113[iParam3], "heat", 0f, false);
+            bVar0 = false;
+
+]]
