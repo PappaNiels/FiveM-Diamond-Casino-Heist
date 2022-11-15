@@ -560,7 +560,7 @@ end
 CreateThread(function()
     while true do 
         Wait(0)
-        if isInVault then 
+        if isInVault and not isInVault then 
             for i = 1, #keypads["lvlThreeKeypad"][1] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][1][i])
                 if distance < 1.5 then 
@@ -585,7 +585,7 @@ end)
 CreateThread(function()
     while true do 
         Wait(0)
-        if isInVault then 
+        if isInVault and not isInVault then 
             for i = 1, #keypads["lvlThreeKeyped"][2] do
                 local distance = #(GetEntityCoords(PlayerPedId()) - keypads["lvlThreeKeypad"][2][i])
                 if distance < 1.5 then
@@ -635,7 +635,7 @@ end)
 CreateThread(function()
     while true do 
         Wait(0)
-        if isInVault and loot ~= 3 then 
+        if isInVault and not isInVault and loot ~= 3 then 
             for i = 1, #cartLoc[cartLayout] do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - cartLoc[cartLayout][i][1])
                 if distance < 1.5 and not statusTrolly[i] then 
