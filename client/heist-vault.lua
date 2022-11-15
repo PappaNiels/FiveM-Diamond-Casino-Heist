@@ -1,5 +1,6 @@
 cartLayout = 0
 vaultLayout = 0
+isInVault = false
 
 isBusy = false
 
@@ -123,6 +124,28 @@ local function GetGasRot(num)
     else
         return vector3(0.0, 0.0, 0.0)
     end 
+end
+
+local function AreAllObjectsDone(num)
+    local count = 0
+
+    if not isInVault and isBusy then 
+        return true 
+    end
+
+    if (loot == 3 and num == 1) or num == 2 then 
+        count = 7
+    else 
+        count = 8
+    end
+    
+    for i = 1, count do 
+        if not status[num][i] or status[num][i] ~= 1.0 then 
+            return false
+        end
+    end
+    
+    return true
 end
 
 local function SetVaultObjs()
@@ -328,7 +351,7 @@ local function GrabLoot(i)
             
             SetEntityVisible(boxObj, false, false)            
             
-            Wait(100)
+            Wait(10)
 
             SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
             animTime = GetSynchronizedScenePhase(NetworkGetLocalSceneFromNetworkId(a))
@@ -369,7 +392,7 @@ local function GrabLoot(i)
     RenderScriptCams(false, true, 2000, true, false)
     TriggerServerEvent("sv:casinoheist:syncLStatus", i, animTime)
 
-    Wait(1000)
+    Wait(2000)
 
     DeleteEntity(bagObj)
     DeleteEntity(boxObj)
@@ -554,71 +577,68 @@ local function VaultGas()
     --    [19] = -1
     --}
 
-    RequestAnimSet(arr1[1])
-    RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
-
-    while not HasAnimSetLoaded(arr1[1]) do 
-        Wait(0)
-    end
-
-    LoadAnim(arr1[1])
-
-    if not HasPtfxAssetLoaded("scr_ch_finale") then 
-        RequestNamedPtfxAsset("scr_ch_finale")
-    end
-
     
-    for i = 1, 3 do 
-        UseParticleFxAsset("scr_ch_finale")
-        ptfx[i] = StartParticleFxLoopedAtCoord("scr_ch_finale_poison_gas", GetGasCoords(i), GetGasRot(i), 1.0, false, false, false, true)
-        SetParticleFxLoopedColour(ptfx[i], 255.0, 255.0, 255.0, true)
-        SetParticleFxLoopedAlpha(ptfx[i], 255.0)
-    end
+    CreateThread(function()
+        RequestAnimSet("anim@fidgets@coughs")
+        RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
 
-    UseParticleFxAsset("scr_ch_finale")
-    ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
-
-    while x < .01 do 
-        Wait(10)
-
-        x = x + (GetFrameTime() * 0.01)
-        
-        if x > 1.0 then 
-            x = 1.0
-        elseif x < 0.0 then 
-            x = 0.0
+        while not HasAnimSetLoaded("anim@fidgets@coughs") do 
+            Wait(0)
         end
 
-        SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
-        SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
-        print(x)
-    end
+        LoadAnim("anim@fidgets@coughs")
+
+        if not HasPtfxAssetLoaded("scr_ch_finale") then 
+            RequestNamedPtfxAsset("scr_ch_finale")
+        end
 
 
+        for i = 1, 3 do 
+            UseParticleFxAsset("scr_ch_finale")
+            ptfx[i] = StartParticleFxLoopedAtCoord("scr_ch_finale_poison_gas", GetGasCoords(i), GetGasRot(i), 1.0, false, false, false, true)
+            SetParticleFxLoopedColour(ptfx[i], 255.0, 255.0, 255.0, true)
+            SetParticleFxLoopedAlpha(ptfx[i], 255.0)
+        end
+
+        UseParticleFxAsset("scr_ch_finale")
+        ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
+
+        while x < .02 do 
+            Wait(20)
     
-    if num == 1 then 
-        arr1[2] = "COUGH_A"
-        --coughF = "COUGH_A_FACIAL"
-    elseif num == 2 then
-        arr1[2] = "COUGH_B"
-        --coughF = "COUGH_B_FACIAL"
-    elseif num == 3 then  
-        arr1[2] = "COUGH_C"
-        --coughF = "COUGH_C_FACIAL"
-    end
+            x = x + (GetFrameTime() * 0.01)
+            
+            if x > 1.0 then 
+                x = 1.0
+            elseif x < 0.0 then 
+                x = 0.0
+            end
+    
+            SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
+            SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
+        end
+    end)
     
     --TaskScriptedAnimation(PlayerPedId(), arr1, arr2, arr3, 0.125, 0.125)
     --sId = GetSoundId()
     CreateThread(function()
-        while #(GetEntityCoords()) do 
-            Wait(4000)
+        while isInVault do 
+            Wait(3000)
             local num = math.random(1, 3)
-
-            TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 1000.0, 0, 0, false, false, false)
+            
+            TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 2000, 0, 0, false, false, false)
             PlayFacialAnim(PlayerPedId(), cough[2][num], "anim@fidgets@coughs")
-            PlaySoundFromEntity(-1, "Male_0".. math.random(1, 3), PlayerPedId(), "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500)
+            PlaySoundFromEntity(-1, "Male_0".. num, PlayerPedId(), "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500)
         end
     end)
+    
+    repeat Wait(3000) until x > 0.02
+
+    Wait(5000)
+
+    for i = 1 , 3 do 
+        StopParticleFxLooped(ptfx[i], 0)
+    end
     --end
 end
 
@@ -626,7 +646,7 @@ RegisterCommand("test_gas", VaultGas, false)
 
 function VaultCheck()
     for i = 1, #hPlayer do 
-        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultMiddle) < 12 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords) > 7 then 
             VaultGas()
             return 
         end
@@ -637,6 +657,7 @@ function Vault()
     loot = 1
     vaultLayout = 1
     cartLayout = 1
+    isInVault = true
     player = 1--GetCurrentHeistPlayer() -- 1 
 
     local txt = {
@@ -669,7 +690,7 @@ function Vault()
             while true do 
                 Wait(5)
 
-                if not isBusy then 
+                if not isBusy and isInVault then 
                     for k, v in pairs(artCabinets) do 
                         if status[1][k] < 1.0 then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - v.xyz)
@@ -679,8 +700,8 @@ function Vault()
                                     CutPainting(k)
                                 end
                             end
-                        else 
-                            Wait(100)
+                        elseif AreAllObjectsDone(1) then 
+                            break
                         end
                     end
                 else 
@@ -692,7 +713,7 @@ function Vault()
         CreateThread(function()
             while true do 
                 Wait(5)
-                if not isBusy then
+                if not isBusy and isInVault then
                     for k, v in pairs(carts[cartLayout]) do 
                         if status[1][k] < 1.0 then 
                             local distance = #(GetEntityCoords(PlayerPedId()) - (v.xyz + GetEntityOffset(takeObjs[k], false)))
@@ -702,8 +723,8 @@ function Vault()
                                     GrabLoot(k)
                                 end
                             end
-                        else 
-                            Wait(100)
+                        elseif AreAllObjectsDone(1) then 
+                            break
                         end
                     end
                 else 
@@ -717,7 +738,7 @@ function Vault()
         while true do 
             Wait(5)
 
-            if not isBusy then 
+            if not isBusy and isInVault then 
                 for k, v in pairs(keypads[3]) do
                     if not status[2][k] then 
                         local distance = #(GetEntityCoords(PlayerPedId()) - v)
@@ -727,12 +748,31 @@ function Vault()
                                HackKeypad(3, k, true)
                             end
                         end
-                    else 
-                        Wait(100)
+                    elseif AreAllObjectsDone(2) then 
+                        break
                     end
                 end
             else 
                 Wait(3000)
+            end
+        end
+    end)
+
+    CreateThread(function()
+        while true do 
+            Wait(1000)
+            
+            local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
+
+            if not IsNotClose(vaultEntryDoorCoords, 7) then
+                isInVault = false 
+                isBusy = true 
+
+                break
+            elseif distance < 7 then 
+                isInVault = false 
+            else
+                isInVault = true
             end
         end
     end)
@@ -762,7 +802,7 @@ RegisterCommand("dist", function()
     CreateThread(function()
         while true do 
             Wait(0)
-            print(#(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultMiddle))
+            print(#(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords))
         end
     end)
 end, false)
