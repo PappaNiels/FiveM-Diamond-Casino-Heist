@@ -222,3 +222,10 @@ vaultCheckpointBlips = {
 }
 
 aggressiveAreaBlip = vector4(2502.51, -238.75, -70.2, 5.0)
+
+-- Synchronised Scenes 
+
+vaultDrillPos = {
+    vector3(2505.1, -237.62, -70.425),
+    vector3(2505.1, -239.51, -70.425)
+}
