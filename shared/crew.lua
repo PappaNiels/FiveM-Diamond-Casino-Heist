@@ -235,8 +235,9 @@ weaponLoadout = {
 }
 
 availableVehicles = {
-    [5] = {
-        {
+    [1] = { -- Driver
+        { -- Getaway Vehicle
+            -- Model Name, Name on Board
             {"issi3", "Issi Classic"},
             {"asbo", "Asbo"},
             {"kanjo", "Kanjo"},
@@ -245,7 +246,7 @@ availableVehicles = {
         "rancherxl",
         "regina"
     },
-    [4] = {
+    [2] = {
         {
             {"manchez", "Manchez"},
             {"stryder", "Stryder"},
@@ -265,7 +266,7 @@ availableVehicles = {
         "sultan",
         "emperor"
     },
-    [2] = {
+    [4] = {
         {
             {"sultan2", "Sultan Classic"},
             {"gauntlet3", "Gauntlet Classic"},
@@ -275,7 +276,7 @@ availableVehicles = {
         "kuruma",
         "taxi"
     },
-    [1] = { -- Driver
+    [5] = { -- Driver
         { -- Getaway Vehicle
             -- Model Name, Name on Board
             {"zhaba", "Zhaba"},
@@ -285,5 +286,5 @@ availableVehicles = {
         },
         "kamacho", -- Departure Vehicle   
         "mesa3"  -- Switch Vehicle
-    }
+    },
 }

@@ -112,6 +112,18 @@ vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
 
 vaultMiddle = vector3(2521.0, -238.5, -70.74)
 
+meetingPoint = {
+    {
+
+    },
+    {
+
+    },
+    {
+        
+    }
+}
+
 -- Entities
 
 keypads = {
@@ -212,6 +224,11 @@ aggressiveVaultDoorCoords = {
     vector3(2504.97, -240.31, -73.691), -- Door
     vector3(2504.97, -240.31, -75.339), -- Support Thingy
     vector3(2504.97, -240.31, -71.8)  -- Exploded Door 
+}
+
+getawayVehicles = {
+    vector3(982.61, -211.15, 70.38),
+    vector3(992.93, -214.45, 69.83)
 }
 
 -- Blips 
