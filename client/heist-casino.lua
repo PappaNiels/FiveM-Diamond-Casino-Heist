@@ -12,6 +12,7 @@ local rightBombs = false
 local vaultObjs = {}
 local bombObjs = {}
 local blips = {}
+local vStatus = {false, false}
 local keycardSyncAnims = {
     {
         {
@@ -352,19 +353,19 @@ local function VaultExplosion()
     SetEntityCollision(vaultObjs[3], false, false)
     
     --Wait(1000)
-    CreateThread(function()
+    --CreateThread(function()
         UseParticleFxAsset(ptfx)
         scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
         PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
         PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
         SetSynchronizedScenePhase(scene, 0.056)
-        PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
+        PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 20.0, false)
         StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
         ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
         SetPadShake(0, 130, 256)
         TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
         RemoveAllBombs()
-    end)
+    --end)
     Wait(4000)
     
     ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
@@ -379,6 +380,7 @@ local function VaultExplosionSetup()
     blips[1] = AddBlipForRadius(aggressiveAreaBlip)
     SetBlipColour(blips[1], 76)
     SetBlipAlpha(blips[1], 175)
+
     --if GetResourceState("ifruit-phone") == "stopped" and player == 1 then 
     --    TriggerEvent("cl:ifruit:setBombContact", true, "sv:casinoheist:vaultExplosion", true)
     --else 
@@ -387,6 +389,8 @@ local function VaultExplosionSetup()
         VaultExplosion()
     --end
 end
+
+RegisterCommand("test_exp", VaultExplosionSetup, false)
 
 local function PlantVaultBombs(num)
     local animDict = ""
@@ -469,6 +473,7 @@ local function PlantVaultBombs(num)
         end
     end
 
+    TriggerServerEvent("sv:casinoheist:syncVault", num, x)
     Wait(1000)
     ClearPedTasks(PlayerPedId())
     DeleteEntity(bagObj)
@@ -789,13 +794,8 @@ function FirstMantrap()
                     
                     SetVaultObjs()
 
-                    if approach == 3 then  
-                        BombVaultDoor()
-                        break
-                    else
-                        DrillVaultDoor()
-                        break
-                    end
+                    VaultDoor()
+                    break
                 end
             else 
                 SubtitleMsg("Go the ~y~vault door.", 110)
@@ -804,13 +804,18 @@ function FirstMantrap()
     end)
 end
 
-function DrillVaultDoor()
-
-end
-
-function BombVaultDoor()
+function VaultDoor()
     local distanceL, distanceR 
-    
+    local aTxt = ""
+    local txt = {}
+    if approach == 3 then 
+        txt = { "Press ~INPUT_CONTEXT~ to plant explosives on the left side.", "Press ~INPUT_CONTEXT~ to plant explosives on the right side."}
+        aTxt = "Plant the ~g~explosives."
+    else
+        txt = { "Press ~INPUT_CONTEXT~ to start drilling.", "Press ~INPUT_CONTEXT~ to start drilling." }
+        aTxt = "Drill the ~g~door locks."
+    end
+
     for i = 1, 2 do 
         blips[i] = AddBlipForCoord(vaultCheckpointBlips[i])
         SetBlipColour(blips[i], 2)
@@ -818,64 +823,46 @@ function BombVaultDoor()
     end
 
     CreateThread(function()
-        while true do 
+        while not vStatus[1] and not vStatus[2] do 
             Wait(5)
             
-            SubtitleMsg("Plant the ~g~explosives.", 110)
+            SubtitleMsg(aTxt, 110)
 
             if not plantBombs then 
                 
-                if not leftBombs then 
+                if not vStatus[1] then 
                     distanceL = #(GetEntityCoords(PlayerPedId()) - vaultCheckpointBlips[1])
                 end
 
-                if not rightBombs then 
+                if not vStatus[2] then 
                     distanceR = #(GetEntityCoords(PlayerPedId()) - vaultCheckpointBlips[2]) 
                 end
 
-                if distanceL < 2 and not leftBombs then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the left side.")
-                    if IsControlPressed(0, 38) then 
-                        PlantVaultBombs(1)
+                if distanceL < 2 and not vStatus[1] then 
+                    HelpMsg(txt[1])
+                    if IsControlPressed(0, 38) then
+                        if approach == 3 then  
+                            PlantVaultBombs(1)
+                        else 
+                            StartDrilling(1)
+                        end
                     else 
                         Wait(10)
                     end
-                elseif distanceR < 2 and not rightBombs then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to plant explosives on the right side.")
+                elseif distanceR < 2 and not vStatus[2] then 
+                    HelpMsg(txt[2])
                     if IsControlPressed(0, 38) then 
-                        PlantVaultBombs(2)
+                        if approach == 3 then 
+                            PlantVaultBombs(2)
+                        else 
+                            StartDrilling(2)
+                        end
                     else 
                         Wait(10)
                     end
                 else 
                     Wait(100)
                 end
-            end
-            
-            if leftBombs and rightBombs then 
-                break
-            end
-        end
-    end)
-    
-    CreateThread(function()
-        while true do
-            Wait(100)
-            
-            if not leftBombs and (IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@left@male@", "player_ig8_vault_explosive_plant_b", 2)) then 
-                RemoveBlip(blips[1])
-                leftBombs = true
-            end
-
-            if not rightBombs and (IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[1]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[3]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2) or IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[4]), "anim_heist@hs3f@ig8_vault_explosives@right@male@", "player_ig8_vault_explosive_plant_c", 2)) then 
-                RemoveBlip(blips[2])
-                rightBombs = true
-            end
-
-            if leftBombs and rightBombs then 
-                Wait(2000)
-                VaultExplosionSetup()
-                break
             end
         end
     end)
@@ -886,6 +873,16 @@ RegisterNetEvent("cl:casinoheist:testCut", MainEntry)
 RegisterNetEvent("cl:casinoheist:vaultExplosion", function()
     Wait(1000)
     VaultExplosion()
+end)
+
+RegisterNetEvent("cl:casinoheist:syncVault", function(key)
+    RemoveBlip(blips[key])
+    vStatus[key] = true 
+
+    if vStatus[1] and vStatus[2] then 
+        Wait(2000)
+        VaultExplosionSetup()
+    end
 end)
 
 RegisterCommand("test_doors", function(src, args)
