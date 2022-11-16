@@ -1,7 +1,8 @@
+lvlFour = 0
+
 local keycardObj = 0
 local blip = 0
 local keycardScene = 0
-local lvlFour = 0
 
 local isSwiping = false
 local timerStarted = false
@@ -149,7 +150,7 @@ local function SetDoors(doorHash, objHash, coords, num)
     end
 end
 
-local function EnableMantrapDoors(security, vault)
+function EnableMantrapDoors(security, vault)
     local doorHash = {1466913421, -2088850773, 1969557112, -1608031236}
     local objHash = {GetHashKey("ch_prop_ch_tunnel_door_01_l"), GetHashKey("ch_prop_ch_tunnel_door_01_r")}
     local coords = {vector3(2464.183, -278.2036, -71.6943), vector3(2464.183, -280.2885, -71.6943), vector3(2492.28, -237.4592, -71.7386), vector3(2492.28, -239.544, -71.7386)}
@@ -268,7 +269,11 @@ local function KeycardReady(num)
             DeleteObject(keycardObj)
             isSwiping = false
             lvlFour = 0
-            SecurityLobby(false, true)
+            if num == 1 or num == 2 then 
+                SecurityLobby(false, true)
+            else 
+                VaultLobby(false, true)
+            end
             break
         else 
             Wait(10)
@@ -276,7 +281,7 @@ local function KeycardReady(num)
     end
 end
 
-local function SyncKeycardEnter(num)
+function SyncKeycardEnter(num)
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
     local keycard = "ch_prop_vault_key_card_01a"
 
