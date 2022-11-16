@@ -650,6 +650,7 @@ function VaultCheck()
     for i = 1, #hPlayer do 
         if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords) > 7 then 
             VaultGas()
+            alarmTriggered = 1
             return 
         end
     end
@@ -776,6 +777,7 @@ function Vault()
             if not IsNotClose(vaultEntryDoorCoords, 7) then
                 isInVault = false 
                 isBusy = true 
+                VaultLobby(true, false)
 
                 break
             elseif distance < 7 then 
