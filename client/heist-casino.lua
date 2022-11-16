@@ -344,28 +344,25 @@ local function VaultExplosion()
     LoadAnim(animDict)
     LoadAnim(reactAnimDict)
 
-    
     Wait(1000)
 
     RemoveBlip(blips[1])
 
     SetEntityVisible(vaultObjs[3], false, false)
     SetEntityCollision(vaultObjs[3], false, false)
-    
-    --Wait(1000)
-    --CreateThread(function()
-        UseParticleFxAsset(ptfx)
-        scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
-        PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
-        PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
-        SetSynchronizedScenePhase(scene, 0.056)
-        PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 20.0, false)
-        StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
-        ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
-        SetPadShake(0, 130, 256)
-        TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
-        RemoveAllBombs()
-    --end)
+
+    UseParticleFxAsset(ptfx)
+    scene = CreateSynchronizedScene(2488.348, -267.364, -71.646, 0.0, 0.0, 0.0, 2)
+    PlaySynchronizedEntityAnim(vaultObjs[1], scene, "explosion_vault_01", animDict, 1000.0, 8.0, 0, 1000.0)
+    PlaySynchronizedEntityAnim(vaultObjs[2], scene, "explosion_vault_02", animDict, 1000.0, 8.0, 0, 1000.0)
+    SetSynchronizedScenePhase(scene, 0.056)
+    PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 20.0, false)
+    StartParticleFxNonLoopedAtCoord("cut_hs3f_exp_vault", 2505.0, -238.5, -70.5, 0.0, 0.0, 0.0, 1.0, false, false, false)
+    ShakeGameplayCam("LARGE_EXPLOSION_SHAKE", 0.5)
+    SetPadShake(0, 130, 256)
+    TaskPlayAnim(PlayerPedId(), reactAnimDict, reactAnimName,  8.0, -8.0, -1, 1048576, 0.0, false, false, false)
+    RemoveAllBombs()
+
     Wait(4000)
     
     ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
@@ -374,6 +371,8 @@ local function VaultExplosion()
     SetEntityCollision(vaultObjs[3], true, true)
     DeleteEntity(vaultObjs[1])
     DeleteEntity(vaultObjs[2])
+
+    Vault()
 end
 
 local function VaultExplosionSetup()
