@@ -255,6 +255,9 @@ function StartDrilling(k)
         PlaySoundFromEntity(-1, "laser_power_up", drillObj, "dlc_ch_heist_finale_laser_drill_sounds", true, 20)
     end
        
+    RenderScriptCams(true, false, 0, true, false)
+
+    PlayCamAnim(cam, drillAnims[1][1][4], animDict, syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), false, 2)
     NetworkStartSynchronisedScene(drillAnims[2][1])
     Wait(GetAnimDuration(animDict, "intro") * 1000)
     
@@ -262,20 +265,23 @@ function StartDrilling(k)
         UseParticleFxAsset("scr_ch_finale")
         laserFx = StartParticleFxLoopedOnEntity("scr_ch_finale_laser", drillObj, -0.00375, -0.3, 0.015, 0.0, 0.0, -90.0, 1.0, false, false, false)
     end
-        
+    
     local coords = vector3(vaultDrillPos[k].x - 0.02, GetEntityCoords(drillObj).y + 0.0125, vaultDrillPos[k].z + 0.011)
     local rot = vector3(0.0, 90.0, 90.0)
     UseParticleFxAsset("scr_ch_finale")
     sparksFx = StartParticleFxLoopedAtCoord("scr_ch_finale_laser_sparks", coords, rot, 1.0, false, false, false, true)
     SetParticleFxLoopedEvolution(sparks, "power", 0.0, false)
-
+    
+    PlayCamAnim(cam, drillAnims[1][2][4], animDict, syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), false, 2)
     NetworkStartSynchronisedScene(drillAnims[2][2])
     
     StartKeypress(function(bool) 
         if bool then 
             local v = 0
-
+            
+            PlayCamAnim(cam, drillAnims[1][7][4], animDict, syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), false, 2)
             NetworkStartSynchronisedScene(drillAnims[2][7])
+            DestroyCam(cam)
 
             if k == 1 then 
                 v = 2
