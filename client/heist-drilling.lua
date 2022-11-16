@@ -122,7 +122,7 @@ local function StartKeypress(cb)
         while position < 1.0 do
             Wait(0) 
             DrawScaleformMovieFullscreen(scaleformDrill, 255, 255, 255, 255, 0)
-            --DisableAllControlActions(0)
+            DisableControlAction(0, 27, true)
         end
         
         Wait(1000)
@@ -138,9 +138,7 @@ local function StartKeypress(cb)
         position = 0.115
         temp = 0
         speed = 0
-        --DeleteEntity(drillObj)
     end)
-    
     
     CreateThread(function()
         if approach == 1 then 
@@ -223,15 +221,15 @@ local function StartKeypress(cb)
 end
 
 function StartDrilling(k)
-    --approach = 1
     LoadModel("ch_prop_ch_vaultdoor01x")
     LoadDrilling()
 
-    vaultObj = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords + vector3(0.0, 0.0, 1.48), false, false, true)
-    SetEntityHeading(vaultObj, 90.0)
+    --vaultObj = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords + vector3(0.0, 0.0, 1.48), false, false, true)
+    --SetEntityHeading(vaultObj, 90.0)
 
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
     bagObj = CreateObject(GetHashKey("hei_p_m_bag_var22_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
+    cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
 
     if approach == 1 then 
         syncPos = vaultDrillPos[k] + vector3(-0.1, 0.0, 0.0)
@@ -275,8 +273,17 @@ function StartDrilling(k)
     
     StartKeypress(function(bool) 
         if bool then 
-            PlaySoundFromEntity(-1, "laser_power_down", drillObj, "dlc_ch_heist_finale_laser_drill_sounds", true, 20)
+            local v = 0
+
             NetworkStartSynchronisedScene(drillAnims[2][7])
+
+            if k == 1 then 
+                v = 2
+            else 
+                v = 3
+            end
+
+            TriggerServerEvent("sv:casinoheist:syncVault", k, v)
             Wait(3000)
 
             DeleteEntity(drillObj)
