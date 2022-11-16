@@ -168,6 +168,9 @@ local function SetVaultObjs()
             SetBlipScale(blips[i], 0.8)
             SetBlipColour(blips[i], 2)
         end
+        
+        blips[#blips + 1] = AddBlipForCoord(vaultEntryDoorCoords)
+        SetBlipColour(blips[#blips + 1], 5)
 
         for i = 1, #paintingNames do 
             SetModelAsNoLongerNeeded(paintingNames[i]) 
@@ -381,7 +384,6 @@ local function GrabLoot(i)
     NetworkAddEntityToSynchronisedScene(takeObjs[i], y, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
     ForceEntityAiAndAnimationUpdate(takeObjs[i])
     NetworkStartSynchronisedScene(y)
-
 
     exit = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, 0.0, 1.0)
     NetworkAddEntityToSynchronisedScene(bagObj, exit, animDict, "bag_exit", 1000.0, -1000.0, 0)
@@ -654,6 +656,7 @@ function VaultCheck()
 end
 
 function Vault()
+    local bTake = take
     loot = 1
     vaultLayout = 1
     cartLayout = 1
@@ -762,6 +765,12 @@ function Vault()
         while true do 
             Wait(1000)
             
+            if take > bTake then 
+                SubtitleMsg("Continue ~g~looting~s~ or leave the ~y~vault. ", 1100)
+            else
+                SubtitleMsg("Grab the ~g~loot.", 1100)
+            end
+
             local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
 
             if not IsNotClose(vaultEntryDoorCoords, 7) then

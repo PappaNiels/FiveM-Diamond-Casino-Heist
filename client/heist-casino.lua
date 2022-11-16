@@ -780,7 +780,8 @@ function FirstMantrap()
                             SetEntityVisible(GetEntityIndexOfCutsceneEntity(arr[i], 0), false, false)
                         end
                     end
-                    SetVaultObjs()
+                    --SetVaultObjs()
+                    Vault()
                     break
                 elseif IsNotClose(vaultEntryDoorCoords, 7) then 
                     SubtitleMsg("Wait for your team members to reach the vault door", 110)
@@ -791,7 +792,7 @@ function FirstMantrap()
                         SetEntityVisible(vaultObjs[1], false, false)
                     end
                     
-                    SetVaultObjs()
+                    --SetVaultObjs()
 
                     VaultDoor()
                     break
@@ -880,7 +881,33 @@ RegisterNetEvent("cl:casinoheist:syncVault", function(key)
 
     if vStatus[1] and vStatus[2] then 
         Wait(2000)
-        VaultExplosionSetup()
+        if approach == 3 then 
+            VaultExplosionSetup()
+        else 
+            LoadCutscene("hs3f_mul_vlt")
+            StartCutscene(0)
+
+            while not DoesCutsceneEntityExist("MP_3") do 
+                Wait(0)
+            end
+
+            local arr = {}
+            if #hPlayer == 2 then 
+                arr = {"MP_3", "Player_SMG_3", "Player_Mag_3", "MP_4", "Player_SMG_4", "Player_Mag_4"}
+            elseif #hPlayer == 3 then 
+                arr = {"MP_4", "Player_SMG_4", "Player_Mag_4"}
+            end
+
+            if #arr > 0 then 
+                for i = 1, #arr do 
+                    SetEntityVisible(GetEntityIndexOfCutsceneEntity(arr[i], 0), false, false)
+                end
+            end 
+
+            repeat Wait(100) until HasCutsceneFinished()
+
+            Vault()            
+        end
     end
 end)
 
