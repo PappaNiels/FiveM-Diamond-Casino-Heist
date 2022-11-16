@@ -6,6 +6,8 @@ local temp = 0
 local speed = 0
 local position = 0
 local place = 2
+local sparksFx = 0
+local laserFx = 0
 
 local isDrilling = false
 
@@ -29,6 +31,7 @@ local function LoadDrilling()
     if not HasScaleformMovieLoaded(scaleformDrill) then 
         if approach == 1 then 
             scaleformDrill = RequestScaleformMovie("VAULT_LASER")
+            RequestNamedPtfxAsset("scr_ch_finale")
             RequestScriptAudioBank("DLC_HEIST3/HEIST_FINALE_LASER_DRILL", false, -1)
             animDict = "anim_heist@hs3f@ig9_vault_drill@laser_drill@"
             drillName = "ch_prop_laserdrill_01a"
@@ -42,6 +45,7 @@ local function LoadDrilling()
 
         LoadAnim(animDict)
         LoadModel(drillName)
+        LoadModel("hei_p_m_bag_var22_arm_s")
 
         repeat Wait(10) until HasScaleformMovieLoaded(scaleformDrill)
     end
@@ -51,47 +55,13 @@ local function UnloadDrilling()
     SetScaleformMovieAsNoLongerNeeded(scaleformDrill)
     RemoveAnimDict(animDict)
     SetModelAsNoLongerNeeded(drillName)
+    SetModelAsNoLongerNeeded("hei_p_m_bag_var22_arm_s")
     
     if approach == 1 then 
         ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_LASER_DRILL")
     else 
         ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL")
         ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL_2")
-    end
-end
-
-local function EnterPosition(num)
-    if not drillAnims[2][1] then 
-
-        drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
-        bagObj = CreateObject(GetHashKey("hei_p_m_bag_var22_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
-
-        for i = 1, #drillAnims[1] do 
-            if i == 3 or i == 5 then 
-                drillAnims[2][i] = NetworkCreateSynchronisedScene(vaultDrillPos[num], GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, true, false, 1065353216, 0, 1.3)
-                NetworkAddPedToSynchronisedScene(PlayerPedId(), drillAnims[2][i], animDict, drillAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-                NetworkAddEntityToSynchronisedScene(drillObj, drillAnims[2][i], animDict, drillAnims[1][i][2], 1.0, -1.0, 114886080)
-                NetworkAddEntityToSynchronisedScene(bagObj, drillAnims[2][i], animDict, drillAnims[1][i][3], 1.0, -1.0, 114886080)
-            else 
-                drillAnims[2][i] = NetworkCreateSynchronisedScene(vaultDrillPos[num], GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, false, true, 1065353216, 0, 1.3)
-                NetworkAddPedToSynchronisedScene(PlayerPedId(), drillAnims[2][i], animDict, drillAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
-                NetworkAddEntityToSynchronisedScene(drillObj, drillAnims[2][i], animDict, drillAnims[1][i][2], 1.0, -1.0, 114886080)
-                NetworkAddEntityToSynchronisedScene(bagObj, drillAnims[2][i], animDict, drillAnims[1][i][3], 1.0, -1.0, 114886080)
-            end    
-        end
-
-        NetworkStartSynchronisedScene(drillAnims[2][1])
-        Wait(2000)
-        NetworkStartSynchronisedScene(drillAnims[2][2])
-        Wait(2000)
-        NetworkStartSynchronisedScene(drillAnims[2][3])
-        Wait(2000)
-        NetworkStartSynchronisedScene(drillAnims[2][4])
-        Wait(2000)
-        NetworkStartSynchronisedScene(drillAnims[2][5])
-        Wait(2000)
-        --AUDIO::PLAY_SOUND_FROM_ENTITY(-1, "laser_power_up", iVar0, "dlc_ch_heist_finale_laser_drill_sounds", true, 20);
-        --AUDIO::PLAY_SOUND_FROM_ENTITY(-1, "laser_power_down", iVar0, "dlc_ch_heist_finale_laser_drill_sounds", true, 20);
     end
 end
 
@@ -156,7 +126,13 @@ local function StartKeypress(cb)
         end
         
         Wait(1000)
-        SetScaleformMovieAsNoLongerNeeded(scaleformDrill)
+        PlaySoundFromEntity(-1, "laser_drill_power_down", drillObj, "dlc_ch_heist_finale_laser_drill_sounds", true, 20)
+        UnloadDrilling()
+        if approach == 1 then 
+            StopParticleFxLooped(laserFx, false)
+        end 
+
+        StopParticleFxLooped(sparksFx, false)
         cb(true)
         progress = 1
         position = 0.115
@@ -189,6 +165,7 @@ local function StartKeypress(cb)
                 else 
                     PlaySoundFromEntity(id, "Drill_Jam", drillObj, "DLC_HEIST_FLEECA_SOUNDSET", true, 20)
                 end
+                
                 NetworkStartSynchronisedScene(drillAnims[2][6])
                 SetLaser(false)
                 repeat Wait(10) SetTempAndSpeed(false) until temp < 0.5
@@ -197,9 +174,10 @@ local function StartKeypress(cb)
                 SetLaser(false)
                 SetTempAndSpeed(false)
             end
+            
+            SetParticleFxLoopedEvolution(sparksFx, "power", temp, false)
         end
         StopSound(sId)
-        PlaySoundFromEntity(-1, "laser_drill_power_down", drillObj, "dlc_ch_heist_finale_laser_drill_sounds", true, 20)
     end)
     
     CreateThread(function()
@@ -244,75 +222,71 @@ local function StartKeypress(cb)
     end)
 end
 
-function StartDrilling(k, cb)
-
-    
-    --repeat Wait(10) print("tick") until RequestScriptAudioBank("DLC_HEIST3/HEIST_FINALE_LASER_DRILL", false, -1)
-    --RequestScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL", false, -1)
-    --repeat Wait(10) print("tick") until RequestScriptAudioBank("DLC_MPHEIST/HEIST_FLEECA_DRILL_2", false, -1)
+function StartDrilling(k)
+    --approach = 1
     LoadModel("ch_prop_ch_vaultdoor01x")
-    LoadModel("hei_p_m_bag_var22_arm_s")
     LoadDrilling()
 
-    --drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
-    --EnterPosition(num)
     vaultObj = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords + vector3(0.0, 0.0, 1.48), false, false, true)
     SetEntityHeading(vaultObj, 90.0)
--- drill_straight_end_idle
+
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
     bagObj = CreateObject(GetHashKey("hei_p_m_bag_var22_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
 
+    if approach == 1 then 
+        syncPos = vaultDrillPos[k] + vector3(-0.1, 0.0, 0.0)
+    else 
+        syncPos = vaultDrillPos[k]
+    end
+
     for i = 1, #drillAnims[1] do 
         if i == 2 or i == 3 or i == 4 or i == 5 then 
-            drillAnims[2][i] = NetworkCreateSynchronisedScene(vaultDrillPos[1], GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, false, true, 0, 0.0, 1.0)
+            drillAnims[2][i] = NetworkCreateSynchronisedScene(syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, false, true, 0, 0.0, 1.0)
             NetworkAddPedToSynchronisedScene(PlayerPedId(), drillAnims[2][i], animDict, drillAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
             NetworkAddEntityToSynchronisedScene(drillObj, drillAnims[2][i], animDict, drillAnims[1][i][2], 1.0, -1.0, 114886080)
             NetworkAddEntityToSynchronisedScene(bagObj, drillAnims[2][i], animDict, drillAnims[1][i][3], 1.0, -1.0, 114886080)
         else
-            drillAnims[2][i] = NetworkCreateSynchronisedScene(vaultDrillPos[1], GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, true, false, 0, 0.0, 1.0)
+            drillAnims[2][i] = NetworkCreateSynchronisedScene(syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, true, false, 0, 0.0, 1.0)
             NetworkAddPedToSynchronisedScene(PlayerPedId(), drillAnims[2][i], animDict, drillAnims[1][i][1], 4.0, -1.5, 13, 16, 1000.0, 0)
             NetworkAddEntityToSynchronisedScene(drillObj, drillAnims[2][i], animDict, drillAnims[1][i][2], 1000.0, -1000.0, 0)
             NetworkAddEntityToSynchronisedScene(bagObj, drillAnims[2][i], animDict, drillAnims[1][i][3], 1000.0, -1000.0, 0)
         end    
     end
-
+    
+    if approach == 1 then 
+        PlaySoundFromEntity(-1, "laser_power_up", drillObj, "dlc_ch_heist_finale_laser_drill_sounds", true, 20)
+    end
+       
     NetworkStartSynchronisedScene(drillAnims[2][1])
     Wait(GetAnimDuration(animDict, "intro") * 1000)
+    
+    if approach == 1 then 
+        UseParticleFxAsset("scr_ch_finale")
+        laserFx = StartParticleFxLoopedOnEntity("scr_ch_finale_laser", drillObj, -0.00375, -0.3, 0.015, 0.0, 0.0, -90.0, 1.0, false, false, false)
+    end
+        
+    local coords = vector3(vaultDrillPos[k].x - 0.02, GetEntityCoords(drillObj).y + 0.0125, vaultDrillPos[k].z + 0.011)
+    local rot = vector3(0.0, 90.0, 90.0)
+    UseParticleFxAsset("scr_ch_finale")
+    sparksFx = StartParticleFxLoopedAtCoord("scr_ch_finale_laser_sparks", coords, rot, 1.0, false, false, false, true)
+    SetParticleFxLoopedEvolution(sparks, "power", 0.0, false)
+
     NetworkStartSynchronisedScene(drillAnims[2][2])
     
     StartKeypress(function(bool) 
         if bool then 
+            PlaySoundFromEntity(-1, "laser_power_down", drillObj, "dlc_ch_heist_finale_laser_drill_sounds", true, 20)
             NetworkStartSynchronisedScene(drillAnims[2][7])
-            print("true")
             Wait(3000)
 
             DeleteEntity(drillObj)
             DeleteEntity(bagObj)
-            cb(true)
         end
     end)
-
-    
-
-    --scene = NetworkCreateSynchronisedScene(vaultDrillPos[1], GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, false, true, 0, 0, 1.3)
-    --NetworkAddPedToSynchronisedScene(PlayerPedId(), scene, animDict, "drill_straight_idle", 4.0, -4.0, 1033, 0, 1000.0, 0)
-    --NetworkAddEntityToSynchronisedScene(drillObj, scene, animDict, "drill_straight_idle_drill_bit", 1.0, -1.0, 114886080)
---
-    --NetworkStartSynchronisedScene(scene)
---
-    --StartKeypress(function(bool) 
-    --    if bool then 
-    --        print("true")
-    --        cb(true)
-    --    end
-    --end) 
-       
 end
 
 RegisterCommand("scaleform_max", function()
-    StartDrilling(1, function(bool)
-        print(bool)
-    end)
+    StartDrilling(1)
 end, false)
 
 --[[
