@@ -777,6 +777,7 @@ function Vault()
             if not IsNotClose(vaultEntryDoorCoords, 7) then
                 isInVault = false 
                 isBusy = true 
+                showTimer = false
                 VaultLobby(true, false)
 
                 break
