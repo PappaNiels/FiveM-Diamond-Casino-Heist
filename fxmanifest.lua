@@ -39,6 +39,7 @@ server_scripts {
     "server/heist-casino.lua",
     "server/heist-entry.lua",
     "server/heist-vault.lua",
+    "server/heist-exit.lua"
 }
 
 shared_scripts {
