@@ -73,18 +73,46 @@ RegisterCommand("cut_arrivepolice", function()
     print(GetCutsceneTotalDuration())
 end, false)
 
+--Pair.__tostringx = function (p)
+--    Pair.__tostring = nil    
+--    local s = "Pair " .. tostring(p)                                                                                                                                                                                                    
+--    Pair.__tostring = Pair.__tostringx
+--    return s
+--end
+
+--Pair.__tostring = Pair.__tostringx
+
 -- Dropoff End Heist
-RegisterCommand("cut_dropoff", function()
-    RequestCutscene("hs3f_all_drp1", 8) -- hs3f_all_drp2 and hs3f_all_drp3 are a bit different, but they are all dropoffs 1 = Mid Level, 2 = Low Level, 3 = High Level
+RegisterCommand("cut_dropoff", function(src, args)
+    --print(p)
+    local num = tonumber(args[2])
+    local num2 = tonumber(args[3])
+
+    RequestCutscene("hs3f_all_drp"..args[1], 8) -- hs3f_all_drp2 and hs3f_all_drp3 are a bit different, but they are all dropoffs 1 = Mid Level, 2 = Low Level, 3 = High Level
 
     while not HasCutsceneLoaded() do 
         Wait(10)
     end
 
+    --TriggerScriptEvent2()
+
     SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
     RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
+    SetCutsceneOrigin(meetingPoint[1][1], 100.0, 0)
+    StartCutsceneAtCoords(meetingPoint[num][num2], 0)
+    --StartCutscene(0)
 
-    StartCutscene(0)
+    --SetCutsceneOrigin(GetEntityCoords(PlayerPedId()), 35.0, 0)
+    while not DoesCutsceneEntityExist("MP_3") do 
+        Wait(10)
+    end 
+    
+    SetEntityVisible(GetEntityIndexOfCutsceneEntity("MP_2", 0), false, false)
+    SetEntityVisible(GetEntityIndexOfCutsceneEntity("MP_3", 0), false, false)
+    SetEntityVisible(GetEntityIndexOfCutsceneEntity("MP_4", 0), false, false)
+    
+    SetCutsceneOrigin(meetingPoint[num][num2], 200.0, 0)
+    repeat print(meetingPoint[num][1]) Wait(1000) until HasCutsceneFinished()
     print(GetCutsceneTotalDuration())
 end, false)
 
