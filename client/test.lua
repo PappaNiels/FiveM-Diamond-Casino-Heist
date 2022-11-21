@@ -252,6 +252,45 @@ RegisterCommand("vl_exp", function()
     VaultExplosion() 
 end, false)
 
+RegisterCommand("scale_end", function()
+    scaleMask1 = RequestScaleformMovie("MP_CELEBRATION_BG")
+    scaleMask2 = RequestScaleformMovie("MP_CELEBRATION_FG")
+    scale = RequestScaleformMovie("MP_CELEBRATION")
+    
+    -- See line 876186 from fm_mission_controller.c
+
+    while not HasScaleformMovieLoaded(scale) do 
+        Wait(10)
+    end
+
+    BeginScaleformMovieMethod(scale, "CLEANUP")
+    BeginTextCommandScaleformString("STRING")
+    AddTextComponentSubstringPlayerName("WINNER")
+    EndTextCommandScaleformString()
+    EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleMask1, "CLEANUP")
+    BeginTextCommandScaleformString("STRING")
+    AddTextComponentSubstringPlayerName("WINNER")
+    EndTextCommandScaleformString()
+    EndScaleformMovieMethod()
+
+    BeginScaleformMovieMethod(scaleMask2, "CLEANUP")
+    BeginTextCommandScaleformString("STRING")
+    AddTextComponentSubstringPlayerName("WINNER")
+    EndTextCommandScaleformString()
+    EndScaleformMovieMethod()
+
+    CreateThread(function()
+        while true do 
+            Wait(0)
+
+            DrawScaleformMovieFullscreenMasked(scaleMask1, scaleMax2, 255, 255, 255, 255)
+            DrawScaleformMovieFullscreen(scale, 255, 255, 255, 255, 0)
+        end
+    end)
+end, false)
+
 local vaultDoorAnim = {
     ["anims"] = {
         {"explosion_vault_01", "explosion_vault_02", "explosion_camera"}

@@ -621,14 +621,14 @@ local function VaultGas()
         end
     end)
     
-    --TaskScriptedAnimation(PlayerPedId(), arr1, arr2, arr3, 0.125, 0.125)
     --sId = GetSoundId()
     CreateThread(function()
         while isInVault do 
             Wait(3000)
             local num = math.random(1, 3)
             
-            TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 2000, 0, 0, false, false, false)
+            --TaskScriptedAnimation(PlayerPedId(), 0xC1C26FF930, 0xC1C26FF998, 0xC1C26FF998, 0.125, 0.125)
+            --TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 2000, 0, 0, false, false, false)
             PlayFacialAnim(PlayerPedId(), cough[2][num], "anim@fidgets@coughs")
             PlaySoundFromEntity(-1, "Male_0".. num, PlayerPedId(), "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500)
         end
