@@ -128,6 +128,11 @@ RegisterCommand("cut_agg_entry", function()
     RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
 
     StartCutscene(0)
+    SetCutsceneCanBeSkipped(true)
+
+    Wait(3000)
+    StopCutsceneImmediately(0)
+
     print(GetCutsceneTotalDuration())
 end, false)
 
