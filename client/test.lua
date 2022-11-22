@@ -252,15 +252,47 @@ RegisterCommand("vl_exp", function()
     VaultExplosion() 
 end, false)
 
+
 local scaleform = {}
+local txtTake = {
+    "POTENTIAL TAKE",
+    "ACTUAL TAKE",
+    "% CUT OF THE TAKE",
+    "TOTAL CASH EARNED"
+}
+
+local function ClearField(i, k)
+    BeginScaleformMovieMethod(scaleform[i], "CLEARUP")
+    ScaleformMovieMethodAddParamInt(k)
+    EndScaleformMovieMethod()
+end
+
+local function SetMoney(i, start, limit, k)
+
+    BeginScaleformMovieMethod(scaleform[i], "ADD_INCREMENTAL_CASH_WON_STEP")
+    ScaleformMovieMethodAddParamInt(1)
+    ScaleformMovieMethodAddParamInt(20)
+    ScaleformMovieMethodAddParamInt(start)
+    ScaleformMovieMethodAddParamInt(limit)
+    if k == 3 then 
+        ScaleformMovieMethodAddParamPlayerNameString("50" .. txtTake[k])
+    else
+        ScaleformMovieMethodAddParamPlayerNameString(txtTake[k])
+    end
+    ScaleformMovieMethodAddParamPlayerNameString("")
+    ScaleformMovieMethodAddParamPlayerNameString("")
+    ScaleformMovieMethodAddParamInt(3)
+    ScaleformMovieMethodAddParamInt(3)
+    EndScaleformMovieMethod()
+end
 
 RegisterCommand("scale_end", function()
+
+
     scaleMask1 = RequestScaleformMovie("HEIST_CELEBRATION_BG")
     scaleMask2 = RequestScaleformMovie("HEIST_CELEBRATION_FG")
     scale = RequestScaleformMovie("HEIST_CELEBRATION")
     
-    -- See line 876186 from fm_mission_controller.c
-
     while not HasScaleformMovieLoaded(scale) do 
         Wait(10)
     end
@@ -271,17 +303,26 @@ RegisterCommand("scale_end", function()
         Wait(10)
     end
 
+    local txt = {
+        "PLATINUM",
+        "GOLD",
+        "SILVER",
+        "BRONZE"
+    }
+
+    playerCount = 4
+
     scaleform = { scaleMask1, scaleMask2, scale}
+
+    PlaySoundFrontend(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", 1)
 
     for i = 1, 3 do 
 
-        BeginScaleformMovieMethod(scaleform[i], "CLEARUP")
-        ScaleformMovieMethodAddParamPlayerNameString("WINNER")
-        EndScaleformMovieMethod()
+        ClearField(i, 1)
 
         BeginScaleformMovieMethod(scaleform[i], "CREATE_STAT_WALL")
         ScaleformMovieMethodAddParamInt(1)
-        ScaleformMovieMethodAddParamPlayerNameString("HUD_COLOUR_FREEMODE_DARK")
+        ScaleformMovieMethodAddParamPlayerNameString("HUD_COLOUR_HSHARD")
         ScaleformMovieMethodAddParamInt(1)
         EndScaleformMovieMethod()
 
@@ -295,7 +336,7 @@ RegisterCommand("scale_end", function()
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamPlayerNameString("Diamond Casino Heist")
         ScaleformMovieMethodAddParamPlayerNameString("PASSED")
-        ScaleformMovieMethodAddParamPlayerNameString("Test3")
+        ScaleformMovieMethodAddParamPlayerNameString("")
         ScaleformMovieMethodAddParamBool(true)
         ScaleformMovieMethodAddParamBool(true)
         ScaleformMovieMethodAddParamBool(true)
@@ -310,8 +351,9 @@ RegisterCommand("scale_end", function()
             BeginScaleformMovieMethod(scaleform[i], "ADD_STAT_TO_TABLE")
             ScaleformMovieMethodAddParamInt(1)
             ScaleformMovieMethodAddParamInt(10)
-            ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(PlayerId()))
-            ScaleformMovieMethodAddParamPlayerNameString("1")
+            ScaleformMovieMethodAddParamPlayerNameString("~w~" .. GetPlayerName(PlayerId()))
+
+            ScaleformMovieMethodAddParamPlayerNameString("~HUD_COLOUR_" .. txt[j] .. "~" .. txt[j])
             ScaleformMovieMethodAddParamBool(true)
             ScaleformMovieMethodAddParamBool(true)
             ScaleformMovieMethodAddParamBool(false)
@@ -330,36 +372,51 @@ RegisterCommand("scale_end", function()
         ScaleformMovieMethodAddParamInt(20)
         EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(scaleform[i], "ADD_INCREMENTAL_CASH_WON_STEP")
+        SetMoney(i, 0, 200000, 1)
+        SetMoney(i, 200000, 100000, 2)
+        SetMoney(i, 100000, 50000, 3)
+        SetMoney(i, 50000, 50000, 4)
+
+        BeginScaleformMovieMethod(scaleform[i], "ADD_JOB_POINTS_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
-        ScaleformMovieMethodAddParamInt(20)
-        ScaleformMovieMethodAddParamInt(0)
-        ScaleformMovieMethodAddParamInt(200000)
-        ScaleformMovieMethodAddParamPlayerNameString("POTENTIAL TAKE")
-        ScaleformMovieMethodAddParamPlayerNameString("POTENTIAL TAKE")
-        ScaleformMovieMethodAddParamPlayerNameString("POTENTIAL TAKE")
-        ScaleformMovieMethodAddParamInt(3)
+        ScaleformMovieMethodAddParamInt(15)
+        ScaleformMovieMethodAddParamInt(2)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(scaleform[i], "ADD_REP_POINTS_AND_RANK_BAR_TO_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(3500)
+        ScaleformMovieMethodAddParamInt(5000)
+        ScaleformMovieMethodAddParamInt(6000)
+        ScaleformMovieMethodAddParamInt(8000)
+        ScaleformMovieMethodAddParamInt(69)
+        ScaleformMovieMethodAddParamInt(70)
+        ScaleformMovieMethodAddParamPlayerNameString("LEVEL UP")
+        ScaleformMovieMethodAddParamPlayerNameString("RANK")
         EndScaleformMovieMethod()
 
         BeginScaleformMovieMethod(scaleform[i], "SHOW_STAT_WALL")
         ScaleformMovieMethodAddParamInt(1)
         EndScaleformMovieMethod()
 
-        BeginScaleformMovieMethod(scaleform[i], "createSequence")
-        ScaleformMovieMethodAddParamInt(1)
-        ScaleformMovieMethodAddParamInt(1)
-        ScaleformMovieMethodAddParamInt(1)
-        EndScaleformMovieMethod()
+        ClearField(i, 1)
+        
     end
 
+    draw = true
+
     CreateThread(function()
-        while true do 
+        while draw do 
             Wait(0)
 
             DrawScaleformMovieFullscreenMasked(scaleMask1, scaleMask2, 255, 255, 255, 255)
             DrawScaleformMovieFullscreen(scale, 255, 255, 255, 255, 0)
         end
     end)
+
+    Wait(30000)
+
+    draw = false
 end, false)
 
 local vaultDoorAnim = {

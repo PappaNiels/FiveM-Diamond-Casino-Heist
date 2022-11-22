@@ -16,6 +16,13 @@ local min = 0
 local ten = 0
 local sec = 0
 local timerColour = {255, 255, 255, 500}
+local endScreen = {}
+local txtTake = {
+    "POTENTIAL TAKE",
+    "ACTUAL TAKE",
+    "% CUT OF THE TAKE",
+    "TOTAL CASH EARNED"
+}
 
 local function StartTimer()
     local timerActive = true
@@ -73,6 +80,31 @@ local function FormatTake()
         height = 0.908
         amountSize = 0.4
     end
+end
+
+local function ClearField(i, k)
+    BeginScaleformMovieMethod(endScreen[i], "CLEARUP")
+    ScaleformMovieMethodAddParamInt(k)
+    EndScaleformMovieMethod()
+end
+
+local function SetMoney(i, start, limit, k)
+
+    BeginScaleformMovieMethod(endScreen[i], "ADD_INCREMENTAL_CASH_WON_STEP")
+    ScaleformMovieMethodAddParamInt(1)
+    ScaleformMovieMethodAddParamInt(20)
+    ScaleformMovieMethodAddParamInt(start)
+    ScaleformMovieMethodAddParamInt(limit)
+    if k == 3 then 
+        ScaleformMovieMethodAddParamPlayerNameString("50" .. txtTake[k])
+    else
+        ScaleformMovieMethodAddParamPlayerNameString(txtTake[k])
+    end
+    ScaleformMovieMethodAddParamPlayerNameString("")
+    ScaleformMovieMethodAddParamPlayerNameString("")
+    ScaleformMovieMethodAddParamInt(3)
+    ScaleformMovieMethodAddParamInt(3)
+    EndScaleformMovieMethod()
 end
 
 RegisterNetEvent("cl:casinoheist:syncteamlives", function(lives)
@@ -174,6 +206,145 @@ function DrawTimer()
         end
     end)
 end
+
+function EndScreen()
+    endScreen[1] = RequestScaleformMovie("HEIST_CELEBRATION_BG")
+    endScreen[2] = RequestScaleformMovie("HEIST_CELEBRATION_FG")
+    endScreen[3] = RequestScaleformMovie("HEIST_CELEBRATION")
+    
+    while not HasScaleformMovieLoaded(endScreen[1]) do 
+        Wait(10)
+    end
+    while not HasScaleformMovieLoaded(endScreen[2]) do 
+        Wait(10)
+    end
+    while not HasScaleformMovieLoaded(endScreen[3]) do 
+        Wait(10)
+    end
+
+    local txt = {
+        "PLATINUM",
+        "GOLD",
+        "SILVER",
+        "BRONZE"
+    }
+
+    playerCount = 4
+
+    --CAM::_0x5A43C76F7FC7BA5F()
+    Citizen.InvokeNative(0x5A43C76F7FC7BA5F)
+
+    PlaySoundFrontend(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", 1)
+
+    for i = 1, 3 do 
+
+        ClearField(i, 1)
+
+        BeginScaleformMovieMethod(endScreen[i], "CREATE_STAT_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamPlayerNameString("HUD_COLOUR_HSHARD")
+        ScaleformMovieMethodAddParamInt(1)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(endScreen[i], "ADD_BACKGROUND_TO_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(80)
+        ScaleformMovieMethodAddParamInt(1)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(endScreen[i], "ADD_MISSION_RESULT_TO_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamPlayerNameString("Diamond Casino Heist")
+        ScaleformMovieMethodAddParamPlayerNameString("PASSED")
+        ScaleformMovieMethodAddParamPlayerNameString("")
+        ScaleformMovieMethodAddParamBool(true)
+        ScaleformMovieMethodAddParamBool(true)
+        ScaleformMovieMethodAddParamBool(true)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(endScreen[i], "CREATE_STAT_TABLE")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(10)
+        EndScaleformMovieMethod()
+
+        for j = 1, 4 do 
+            BeginScaleformMovieMethod(endScreen[i], "ADD_STAT_TO_TABLE")
+            ScaleformMovieMethodAddParamInt(1)
+            ScaleformMovieMethodAddParamInt(10)
+            ScaleformMovieMethodAddParamPlayerNameString("~w~" .. GetPlayerName(PlayerId()))
+
+            ScaleformMovieMethodAddParamPlayerNameString("~HUD_COLOUR_" .. txt[j] .. "~" .. txt[j])
+            ScaleformMovieMethodAddParamBool(true)
+            ScaleformMovieMethodAddParamBool(true)
+            ScaleformMovieMethodAddParamBool(false)
+            ScaleformMovieMethodAddParamBool(false)
+            ScaleformMovieMethodAddParamInt(0)
+            EndScaleformMovieMethod()
+        end 
+
+        BeginScaleformMovieMethod(endScreen[i], "ADD_STAT_TABLE_TO_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(10)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(endScreen[i], "CREATE_INCREMENTAL_CASH_ANIMATION")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(20)
+        EndScaleformMovieMethod()
+
+        SetMoney(i, 0, 200000, 1)
+        SetMoney(i, 200000, 100000, 2)
+        SetMoney(i, 100000, 50000, 3)
+        SetMoney(i, 50000, 50000, 4)
+
+        BeginScaleformMovieMethod(endScreen[i], "ADD_JOB_POINTS_TO_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(15)
+        ScaleformMovieMethodAddParamInt(2)
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(endScreen[i], "ADD_REP_POINTS_AND_RANK_BAR_TO_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(3500)
+        ScaleformMovieMethodAddParamInt(5000)
+        ScaleformMovieMethodAddParamInt(6000)
+        ScaleformMovieMethodAddParamInt(8000)
+        ScaleformMovieMethodAddParamInt(68)
+        ScaleformMovieMethodAddParamInt(69)
+        ScaleformMovieMethodAddParamPlayerNameString("LEVEL UP")
+        ScaleformMovieMethodAddParamPlayerNameString("RANK")
+        EndScaleformMovieMethod()
+
+        BeginScaleformMovieMethod(endScreen[i], "SHOW_STAT_WALL")
+        ScaleformMovieMethodAddParamInt(1)
+        EndScaleformMovieMethod()
+
+        ClearField(i, 1)
+        
+    end
+
+    draw = true
+
+    CreateThread(function()
+        while draw do 
+            Wait(0)
+
+            DisableAllControlActions(0)
+            DrawScaleformMovieFullscreenMasked(endScreen[1], endScreen[2], 255, 255, 255, 255)
+            DrawScaleformMovieFullscreen(endScreen[3], 255, 255, 255, 255, 0)
+        end
+    end)
+
+    Wait(30000)
+
+    draw = false
+
+    for i = 1, #3 do 
+        SetScaleformMovieAsNoLongerNeeded(endScreen[i])
+    end
+end
+
+RegisterCommand("test_cend", EndScreen, false)
 
 RegisterCommand("test_sec", function() 
     --FormatTimer()
