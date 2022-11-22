@@ -208,6 +208,10 @@ function DrawTimer()
 end
 
 function EndScreen()
+    TogglePausedRenderphases(true)
+    AnimpostfxStop("MP_Celeb_Win")
+    AnimpostfxPlay("MP_Celeb_Win", 1000, true)
+    
     endScreen[1] = RequestScaleformMovie("HEIST_CELEBRATION_BG")
     endScreen[2] = RequestScaleformMovie("HEIST_CELEBRATION_FG")
     endScreen[3] = RequestScaleformMovie("HEIST_CELEBRATION")
@@ -221,37 +225,37 @@ function EndScreen()
     while not HasScaleformMovieLoaded(endScreen[3]) do 
         Wait(10)
     end
-
+    
     local txt = {
         "PLATINUM",
         "GOLD",
         "SILVER",
         "BRONZE"
     }
-
+    
     playerCount = 4
-
+    
     --CAM::_0x5A43C76F7FC7BA5F()
     Citizen.InvokeNative(0x5A43C76F7FC7BA5F)
-
+    
     PlaySoundFrontend(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", 1)
 
     for i = 1, 3 do 
-
+        
         ClearField(i, 1)
-
+        
         BeginScaleformMovieMethod(endScreen[i], "CREATE_STAT_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamPlayerNameString("HUD_COLOUR_HSHARD")
         ScaleformMovieMethodAddParamInt(1)
         EndScaleformMovieMethod()
-
+        
         BeginScaleformMovieMethod(endScreen[i], "ADD_BACKGROUND_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(80)
         ScaleformMovieMethodAddParamInt(1)
         EndScaleformMovieMethod()
-
+        
         BeginScaleformMovieMethod(endScreen[i], "ADD_MISSION_RESULT_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamPlayerNameString("Diamond Casino Heist")
@@ -266,13 +270,13 @@ function EndScreen()
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(10)
         EndScaleformMovieMethod()
-
+        
         for j = 1, 4 do 
             BeginScaleformMovieMethod(endScreen[i], "ADD_STAT_TO_TABLE")
             ScaleformMovieMethodAddParamInt(1)
             ScaleformMovieMethodAddParamInt(10)
             ScaleformMovieMethodAddParamPlayerNameString("~w~" .. GetPlayerName(PlayerId()))
-
+            
             ScaleformMovieMethodAddParamPlayerNameString("~HUD_COLOUR_" .. txt[j] .. "~" .. txt[j])
             ScaleformMovieMethodAddParamBool(true)
             ScaleformMovieMethodAddParamBool(true)
@@ -281,28 +285,28 @@ function EndScreen()
             ScaleformMovieMethodAddParamInt(0)
             EndScaleformMovieMethod()
         end 
-
+        
         BeginScaleformMovieMethod(endScreen[i], "ADD_STAT_TABLE_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(10)
         EndScaleformMovieMethod()
-
+        
         BeginScaleformMovieMethod(endScreen[i], "CREATE_INCREMENTAL_CASH_ANIMATION")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(20)
         EndScaleformMovieMethod()
-
+        
         SetMoney(i, 0, 200000, 1)
         SetMoney(i, 200000, 100000, 2)
         SetMoney(i, 100000, 50000, 3)
         SetMoney(i, 50000, 50000, 4)
-
+        
         BeginScaleformMovieMethod(endScreen[i], "ADD_JOB_POINTS_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(15)
         ScaleformMovieMethodAddParamInt(2)
         EndScaleformMovieMethod()
-
+        
         BeginScaleformMovieMethod(endScreen[i], "ADD_REP_POINTS_AND_RANK_BAR_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(3500)
@@ -314,34 +318,36 @@ function EndScreen()
         ScaleformMovieMethodAddParamPlayerNameString("LEVEL UP")
         ScaleformMovieMethodAddParamPlayerNameString("RANK")
         EndScaleformMovieMethod()
-
+        
         BeginScaleformMovieMethod(endScreen[i], "SHOW_STAT_WALL")
         ScaleformMovieMethodAddParamInt(1)
         EndScaleformMovieMethod()
-
-        ClearField(i, 1)
         
+        ClearField(i, 1)
     end
-
+    
     draw = true
-
+    
     CreateThread(function()
         while draw do 
             Wait(0)
 
-            DisableAllControlActions(0)
+            --DisableAllControlActions(0)
             DrawScaleformMovieFullscreenMasked(endScreen[1], endScreen[2], 255, 255, 255, 255)
             DrawScaleformMovieFullscreen(endScreen[3], 255, 255, 255, 255, 0)
         end
     end)
-
+    
     Wait(30000)
-
+    
     draw = false
+    AnimpostfxStop("MP_Celeb_Win")
 
     for i = 1, #3 do 
         SetScaleformMovieAsNoLongerNeeded(endScreen[i])
     end
+
+    TogglePausedRenderphases(false)
 end
 
 RegisterCommand("test_cend", EndScreen, false)
