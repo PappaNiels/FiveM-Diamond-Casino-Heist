@@ -287,6 +287,7 @@ function FinishHeist(meet)
         Wait(10)
     end
 
+    EndScreen()
     LoadCutscene("")
 end
 
