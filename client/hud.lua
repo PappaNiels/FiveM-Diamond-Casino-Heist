@@ -208,10 +208,14 @@ function DrawTimer()
 end
 
 function EndScreen()
-    TogglePausedRenderphases(true)
     AnimpostfxStop("MP_Celeb_Win")
     AnimpostfxPlay("MP_Celeb_Win", 1000, true)
-    
+
+    StopCutscene(false)
+    --Citizen.InvokeNative(0x8D9DF6ECA8768583, GetThread())
+
+    Wait(1000)
+
     endScreen[1] = RequestScaleformMovie("HEIST_CELEBRATION_BG")
     endScreen[2] = RequestScaleformMovie("HEIST_CELEBRATION_FG")
     endScreen[3] = RequestScaleformMovie("HEIST_CELEBRATION")
@@ -236,10 +240,9 @@ function EndScreen()
     playerCount = 4
     
     --CAM::_0x5A43C76F7FC7BA5F()
-    Citizen.InvokeNative(0x5A43C76F7FC7BA5F)
+    --Citizen.InvokeNative(0x5A43C76F7FC7BA5F)
     
-    PlaySoundFrontend(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", 1)
-
+    
     for i = 1, 3 do 
         
         ClearField(i, 1)
@@ -253,7 +256,7 @@ function EndScreen()
         BeginScaleformMovieMethod(endScreen[i], "ADD_BACKGROUND_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(80)
-        ScaleformMovieMethodAddParamInt(1)
+        ScaleformMovieMethodAddParamInt(8)
         EndScaleformMovieMethod()
         
         BeginScaleformMovieMethod(endScreen[i], "ADD_MISSION_RESULT_TO_WALL")
@@ -265,7 +268,7 @@ function EndScreen()
         ScaleformMovieMethodAddParamBool(true)
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
-
+        
         BeginScaleformMovieMethod(endScreen[i], "CREATE_STAT_TABLE")
         ScaleformMovieMethodAddParamInt(1)
         ScaleformMovieMethodAddParamInt(10)
@@ -325,6 +328,8 @@ function EndScreen()
         
         ClearField(i, 1)
     end
+
+    PlaySoundFrontend(-1, "CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET", 1)
     
     draw = true
     
@@ -332,13 +337,13 @@ function EndScreen()
         while draw do 
             Wait(0)
 
-            --DisableAllControlActions(0)
+            DisableAllControlActions(0)
             DrawScaleformMovieFullscreenMasked(endScreen[1], endScreen[2], 255, 255, 255, 255)
             DrawScaleformMovieFullscreen(endScreen[3], 255, 255, 255, 255, 0)
         end
     end)
     
-    Wait(30000)
+    Wait(29000)
     
     draw = false
     AnimpostfxStop("MP_Celeb_Win")
@@ -347,7 +352,6 @@ function EndScreen()
         SetScaleformMovieAsNoLongerNeeded(endScreen[i])
     end
 
-    TogglePausedRenderphases(false)
 end
 
 RegisterCommand("test_cend", EndScreen, false)
