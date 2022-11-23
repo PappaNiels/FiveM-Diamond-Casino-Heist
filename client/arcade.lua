@@ -1568,6 +1568,7 @@ local function FocusThread()
                         SetBarButtons()
                         StartCamWhiteboard()
                         CamSettings()
+                        KeypressUnfocused()
                     end
                 else
                     Wait(10)
@@ -1600,8 +1601,6 @@ local function ScaleformThread()
         end
     end)
 end
-
-
 
 -- 187 down, 188 right, 189 left, 190 up
 
@@ -1645,6 +1644,7 @@ function KeypressUnfocused()
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
                 GreyOut(3, GetButtonId(), true)
                 ExitBoard()
+                FocusThread()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
             end
@@ -1717,8 +1717,6 @@ function KeypressFocused()
     end)
 end
 
-
-
 -- vector3(2737.99, -374.45, -48.5)
 
 CreateThread(function()
@@ -1733,7 +1731,7 @@ CreateThread(function()
                     if distance < 1.3 then 
                         HelpMsg("Press ~INPUT_CONTEXT~ to enter the arcade")
                         if IsControlPressed(0, 38) then 
-                            FadeTeleport(2737.99, -374.45, -49.0, 175.0)
+                            --FadeTeleport(2737.99, -374.45, -49.0, 175.0)
 
                             DoScreenFadeOut(1000)
                             
@@ -1741,8 +1739,10 @@ CreateThread(function()
                                 Wait(10)
                             end
 
-                            NetworkConcealPlayer(PlayerId(), true, false)
-                            SetupBoardInfo()
+                            SetEntityCoords(PlayerPedId(), 2737.99, -374.45, -49.0, true, false, false, false)
+                            SetEntityHeading(PlayerPedId(), 175.0)
+
+                            --NetworkConcealPlayer(PlayerId(), true, true)
                             
                             RequestScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD", false, -1)
                             boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
@@ -1752,6 +1752,8 @@ CreateThread(function()
                             while not HasScaleformMovieLoaded(boardType[3]) do 
                                 Wait(10)
                             end
+                            
+                            SetupBoardInfo()
 
                             isInGarage = true
                             if approach ~= 0 and loot ~= 0 then
@@ -1765,6 +1767,7 @@ CreateThread(function()
                             Wait(3000)
 
                             DoScreenFadeIn(2000)
+                            ScaleformThread()
                         end
                     end
                 else 
