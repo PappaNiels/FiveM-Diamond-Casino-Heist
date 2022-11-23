@@ -112,8 +112,13 @@ RegisterCommand("cut_dropoff", function(src, args)
     SetEntityVisible(GetEntityIndexOfCutsceneEntity("MP_4", 0), false, false)
     
     SetCutsceneOrigin(meetingPoint[num][num2], 200.0, 0)
-    repeat print(meetingPoint[num][1]) Wait(1000) until HasCutsceneFinished()
-    print(GetCutsceneTotalDuration())
+    --repeat print(meetingPoint[num][1]) Wait(1000) until HasCutsceneFinished()
+    Wait(GetCutsceneTotalDuration() - 1000)
+    EndScreen()
+end, false)
+
+RegisterCommand("keyframe", function()
+    EnableMovieKeyframeWait(true)
 end, false)
 
 -- Aggressive entry

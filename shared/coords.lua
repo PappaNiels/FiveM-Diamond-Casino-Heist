@@ -114,7 +114,7 @@ vaultMiddle = vector3(2521.0, -238.5, -70.74)
 
 meetingPoint = {
     {
-        vector3(-1167.42, -1748.52, 4.0), -- Heading = 215.02
+        vector3(-1167.42, -1748.52, 3.95), -- Heading = 215.02
         vector3(-591.08, -2360.05, 13.16), -- Heading = 49.85
         vector3(1158.75, -2648.28, 8.56) -- Heading = 172.52
     },

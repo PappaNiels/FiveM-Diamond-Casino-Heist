@@ -1,7 +1,26 @@
-hPlayer = {1, 2}
-invitedPlayers = {}
-inMarker = {}
+hPlayer = {}
 heistInProgress = false
+
+local approach = 0
+local loot = 0
+
+local selectedGunman = 0         
+local selectedLoadout = 0         
+local selectedDriver = 0          
+local selectedVehicle = 0         
+local selectedHacker = 0          
+local selectedKeycard = 0
+local selectedEntrance = 1        
+local selectedExit = 0            
+local selectedBuyer = 0          
+local selectedEntryDisguise = 1      
+local selectedExitDisguise = 1 
+
+local boughtCleanVehicle = false
+local boughtDecoy = false
+
+local cuts = {}
+local invitedPlayers = {}
 
 RegisterCommand("test_h", function(source, args)
     print(source, args[1], GetPlayerPed(source))
@@ -52,11 +71,13 @@ RegisterCommand("join_casinoheist", function(src)
     end
 end, false)
 
-RegisterNetEvent("sv:casinoheist:setHeistPlayers", function(player, num)
-    hPlayer[num] = source
-    --print(player, num) 
-    TriggerClientEvent("cl:casinoheist:updateHeistPlayers", -1, hPlayer[1]--[[[1], hPlayer[2], hPlayer[3], hPlayer[4] ]])
-    --print(hPlayer[num])
+RegisterNetEvent("sv:casinoheist:setHeistLeader", function()
+    if not hPlayer[1] then 
+        hPlayer[1] = source
+        print(source)
+    else 
+        TriggerClientEvent("cl:casinoheist:infoMessage", source, "Someone else is already the heist leader.")
+    end
 end)
 
 RegisterNetEvent("sv:casinoheist:loadCutscene", function(cutscene)
@@ -88,4 +109,33 @@ end)
 RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
     TriggerClientEvent("test:cl:casinoheist:openvaultdoors", -1)
     return true
+end)
+
+RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
+    if not heistInProgress then
+        invitedPlayers = {} 
+        heistInProgress = true
+        hPlayer = obj[1]
+        approach = obj[2]
+        loot = obj[3]
+        cuts = obj[4]
+        selectedGunman = obj[5]
+        selectedLoadout = obj[6]         
+        selectedDriver = obj[7]          
+        selectedVehicle = obj[8]         
+        selectedHacker = obj[9]          
+        selectedKeycard = obj[10]
+        selectedEntrance = obj[11]        
+        selectedExit = obj[12]            
+        selectedBuyer = obj[13]          
+        selectedEntryDisguise = obj[14]      
+        selectedExitDisguise = obj[15] 
+
+        boughtCleanVehicle = obj[16]
+        boughtDecoy = obj[17]
+
+        for i = 2, #hPlayer do 
+            TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i], obj)
+        end 
+    end
 end)

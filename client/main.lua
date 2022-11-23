@@ -1,6 +1,6 @@
 heistInProgress = false
 
-hPlayer = {1, 3}
+hPlayer = {}
 
 entrypointsCasino = {
     -- Agressive 
@@ -17,53 +17,9 @@ entrypointsCasino = {
     --[[3]]  vector3(978.78, 18.64, 80.99)     -- Staff Lobby
 }
 
-
---keypads = {
---    [1] = {
---        vector3(991.47, 76.80, 81.14),
---        0,
---        vector3(936.75, 13.07, 112.79),
---        vector3(972.24, 50.96, 120.38),
---        vector3(953.68, 77.94, 111.39),
---        0,
---        0,
---        vector3(953.58, 5.25, 111.54),
---        vector3(959.02, 33.13, 120.42),
---        vector3(986.94, 58.68, 111.54),
---        vector3(978.39, 19.83, 81.13)
---    },
---
---    [2] = {
---
---    },
---
---    [3] = {
---        [1] = {
---            vector3(2519.80, -226.47, -70.40),
---            vector3(2533.10, -237.28, -70.40),
---            vector3(2519.72, -250.60, -70.40)
---        },
---        [2] = {
---            vector3(2514.85, -223.50, -70.40),
---            vector3(2536.07, -232.34, -70.40),
---            vector3(2536.06, -244.72, -70.40),
---            vector3(2514.85, -253.55, -70.40)
---        }
---        
---        
---    },
---
---    [4]  = {
---        vector3(2464.828, -282.2930, -70.4072),
---        vector3(2464.845, -276.1607, -70.4072),
---        vector3(2492.825, -241.5286, -70.4072),
---        vector3(2492.829, -235.4994, -70.4072)
---    } 
---}
-
 difficulty = 1 -- 1 = Normal, 2 = Hard
 loot = 0 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
-approach = 3 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
+approach = 0 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 playerAmount = 0
 vaultLayout = 0
 teamlives = 1
@@ -78,11 +34,11 @@ selectedDriver = 0
 selectedVehicle = 0         
 selectedHacker = 0          
 selectedKeycard = 0
-selectedEntrance = 1        
+selectedEntrance = 0        
 selectedExit = 0            
 selectedBuyer = 0          
-selectedEntryDisguise = 1      
-selectedExitDisguise = 1 
+selectedEntryDisguise = 0      
+selectedExitDisguise = 0 
 
 boughtCasinoModel = false 
 boughtDoorSecurity = false 
@@ -216,6 +172,30 @@ end
 RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(crew)
     hPlayer = crew
     PlayerJoinedCrew(#hPlayer)
+end)
+
+RegisterNetEvent("cl:casinoheist:startHeist", function(obj)
+    heistInProgress = true
+    hPlayer = obj[1]
+    approach = obj[2]
+    loot = obj[3]
+    cuts = obj[4]
+    selectedGunman = obj[5]
+    selectedLoadout = obj[6]         
+    selectedDriver = obj[7]          
+    selectedVehicle = obj[8]         
+    selectedHacker = obj[9]          
+    selectedKeycard = obj[10]
+    selectedEntrance = obj[11]        
+    selectedExit = obj[12]            
+    selectedBuyer = obj[13]          
+    selectedEntryDisguise = obj[14]      
+    selectedExitDisguise = obj[15] 
+
+    boughtCleanVehicle = obj[16]
+    boughtDecoy = obj[17]
+
+    StartHeist()
 end)
 
 AddEventHandler("baseevents:onPlayerDied", function(o, i)
