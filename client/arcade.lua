@@ -29,9 +29,7 @@ local isFocusedBoard = false
 
 local barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
 local boardType = {
-    RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP"),
-    RequestScaleformMovie("CASINO_HEIST_BOARD_PREP"),
-    RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
+    
 }
 
 local todoList = {
@@ -1544,10 +1542,48 @@ end
 RegisterNetEvent("cl:casinoheist:syncHeistPlayerScaleform", PlayerJoinedCrew)
 RegisterNetEvent("cl:casinoheist:readyUp", hfdsjkfh)
 
-CreateThread(function()
-    while true do 
-        Wait(0)
-        if isInGarage then 
+local function CamSettings()
+    CreateThread(function()
+        while camIsUsed do 
+            Wait(0)
+
+            DisableAllControlActions(2)
+            SetPauseMenuActive(false) 
+        end
+    end)
+end
+
+local function FocusThread()
+    CreateThread(function()
+        while isInGarage and boardUsing == 0 do 
+            Wait(0)
+
+            for i = 1, boards do 
+                local distance = #(GetEntityCoords(PlayerPedId()) - boardCoords[i])
+
+                if distance < 1.5 then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to use the " .. boardString[i])
+                    if IsControlPressed(0, 38) then 
+                        boardUsing = i
+                        SetBarButtons()
+                        StartCamWhiteboard()
+                        CamSettings()
+                    end
+                else
+                    Wait(10)
+                end
+            end
+        end
+    end)
+end
+
+local function ScaleformThread()
+    FocusThread()
+
+    CreateThread(function()
+        while isInGarage do 
+            Wait(0)
+
             DrawScaleformMovie_3dSolid(boardType[1], 2713.3, -366.2, -54.23418, 0.0, 0.0, camHeading[1], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
             
             if loot ~= 0 and approach ~= 0 then
@@ -1561,30 +1597,19 @@ CreateThread(function()
             if boardUsing ~= 0 then
                 DrawScaleformMovieFullscreen(barMenu, 255, 255, 255, 255)
             end
-        else 
-            Wait(3000)
         end
-    end
-end)
+    end)
+end
 
-CreateThread(function()
-    while true do 
-        Wait(0)
-        if camIsUsed then 
-            DisableAllControlActions(2)
-            SetPauseMenuActive(false) 
-        else 
-            Wait(3000)
-        end
-    end
-end)
+
 
 -- 187 down, 188 right, 189 left, 190 up
 
-CreateThread(function()
-    while true do 
-        Wait(2)
-        if boardUsing ~= 0 and camIsUsed and not isFocusedBoard then 
+function KeypressUnfocused()
+    CreateThread(function()
+        while boardUsing ~= 0 and camIsUsed and not isFocusedBoard do 
+            Wait(2)
+            
             if IsDisabledControlJustPressed(0, 32) then -- W
                 PlaySoundFrontend(-1, "Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                 MoveMarker(188)
@@ -1612,6 +1637,7 @@ CreateThread(function()
                 if canZoomIn[boardUsing][num] then 
                     GreyOut(boardUsing, num, false)
                     SetFocusOnButton()
+                    KeypressFocused()
                     SetBarButtons(num)
                 else
                     ExecuteButtonFunction(num)
@@ -1622,19 +1648,18 @@ CreateThread(function()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
             end
-        else 
-            Wait(1000)
         end
-    end
-end)
+    end)
+end
 
-CreateThread(function()
-    while true do 
-        Wait(2)
-        if isFocusedBoard then 
+function KeypressFocused()
+    CreateThread(function()
+        while isFocusedBoard do 
+            Wait(2)
+
             if IsDisabledControlJustPressed(0, 174) then -- <--
                 if boardUsing == 1 then 
-                    
+
                 elseif boardUsing == 2 then 
                     if CanChangeImage(GetButtonId(), -1) then 
                         PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
@@ -1654,7 +1679,7 @@ CreateThread(function()
                 end
             elseif IsDisabledControlJustPressed(0, 175) then -- -->
                 if boardUsing == 1 then 
-                    
+
                 elseif boardUsing == 2 then 
                     if CanChangeImage(GetButtonId(), 1) then 
                         PlaySoundFrontend(-1, "Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
@@ -1682,40 +1707,17 @@ CreateThread(function()
                 PlaySoundFrontend(-1, "Back", "HUD_FRONTEND_DEFAULT_SOUNDSET", true)
                 GreyOut(boardUsing, GetButtonId(), true)
                 UnFocusOnButton()
+                KeypressUnfocused()
                 isFocusedBoard = false 
                 SetBarButtons()
             elseif IsDisabledControlJustPressed(0, 204) then -- Tab
 
             end
-        else 
-            Wait(1000)
         end
-    end
-end)
+    end)
+end
 
-CreateThread(function()
-    while true do 
-        Wait(0)
-        if isInGarage and boardUsing == 0 then 
-            for i = 1, boards do 
-                local distance = #(GetEntityCoords(PlayerPedId()) - boardCoords[i])
 
-                if distance < 1.5 then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to use the " .. boardString[i])
-                    if IsControlPressed(0, 38) then 
-                        boardUsing = i
-                        SetBarButtons()
-                        StartCamWhiteboard()
-                    end
-                else
-                    Wait(10)
-                end
-            end
-        else 
-            Wait(2000)
-        end
-    end
-end)
 
 -- vector3(2737.99, -374.45, -48.5)
 
@@ -1732,11 +1734,26 @@ CreateThread(function()
                         HelpMsg("Press ~INPUT_CONTEXT~ to enter the arcade")
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(2737.99, -374.45, -49.0, 175.0)
-                            isInGarage = true
+
+                            DoScreenFadeOut(1000)
+                            
+                            while not IsScreenFadedOut() do
+                                Wait(10)
+                            end
+
+                            NetworkConcealPlayer(PlayerId(), true, false)
                             SetupBoardInfo()
-
+                            
                             RequestScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD", false, -1)
+                            boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
+                            boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
+                            boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
+                            
+                            while not HasScaleformMovieLoaded(boardType[3]) do 
+                                Wait(10)
+                            end
 
+                            isInGarage = true
                             if approach ~= 0 and loot ~= 0 then
                                 PrepBoardInfo()
                             end 
@@ -1744,6 +1761,10 @@ CreateThread(function()
                             if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
                                 FinalBoardInfo()
                             end
+
+                            Wait(3000)
+
+                            DoScreenFadeIn(2000)
                         end
                     end
                 else 
@@ -1759,6 +1780,10 @@ CreateThread(function()
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(759.08, -816.05, 25.3, 275.0)
                             ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD")
+
+                            for i = 1, 3 do 
+                                SetScaleformMovieAsNoLongerNeeded(boardType[i])
+                            end
 
                             isInGarage = false
                         end
