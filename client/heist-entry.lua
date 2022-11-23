@@ -169,22 +169,24 @@ function StartHeist()
     player = GetCurrentHeistPlayer()
     print(player)
     
-    approach = 2
-    selectedEntryDisguise = 3 
-    selectedDriver = 1
-    selectedVehicle = 1
-    selectedEntrance = 6
-    playerAmount = #hPlayer
+    --approach = 2
+    --selectedEntryDisguise = 3 
+    --selectedDriver = 1
+    --selectedVehicle = 1
+    --selectedEntrance = 6
+    --playerAmount = #hPlayer
 
-    if loot == 3 then 
-        vaultLayout = math.random(7, 10)
-    else
-        vaultLayout = math.random(1, 6)
-        
-        if vaultLayout < 3 then 
-            cartLayout = 1
-        else 
-            cartLayout = 2
+    if player == 1 then 
+        if loot == 3 then 
+            vaultLayout = math.random(7, 10)
+        else
+            vaultLayout = math.random(1, 6)
+
+            if vaultLayout < 3 then 
+                cartLayout = 1
+            else 
+                cartLayout = 2
+            end
         end
     end
 
@@ -237,7 +239,7 @@ function StartHeist()
 
     DistanceCasino()
 
-    Wait(1000)
+    Wait(5000)
 
     DrawTeamlives()
 
@@ -396,6 +398,7 @@ function EnterCasinoTunnel()
     if player == 1 then 
         SetEntityCoords(veh, casinoEntryCoords[selectedEntrance][1], true, false, false, true)
         SetEntityHeading(veh, casinoEntryCoords[selectedEntrance][2])
+        TaskVehicleDriveToCoord(GetPedInVehicleSeat(veh, -1), veh, GetEntityCoords(veh), 80.0, 1.0, GetHashKey("stockade"), 786944, 0.5, 100.0)
     end
     --for i = 1, #hPlayer do 
     --    if PlayerPedId() ~= GetHeistPlayerPed(hPlayer[i]) then 
