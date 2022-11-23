@@ -521,7 +521,7 @@ function TunnelEntry()
 end
 
 function MainEntry()
-    --if approach == 3 then 
+    if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
         StartCutscene(0)
 
@@ -547,6 +547,8 @@ function MainEntry()
         Wait(100)
 
         TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
+
+        alarmTriggered = 1
 
         blips[1] = AddBlipForCoord(2525.77, -251.71, -60.31)
         SetBlipColour(blips[1], 5) 
@@ -582,35 +584,35 @@ function MainEntry()
                 end
             end
         end)
-        --else
-        --CreateThread(function()
-        --    while true do 
-        --        Wait(0)
-        --
-        --    end
-        --end)
-        --end
-    end
-    
-    function Basement()
-        RemoveAllBlips()
-        local sprite = {63, 743}
-        
-        for i = 1, 2 do 
-            blips[i] = AddBlipForCoord(staffCoords[i])
-            SetBlipHighDetail(blips[i], true)
-            SetBlipSprite(blips[i], sprite[i])
-            SetBlipColour(blips[i], 5)
-        end
-        
-        local num = 1
-        local zCoord = -61
+    else
         CreateThread(function()
             while true do 
-                Wait(100)
-                
-                SubtitleMsg("Go to the ~y~basement~s~.", 110)
-                
+                Wait(0)
+            
+            end
+        end)
+    end
+end
+    
+function Basement()
+    RemoveAllBlips()
+    local sprite = {63, 743}
+    
+    for i = 1, 2 do 
+        blips[i] = AddBlipForCoord(staffCoords[i])
+        SetBlipHighDetail(blips[i], true)
+        SetBlipSprite(blips[i], sprite[i])
+        SetBlipColour(blips[i], 5)
+    end
+    
+    local num = 1
+    local zCoord = -61
+    CreateThread(function()
+        while true do 
+            Wait(100)
+            
+            SubtitleMsg("Go to the ~y~basement~s~.", 110)
+            
             local coords = GetEntityCoords(PlayerPedId())
             if coords.z < zCoord then 
                 RemoveBlip(blips[num])
