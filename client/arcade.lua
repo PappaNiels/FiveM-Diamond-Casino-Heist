@@ -28,9 +28,7 @@ local entryIsAvailable = false
 local isFocusedBoard = false
 
 local barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
-local boardType = {
-    
-}
+local boardType = {}
 
 local todoList = {
     [1] = {
@@ -666,6 +664,7 @@ local function UpdateList(list, button)
                 ToDoList(i, 2)
             end
         elseif boardUsing == 3 then
+            print(boardUsing, button, todoList[3][2])
             todoList[boardUsing][button][2] = true 
 
             --if approach == 2 then 
@@ -799,7 +798,7 @@ end
 local function SetLootAndApproach()
     BeginScaleformMovieMethod(boardType[2], "SET_HEADINGS")
     ScaleformMovieMethodAddParamPlayerNameString(approachString[approach])
-    ScaleformMovieMethodAddParamPlayerNameString(lootString[1])
+    ScaleformMovieMethodAddParamPlayerNameString(lootString[loot])
     EndScaleformMovieMethod()
 end
 
@@ -993,21 +992,13 @@ local function CheckTodoList()
         count = 10
     end
 
-    for i = 1, count do 
-        if i == 1 then 
-            if not todoList[1][3][2] then 
-                return false 
-            end
-        elseif i < 8  then 
-            if not todoList[2][approach][i][2] then 
-                return false 
-            end
-        else
-            if not todoList[3][approach][i][2] then 
-                return false 
-            end
+    for i = 1, #todoList[3] do 
+        if not todoList[3][i][2] then 
+            return false 
         end
     end
+
+    return true
 end
 
 local function ShowWarningMessage(msg)
@@ -1047,7 +1038,7 @@ local function ExecuteButtonFunction(i)
                 UpdateList(2, 5)
                 boughtVault = true
             end
-        elseif i == 5 --[[and approach == 0]] then -- Silent and Sneaky
+        elseif i == 5 and approach == 0 then -- Silent and Sneaky
             if ShowWarningMessage("Are you sure that you want to use Silent and Sneaky approach for this heist?") then 
                 SetTick(5)
                 UpdateList(1, 3)
@@ -1057,10 +1048,11 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
-        elseif i == 6 --[[and approach == 0]] then -- The Big Con
+        elseif i == 6 and approach == 0 then -- The Big Con
             if ShowWarningMessage("Are you sure that you want to use The Big Con approach for this heist?") then 
                 SetTick(6)
                 UpdateList(1, 3)
@@ -1084,10 +1076,11 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
-        elseif i == 7 --[[and approach == 0]] then -- Aggressive
+        elseif i == 7 and approach == 0 then -- Aggressive
             if ShowWarningMessage("Are you sure that you want to use Aggressive approach for this heist?") then 
                 SetTick(7)
                 UpdateList(1, 3)
@@ -1097,6 +1090,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
@@ -1113,7 +1107,6 @@ local function ExecuteButtonFunction(i)
                 elseif num <= lootChances[1] + lootChances[2] + lootChances[3] + lootChances[4] and num > lootChances[1] + lootChances[2] + lootChances[3] then 
                     loot = 4
                 end
-                loot = 1
 
                 images[1][3] = {true, 8, loot}
 
@@ -1129,6 +1122,7 @@ local function ExecuteButtonFunction(i)
                 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
+                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
@@ -1149,6 +1143,11 @@ local function ExecuteButtonFunction(i)
                 UpdateList(1, 1)
                 selectedLoadout = imageOrderNum[2][5]
                 canZoomIn[2][5] = false 
+
+                if (selectedLoadout ~= 0 and selectedVehicle ~= 0 and selectedHacker ~= 0) then 
+                    FinalBoardInfo()
+                    SetBarButtons()
+                end
             end
         elseif i == 6 and selectedVehicle == 0 then 
             if ShowWarningMessage("Are you sure you wish to choose the " .. availableVehicles[selectedDriver][1][imageOrderNum[2][6] - 1][2] .. " as your getaway vehicle?") then
@@ -1156,6 +1155,11 @@ local function ExecuteButtonFunction(i)
                 UpdateList(1, 2)
                 selectedVehicle = imageOrderNum[2][6]
                 canZoomIn[2][6] = false 
+
+                if (selectedLoadout ~= 0 and selectedVehicle ~= 0 and selectedHacker ~= 0) then 
+                    FinalBoardInfo()
+                    SetBarButtons()
+                end
             end
         elseif i == 7 then --
             UpdateList(1, 3)
@@ -1232,11 +1236,6 @@ local function ExecuteButtonFunction(i)
                 end
 
                 SetMission(5, imageOrder[2][approach][5][1], weaponLoadoutStrings[1])
-
-                if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
-                    FinalBoardInfo()
-                    SetBarButtons()
-                end
             end
         elseif i == 11 and selectedDriver == 0 then 
             if ShowWarningMessage("Are you sure you wish to recruit " .. driver[imageOrderNum[2][11] - 1][1] .. " as your getaway driver?") then 
@@ -1263,11 +1262,6 @@ local function ExecuteButtonFunction(i)
                 end
 
                 SetMission(6, imageOrder[2][approach][6][1], availableVehicles[driver[selectedDriver][3]][1][1][2])
-
-                if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
-                    FinalBoardInfo()
-                    SetBarButtons()
-                end
             end
         elseif i == 12 and selectedHacker == 0 then 
             if ShowWarningMessage("Are you sure you wish to recruit " .. hacker[imageOrderNum[2][12] - 1][1] .. " as your hacker?") then 
@@ -1281,7 +1275,7 @@ local function ExecuteButtonFunction(i)
                 selectedHacker = imageOrderNum[2][i] - 1
                 canZoomIn[2][i] = false
 
-                if (selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0) then 
+                if (selectedLoadout ~= 0 and selectedVehicle ~= 0 and selectedHacker ~= 0) then 
                     FinalBoardInfo()
                     SetBarButtons()
                 end
@@ -1322,7 +1316,7 @@ local function ExecuteButtonFunction(i)
         end
     elseif boardUsing == 3 then 
         if i == 2 then 
-            UpdateBoard(1, 1)        
+            UpdateList(1, 1)        
         elseif i == 6 and not boughtDecoy then -- Decoy 
             if ShowWarningMessage("Are you sure you wish to purchase the gunman decoy for $" .. decoyPrice .. "?") then 
                 SetTick(6)
@@ -1336,7 +1330,9 @@ local function ExecuteButtonFunction(i)
                 boughtCleanVehicle = true
             end
         elseif i == 12 then -- Start Heist
-            if CheckTodoList() then
+            if #hPlayer < 2 then 
+                InfoMsg("You need at least two people the play the Diamond Casino Heist. Invite someone for you to help.")
+            elseif CheckTodoList() then
                 selectedEntrance = imageOrder[3][approach][2][imageOrderNum[3][2]]
                 selectedExit = imageOrder[3][approach][3][imageOrderNum[3][3]]
                 selectedBuyer = imageOrder[3][approach][4][imageOrderNum[3][4] - 1]
@@ -1346,12 +1342,16 @@ local function ExecuteButtonFunction(i)
                     selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14] - 1]
                 end
 
+                TriggerServerEvent("sv:casinoheist:startHeist", {hPlayer, approach, loot, playerCut[#hPlayer], selectedGunman, selectedLoadout, selectedDriver, selectedVehicle, selectedHacker, selectedKeycard, selectedEntrance, selectedExit, selectedBuyer, selectedEntryDisguise, selectedExitDisguise, boughtCleanVehicle, boughtDecoy})
+                heistInProgress = true
+                isInGarage = false
+                ExitBoard()
                 StartHeist()
             else
-                InfoMsg("You can not start the Diamond Casino Heist just yet. See all the todo items")
+                InfoMsg("You can not start the Diamond Casino Heist just yet. See all the to do items")
             end
         elseif i == 13 then 
-            UpdateBoard(1, 1)
+            UpdateList(1, 1)
         end
     end 
 end
@@ -1493,7 +1493,7 @@ function FinalBoardInfo()
                 OptionalList(i, 3)
             end
 
-            todoList[3][1] = "Entrance"
+            todoList[3][1][1] = "Entrance"
         else 
             for i = 1, #optionalList[3] do 
                 OptionalList(i, 3)
@@ -1591,7 +1591,7 @@ local function ScaleformThread()
                 DrawScaleformMovie_3dSolid(boardType[2], 2716.27, -369.93, -54.23418, 0.0, 0.0, camHeading[2] - 180, 1.0, 1.0, 1.0, 3.1, 1.7, 1.0, 0)
             end
             
-            if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
+            if selectedLoadout ~= 0 and selectedVehicle ~= 0 and selectedHacker ~= 0 then 
                 DrawScaleformMovie_3dSolid(boardType[3], 2712.58, -372.65, -54.23418, 0.0, 0.0, camHeading[3], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
             end
 
@@ -1701,6 +1701,7 @@ function KeypressFocused()
                 PlaySoundFrontend(-1, "Highlight_Accept", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
                 ExecuteButtonFunction(GetButtonId())
                 UnFocusOnButton()
+                KeypressUnfocused()
                 isFocusedBoard = false 
                 SetBarButtons()
             elseif IsDisabledControlJustPressed(0, 200) then -- Esc
@@ -1748,7 +1749,8 @@ CreateThread(function()
                             boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
                             boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
                             boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
-                            
+                            hPlayer = {GetPlayerServerId(PlayerId())} 
+
                             while not HasScaleformMovieLoaded(boardType[3]) do 
                                 Wait(10)
                             end
@@ -1784,6 +1786,7 @@ CreateThread(function()
                             FadeTeleport(759.08, -816.05, 25.3, 275.0)
                             ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD")
 
+                            hPlayer = {} 
                             for i = 1, 3 do 
                                 SetScaleformMovieAsNoLongerNeeded(boardType[i])
                             end
@@ -1803,16 +1806,28 @@ end)
 
 RegisterCommand("test_scale", function(src, args)
     --boardUsing = tonumber(args[1])
-    isInGarage = true
+    RequestScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD", false, -1)
+    boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
+    boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
+    boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
+    
+    while not HasScaleformMovieLoaded(boardType[3]) do 
+        Wait(10)
+    end
+    
     SetupBoardInfo()
 
+    isInGarage = true
     if approach ~= 0 and loot ~= 0 then
         PrepBoardInfo()
     end 
-
+                        
     if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
         FinalBoardInfo()
     end
+
+
+    ScaleformThread()
 end, false)
 
 RegisterCommand("add_h", function(src, args)
@@ -1908,4 +1923,8 @@ RegisterCommand("lester_door", function()
     lesterdoorObj = CreateObject(GetHashKey("ch_prop_arcade_fortune_door_01a"), lesterdoorCoords, false, false, false)
     --FadeTeleport()
     --isInBuilding = true
+end, false)
+
+RegisterCommand("test_sevent", function()
+    TriggerServerEvent("sv:casinoheist:startHeist", {hPlayer, approach, loot, playerCut[#hPlayer], selectedGunman, selectedLoadout, selectedDriver, selectedVehicle, selectedHacker, selectedKeycard, selectedEntrance, selectedExit, selectedBuyer, selectedEntryDisguise, selectedExitDisguise, boughtCleanVehicle, boughtDecoy})
 end, false)
