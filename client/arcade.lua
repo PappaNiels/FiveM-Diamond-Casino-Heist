@@ -889,7 +889,7 @@ local function ChangeImage(num, change)
         elseif num == 10 then 
             SetHireableCrew(10, gunman[sec][1], gunman[sec][2], gunman[sec][3], math.floor(gunman[sec][4] * 100), weapons[approach][sec])
         elseif num == 11 then  
-            SetHireableCrew(11, driver[sec][1], driver[sec][2], driver[sec][3], math.floor(driver[sec][3] * 100), weapons[approach][imageOrderNum[2][10] - 1])
+            SetHireableCrew(11, driver[sec][1], driver[sec][2], driver[sec][3], math.floor(driver[sec][4] * 100), weapons[approach][imageOrderNum[2][10] - 1])
         elseif num == 12 then 
             SetHireableCrew(12, hacker[sec][1], hacker[sec][2], hacker[sec][5], math.floor(hacker[sec][6] * 100), weapons[approach][imageOrderNum[2][10] - 1])
         elseif num == 14 then 
@@ -1048,7 +1048,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
-                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
+                    TriggerServerEvent("sv:casinoheist:setHeistLeader", true)
                     SetBarButtons()
                 end
             end
@@ -1785,7 +1785,8 @@ CreateThread(function()
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(759.08, -816.05, 25.3, 275.0)
                             ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD")
-
+                            TriggerServerEvent("sv:casinoheist:setHeistLeader", false)
+                            
                             hPlayer = {} 
                             for i = 1, 3 do 
                                 SetScaleformMovieAsNoLongerNeeded(boardType[i])
