@@ -170,15 +170,15 @@ function StartHeist()
     print(player)
     print(selectedEntrance)
 
-    loot = 3
-    approach = 3
+    --loot = 3
+    --approach = 3
     --selectedEntryDisguise = 3 
-    selectedDriver = 1
-    selectedVehicle = 1
-    selectedEntrance = 2
-    selectedHacker = 2
-    selectedBuyer = 3
-    selectedExit = 11
+    --selectedDriver = 1
+    --selectedVehicle = 1
+    --selectedEntrance = 2
+    --selectedHacker = 2
+    --selectedBuyer = 3
+    --selectedExit = 11
 
 
     playerAmount = #hPlayer

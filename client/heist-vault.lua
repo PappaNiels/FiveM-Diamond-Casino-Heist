@@ -481,7 +481,7 @@ local function CutPainting(j)
         end
     end
 
-    TriggerServerEvent("sv:casinoheist:syncLStatus", i, 1.0)
+    TriggerServerEvent("sv:casinoheist:syncLStatus", j, 1.0)
 
     ClearPedTasks(PlayerPedId())
 
@@ -580,9 +580,9 @@ local function VaultGas()
     --}
 
     
-    CreateThread(function()
+    --CreateThread(function()
+    RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
         RequestAnimSet("anim@fidgets@coughs")
-        RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
 
         while not HasAnimSetLoaded("anim@fidgets@coughs") do 
             Wait(0)
@@ -619,7 +619,7 @@ local function VaultGas()
             SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
             SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
         end
-    end)
+    --end)
     
     --sId = GetSoundId()
     CreateThread(function()
@@ -657,12 +657,12 @@ function VaultCheck()
 end
 
 function Vault()
-    local bTake = take
-    loot = 1
+    --local bTake = take
+    --loot = 3
     vaultLayout = 1
     cartLayout = 1
     isInVault = true
-    player = 1--GetCurrentHeistPlayer() -- 1 
+    --player = 1--GetCurrentHeistPlayer() -- 1 
 
     local txt = {
         "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
