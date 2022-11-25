@@ -121,6 +121,7 @@ local function StartKeypress(cb)
         
         while position < 1.0 do
             Wait(0) 
+            HelpMsg("Press ~INPUT_CONTEXT~ to drill the vault door")
             DrawScaleformMovieFullscreen(scaleformDrill, 255, 255, 255, 255, 0)
             DisableControlAction(0, 27, true)
         end
