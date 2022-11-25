@@ -252,3 +252,5 @@ vaultDrillPos = {
     vector3(2505.1, -237.62, -70.425),
     vector3(2504.97, -239.35, -70.425)
 }
+
+--GetInvokingResource()

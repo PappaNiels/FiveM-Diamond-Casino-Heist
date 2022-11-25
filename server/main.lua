@@ -1,4 +1,4 @@
-hPlayer = {}
+hPlayer = {4, 2}
 heistInProgress = false
 
 local approach = 0
@@ -71,10 +71,12 @@ RegisterCommand("join_casinoheist", function(src)
     end
 end, false)
 
-RegisterNetEvent("sv:casinoheist:setHeistLeader", function()
-    if not hPlayer[1] then 
+RegisterNetEvent("sv:casinoheist:setHeistLeader", function(bool)
+    if not hPlayer[1] and bool then 
         hPlayer[1] = source
-        print(source)
+        --print(source)
+    elseif not bool then
+        hPlayer = {}
     else 
         TriggerClientEvent("cl:casinoheist:infoMessage", source, "Someone else is already the heist leader.")
     end
@@ -112,6 +114,10 @@ RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
 end)
 
 RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
+    --if GetInvokingResource() ~= "Diamond-Casino-Heist" then return end 
+    if heistInProgress then return end
+
+
     if not heistInProgress then
         invitedPlayers = {} 
         heistInProgress = true
@@ -140,9 +146,4 @@ RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
     end
 end)
 
-
-print(" _______  __   __  _______    ______   ___   _______  __   __  _______  __    _  ______     _______  _______  _______  ___   __    _  _______    __   __  _______  ___   _______  _______ \n|       ||  | |  ||       |  |      | |   | |   _   ||  |_|  ||       ||  |  | ||      |   |     __||   _   ||       ||   | |  |  | ||       |  |  | |  ||       ||   | |       ||       |\n|_     _||  |_|  ||    ___|  |  __   ||   | |  |_|  ||       ||   _   ||   |_| ||  __   |  |    |   |  |_|  ||  _____||   | |   |_| ||   _   |  |  |_|  ||    ___||   | |  _____||_     _|\n  |   |  |       ||   |___   | |  |  ||   | |       ||       ||  | |  ||       || |  |  |  |    |   |       || |_____ |   | |       ||  | |  |  |       ||   |___ |   | | |_____   |   |  \n  |   |  |   _   ||    ___|  | |__|  ||   | |   _   || || || ||  |_|  ||  _    || |__|  |  |    |   |   _   ||_____  ||   | |  _    ||  |_|  |  |   _   ||    ___||   | |_____  |  |   |  \n  |   |  |  | |  ||   |___   |       ||   | |  | |  || ||_|| ||       || | |   ||       |  |    |__ |  | |  | _____| ||   | | | |   ||       |  |  | |  ||   |___ |   |  _____| |  |   |  \n  |___|  |__| |__||_______|  |______| |___| |__| |__||_|   |_||_______||_|  |__||______|   |_______||__| |__||_______||___| |_|  |__||_______|  |__| |__||_______||___| |_______|  |___|  ")
-
-                                                                                                                                                                                                                      
-                                                                                                                                                                                                                      
-                                                                                                                                                                                                                      
+--print(" _______  __   __  _______    ______   ___   _______  __   __  _______  __    _  ______     _______  _______  _______  ___   __    _  _______    __   __  _______  ___   _______  _______ \n|       ||  | |  ||       |  |      | |   | |   _   ||  |_|  ||       ||  |  | ||      |   |     __||   _   ||       ||   | |  |  | ||       |  |  | |  ||       ||   | |       ||       |\n|_     _||  |_|  ||    ___|  |  __   ||   | |  |_|  ||       ||   _   ||   |_| ||  __   |  |    |   |  |_|  ||  _____||   | |   |_| ||   _   |  |  |_|  ||    ___||   | |  _____||_     _|\n  |   |  |       ||   |___   | |  |  ||   | |       ||       ||  | |  ||       || |  |  |  |    |   |       || |_____ |   | |       ||  | |  |  |       ||   |___ |   | | |_____   |   |  \n  |   |  |   _   ||    ___|  | |__|  ||   | |   _   || || || ||  |_|  ||  _    || |__|  |  |    |   |   _   ||_____  ||   | |  _    ||  |_|  |  |   _   ||    ___||   | |_____  |  |   |  \n  |   |  |  | |  ||   |___   |       ||   | |  | |  || ||_|| ||       || | |   ||       |  |    |__ |  | |  | _____| ||   | | | |   ||       |  |  | |  ||   |___ |   |  _____| |  |   |  \n  |___|  |__| |__||_______|  |______| |___| |__| |__||_|   |_||_______||_|  |__||______|   |_______||__| |__||_______||___| |_|  |__||_______|  |__| |__||_______||___| |_______|  |___|  ")

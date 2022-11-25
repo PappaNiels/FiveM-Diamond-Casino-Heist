@@ -8,7 +8,7 @@ gunman = {
 }
 
 driver = {
-    -- Person, Skill, Index, Image Cut
+    -- Person, Skill, Image, Cut
     {"Karim Denz", "Poor", 1, 0.05},
     {"Zach Nelson", "Good", 4, 0.06},
     {"Taliana Martinez", "Good", 2, 0.07},
@@ -243,8 +243,8 @@ availableVehicles = {
             {"kanjo", "Kanjo"},
             {"sentinel3", "Sentinal Classic"}
         },
-        "rancherxl",
-        "regina"
+        "rancherxl", -- Departure Vehicle  
+        "regina" -- Switch Vehicle
     },
     [2] = {
         {
@@ -284,7 +284,7 @@ availableVehicles = {
             {"outlaw", "Outlaw"},
             {"everon", "Everon"}
         },
-        "kamacho", -- Departure Vehicle   
-        "mesa3"  -- Switch Vehicle
+        "kamacho",  
+        "mesa3"  
     },
 }
