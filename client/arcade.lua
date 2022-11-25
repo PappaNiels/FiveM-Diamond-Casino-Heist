@@ -749,13 +749,13 @@ local function InsertEntry()
         imageOrder[3][approach][2][i] = 0
     end
 
-    if imageOrderNum[3][13] == 1 then
+    if imageOrderNum[3][13] == 2 then
         imageOrder[3][2][2] = {11, 1}
-    elseif imageOrderNum[3][13] == 2 then
+    elseif imageOrderNum[3][13] == 4 then
         imageOrder[3][2][2] = {11, 1}
     elseif imageOrderNum[3][13] == 3 then
         imageOrder[3][2][2] = {6}
-    elseif imageOrderNum[3][13] == 4 then
+    elseif imageOrderNum[3][13] == 5 then
         imageOrder[3][2][2] = {2}
     end
 
@@ -1333,14 +1333,18 @@ local function ExecuteButtonFunction(i)
             if #hPlayer < 2 then 
                 InfoMsg("You need at least two people the play the Diamond Casino Heist. Invite someone for you to help.")
             elseif CheckTodoList() then
-                selectedEntrance = imageOrder[3][approach][2][imageOrderNum[3][2]]
-                selectedExit = imageOrder[3][approach][3][imageOrderNum[3][3]]
+                selectedEntrance = imageOrder[3][approach][2][imageOrderNum[3][2] - 1]
+                selectedExit = imageOrder[3][approach][3][imageOrderNum[3][3] - 1]
                 selectedBuyer = imageOrder[3][approach][4][imageOrderNum[3][4] - 1]
-                
+                selectedLoadout = selectedLoadout - 1
+                selectedVehicle = selectedVehicle - 1
+
                 if approach == 2 then 
                     selectedEntryDisguise = imageOrder[3][approach][13][imageOrderNum[3][13] - 1]
                     selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14] - 1]
                 end
+
+                print("Heist Leader " .. hPlayer[1] .. "\n", "Approach " .. approach .. "\n", "Loot " .. loot  .. "\n", "Cut " .. playerCut[#hPlayer][1]  .. "\n", "Gunman " .. selectedGunman   .. "\n", "Loadout " .. selectedLoadout  .. "\n", "Driver " .. selectedDriver  .. "\n", "Vehicle " .. selectedVehicle  .. "\n", "Hacker " .. selectedHacker  .. "\n", "Keycard " .. selectedKeycard  .. "\n","Entrance" .. selectedEntrance  .. "\n", "Exit " .. selectedExit  .. "\n", "Buyer " .. selectedBuyer  .. "\n", "Entry Disguise " ..  selectedEntryDisguise  .. "\n", "Exit Disguise " .. selectedExitDisguise  .. "\n", "Clean Vehicle " ..  tostring(boughtCleanVehicle)  .. "\n", "Decoy " .. tostring(boughtDecoy))
 
                 TriggerServerEvent("sv:casinoheist:startHeist", {hPlayer, approach, loot, playerCut[#hPlayer], selectedGunman, selectedLoadout, selectedDriver, selectedVehicle, selectedHacker, selectedKeycard, selectedEntrance, selectedExit, selectedBuyer, selectedEntryDisguise, selectedExitDisguise, boughtCleanVehicle, boughtDecoy})
                 heistInProgress = true
@@ -1749,7 +1753,7 @@ CreateThread(function()
                             boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
                             boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
                             boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
-                            hPlayer = {GetPlayerServerId(PlayerId())} 
+                            --hPlayer = {GetPlayerServerId(PlayerId())} 
 
                             while not HasScaleformMovieLoaded(boardType[3]) do 
                                 Wait(10)
