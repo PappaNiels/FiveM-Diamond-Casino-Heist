@@ -655,7 +655,7 @@ function SecurityLobby(blip, old)
             Wait(5)
 
             if not isSwiping then 
-                SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
+                SubtitleMsg("Go to one of the ~g~keypads~s~.", 120)
 
                 local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - keypads[4][1]), #(GetEntityCoords(PlayerPedId()) - keypads[4][2])
                 
