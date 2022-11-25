@@ -154,7 +154,7 @@ local function DistanceCasino()
             SubtitleMsg("Go to the ~y~Casino.", 210)
 
             if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
-                if keypads[1][selectedEntrance] ~= 0 and approach ~= 2 then 
+                if keypads[1][selectedEntrance] ~= 0 and approach ~= 2 and selectedEntrance ~= 2 then 
                     KeycardThread()
                 else 
                     TeleportThread()
@@ -168,13 +168,20 @@ end
 function StartHeist()
     player = GetCurrentHeistPlayer()
     print(player)
-    
-    --approach = 2
+    print(selectedEntrance)
+
+    loot = 3
+    approach = 3
     --selectedEntryDisguise = 3 
-    --selectedDriver = 1
-    --selectedVehicle = 1
-    --selectedEntrance = 6
-    --playerAmount = #hPlayer
+    selectedDriver = 1
+    selectedVehicle = 1
+    selectedEntrance = 2
+    selectedHacker = 2
+    selectedBuyer = 3
+    selectedExit = 11
+
+
+    playerAmount = #hPlayer
 
     if player == 1 then 
         if loot == 3 then 
