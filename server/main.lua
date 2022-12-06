@@ -1,4 +1,4 @@
-hPlayer = {4, 2}
+hPlayer = {1}
 heistInProgress = false
 
 local approach = 0

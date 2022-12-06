@@ -147,22 +147,37 @@ local function SetupCargobob()
 end
 
 local function DistanceCasino()
-    CreateThread(function()
-        while true do 
-            Wait(200)
-
-            SubtitleMsg("Go to the ~y~Casino.", 210)
-
-            if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
-                if keypads[1][selectedEntrance] ~= 0 and approach ~= 2 and selectedEntrance ~= 2 then 
-                    KeycardThread()
-                else 
+    if selectedEntrance == 7 then 
+        CreateThread(function()
+            while true do 
+                Wait(200)
+    
+                SubtitleMsg("Go to the ~y~Sewer.", 210)
+    
+                if #(GetEntityCoords(PlayerPedId()) - vector3(1031.04, -268.99, 50.85)) < 50 then 
                     TeleportThread()
-                end
-                break 
-            end 
-        end
-    end)
+                    break 
+                end 
+            end
+        end)
+    else
+        CreateThread(function()
+            while true do 
+                Wait(200)
+    
+                SubtitleMsg("Go to the ~y~Casino.", 210)
+    
+                if #(GetEntityCoords(PlayerPedId()) - vector3(957.67, 42.7, 113.3)) < 250 then 
+                    if keypads[1][selectedEntrance] ~= 0 and approach ~= 2 and selectedEntrance ~= 2 then 
+                        KeycardThread()
+                    else 
+                        TeleportThread()
+                    end
+                    break 
+                end 
+            end
+        end)
+    end
 end
 
 function StartHeist()
@@ -337,8 +352,6 @@ function EnterCasino()
     RemoveBlip(blip)
     Wait(2000)
 
-    DoScreenFadeIn(500)
-    
     if selectedEntrance == 2 then 
         MainEntry()
     elseif selectedEntrance == 4 or selectedEntrance == 9 then 

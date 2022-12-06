@@ -225,7 +225,7 @@ slideDoors = {
     vector3(2514.696, -253.6722, -71.74234)
 }
 
-regularVaultDoorCoords = vector3(2504.97, -240.31, -73.691)
+regularVaultDoorCoords = vector3(2504.97, -240.31, -72.205)
 aggressiveVaultDoorCoords = {
     vector3(2504.97, -240.31, -73.691), -- Door
     vector3(2504.97, -240.31, -75.339), -- Support Thingy

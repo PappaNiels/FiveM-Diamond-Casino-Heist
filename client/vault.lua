@@ -607,30 +607,30 @@ CreateThread(function()
     end
 end)
 
-CreateThread(function()
-    while true do 
-        Wait(0)
-        if isInVault and loot == 3 then 
-            for i = 1, #paintingCoords do 
-                local distance = #(GetEntityCoords(PlayerPedId()) - paintingCoords[i])
-                if distance < 2 and not statusArt[i] then 
-                    HelpMsg("Press ~INPUT_CONTEXT~ to cut the painting.", 1000)
-                    if IsControlPressed(0, 38) then 
-                        print("catched e")
-                        CutPainting(i)
-                        statusArt[i] = true
-                    else 
-                        Wait(5)
-                    end
-                else 
-                    Wait(7)
-                end
-            end
-        else 
-            Wait(5000)
-        end
-    end
-end)
+--CreateThread(function()
+--    while true do 
+--        Wait(0)
+--        if isInVault and loot == 3 then 
+--            for i = 1, #paintingCoords do 
+--                local distance = #(GetEntityCoords(PlayerPedId()) - paintingCoords[i])
+--                if distance < 2 and not statusArt[i] then 
+--                    HelpMsg("Press ~INPUT_CONTEXT~ to cut the painting.", 1000)
+--                    if IsControlPressed(0, 38) then 
+--                        print("catched e")
+--                        CutPainting(i)
+--                        statusArt[i] = true
+--                    else 
+--                        Wait(5)
+--                    end
+--                else 
+--                    Wait(7)
+--                end
+--            end
+--        else 
+--            Wait(5000)
+--        end
+--    end
+--end)
 
 CreateThread(function()
     while true do 

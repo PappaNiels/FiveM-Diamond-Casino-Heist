@@ -657,7 +657,7 @@ function VaultCheck()
 end
 
 function Vault()
-    --local bTake = take
+    local bTake = take
     --loot = 3
     vaultLayout = 1
     cartLayout = 1

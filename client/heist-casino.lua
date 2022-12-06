@@ -1,4 +1,5 @@
 lvlFour = 0
+vaultObjs = {}
 
 local keycardObj = 0
 local blip = 0
@@ -10,7 +11,6 @@ local plantBombs = false
 local leftBombs = false                        
 local rightBombs = false                        
 
-local vaultObjs = {}
 local bombObjs = {}
 local blips = {}
 local vStatus = {false, false}
@@ -316,6 +316,8 @@ local function SetupVault()
     if approach == 1 or (approach == 2 and selectedEntryDisguise ~= 3) then 
         LoadModel("ch_prop_ch_vaultdoor01x")
         vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
+        SetEntityHeading(vaultObjs[2], 90.0)
+        FreezeEntityPosition(vaultObjs[2], true)
     elseif approach == 3 then 
         LoadModel("ch_des_heist3_vault_01")
         LoadModel("ch_des_heist3_vault_02")
@@ -398,15 +400,13 @@ RegisterCommand("test_exp", VaultExplosionSetup, false)
 
 local function PlantVaultBombs(num)
     local animDict = ""
-    local bag = "hei_p_m_bag_var22_arm_s"
     local bomb = "ch_prop_ch_explosive_01a"
     --local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
     local camNum = 4 + num 
-    
-    LoadModel(bomb)
-    LoadModel(bag)
 
-    plantBombs = true
+    LoadModel(bomb)
+
+    isBusy = true
 
     if DoesEntityExist(bombObjs[1]) and num == 1 then 
         bombObjs[4] = bombObjs[1]
@@ -430,9 +430,10 @@ local function PlantVaultBombs(num)
     end
 
     LoadAnim(animDict)
-
-    local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
     
+    local cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    RenderScriptCams(true, false, 0, true, false)
+
     for i = 2, 3 do 
         SetEntityVisible(bombObjs[i], false, false)
     end
@@ -444,35 +445,35 @@ local function PlantVaultBombs(num)
         NetworkAddEntityToSynchronisedScene(bombObjs[2], bombAnims[2][i], animDict, bombAnims[1][num][i][3], 1.0, -1.0, 114886080)
         if num == 2 then 
             NetworkAddEntityToSynchronisedScene(bombObjs[3], bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
-            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][5], 1.0, -1.0, 114886080)
-        else
-            NetworkAddEntityToSynchronisedScene(bagObj, bombAnims[2][i], animDict, bombAnims[1][num][i][4], 1.0, -1.0, 114886080)
         end
     end
-
+    PlayCamAnim(cam, bombAnims[1][num][1][5], animDict, 2504.97, -240.2, -70.20, 0.0, 0.0, 0.0, false, 2)
     NetworkStartSynchronisedScene(bombAnims[2][1])
     Wait(2000)
+    PlayCamAnim(cam, bombAnims[1][num][2][5], animDict, 2504.97, -240.2, -70.20, 0.0, 0.0, 0.0, false, 2)
     NetworkStartSynchronisedScene(bombAnims[2][2])
     
     local x = 0
     local numerics = {"first", "second", "last"}
-
+    
     while true do 
         Wait(10)
         
         HelpMsg("Press ~INPUT_ATTACK~ to plant the ".. numerics[x + 1] .." explosive")
         if IsControlPressed(0, 24) then 
+            PlayCamAnim(cam, bombAnims[1][num][3 + x][5], animDict, 2504.97, -240.2, -70.20, 0.0, 0.0, 0.0, false, 2)
             NetworkStartSynchronisedScene(bombAnims[2][3 + x])
             FreezeEntityPosition(bombObjs[x + 1])
             SetEntityVisible(bombObjs[x + 2], true, true)
-
+            
             Wait(2000)
             x = x + 1
-
+            
             if x == (1 + num) then 
                 break
             end
-
+            
+            PlayCamAnim(cam, bombAnims[1][num][2][5], animDict, 2504.97, -240.2, -70.20, 0.0, 0.0, 0.0, false, 2)
             NetworkStartSynchronisedScene(bombAnims[2][2])
         end
     end
@@ -481,7 +482,8 @@ local function PlantVaultBombs(num)
     Wait(1000)
     ClearPedTasks(PlayerPedId())
     DeleteEntity(bagObj)
-    plantBombs = false
+    DestroyCam(cam, false)
+    isBusy = false
 
     if num == 1 then 
         RemoveBlip(blips[1])
@@ -493,7 +495,8 @@ local function PlantVaultBombs(num)
 end
 
 function RoofTerraceEntry()
-
+    DoScreenFadeIn(500)
+    
     CreateThread(function()
         while true do 
             Wait(0)
@@ -503,6 +506,7 @@ function RoofTerraceEntry()
 end
 
 function HeliPadEntry()
+    DoScreenFadeIn(500)
 
     CreateThread(function()
         while true do 
@@ -513,17 +517,15 @@ function HeliPadEntry()
 end
 
 function SewerEntry()
-
-end
-
-function TunnelEntry()
-
+    DoScreenFadeIn(500)
 end
 
 function MainEntry()
     if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
         StartCutscene(0)
+
+        DoScreenFadeIn(500)
 
         while not DoesCutsceneEntityExist("MP_3") do 
             Wait(10)
@@ -595,6 +597,10 @@ function MainEntry()
 end
     
 function Basement()
+    if selectedEntrance == 11 and selectedEntrance == 1 then 
+        DoScreenFadeIn(500)
+    end
+
     RemoveAllBlips()
     local sprite = {63, 743}
     
@@ -631,7 +637,10 @@ function Basement()
         end
     end)
 end
-    
+ 
+swiped = false
+sync = false
+
 function SecurityLobby(blip, old)
     --RemoveAllBlips()
     if blip then 
@@ -646,8 +655,8 @@ function SecurityLobby(blip, old)
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
     local animNameOne = keycardSyncAnims[1][1][4][1]
     local animNameTwo = keycardSyncAnims[1][2][4][1]
-    local swiped = false
-    local sync = false
+    --local swiped = false
+    --local sync = false
     local x = 0
 
     CreateThread(function()
@@ -708,7 +717,7 @@ function SecurityLobby(blip, old)
                 if sync and swiped then 
                     if isSwiping then 
                         NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
-                        Wait(2000)
+                        Wait(1000)
                         ClearPedTasks(PlayerPedId())
                         DeleteEntity(keycardObj)
                     end 
@@ -736,7 +745,6 @@ end
 function FirstMantrap()
     blips[1] = AddBlipForCoord(mantrapCoords)
     SetBlipColour(blips[1], 5)
-
 
     CreateThread(function()
         while true do 
@@ -790,16 +798,17 @@ function FirstMantrap()
                     --SetVaultObjs()
                     Vault()
                     break
-                elseif IsNotClose(vaultEntryDoorCoords, 7) then 
+                elseif IsNotClose(vaultEntryDoorCoords, 6) then 
                     SubtitleMsg("Wait for your team members to reach the vault door", 110)
                 else
-                    EnableMantrapDoors(1, 1)
                     if not DoesEntityExist(vaultObjs[1]) then 
                         vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
                         SetEntityVisible(vaultObjs[1], false, false)
                     end
                     
                     --SetVaultObjs()
+                    Wait(1000)
+                    EnableMantrapDoors(1, 1)
 
                     VaultDoor()
                     break
@@ -830,12 +839,12 @@ function VaultDoor()
     end
 
     CreateThread(function()
-        while not vStatus[1] and not vStatus[2] do 
+        while not vStatus[1] or not vStatus[2] do 
             Wait(5)
             
             SubtitleMsg(aTxt, 110)
 
-            if not plantBombs then 
+            if not isBusy then 
                 
                 if not vStatus[1] then 
                     distanceL = #(GetEntityCoords(PlayerPedId()) - vaultCheckpointBlips[1])
@@ -884,6 +893,7 @@ end)
 
 RegisterNetEvent("cl:casinoheist:syncVault", function(key)
     RemoveBlip(blips[key])
+    print("Removed", key)
     vStatus[key] = true 
 
     if vStatus[1] and vStatus[2] then 
@@ -924,8 +934,19 @@ end, false)
 
 RegisterCommand("test_basement", FirstMantrap, false)
 
+RegisterCommand("skip_swipe", function()
+    swiped = true
+    sync = true
+end, false)
+
 RegisterCommand("test_cut_agg", function()
     MainEntry()
+end, false)
+
+RegisterCommand("test_vp", function()
+    vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
+    SetEntityHeading(vaultObjs[2], 90.0)
+    FreezeEntityPosition(vaultObjs[2], true)
 end, false)
 
 RegisterNetEvent("cl:testt", function()

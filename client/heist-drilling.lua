@@ -119,9 +119,15 @@ local function StartKeypress(cb)
         CallScaleformMovieMethodWithNumber(scaleformDrill, "SET_NUM_DISCS", 6.0, -1.0, -1.0, -1.0, -1.0)
         position = 0.115
         
+        CreateThread(function()
+            while position < 0.3 do 
+                Wait(4)
+                HelpMsg("Press ~INPUT_CONTEXT~ to drill the vault door")
+            end
+        end)
+
         while position < 1.0 do
             Wait(0) 
-            HelpMsg("Press ~INPUT_CONTEXT~ to drill the vault door")
             DrawScaleformMovieFullscreen(scaleformDrill, 255, 255, 255, 255, 0)
             DisableControlAction(0, 27, true)
         end
@@ -228,6 +234,8 @@ function StartDrilling(k)
     --vaultObj = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords + vector3(0.0, 0.0, 1.48), false, false, true)
     --SetEntityHeading(vaultObj, 90.0)
 
+    isBusy = true
+
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
     bagObj = CreateObject(GetHashKey("hei_p_m_bag_var22_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
@@ -240,12 +248,12 @@ function StartDrilling(k)
 
     for i = 1, #drillAnims[1] do 
         if i == 2 or i == 3 or i == 4 or i == 5 then 
-            drillAnims[2][i] = NetworkCreateSynchronisedScene(syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, false, true, 0, 0.0, 1.0)
+            drillAnims[2][i] = NetworkCreateSynchronisedScene(syncPos, GetEntityRotation(vaultObjs[2]) + vector3(0.0, 0.0, 180.0), 2, false, true, 0, 0.0, 1.0)
             NetworkAddPedToSynchronisedScene(PlayerPedId(), drillAnims[2][i], animDict, drillAnims[1][i][1], 4.0, -4.0, 1033, 0, 1000.0, 0)
             NetworkAddEntityToSynchronisedScene(drillObj, drillAnims[2][i], animDict, drillAnims[1][i][2], 1.0, -1.0, 114886080)
             NetworkAddEntityToSynchronisedScene(bagObj, drillAnims[2][i], animDict, drillAnims[1][i][3], 1.0, -1.0, 114886080)
         else
-            drillAnims[2][i] = NetworkCreateSynchronisedScene(syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), 2, true, false, 0, 0.0, 1.0)
+            drillAnims[2][i] = NetworkCreateSynchronisedScene(syncPos, GetEntityRotation(vaultObjs[2]) + vector3(0.0, 0.0, 180.0), 2, true, false, 0, 0.0, 1.0)
             NetworkAddPedToSynchronisedScene(PlayerPedId(), drillAnims[2][i], animDict, drillAnims[1][i][1], 4.0, -1.5, 13, 16, 1000.0, 0)
             NetworkAddEntityToSynchronisedScene(drillObj, drillAnims[2][i], animDict, drillAnims[1][i][2], 1000.0, -1000.0, 0)
             NetworkAddEntityToSynchronisedScene(bagObj, drillAnims[2][i], animDict, drillAnims[1][i][3], 1000.0, -1000.0, 0)
@@ -258,7 +266,7 @@ function StartDrilling(k)
        
     RenderScriptCams(true, false, 0, true, false)
 
-    PlayCamAnim(cam, drillAnims[1][1][4], animDict, syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), false, 2)
+    PlayCamAnim(cam, drillAnims[1][1][4], animDict, syncPos, GetEntityRotation(vaultObjs[2]) + vector3(0.0, 0.0, 180.0), false, 2)
     NetworkStartSynchronisedScene(drillAnims[2][1])
     Wait(GetAnimDuration(animDict, "intro") * 1000)
     
@@ -273,15 +281,16 @@ function StartDrilling(k)
     sparksFx = StartParticleFxLoopedAtCoord("scr_ch_finale_laser_sparks", coords, rot, 1.0, false, false, false, true)
     SetParticleFxLoopedEvolution(sparks, "power", 0.0, false)
     
-    PlayCamAnim(cam, drillAnims[1][2][4], animDict, syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), false, 2)
+    PlayCamAnim(cam, drillAnims[1][2][4], animDict, syncPos, GetEntityRotation(vaultObjs[2]) + vector3(0.0, 0.0, 180.0), false, 2)
     NetworkStartSynchronisedScene(drillAnims[2][2])
     
     StartKeypress(function(bool) 
         if bool then 
             local v = 0
             
-            PlayCamAnim(cam, drillAnims[1][7][4], animDict, syncPos, GetEntityRotation(vaultObj) + vector3(0.0, 0.0, 180.0), false, 2)
+            PlayCamAnim(cam, drillAnims[1][7][4], animDict, syncPos, GetEntityRotation(vaultObjs[2]) + vector3(0.0, 0.0, 180.0), false, 2)
             NetworkStartSynchronisedScene(drillAnims[2][7])
+            RenderScriptCams(false, true, 2000, true, false)
             DestroyCam(cam)
 
             if k == 1 then 
@@ -295,6 +304,8 @@ function StartDrilling(k)
 
             DeleteEntity(drillObj)
             DeleteEntity(bagObj)
+
+            isBusy = false
         end
     end)
 end

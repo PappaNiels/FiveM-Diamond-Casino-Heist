@@ -1330,7 +1330,7 @@ local function ExecuteButtonFunction(i)
                 boughtCleanVehicle = true
             end
         elseif i == 12 then -- Start Heist
-            if #hPlayer < 2 then 
+            if #hPlayer < 1 then 
                 InfoMsg("You need at least two people the play the Diamond Casino Heist. Invite someone for you to help.")
             elseif CheckTodoList() then
                 selectedEntrance = imageOrder[3][approach][2][imageOrderNum[3][2] - 1]
@@ -1753,7 +1753,8 @@ CreateThread(function()
                             boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
                             boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
                             boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
-                            --hPlayer = {GetPlayerServerId(PlayerId())} 
+                            hPlayer = {GetPlayerServerId(PlayerId())} 
+                            print(hPlayer[1])
 
                             while not HasScaleformMovieLoaded(boardType[3]) do 
                                 Wait(10)
