@@ -325,8 +325,12 @@ local function SetupVault()
 
         vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), aggressiveVaultDoorCoords[1], false, false, true)
         vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[2], false, false, true)
-        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), aggressiveVaultDoorCoords[3], false, false, true)
+        vaultObjs[4] = CreateObject(GetHashKey("ch_des_heist3_vault_end"), aggressiveVaultDoorCoords[3], false, false, true)
         
+        for i = 2, 4 do 
+            SetEntityHeading(vaultObjs[i], 90.0)
+        end
+
         SetEntityVisible(vaultObjs[3], false, false)
         SetEntityCollision(vaultObjs[3], false, true)
     end
@@ -784,9 +788,9 @@ function FirstMantrap()
 
                     local arr = {}
 
-                    if #playerAmount == 2 then 
+                    if playerAmount == 2 then 
                         arr = {"MP_3", "MP_4"}
-                    elseif #playerAmount == 3 then 
+                    elseif playerAmount == 3 then 
                         arr = {"MP_4"}
                     end
 
