@@ -328,7 +328,7 @@ local function GrabLoot(i)
     end)
     
     while animTime < 1.0 do 
-        Wait(10)
+        Wait(GetFrameTime())
 
         if IsControlPressed(0, 237) and not grabbing then 
             waiting = false
@@ -337,7 +337,7 @@ local function GrabLoot(i)
             a = NetworkCreateSynchronisedScene(cartCoords, GetEntityRotation(takeObjs[i]), 2, true, false, 1.0, animTime, 1.0)
             NetworkAddEntityToSynchronisedScene(bagObj, a, animDict, "bag_grab", 1000.0, -1000.0, 0)
             ForceEntityAiAndAnimationUpdate(bagObj)
-            NetworkAddPedToSynchronisedScene(PlayerPedId(), a, animDict, "grab", 4.0, -4.0, 13, 16, 1000.0, 0)
+            NetworkAddPedToSynchronisedScene(PlayerPedId(), a, animDict, "grab", 8.0, -8.0, 13, 16, 1000.0, 0)
             NetworkAddEntityToSynchronisedScene(takeObjs[i], a, animDict, "cart_cash_dissapear", 1000.0, -4.0, 1)
             ForceEntityAiAndAnimationUpdate(takeObjs[i])
             NetworkStartSynchronisedScene(a)
@@ -354,7 +354,7 @@ local function GrabLoot(i)
             
             SetEntityVisible(boxObj, false, false)            
             
-            Wait(10)
+            --Wait(10)
 
             SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
             animTime = GetSynchronizedScenePhase(NetworkGetLocalSceneFromNetworkId(a))
@@ -393,6 +393,7 @@ local function GrabLoot(i)
     NetworkStartSynchronisedScene(exit)
     RenderScriptCams(false, true, 2000, true, false)
     TriggerServerEvent("sv:casinoheist:syncLStatus", i, animTime)
+    take = take + 1
 
     Wait(2000)
 
@@ -404,6 +405,7 @@ local function GrabLoot(i)
 end
 
 local function CutPainting(j)
+    DestroyAllCams()
     local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
     local blade = "w_me_switchblade"
     local bag = "hei_p_m_bag_var22_arm_s"
@@ -425,9 +427,10 @@ local function CutPainting(j)
     LoadModel(blade)
     LoadModel(bag)
     
-    bladeObj = CreateObject(GetHashKey(blade), GetEntityCoords(PlayerPedId()), true, false, false)
-    bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
-    cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    local bladeObj = CreateObject(GetHashKey(blade), GetEntityCoords(PlayerPedId()), true, false, false)
+    local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
+    local cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    SetCamCoord(cam, GetEntityCoords(PlayerPedId()))
 
     for i = 1, #paintingAnims[1] do 
         if i == 2 or i == 4 or i == 6 --[[or i == 7 or i == 8]] then 
@@ -445,18 +448,20 @@ local function CutPainting(j)
         end
     end
 
-    RenderScriptCams(true, true, 2500, true, false)
-
-    PlayCamAnim(cam, paintingAnims[1][1][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
+    
     NetworkStartSynchronisedScene(paintingAnims[2][1])
+    PlayCamAnim(cam, paintingAnims[1][1][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
+    RenderScriptCams(true, true, 2500, true, false)
     Wait(2000)
     PlayCamAnim(cam, paintingAnims[1][2][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
     NetworkStartSynchronisedScene(paintingAnims[2][2])
     
     while x < 11 and not quit do 
-        Wait(10)
+        Wait(GetFrameTime())
     
         if x == 10 then 
+            SetCamCoord(cam, GetEntityCoords(PlayerPedId()) + GetEntityOffset(PlayerPedId(), true))
+            PointCamAtEntity(cam, PlayerPedId(), 1.0, 1.0, 0.0)
             Wait(GetAnimDuration(animDict, paintingAnims[1][9][1]) * 1000)
             RenderScriptCams(false, true, 2000, true, false)
             y = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, true, false, 1.0, 1.0, 0.0)
@@ -483,11 +488,13 @@ local function CutPainting(j)
 
     TriggerServerEvent("sv:casinoheist:syncLStatus", j, 1.0)
 
+    take = take + 1
+
     ClearPedTasks(PlayerPedId())
 
     DeleteEntity(bagObj)
     DeleteEntity(bladeObj)
-    DestroyCam(cam)
+    DestroyAllCams()
     isBusy = false
 end
 
@@ -592,8 +599,9 @@ local function VaultGas()
 
         if not HasPtfxAssetLoaded("scr_ch_finale") then 
             RequestNamedPtfxAsset("scr_ch_finale")
-        end
 
+            repeat Wait(10) until HasPtfxAssetLoaded("scr_ch_finale")
+        end
 
         for i = 1, 3 do 
             UseParticleFxAsset("scr_ch_finale")
@@ -649,7 +657,7 @@ RegisterCommand("test_gas", VaultGas, false)
 function VaultCheck()
     for i = 1, #hPlayer do 
         if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords) > 7 then 
-            VaultGas()
+            CreateThread(VaultGas)
             alarmTriggered = 1
             return 
         end
@@ -658,11 +666,12 @@ end
 
 function Vault()
     local bTake = take
-    --loot = 3
+    loot = 3
+    playerAmount = 2
     vaultLayout = 1
     cartLayout = 1
     isInVault = true
-    --player = 1--GetCurrentHeistPlayer() -- 1 
+    player = 1--GetCurrentHeistPlayer() -- 1 
 
     local txt = {
         "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
@@ -692,7 +701,7 @@ function Vault()
     if loot == 3 then 
         CreateThread(function()
             while true do 
-                Wait(5)
+                Wait(GetFrameTime())
 
                 if not isBusy and isInVault then 
                     for k, v in pairs(artCabinets) do 
@@ -716,7 +725,7 @@ function Vault()
     elseif loot == 1 then 
         CreateThread(function()
             while true do 
-                Wait(5)
+                Wait(GetFrameTime())
                 if not isBusy and isInVault then
                     for k, v in pairs(carts[cartLayout]) do 
                         if status[1][k] < 1.0 then 
@@ -740,7 +749,7 @@ function Vault()
 
     CreateThread(function()
         while true do 
-            Wait(5)
+            Wait(GetFrameTime())
 
             if not isBusy and isInVault then 
                 for k, v in pairs(keypads[3]) do
@@ -768,23 +777,24 @@ function Vault()
             
             if take > bTake then 
                 SubtitleMsg("Continue ~g~looting~s~ or leave the ~y~vault. ", 1100)
+                
+                local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
+    
+                if not IsNotClose(vaultEntryDoorCoords, 7) then
+                    print("Distance " .. distance)
+                    isInVault = false 
+                    isBusy = true 
+                    showTimer = false
+                    VaultLobby(true, false)
+    
+                    break
+                elseif distance < 7 then 
+                    isInVault = false 
+                else
+                    isInVault = true
+                end
             else
                 SubtitleMsg("Grab the ~g~loot.", 1100)
-            end
-
-            local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
-
-            if not IsNotClose(vaultEntryDoorCoords, 7) then
-                isInVault = false 
-                isBusy = true 
-                showTimer = false
-                VaultLobby(true, false)
-
-                break
-            elseif distance < 7 then 
-                isInVault = false 
-            else
-                isInVault = true
             end
         end
     end)
