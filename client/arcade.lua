@@ -1549,7 +1549,7 @@ RegisterNetEvent("cl:casinoheist:readyUp", hfdsjkfh)
 local function CamSettings()
     CreateThread(function()
         while camIsUsed do 
-            Wait(0)
+            Wait(GetFrameTime())
 
             DisableAllControlActions(2)
             SetPauseMenuActive(false) 
@@ -1560,7 +1560,7 @@ end
 local function FocusThread()
     CreateThread(function()
         while isInGarage and boardUsing == 0 do 
-            Wait(0)
+            Wait(GetFrameTime())
 
             for i = 1, boards do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - boardCoords[i])
@@ -1587,7 +1587,7 @@ local function ScaleformThread()
 
     CreateThread(function()
         while isInGarage do 
-            Wait(0)
+            Wait(GetFrameTime())
 
             DrawScaleformMovie_3dSolid(boardType[1], 2713.3, -366.2, -54.23418, 0.0, 0.0, camHeading[1], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
             
@@ -1726,7 +1726,7 @@ end
 
 CreateThread(function()
     while true do 
-        Wait(0)
+        Wait(GetFrameTime())
         if not heistInProgress then 
             if not isInGarage then 
                 local distance = #(GetEntityCoords(PlayerPedId()) - vector3(759.08, -816.05, 25.3))

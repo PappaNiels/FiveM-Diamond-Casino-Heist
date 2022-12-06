@@ -335,7 +335,7 @@ function EndScreen()
     
     CreateThread(function()
         while draw do 
-            Wait(0)
+            Wait(GetFrameTime())
 
             DisableAllControlActions(0)
             DrawScaleformMovieFullscreenMasked(endScreen[1], endScreen[2], 255, 255, 255, 255)

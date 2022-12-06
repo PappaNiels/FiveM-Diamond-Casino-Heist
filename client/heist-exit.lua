@@ -22,7 +22,7 @@ function VaultLobby(blip, old)
 
     CreateThread(function()
         while true do 
-            Wait(5)
+            Wait(GetFrameTime())
 
             if not isSwiping then 
                 SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
@@ -39,8 +39,6 @@ function VaultLobby(blip, old)
                         end
                         isSwiping = true
                         break
-                    else 
-                        Wait(10)
                     end
                 else 
                     Wait(100)

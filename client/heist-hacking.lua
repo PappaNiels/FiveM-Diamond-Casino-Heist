@@ -262,7 +262,7 @@ function StartFingerprintHack(cb)
     PlaySoundFrontend(-1, "Startup_Sequence", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
     
     while GetBinkMovieTime(introBink) <= 99 do 
-        Wait(0)
+        Wait(GetFrameTime())
         DrawBinkMovie(introBink, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
     end
     
@@ -275,7 +275,7 @@ function StartFingerprintHack(cb)
     
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do
-            Wait(3)
+            Wait(GetFrameTime())
             
             DrawSpriteCut("mphackinggamebg", "bg", 0.5, 0.5, 1920.0, 1920.0, 255)
             DrawSpriteCut("mphackinggamewin", "tech_3_0", 0.090, 0.489, 980.0, 1000.0, 255)
@@ -351,7 +351,7 @@ function StartFingerprintHack(cb)
             PlaySoundFrontend(-1, "Hack_Success", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
             
             while GetBinkMovieTime(successBink) <= 99 do 
-                Wait(0)
+                Wait(GetFrameTime())
                 DrawBinkMovie(successBink, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
             end
             
@@ -371,7 +371,7 @@ function StartFingerprintHack(cb)
             PlaySoundFrontend(-1, "Hack_Failed", "DLC_H3_Cas_Finger_Minigame_Sounds", true)
             
             while GetBinkMovieTime(failBink) <= 99 do 
-                Wait(0)
+                Wait(GetFrameTime())
                 DrawBinkMovie(failBink, 0.5, 0.5, 1.0, 1.0, 0.0, 255, 255, 255, 255)
             end
             
@@ -390,7 +390,7 @@ function StartFingerprintHack(cb)
     
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do 
-            Wait(0)
+            Wait(GetFrameTime())
             
             DrawScaleformMovieFullscreen(scaleformBar, 255, 255, 255, 255)
             if isChecking == 0 then 
@@ -458,7 +458,7 @@ function StartFingerprintHack(cb)
 
     CreateThread(function()
         while progress < 3 and lives >= 0 and not (min <= 0 and tenSec <= 0 and sec <= 0) do
-            Wait(0)
+            Wait(GetFrameTime())
 
             DisableAllControlActions(0)
             DrawScaleformMovieFullscreen(scaleformBar, 255, 255, 255, 255)
