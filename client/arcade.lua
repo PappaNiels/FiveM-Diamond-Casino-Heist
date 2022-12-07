@@ -1390,7 +1390,6 @@ function PlayerJoinedCrew(i)
 end
 
 function SetupBoardInfo(num)
-    if not setupLists then 
         setupLists = true
         for i = 1, #todoList[1] do 
            ToDoList(i, 1)
@@ -1422,11 +1421,9 @@ function SetupBoardInfo(num)
         BeginScaleformMovieMethod(boardType[1], "SET_BLUEPRINT_VISIBLE")
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
-    end   
 end
 
 function PrepBoardInfo()
-    if not prepLists then 
         boards = 2
         prepLists = true
         
@@ -1456,7 +1453,7 @@ function PrepBoardInfo()
         end
         
         BeginScaleformMovieMethod(boardType[2], "SET_CURRENT_SELECTION")
-        ScaleformMovieMethodAddParamInt(19)
+        ScaleformMovieMethodAddParamInt(1)
         EndScaleformMovieMethod()
         
         BeginScaleformMovieMethod(boardType[2], "SET_BUTTON_IMAGE")
@@ -1484,11 +1481,9 @@ function PrepBoardInfo()
         end 
 
         SetLootAndApproach()
-    end
 end
 
 function FinalBoardInfo()
-    if not finalLists then
         boards = 3
         finalLists = true
 
@@ -1540,7 +1535,6 @@ function FinalBoardInfo()
         ScaleformMovieMethodAddParamInt(13)
         ScaleformMovieMethodAddParamBool(true)
         EndScaleformMovieMethod()
-    end
 end
 
 RegisterNetEvent("cl:casinoheist:syncHeistPlayerScaleform", PlayerJoinedCrew)
