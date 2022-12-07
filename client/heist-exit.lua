@@ -1,3 +1,5 @@
+local triggered = false
+
 local vehs = {}
 local blips = {}
 local peds = {}
@@ -5,7 +7,7 @@ local peds = {}
 function VaultLobby(blip, old)
     --RemoveAllBlips()
     if blip then 
-        for i = 1, 2 do 
+        for i = 3, 4 do 
             blips[i] = AddBlipForCoord(keypads[4][i])
             SetBlipSprite(blips[i], 733)
             SetBlipColour(blips[i], 2)
@@ -27,7 +29,7 @@ function VaultLobby(blip, old)
             if not isSwiping then 
                 SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
 
-                local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - keypads[4][1]), #(GetEntityCoords(PlayerPedId()) - keypads[4][2])
+                local distanceL, distanceR = #(GetEntityCoords(PlayerPedId()) - keypads[4][3]), #(GetEntityCoords(PlayerPedId()) - keypads[4][4])
                 
                 if distanceL < 2.0 or distanceR < 2.0 then 
                     HelpMsg("Press ~INPUT_CONTEXT~ to get in position to insert the keycard.") 
@@ -73,7 +75,7 @@ function VaultLobby(blip, old)
                     end
                 end
 
-                if sync and swiped then 
+                if (sync and swiped) or triggered then 
                     if isSwiping then 
                         NetworkStartSynchronisedScene(keycardSyncAnims[2][5])
                         Wait(2000)
@@ -83,6 +85,8 @@ function VaultLobby(blip, old)
 
                     swiped = false
                     isSwiping = true
+                    RemoveBlip(blips[1])
+                    RemoveBlip(blips[2])
                     GoToExit()
                     break
                 elseif swiped then 
@@ -102,6 +106,9 @@ end
 
 function GoToExit()
     EnableMantrapDoors(0, 0)
+
+    blips[1] = AddBlipForCoord(casinoEntryCoords[selectedExit][1][1])
+    SetBlipColour(blip, 5)
 
     local txt = {
         [1] = "Waste Disposal",
@@ -133,6 +140,7 @@ function GoToExit()
 end
 
 function ExitCasino()
+    RemoveBlip(blips[1])
     DoScreenFadeIn(1000)
     player = 1
     selectedExit = 11
@@ -148,18 +156,21 @@ function ExitCasino()
     SetEntityCoords(PlayerPedId(), entryCoords[selectedExit], true, false, false, true)
     SetEntityHeading(PlayerPedId(), 0)
 
-    
+    HideTimerBars()
+
     LoadCutscene("hs3f_all_esc")
     StartCutscene(0)
     DoScreenFadeIn(0)
     
-    repeat Wait(10) until HasCutsceneFinished()
-    
-    DoScreenFadeOut(1)
+    repeat Wait(10) until GetCutsceneTotalDuration() - GetCutsceneTime() < 1000
+
+    DoScreenFadeOut(1000)
     
     while not IsScreenFadedOut() do 
         Wait(10)
     end
+
+    ShowTimerbars(true)
 
     if player == 1 then 
         LoadModel(availableVehicles[selectedDriver][1][selectedVehicle][1])
@@ -196,6 +207,10 @@ function ExitCasino()
 end
 
 local function Route(meet)
+    if not meet then 
+        meet = 1
+    end
+
     local pedModels = {
         --{"g_m_m_armboss_01", "g_m_m_armgoon_01", "g_m_m_armgoon_01"},
         {"g_m_m_mexboss_01", "g_m_y_mexgoon_01", "g_f_y_vagos_01"},
@@ -208,9 +223,7 @@ local function Route(meet)
         "baller6"
     }
 
-    selectedBuyer = 3
     blips[1] = AddBlipForCoord(meetingPoint[selectedBuyer][meet])
-    print(meetingPoint[selectedBuyer][meet])
     SetBlipColour(blips[1], 5)
     SetBlipRoute(blips[1], true)
     SetBlipRouteColour(blips[1], 5)
@@ -220,14 +233,8 @@ local function Route(meet)
     if player == 1 then 
         LoadModel(model[selectedBuyer])
 
-        for i = 1, 2 do 
-            LoadModel(pedModels[selectedBuyer][i])
-        end
-        
-        vehs[3] = CreateVehicle(GetHashKey(model), meetingPoint[selectedBuyer][meet], true, false)
-        
         for i = 1, 3 do 
-            peds[i] = CreatePedInsideVehicle(veh[3], 0, GetHashKey(pedModels[selectedBuyer][i]), -2 + i, true, false)
+            LoadModel(pedModels[selectedBuyer][i])
         end
     end
     
@@ -246,10 +253,28 @@ local function Route(meet)
             end
         end
     end)
+
+    while #(GetEntityCoords(PlayerPedId()).xy - meetingPoint[selectedBuyer][meet].xy) > 2000 do 
+        Wait(1000)
+    end
+
+    vehs[3] = CreateVehicle(GetHashKey(model[selectedBuyer]), meetingPoint[selectedBuyer][meet], true, false)
+    --SetEntityAsMissionEntity(vehs[3])
+
+    repeat Wait(10) print("tick") until DoesEntityExist(vehs[3])
+
+    for i = 1, 3 do 
+        peds[i] = CreatePedInsideVehicle(vehs[3], 1, GetHashKey(pedModels[selectedBuyer][i]), -2 + i, true, false)
+    end
+
+    for i = 1, 3 do 
+        SetPedRelationshipGroupHash(peds[i], GetHashKey("PLAYER"))
+    end
 end
 
 function FinishHeist(meet)
     local buyer = 0
+    heistInProgress = false
     if selectedBuyer == 1 then 
         buyer = 2
     else 
@@ -264,6 +289,16 @@ function FinishHeist(meet)
         DeleteVehicle(vehs[i])
     end
 
+    for i = 1, 3 do 
+        DeletePed(peds[i])
+    end
+
+    for i = 1, #blips do 
+        RemoveBlip(blips[i])
+    end
+
+    HideTimerBars()
+
     local arr = {}
     if #hPlayer == 2 then 
         arr = {"MP_3", "MP_4"}
@@ -277,16 +312,16 @@ function FinishHeist(meet)
         end
     end 
 
-    repeat Wait(100) until HasCutsceneFinished()
+    repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 1000
 
-    DoScreenFadeOut(2000)
-
-    while not IsScreenFadedOut() do 
-        Wait(10)
-    end
+    --DoScreenFadeOut(2000)
+--
+    --while not IsScreenFadedOut() do 
+    --    Wait(10)
+    --end
 
     EndScreen()
-    LoadCutscene("")
+    --LoadCutscene("")
 end
 
 RegisterNetEvent("cl:casinoheist:syncMeet", Route)
@@ -297,3 +332,7 @@ RegisterCommand("test_veh", function()
 end)
 
 RegisterCommand("test_exit", ExitCasino, false)
+
+RegisterCommand("skip_swipe2", function()
+    triggered = true
+end)

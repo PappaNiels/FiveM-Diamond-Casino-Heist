@@ -7,7 +7,6 @@ RegisterNetEvent("sv:casinoheist:syncLStatus", function(key, time)
 end)
 
 RegisterNetEvent("sv:casinoheist:syncDStatus", function(key)
-    print(key)
     for i = 1, #hPlayer do 
         TriggerClientEvent("cl:casinoheist:syncDStatus", hPlayer[i], key)
     end

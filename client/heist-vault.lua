@@ -148,6 +148,12 @@ local function AreAllObjectsDone(num)
     return true
 end
 
+local function RemoveAllBlips()
+    for i = 1, #blips do 
+        RemoveBlip(blips[i])
+    end
+end
+
 local function SetVaultObjs()
     --loot = 1
     if loot == 3 then        
@@ -178,7 +184,7 @@ local function SetVaultObjs()
 
         SetModelAsNoLongerNeeded("ch_prop_ch_sec_cabinet_02a") 
     else 
-        loot = 1
+        --loot = 1
         cartLayout = 1
             
         for i = 1, #cartType[loot] do 
@@ -430,6 +436,7 @@ local function CutPainting(j)
     local bladeObj = CreateObject(GetHashKey(blade), GetEntityCoords(PlayerPedId()), true, false, false)
     local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
     local cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    SetCamActive(cam, true)
     SetCamCoord(cam, GetEntityCoords(PlayerPedId()))
 
     for i = 1, #paintingAnims[1] do 
@@ -494,6 +501,7 @@ local function CutPainting(j)
 
     DeleteEntity(bagObj)
     DeleteEntity(bladeObj)
+    SetCamActive(cam, false)
     DestroyAllCams()
     isBusy = false
 end
@@ -585,7 +593,6 @@ local function VaultGas()
     --    [18] = 1040187392,
     --    [19] = -1
     --}
-
     
     --CreateThread(function()
     RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
@@ -595,13 +602,9 @@ local function VaultGas()
             Wait(0)
         end
 
+        RequestNamedPtfxAsset("scr_ch_finale")
+
         LoadAnim("anim@fidgets@coughs")
-
-        if not HasPtfxAssetLoaded("scr_ch_finale") then 
-            RequestNamedPtfxAsset("scr_ch_finale")
-
-            repeat Wait(10) until HasPtfxAssetLoaded("scr_ch_finale")
-        end
 
         for i = 1, 3 do 
             UseParticleFxAsset("scr_ch_finale")
@@ -657,8 +660,9 @@ RegisterCommand("test_gas", VaultGas, false)
 function VaultCheck()
     for i = 1, #hPlayer do 
         if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords) > 7 then 
-            CreateThread(VaultGas)
+            print("gas active")
             alarmTriggered = 1
+            VaultGas()
             return 
         end
     end
@@ -666,12 +670,12 @@ end
 
 function Vault()
     local bTake = take
-    loot = 3
     playerAmount = 2
     vaultLayout = 1
     cartLayout = 1
     isInVault = true
     player = 1--GetCurrentHeistPlayer() -- 1 
+    selectedHacker = 5
 
     local txt = {
         "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
@@ -722,7 +726,7 @@ function Vault()
                 end
             end
         end)
-    elseif loot == 1 then 
+    elseif loot == 1 or loot == 2 or loot == 4 then 
         CreateThread(function()
             while true do 
                 Wait(GetFrameTime())
@@ -782,6 +786,7 @@ function Vault()
     
                 if not IsNotClose(vaultEntryDoorCoords, 7) then
                     print("Distance " .. distance)
+                    RemoveAllBlips()
                     isInVault = false 
                     isBusy = true 
                     showTimer = false

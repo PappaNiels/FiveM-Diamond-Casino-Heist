@@ -287,6 +287,10 @@ function SyncKeycardEnter(num)
 
     LoadAnim(animDict)
     
+    if num > 2 then 
+        num = num - 2
+    end
+
     lvlFour = num
 
     local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
@@ -524,6 +528,7 @@ end
 function MainEntry()
     if approach == 3 then 
         LoadCutscene("hs3f_dir_ent")
+        HideTimerBars()
         StartCutscene(0)
 
         DoScreenFadeIn(500)
@@ -547,6 +552,7 @@ function MainEntry()
         
         repeat Wait(100) until HasCutsceneFinished()
 
+        ShowTimerbars(false)
         Wait(30)
 
         TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
