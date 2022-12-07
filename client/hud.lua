@@ -26,7 +26,6 @@ local txtTake = {
 
 local function StartTimer()
     local timerActive = true
-    selectedHacker = 1
     local timeTot = hacker[selectedHacker][3 + alarmTriggered]
 
     min = math.floor(timeTot / 60)
@@ -105,6 +104,19 @@ local function SetMoney(i, start, limit, k)
     ScaleformMovieMethodAddParamInt(3)
     ScaleformMovieMethodAddParamInt(3)
     EndScaleformMovieMethod()
+end
+
+function ShowTimerbars(bool)
+    DrawTeamlives()
+
+    if bool then 
+        DrawTake()
+    end
+end
+
+function HideTimerBars()
+    showTeamLives = false 
+    showTake = false
 end
 
 RegisterNetEvent("cl:casinoheist:syncteamlives", function(lives)
@@ -348,10 +360,9 @@ function EndScreen()
     draw = false
     AnimpostfxStop("MP_Celeb_Win")
 
-    for i = 1, #3 do 
+    for i = 1, 3 do 
         SetScaleformMovieAsNoLongerNeeded(endScreen[i])
     end
-
 end
 
 RegisterCommand("test_cend", EndScreen, false)
