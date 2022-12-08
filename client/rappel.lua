@@ -88,8 +88,17 @@ function RopeStart()
     RopeSetUpdateOrder(ropeId, 0)
 
     while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[2])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[3])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[4])).z > -136 do
+        --PAD::DISABLE_CONTROL_ACTION(0, 0, true);
+        --PAD::DISABLE_CONTROL_ACTION(0, 37, true);
+        --PAD::DISABLE_CONTROL_ACTION(0, 260, true);
+        --PAD::DISABLE_CONTROL_ACTION(0, 26, true);
+        --PAD::DISABLE_CONTROL_ACTION(0, 1, true);
+        
         Wait(100)
     end
+
+    DeleteRope(ropeId)
+    RopeUnloadTextures()
 
     LoadCutscene("hs3f_mul_rp2")
     StartCutscene(0)
