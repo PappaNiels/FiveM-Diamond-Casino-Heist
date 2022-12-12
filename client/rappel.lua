@@ -87,14 +87,14 @@ function RopeStart()
     PinRopeVertex(ropeId, (GetRopeVertexCount(ropeId) - 1), var3)
     RopeSetUpdateOrder(ropeId, 0)
 
-    while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[2])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[3])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[4])).z > -136 do
-        --PAD::DISABLE_CONTROL_ACTION(0, 0, true);
-        --PAD::DISABLE_CONTROL_ACTION(0, 37, true);
-        --PAD::DISABLE_CONTROL_ACTION(0, 260, true);
-        --PAD::DISABLE_CONTROL_ACTION(0, 26, true);
-        --PAD::DISABLE_CONTROL_ACTION(0, 1, true);
-        
-        Wait(100)
+    while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z > -140 or GetEntityCoords(GetHeistPlayerPed(hPlayer[2])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[3])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[4])).z > -136 do
+        DisableControlAction(0, 0, true)
+        DisableControlAction(0, 1, true)
+        DisableControlAction(0, 26, true)
+        DisableControlAction(0, 37, true)
+        DisableControlAction(0, 260, true)
+
+        Wait(GetFrameTime())
     end
 
     DeleteRope(ropeId)
@@ -105,7 +105,19 @@ function RopeStart()
 
     HideCutProps()
 
-    --Basement()
+    DoScreenFadeIn(500)
+
+    while not IsScreenFadedIn() do 
+        Wait(10)
+    end
+
+    SetEntityCoords(PlayerPedId(), rappelEntry[2][player].x, rappelEntry[2][player].y, rappelEntry[2][player].z, true, false, false, false)
+    SetEntityHeading(PlayerPedId(), rappelEntry[2][player].w)
+    Basement()
+
+    Wait(1000)
+
+    DoScreenFadeOut(1000)
 end
 
 CreateThread(function() 
@@ -120,55 +132,3 @@ CreateThread(function()
         end        
     end
 end)
-
---CreateThread(function()
---    while true do 
---        if rope then 
---            local Scale = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
---            
---            BeginScaleformMovieMethod(Scale, "CLEAR_ALL")
---            EndScaleformMovieMethod()
---            
---            BeginScaleformMovieMethod(Scale, "SET_DATA_SLOT")
---            ScaleformMovieMethodAddParamInt(1)
---            PushScaleformMovieMethodParameterString("~INPUT_SCRIPTED_FLY_UD~")
---            PushScaleformMovieMethodParameterString("Rappel Down")
---            EndScaleformMovieMethod()
---
---            BeginScaleformMovieMethod(Scale, "DRAW_INSTRUCTIONAL_BUTTONS");
---            ScaleformMovieMethodAddParamInt(0);
---            EndScaleformMovieMethod();
---
---            DrawScaleformMovieFullscreen(Scale, 255, 255, 255, 0, 0)
---
---        end
---    end
---end)
-
-function ShowCutscene()
-    RequestCutscene("hs3f_mul_rp2", 8)
-
-    while not HasCutsceneLoaded() do
-        Wait(10) 
-    end
-
-    SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
-
-    StartCutscene(0)
-end
-
-RegisterCommand("test", function()
-    RequestCutscene("hs4_lsa_land_nimb", 8)
-
-    while not HasCutsceneLoaded() do
-        Wait(10) 
-    end
-
-    SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
-
-    StartCutscene(0)
-end)
-
-
