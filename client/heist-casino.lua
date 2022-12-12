@@ -251,7 +251,7 @@ function HackKeypad(level, j, start)
     end
 end
 
-local function KeycardReady(num)
+function KeycardReady(num)
     while true do 
         Wait(5)
         
@@ -499,13 +499,19 @@ local function PlantVaultBombs(num)
     end
 end
 
-function RoofTerraceEntry()
-    DoScreenFadeIn(500)
+function RoofTerraceEntry(bool)
+    if IsScreenFadedOut() then 
+        DoScreenFadeIn(500)
+    end
     
+    local terrace = true
+
     CreateThread(function()
-        while true do 
-            Wait(0)
+        while terrace do 
+            Wait(100)
             
+
+
         end
     end)
 end
@@ -513,11 +519,47 @@ end
 function HeliPadEntry()
     DoScreenFadeIn(500)
 
+    local blip = AddBlipForCoord(stairBlip)
+    SetBlipSprite(blip, 743)
+    SetBlipColour(blip, 5)
+
+    local helipad = true
+    local useShaft = true
+
+    local txt = "Go to the ~y~shaft~s~ or take the ~y~stairs"
+
     CreateThread(function()
-        while true do 
-            Wait(0)
+        while helipad do 
+            Wait(GetFrameTime())
             
+            DrawMarker(1, rappelEntry[1], 0, 0, 0, 0, 0, 0, 1.0, 1.0, 0.75, 255, 255, 0, 100, false, false, 2, false, "", "", true)
         end
+    end)
+    
+    CreateThread(function()
+        while helipad do 
+            Wait(100)
+            
+            if #(GetEntityCoords(PlayerPedId()) - rappelEntry[1]) < 1 and useShaft then 
+                if IsNotClose(rappelEntry[1], 1) then 
+                    SubtitleMsg("Wait for your team members", 110)
+                else 
+                    RemoveBlip(blip)
+                    RopeStart()
+                    helipad = false
+                end
+            elseif #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[4])) - stairBlip) < 2.5 then 
+                if useShaft then
+                    useShaft = false
+                    txt = "Go to the ~y~stairs"
+                end
+            elseif #(GetEntityCoords(PlayerPedId()) - stairBlip) < 2.5 and GetEntityCoords(PlayerPedId()).z < -100 then 
+                RoofTerraceEntry()
+                helipad = false
+            else
+                SubtitleMsg(txt, 110)
+            end
+        end 
     end)
 end
 
