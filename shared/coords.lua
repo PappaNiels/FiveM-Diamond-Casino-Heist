@@ -96,12 +96,12 @@ casinoEntryCoords = {
 aggressiveMainEntry = vector3(2488.15, -292.65, -58.71)
 
 rappelEntry = {
-    vector3(),
+    vector3(2517.8, -257.58, -24.11),
     {
-        vector4(),
-        vector4(),
-        vector4(),
-        vector4()
+        vector4(2516.76, -266.94, -58.72, 240.0),
+        vector4(2515.7, -267.96, -58.72, 240.0),
+        vector4(2515.31, -266.2, -58.72, 240.0),
+        vector4(2514.23, -266.94, -58.22, 240.0)
     }
 }
 
@@ -249,7 +249,7 @@ getawayVehicles = {
 
 -- Blips 
 
-stairBlip = vector3()
+stairBlip = vector3(2526.51, -252.35, -24.12)
 
 vaultCheckpointBlips = {
     vector3(2504.5, -236.85, -70.74),
