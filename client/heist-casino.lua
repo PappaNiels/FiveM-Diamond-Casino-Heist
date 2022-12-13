@@ -522,6 +522,9 @@ function HeliPadEntry()
     local blip = AddBlipForCoord(stairBlip)
     SetBlipSprite(blip, 743)
     SetBlipColour(blip, 5)
+    
+    local blip2 = AddBlipForCoord(rappelEntry[1])
+    SetBlipColour(blip, 5)
 
     local helipad = true
     local useShaft = true
@@ -545,12 +548,14 @@ function HeliPadEntry()
                     SubtitleMsg("Wait for your team members", 110)
                 else 
                     RemoveBlip(blip)
+                    RemoveBlip(blip2)
                     RopeStart()
                     helipad = false
                 end
             elseif #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[4])) - stairBlip) < 2.5 then 
                 if useShaft then
                     useShaft = false
+                    RemoveBlip(blip2)
                     txt = "Go to the ~y~stairs"
                 end
             elseif #(GetEntityCoords(PlayerPedId()) - stairBlip) < 2.5 and GetEntityCoords(PlayerPedId()).z < -100 then 
