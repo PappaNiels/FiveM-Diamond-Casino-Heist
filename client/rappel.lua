@@ -28,7 +28,7 @@ function Start()
     RopeStart()
 end
 
-local function HideCutProps()
+local function HideCutProps(bool)
     while not DoesCutsceneEntityExist("MP_3") do 
         Wait(10)
     end
@@ -46,7 +46,11 @@ local function HideCutProps()
         end
     end 
 
-    repeat Wait(100) until HasCutsceneFinished()
+    --if bool then 
+    --    repeat Wait(100) until HasCutsceneFinished()
+    --else
+        repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 1000
+    --end
 end
 
 function RopeStart()
@@ -54,7 +58,13 @@ function RopeStart()
     LoadCutscene("hs3f_mul_rp1")
     StartCutscene(0)
 
-    HideCutProps()
+    HideCutProps(true)
+
+    DoScreenFadeOut(500)
+
+    while not IsScreenFadedOut() do 
+        Wait(10)
+    end
 
     local coords1 = { -- func_11488
         vector3(2572.225, -254.2, -64.8),
@@ -77,19 +87,29 @@ function RopeStart()
     var6 = 78.0
     var8 = vector3(-90.0, 90.0, -90.0)
 
+    if GetCamViewModeForContext(0) == 4 then 
+        SetCamViewModeForContext(0, 0)
+    end
+
+    SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
+
+    
     local ropeId = AddRope(var3, var8, var6, 7, var6, var6, 1.2, false, false, true, 10.0, false, 0)
     N_0xa1ae736541b0fca3(ropeId, true)
-
+    
     SetEntityCoords(PlayerPedId(), var4, true, false, false, true)
     SetEntityHeading(PlayerPedId(), 178.5)
+    
+    DoScreenFadeIn(500)
 
     TaskRappelDownWall(PlayerPedId(), var3, var3, -143.0, ropeId, "clipset@anim_heist@hs3f@ig1_rappel@male", 1)
     PinRopeVertex(ropeId, (GetRopeVertexCount(ropeId) - 1), var3)
     RopeSetUpdateOrder(ropeId, 0)
-
+    SetGameplayCamRelativeRotation(0.0, 0.0, 180.0)
+    
     while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z > -140 or GetEntityCoords(GetHeistPlayerPed(hPlayer[2])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[3])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[4])).z > -136 do
         DisableControlAction(0, 0, true)
-        DisableControlAction(0, 1, true)
+        --DisableControlAction(0, 1, true)
         DisableControlAction(0, 26, true)
         DisableControlAction(0, 37, true)
         DisableControlAction(0, 260, true)
@@ -97,17 +117,18 @@ function RopeStart()
         Wait(GetFrameTime())
     end
 
+    
+    LoadCutscene("hs3f_mul_rp2")
+    StartCutscene(0)
+    
     DeleteRope(ropeId)
     RopeUnloadTextures()
 
-    LoadCutscene("hs3f_mul_rp2")
-    StartCutscene(0)
+    HideCutProps(false)
 
-    HideCutProps()
+    DoScreenFadeOut(500)
 
-    DoScreenFadeIn(500)
-
-    while not IsScreenFadedIn() do 
+    while not IsScreenFadedOut() do 
         Wait(10)
     end
 
@@ -117,7 +138,7 @@ function RopeStart()
 
     Wait(1000)
 
-    DoScreenFadeOut(1000)
+    DoScreenFadeIn(1000)
 end
 
 CreateThread(function() 

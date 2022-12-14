@@ -22,8 +22,8 @@ entryCoords = {
 }
 
 -- These are the coordinates where the cargobob spawns (first vector) and where it flies to (second vector).
-cargobobCoords = vector3(1057.56, -292.71, 50.95)
-cargobobFinalCoords = vector3(1303.6, -71.01, 297.33)
+cargobobCoords = vector3(1057.56, -292.71, 50.0)
+cargobobFinalCoords = vector3(1303.6, -71.01, 400.0)
 
 -- These are the coords where your ped will teleport to when you enter the casino 
 casinoEntryCoords = {
