@@ -535,7 +535,7 @@ function HeliPadEntry()
         while helipad do 
             Wait(GetFrameTime())
             
-            DrawMarker(1, rappelEntry[1], 0, 0, 0, 0, 0, 0, 1.0, 1.0, 0.75, 255, 255, 0, 100, false, false, 2, false, "", "", true)
+            DrawMarker(1, rappelEntry[1].xy, rappelEntry[1].z - 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.75, 200, 200, 50, 100, false, false, 2, false)
         end
     end)
     
@@ -1088,3 +1088,5 @@ RegisterCommand("test_trolly", function()
         SetBlipScale(blips[i], 0.8)
     end
 end, false)
+
+RegisterCommand("test_roof", HeliPadEntry, false)
