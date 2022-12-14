@@ -57,7 +57,7 @@ local function FlyToPos()
         cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobFinalCoords, 250.47, true, false)
         SetVehicleColours(cargobob[1], 0, 0)
         
-        cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobFinalCoords, 0, true, false)
+        cargobob[2] = CreatePedInsideVehicle(cargobob[1], 0, GetHashKey("s_m_y_pilot_01"), -1, true, false)
         SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
         SetVehicleEngineOn(cargobob[1], true, true, true)
     end
@@ -68,13 +68,12 @@ local function FlyToPos()
     SetVehicleDoorOpen(cargobob[1], 2, false, true)
     FreezeEntityPosition(cargobob[1], true)
     
-    if player == 1 then 
-        SetEntityCoords(PlayerPedId(), 1305.6, -70.52, 298.0, true, false, false, false)
-        SetEntityHeading(PlayerPedId(), 69.19)
-        FreezeEntityPosition(cargobob[1], false)
-    end
-    
-    Wait(5000) 
+    SetEntityCoords(PlayerPedId(), 1305.6, -70.52, 400.3, true, false, false, false)
+    SetEntityHeading(PlayerPedId(), 69.19)
+
+    Wait(2000)
+    FreezeEntityPosition(cargobob[1], false)
+    Wait(3000) 
 
     DoScreenFadeIn(1000)
 end
@@ -102,24 +101,39 @@ local function SetupCargobob()
 
         cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobCoords, 328.34, true, false)
         SetVehicleColours(cargobob[1], 0, 0)
-        netIds[1] = VehToNet(cargobob[1])
-
+        
         cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobCoords, 0, false, false)
         SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
         SetEntityInvincible(cargobob[2], true)
         SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
+        
+        while not DoesEntityExist(cargobob[2]) do 
+            Wait(10)
+        end
+
+        
+        
+
+        netIds[1] = VehToNet(cargobob[1])
         netIds[2] = PedToNet(cargobob[2])
         
         TriggerServerEvent("sv:casinoheist:syncNetIds", netIds)
     else
-        Wait(2000)
         
+        NetworkRequestControlOfNetworkId(netIds[1])
+        NetworkRequestControlOfNetworkId(netIds[2])
+        
+        Wait(2000)
+
+        --while not NetworkHasControlOfNetworkId(netIds[1]) and not NetworkHasControlOfNetworkId(netIds[2]) do 
+        --    Wait(10)
+        --end
         cargobob[1] = NetToVeh(netIds[1])
-        cargobob[2] = NetToVeh(netIds[2])
+        cargobob[2] = NetToPed(netIds[2])
         SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
     end
 
-    cargobob[3] = AddBlipForCoord(cargobob[1])
+    cargobob[3] = AddBlipForCoord(cargobobCoords)
     
     SetBlipSprite(cargobob[3], 422)
     SetBlipColour(cargobob[3], 54)
@@ -137,9 +151,6 @@ local function SetupCargobob()
             end
         end
     end
-    
-    SetEntityAsNoLongerNeeded(cargobob[1])
-    SetEntityAsNoLongerNeeded(cargobob[2])
 
     Wait(3000)
     
@@ -522,4 +533,28 @@ RegisterNetEvent("cl:casinoheist:syncStockadeNet", function(id, entity, source)
         print()
         SetPedIntoVehicle(PlayerPedId(), veh, 0)
     end
+end)
+
+RegisterCommand("tes_heli", function()
+    LoadModel("cargobob2")
+    LoadModel("s_m_y_pilot_01")
+    
+    cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobFinalCoords, 250.47, true, false)
+    SetVehicleColours(cargobob[1], 0, 0)
+    
+    cargobob[2] = CreatePedInsideVehicle(cargobob[1], 0, GetHashKey("s_m_y_pilot_01"), -1, true, false)
+    SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
+    SetVehicleEngineOn(cargobob[1], true, true, true)
+
+    SetModelAsNoLongerNeeded("cargobob2")
+    SetModelAsNoLongerNeeded("s_m_y_pilot_01")
+
+    SetVehicleDoorOpen(cargobob[1], 2, false, true)
+    FreezeEntityPosition(cargobob[1], true)
+
+    SetEntityCoords(PlayerPedId(), 1304.1, -71.24, 400.5, true, false, false, false)
+    SetEntityHeading(PlayerPedId(), 69.19)
+
+    Wait(2000)
+    FreezeEntityPosition(cargobob[1], false)
 end)
