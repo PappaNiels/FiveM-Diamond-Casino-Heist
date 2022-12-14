@@ -16,6 +16,7 @@ local boardCam = 0
 local boardUsing = 0
 local boards = 1
 local keys = 0
+local barMenu = 0 
 
 local setupLists = false
 local prepLists = false
@@ -27,7 +28,6 @@ local isInBuilding = false
 local entryIsAvailable = false
 local isFocusedBoard = false
 
-local barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
 local boardType = {}
 
 local todoList = {
@@ -1747,6 +1747,7 @@ CreateThread(function()
                             boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
                             boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
                             boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
+                            barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
                             hPlayer = {GetPlayerServerId(PlayerId())} 
                             print(hPlayer[1])
 
@@ -1790,6 +1791,8 @@ CreateThread(function()
                             for i = 1, 3 do 
                                 SetScaleformMovieAsNoLongerNeeded(boardType[i])
                             end
+                            
+                            SetScaleformMovieAsNoLongerNeeded(barMenu)
 
                             isInGarage = false
                         end
