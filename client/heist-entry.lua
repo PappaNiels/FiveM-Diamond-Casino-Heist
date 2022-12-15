@@ -139,15 +139,17 @@ local function SetupCargobob()
     SetBlipColour(cargobob[3], 54)
     SetBlipHighDetail(cargobob[3], true)
     
-    while not IsPedInAnyHeli(PlayerPedId()) do 
+    while not IsPedInAnyHeli(PlayerPedId()) and IsPedInAnyVehicle(PlayerPedId(), true) do 
         Wait(50)
         if #(vector3(1060.1, -288.31, 50.81) - GetEntityCoords(PlayerPedId())) < 4 and IsControlPressed(0, 23) then 
             for i = 0, 4 do 
-                if IsVehicleSeatFree(cargobob[1], i) then 
-                    TaskEnterVehicle(PlayerPedId(), cargobob[1], 1.0, i, 2.0, 0, 0)
+                --if IsVehicleSeatFree(cargobob[1], i) then 
+                    TaskEnterVehicle(GetHeistPlayerPed(hPlayer[i + 1]), cargobob[1], 1.0, i, 2.0, 0, 0)
+
+
+
                     RemoveBlip(cargobob[3])
-                    break
-                end
+                --end
             end
         end
     end
