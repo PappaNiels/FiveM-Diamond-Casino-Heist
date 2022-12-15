@@ -78,10 +78,10 @@ local function FlyToPos()
     DoScreenFadeIn(1000)
 end
 
-local function IsAllPlayersInHeli()
+local function AreAllPlayersInHeli()
     CreateThread(function()
         while true do 
-            Wait(0)
+            Wait(GetFrameTime())
             DisableControlAction(0, 23, true)
 
             if IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[1]))) and IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[2]))) and (IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[3]))) or hPlayer[3] == nil) and (IsPedInAnyHeli(GetPlayerPed(GetPlayerFromServerId(hPlayer[4])))or hPlayer[4] == nil) then 
@@ -111,15 +111,13 @@ local function SetupCargobob()
             Wait(10)
         end
 
-        
-        
-
         netIds[1] = VehToNet(cargobob[1])
         netIds[2] = PedToNet(cargobob[2])
         
         TriggerServerEvent("sv:casinoheist:syncNetIds", netIds)
     else
-        
+        Wait(100)
+
         NetworkRequestControlOfNetworkId(netIds[1])
         NetworkRequestControlOfNetworkId(netIds[2])
         
@@ -128,6 +126,7 @@ local function SetupCargobob()
         --while not NetworkHasControlOfNetworkId(netIds[1]) and not NetworkHasControlOfNetworkId(netIds[2]) do 
         --    Wait(10)
         --end
+
         cargobob[1] = NetToVeh(netIds[1])
         cargobob[2] = NetToPed(netIds[2])
         SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
@@ -143,20 +142,20 @@ local function SetupCargobob()
         Wait(50)
         if #(vector3(1060.1, -288.31, 50.81) - GetEntityCoords(PlayerPedId())) < 4 and IsControlPressed(0, 23) then 
             for i = 0, 4 do 
-                --if IsVehicleSeatFree(cargobob[1], i) then 
+                if IsVehicleSeatFree(cargobob[1], i) then 
                     TaskEnterVehicle(GetHeistPlayerPed(hPlayer[i + 1]), cargobob[1], 1.0, i, 2.0, 0, 0)
-
-
-
-                    RemoveBlip(cargobob[3])
-                --end
+                else 
+                    TaskEnterVehicle(GetHeistPlayerPed(hPlayer[i + 1]), cargobob[1], 1.0, i + 1, 2.0, 0, 0)
+                end
             end
         end
     end
 
+    RemoveBlip(cargobob[3])
+
     Wait(3000)
     
-    IsAllPlayersInHeli()
+    AreAllPlayersInHeli()
 end
 
 local function DistanceCasino()
