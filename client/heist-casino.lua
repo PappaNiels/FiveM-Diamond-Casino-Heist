@@ -9,7 +9,8 @@ local isSwiping = false
 local timerStarted = false
 local plantBombs = false
 local leftBombs = false                        
-local rightBombs = false                        
+local rightBombs = false
+local sewer                        
 
 local bombObjs = {}
 local blips = {}
@@ -499,6 +500,32 @@ local function PlantVaultBombs(num)
     end
 end
 
+local function PlantSewerBomb()
+    isBusy = true 
+    
+    local animDict = "anim_heist@hs3f@ig7_plant_bomb@male@"
+    local bomb = "ch_prop_ch_ld_bomb_01a"
+
+    LoadModel(bomb)
+    LoadAnim(animDict)
+
+    local bombObj = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
+
+    print("Coords Missing")
+    scene = NetworkCreateSynchronisedScene(x, y, z, 0.0, 0.0, w, 2, true, false, false, 0.0, 1)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), scene, animDict, "plant_bomb", -8.0, 8.0, 13, 16, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(bombObj, scene, animDict, "plant_bomb_prop", 1000.0, -1000.0, 0)
+
+    NetworkStartSynchronisedScene(scene)
+    Wait(GetAnimDuration(animDict, "plant_bomb") * 1000)
+
+    DeleteEntity(bombObj)
+    ClearPedTasks(PlayerPedId())
+
+    isBusy = false
+    sewer = false
+end
+
 function RoofTerraceEntry(bool)
     if IsScreenFadedOut() then 
         DoScreenFadeIn(500)
@@ -570,6 +597,54 @@ end
 
 function SewerEntry()
     DoScreenFadeIn(500)
+
+    local txt = "Wait for " .. GetPlayerName(GetPlayerFromServerId(hPlayer[2])) or "Player 2" .. " to plant the bomb."
+
+    sewer = true
+
+    if player == 2 then 
+        txt = "Plant the bomb on the wall"
+
+        CreateThread(function()
+            while sewer do 
+                Wait(GetFrameTime())
+
+                local distance = #(GetEntityCoords(PlayerPedId()) - sewerBomb) 
+
+                if distance < 10 and not isBusy then 
+                    DrawMarker(1, sewerBomb.xy, sewerBomb.z - 1.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.75, 229, 202, 23, 100, false, false, 2, false, nil, nil, false)
+                    if distance < 0.5 then 
+                        HelpMsg("Press ~INPUT_CONTEXT~ to plant the bomb")
+
+                        if IsControlJustPressed(0, 38) then 
+                            PlantSewerBomb()
+                        end
+                    end
+                else 
+                    Wait(100)
+                end
+            end
+        end)
+    end
+
+    CreateThread(function()
+        while sewer do 
+            Wait(100)
+            SubtitleMsg(txt, 110)
+
+            if IsEntityPlayingAnim(GetHeistPlayerPed(hPlayer[2]), "anim_heist@hs3f@ig7_plant_bomb@male@", "plant_bomb", 2) then 
+                Wait(GetAnimDuration("anim_heist@hs3f@ig7_plant_bomb@male@", "plant_bomb") * 1000 - 1000)
+                sewer = false
+            end
+        end
+
+        LoadCutscene("hs3f_dir_sew")
+        StartCutscene(0)
+
+        repeat Wait(10) until HasCutsceneFinished()
+        SecurityLobby(true, false)
+    end)
+
 end
 
 function MainEntry()

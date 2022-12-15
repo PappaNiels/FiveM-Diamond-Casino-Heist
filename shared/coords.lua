@@ -112,6 +112,8 @@ casinoToLobby = {
     vector4(2525.28, -256.17, -61.32, 180.0) 
 }
 
+sewerBomb = vector3(2480.1, -293.33, -70.67)
+
 staffCoords = {
     vector3(2520.97, -279.37, -58.72), -- Elevator
     vector3(2514.67, -280.43, -58.72)  -- Stairs
