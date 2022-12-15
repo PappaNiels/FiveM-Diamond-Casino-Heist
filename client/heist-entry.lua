@@ -161,14 +161,21 @@ end
 local function DistanceCasino()
     if selectedEntrance == 7 then 
         CreateThread(function()
+            local coords = vector3(1031.04, -268.99, 50.85)
+
             while true do 
                 Wait(200)
     
                 SubtitleMsg("Go to the ~y~Sewer.", 210)
     
-                if #(GetEntityCoords(PlayerPedId()) - vector3(1031.04, -268.99, 50.85)) < 50 then 
-                    TeleportThread()
-                    break 
+                if #(GetEntityCoords(PlayerPedId()) - coords) < 50 then 
+                    if coords == vector3(1031.04, -268.99, 50.85) then 
+                        coords = vector3()
+                        SetBlipCoords(blip, coords)
+                    else
+                        TeleportThread()
+                        break 
+                    end
                 end 
             end
         end)
@@ -325,7 +332,14 @@ function KeycardThread()
 end
 
 function TeleportThread()
-    veh = GetVehiclePedIsIn(GetHeistPlayerPed(hPlayer[1]), false)
+    local txt = "Go to the ~y~Casino."
+    
+    if selectedEntrance == 6 then 
+        veh = GetVehiclePedIsIn(GetHeistPlayerPed(hPlayer[1]), false)
+    elseif selectedEntrance == 7 then 
+        txt = "Go to ~y~sewer tunnel."
+    end
+
     CreateThread(function()
         while true do 
             Wait(100)
@@ -341,7 +355,7 @@ function TeleportThread()
                     break
                 end
             else 
-                SubtitleMsg("Go to the ~y~Casino.", 110)
+                SubtitleMsg(txt, 110)
             end
         end
     end)
