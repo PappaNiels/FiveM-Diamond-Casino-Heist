@@ -511,15 +511,18 @@ local function PlantSewerBomb()
 
     local bombObj = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
 
-    scene = NetworkCreateSynchronisedScene(2480.496, -290.9795, -71.5586, 0.0, 0.0, 0.0, 2, true, false, false, 0.0, 1)
-    NetworkAddPedToSynchronisedScene(PlayerPedId(), scene, animDict, "plant_bomb", -8.0, 8.0, 13, 16, 1000.0, 0)
-    NetworkAddEntityToSynchronisedScene(bombObj, scene, animDict, "plant_bomb_prop", 1000.0, -1000.0, 0)
+    AttachEntityToEntity(bombObj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 0xE5F2), 0.05, -0.12, -0.180, 180.0, 185.0, 15.0, false, false, false, false, 2, true)
+    TaskPlayAnimAdvanced(PlayerPedId(), animDict, "plant_bomb", 2480.1, -293.33, -70.67, 0.0, 0.0, 0.0, 8.0, -8.0, 2000, 8, 0, 0, 0)
 
-    NetworkStartSynchronisedScene(scene)
-    Wait(GetAnimDuration(animDict, "plant_bomb") * 1000)
+    Wait(2000)
 
-    DeleteEntity(bombObj)
+    DetachEntity(bombObj, false, true)
+    FreezeEntityPosition(bombObj, true)
+
+    Wait(1300)
+
     ClearPedTasks(PlayerPedId())
+    DeleteEntity(bombObj)
 
     isBusy = false
     sewer = false
@@ -595,6 +598,10 @@ function HeliPadEntry()
 end
 
 function SewerEntry()
+    if player ~= 1 and player ~= 2 and player ~= 3 and player ~= 4 then 
+        player = 2
+    end
+
     DoScreenFadeIn(500)
 
     local txt = "Wait for " .. GetPlayerName(GetPlayerFromServerId(hPlayer[2])) or "Player 2" .. " to plant the bomb."
@@ -602,7 +609,7 @@ function SewerEntry()
     sewer = true
 
     if player == 2 then 
-        txt = "Plant the bomb on the wall"
+        txt = "Plant the ~y~bomb~s~ on the wall"
 
         CreateThread(function()
             while sewer do 
@@ -1164,3 +1171,4 @@ RegisterCommand("test_trolly", function()
 end, false)
 
 RegisterCommand("test_roof", HeliPadEntry, false)
+RegisterCommand("test_sewer", SewerEntry, false)
