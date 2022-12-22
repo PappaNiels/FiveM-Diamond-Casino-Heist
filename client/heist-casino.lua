@@ -511,8 +511,7 @@ local function PlantSewerBomb()
 
     local bombObj = CreateObject(GetHashKey(bomb), GetEntityCoords(PlayerPedId()), true, false, false)
 
-    print("Coords Missing")
-    scene = NetworkCreateSynchronisedScene(x, y, z, 0.0, 0.0, w, 2, true, false, false, 0.0, 1)
+    scene = NetworkCreateSynchronisedScene(2480.496, -290.9795, -71.5586, 0.0, 0.0, 0.0, 2, true, false, false, 0.0, 1)
     NetworkAddPedToSynchronisedScene(PlayerPedId(), scene, animDict, "plant_bomb", -8.0, 8.0, 13, 16, 1000.0, 0)
     NetworkAddEntityToSynchronisedScene(bombObj, scene, animDict, "plant_bomb_prop", 1000.0, -1000.0, 0)
 
