@@ -13,6 +13,8 @@ function VaultLobby(blip, old)
             SetBlipColour(blips[i], 2)
             SetBlipHighDetail(blips[i], true)
         end
+
+        ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS")
     end
 
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"

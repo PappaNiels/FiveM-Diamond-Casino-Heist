@@ -703,6 +703,7 @@ function Vault()
     end
 
     if loot == 3 then 
+        RequestScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS", false, -1)
         CreateThread(function()
             while true do 
                 Wait(GetFrameTime())
