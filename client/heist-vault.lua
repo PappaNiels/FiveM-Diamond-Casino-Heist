@@ -336,7 +336,9 @@ local function GrabLoot(i)
     while animTime < 1.0 do 
         Wait(GetFrameTime())
 
-        if IsControlPressed(0, 237) and not grabbing then 
+        DisableControlAction(0, 1, true)
+
+        if IsControlJustPressed(0, 237) and not grabbing then 
             waiting = false
             grabbing = true
             
@@ -427,8 +429,7 @@ local function CutPainting(j)
     local keys = { [3] = 35, [5] =  33, [7] = 34, [8] = 33}
 
     isBusy = true
-    
-    RequestScriptAudioBank("heist_finale_steal_paintings", false, -1)
+
     LoadAnim(animDict)
     LoadModel(blade)
     LoadModel(bag)
@@ -441,15 +442,15 @@ local function CutPainting(j)
 
     for i = 1, #paintingAnims[1] do 
         if i == 2 or i == 4 or i == 6 --[[or i == 7 or i == 8]] then 
-            paintingAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, false, true, 0, 0.0, 1.0)
+            paintingAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, false, true, 1.0, 0.0, 1.0)
             NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims[2][i], animDict, paintingAnims[1][i][1], 4.0, -1.5, 13, 16, 1000.0, 0)
-            NetworkAddEntityToSynchronisedScene(bladeObj, paintingAnims[2][i], animDict, paintingAnims[1][i][2], 1000.0, -1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(bladeObj, paintingAnims[2][i], animDict, paintingAnims[1][i][2], 1000.0, -1000.0, 134149)
             NetworkAddEntityToSynchronisedScene(paintingObjs[j], paintingAnims[2][i], animDict, paintingAnims[1][i][3], 1000.0, -1000.0, 0)
             NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims[2][i], animDict, paintingAnims[1][i][4], 1000.0, -1000.0, 0)
         else 
-            paintingAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, true, false, 0, 0.0, 1.0)
+            paintingAnims[2][i] = NetworkCreateSynchronisedScene(GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), 2, true, false, 1.0, 0.0, 1.0)
             NetworkAddPedToSynchronisedScene(PlayerPedId(), paintingAnims[2][i], animDict, paintingAnims[1][i][1], 4.0, -1.5, 13, 16, 1000.0, 0)
-            NetworkAddEntityToSynchronisedScene(bladeObj, paintingAnims[2][i], animDict, paintingAnims[1][i][2], 1000.0, -1000.0, 0)
+            NetworkAddEntityToSynchronisedScene(bladeObj, paintingAnims[2][i], animDict, paintingAnims[1][i][2], 1000.0, -1000.0, 134149)
             NetworkAddEntityToSynchronisedScene(paintingObjs[j], paintingAnims[2][i], animDict, paintingAnims[1][i][3], 1000.0, -1000.0, 0)
             NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims[2][i], animDict, paintingAnims[1][i][4], 1000.0, -1000.0, 0)
         end
@@ -458,8 +459,8 @@ local function CutPainting(j)
     
     NetworkStartSynchronisedScene(paintingAnims[2][1])
     PlayCamAnim(cam, paintingAnims[1][1][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
-    RenderScriptCams(true, true, 2500, true, false)
     Wait(2000)
+    RenderScriptCams(true, false, 2500, true, false)
     PlayCamAnim(cam, paintingAnims[1][2][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
     NetworkStartSynchronisedScene(paintingAnims[2][2])
     
@@ -478,6 +479,8 @@ local function CutPainting(j)
             break
         end
         
+        DisableControlAction(0, 1, true)
+
         HelpMsg(txt[x])
         if IsControlPressed(0, keys[x]) then 
             PlayCamAnim(cam, paintingAnims[1][x][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
@@ -669,13 +672,16 @@ function VaultCheck()
 end
 
 function Vault()
+    print("Data set")
+    loot = 3
     local bTake = take
     playerAmount = 2
     vaultLayout = 1
     cartLayout = 1
-    isInVault = true
     player = 1--GetCurrentHeistPlayer() -- 1 
     selectedHacker = 5
+    
+    isInVault = true
 
     local txt = {
         "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",

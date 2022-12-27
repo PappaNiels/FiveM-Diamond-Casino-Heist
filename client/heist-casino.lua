@@ -172,10 +172,11 @@ local function KeypadOne(level, j)
     
     local keypadObj = GetClosestObjectOfType(keypads[level][j], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01b"), false, false, false)
     local keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
-    
+    local random = math.random(1, 3)
+
     keycardScene = NetworkCreateSynchronisedScene(GetEntityCoords(keypadObj), GetEntityRotation(keypadObj), 2, true, false, 1065353216, 0, 1.3)
-    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var02", 4.0, -4.0, 2000, 0, 1000.0, 0)
-    NetworkAddEntityToSynchronisedScene(keycardObj, keycardScene, animDict, "success_var02_card", 1.0, -1.0, 114886080)
+    NetworkAddPedToSynchronisedScene(PlayerPedId(), keycardScene, animDict, "success_var0" .. tonumber(random), 4.0, -4.0, 2000, 0, 1000.0, 0)
+    NetworkAddEntityToSynchronisedScene(keycardObj, keycardScene, animDict, "success_var0" .. tonumber(random) .. "_card", 1.0, -1.0, 114886080)
     
     NetworkStartSynchronisedScene(keycardScene)
     Wait(3700)
@@ -464,6 +465,8 @@ local function PlantVaultBombs(num)
     while true do 
         Wait(10)
         
+        DisableControlAction(0, 1, true)
+
         HelpMsg("Press ~INPUT_ATTACK~ to plant the ".. numerics[x + 1] .." explosive")
         if IsControlPressed(0, 24) then 
             PlayCamAnim(cam, bombAnims[1][num][3 + x][4 + num], animDict, 2504.97, -240.2, -70.20, 0.0, 0.0, 0.0, false, 2)

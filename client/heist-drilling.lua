@@ -130,6 +130,7 @@ local function StartKeypress(cb)
             Wait(GetFrameTime()) 
             DrawScaleformMovieFullscreen(scaleformDrill, 255, 255, 255, 255, 0)
             DisableControlAction(0, 27, true)
+            DisableControlAction(0, 1, true)
         end
         
         Wait(1000)
