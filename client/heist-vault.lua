@@ -484,6 +484,9 @@ local function CutPainting(j)
         HelpMsg(txt[x])
         if IsControlPressed(0, keys[x]) then 
             PlayCamAnim(cam, paintingAnims[1][x][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
+            ForcePedAiAndAnimationUpdate(PlayerPedId(), false, true)
+            ForceEntityAiAndAnimationUpdate(paintingObjs[j])
+            ForceEntityAiAndAnimationUpdate(bladeObj)
             NetworkStartSynchronisedScene(paintingAnims[2][x])
             Wait(GetAnimDuration(animDict, paintingAnims[1][x][1]) * 1000)
             x = x + 1
