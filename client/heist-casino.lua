@@ -647,11 +647,16 @@ function SewerEntry()
             end
         end
 
+        AddDoorToSystem(1535590430, GetHashKey("v_ilev_rc_door2"), 2485.079, -288.2985, -70.54587, false, false, false)
+        DoorSystemSetDoorState(1535590430, 0, false, true)
+
         LoadCutscene("hs3f_dir_sew")
         StartCutscene(0)
 
         repeat Wait(10) until HasCutsceneFinished()
         SecurityLobby(true, false)
+
+        RemoveDoorFromSystem(1535590430)
     end)
 
 end
