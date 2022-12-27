@@ -3,6 +3,19 @@ local triggered = false
 local vehs = {}
 local blips = {}
 local peds = {}
+local clothingChange = {}
+
+local function ChangeClothing(k)
+    local animDict = "anim_heist@hs3f@ig12_change_clothes@"
+    TriggerServerEvent("sv:casinoheist:syncClotingBlips", k)
+    LoadAnim(animDict)
+    TaskLookAtEntity(PlayerPedId(), clothingChange[k], 1000, 2048, 3)
+    
+    TaskPlayAnim(PlayerPedId(), animDict, "action_01_male", -4.0, 4.0, -1, 0, 2, false, false, false)
+    
+    SetPedComponents(2)
+    RemoveAnimDict(animDict)
+end
 
 function VaultLobby(blip, old)
     --RemoveAllBlips()
@@ -107,6 +120,15 @@ function VaultLobby(blip, old)
 end
 
 function GoToExit()
+    print("data set")
+    approach = 2
+    player = 1
+    selectedExit = 11
+    selectedExitDisguise = 2
+
+    local isInCasino = true 
+    local disguise = false 
+
     EnableMantrapDoors(0, 0)
 
     blips[1] = AddBlipForCoord(casinoEntryCoords[selectedExit][1][1])
@@ -124,7 +146,7 @@ function GoToExit()
     }
 
     CreateThread(function()
-        while true do 
+        while isInCasino do 
             Wait(100)
 
             if #(GetEntityCoords(PlayerPedId()) - casinoEntryCoords[selectedExit][1][1]) < 3 then 
@@ -132,18 +154,77 @@ function GoToExit()
                     SubtitleMsg("Wait for your team members", 110)
                 else 
                     ExitCasino()
-                    break
+                    DeleteEntity(clothingChange[1])
+                    DeleteEntity(clothingChange[2])
+                    isInCasino = false
                 end
             else 
                 SubtitleMsg("Exit the Casino via the ~y~" .. txt[selectedExit], 110)
             end
         end
     end)
+
+    while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z < -59 do 
+        Wait(10)
+    end
+
+    if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
+        local bag = "ch_prop_ch_duffelbag_01x"
+        local basket = "v_res_tre_laundrybasket"
+
+        if player == 1 then 
+            LoadModel(bag)
+
+            for i = 1, 2 do 
+                clothingChange[i] = CreateObject(GetHashKey(bag), clothingChangeCoords[i].xyz, true, false, false)
+                SetEntityHeading(clothingChange[i], clothingChangeCoords[i].w)
+            end
+        else 
+            Wait(10)
+
+            for i = 1, 2 do 
+                clothingChange[i] = GetClosestObjectOfType(clothingChangeCoords[i].xyz, 1.0, GetHashKey(bag), false, false, false)
+            end
+        end
+
+        if playerAmount == 3 then 
+            clothingChange[3] = GetClosestObjectOfType(clothingChangeCoords[3], 1.0, GetHashKey(basket), false, false, false)
+        elseif playerAmount == 4 then 
+            clothingChange[3] = GetClosestObjectOfType(clothingChangeCoords[3], 1.0, GetHashKey(basket), false, false, false)
+            clothingChange[4] = GetClosestObjectOfType(clothingChangeCoords[4], 1.0, GetHashKey(basket), false, false, false)
+        end
+
+        for i = 1, #clothingChange do 
+            blips[i + 1] = AddBlipForEntity(clothingChange[i])
+            SetBlipSprite(blips[i + 1], 73)
+            SetBlipScale(blips[i + 1], 0.75)
+        end
+    end
+
+    CreateThread(function()
+        while isInCasino and not disguise do 
+            Wait(GetFrameTime())
+
+            for k, v in pairs(clothingChangeCoords) do 
+                if #(GetEntityCoords(PlayerPedId()) - v.xyz) < 1.5 and DoesBlipExist(blips[k + 1]) then 
+                    HelpMsg("Press ~INPUT_CONTEXT~ to change clothes")
+
+                    if IsControlJustPressed(0, 38) then 
+                        ChangeClothing(k)
+                        disguise = true
+                    end
+                end
+            end
+        end
+    end)
 end
 
 function ExitCasino()
-    RemoveBlip(blips[1])
+    for i = 1, #blips do 
+        RemoveBlip(blips[i])
+    end
     DoScreenFadeIn(1000)
+    print("Data set")
     player = 1
     selectedExit = 11
     selectedDriver = 1
@@ -162,7 +243,7 @@ function ExitCasino()
 
     LoadCutscene("hs3f_all_esc")
     StartCutscene(0)
-    DoScreenFadeIn(0)
+    DoScreenFadeIn(100)
     
     repeat Wait(10) until GetCutsceneTotalDuration() - GetCutsceneTime() < 1000
 
@@ -261,7 +342,6 @@ local function Route(meet)
     end
 
     vehs[3] = CreateVehicle(GetHashKey(model[selectedBuyer]), meetingPoint[selectedBuyer][meet], true, false)
-    --SetEntityAsMissionEntity(vehs[3])
 
     repeat Wait(10) print("tick") until DoesEntityExist(vehs[3])
 
@@ -328,6 +408,10 @@ end
 
 RegisterNetEvent("cl:casinoheist:syncMeet", Route)
 
+RegisterNetEvent("cl:casinoheist:syncClotingBlips", function(k)
+    RemoveBlip(blips[k + 1])
+end)
+
 RegisterCommand("test_veh", function()
     LoadModel("t20")
     veh = CreateVehicle(GetHashKey("t20"), 985.31, -215.88, 70.5, 271.44, true, false)
@@ -338,3 +422,7 @@ RegisterCommand("test_exit", ExitCasino, false)
 RegisterCommand("skip_swipe2", function()
     triggered = true
 end)
+
+RegisterCommand("test_cc", function()
+    GoToExit()
+end, false)

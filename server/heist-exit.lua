@@ -8,6 +8,12 @@ RegisterNetEvent("sv:casinoheist:syncMeet", function(meet)
 
 end)
 
+RegisterNetEvent("sv:casinoheist:syncClotingBlips", function(k)
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:syncClotingBlips", hPlayer[i], k)
+    end
+end)
+
 RegisterCommand("test_meet", function()
     TriggerEvent("sv:casinoheist:syncMeet")
 end)

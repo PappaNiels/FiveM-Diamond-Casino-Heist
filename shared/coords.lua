@@ -239,6 +239,13 @@ aggressiveVaultDoorCoords = {
     vector3(2504.97, -240.31, -71.8)  -- Exploded Door 
 }
 
+clothingChangeCoords = {
+    vector4(2522.38623, -294.382446, -59.2743835, 180.0),
+    vector4(2521.06738, -301.972656, -59.2743835, 0.0),
+    vector3(2537.175, -296.0182, -59.72115),
+    vector3(2538.592, -298.7382, -57.52237)
+}
+
 getawayVehicles = {
     vector3(982.61, -211.15, 70.38),
     vector3(992.93, -214.45, 69.83)
