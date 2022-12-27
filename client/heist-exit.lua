@@ -123,7 +123,7 @@ function GoToExit()
     approach = 2
     player = 1
     selectedExit = 11
-    selectedExitDisguise = 2
+    selectedExitDisguise = 1
 
     local isInCasino = true 
     local disguise = false 
@@ -324,8 +324,8 @@ local function Route(meet)
         while heistInProgress do 
             Wait(1000)
             
-            if #(GetEntityCoords(PlayerPedId()) - meetingPoint[selectedBuyer][meet]) < 5 then 
-                if IsNotClose(meetingPoint[selectedBuyer][meet], 5) then 
+            if #(GetEntityCoords(PlayerPedId()) - meetingPoint[selectedBuyer][meet]) < 10 then 
+                if IsNotClose(meetingPoint[selectedBuyer][meet], 10) then 
                     SubtitleMsg("Wait for your team to reach the buyer", 1100)
                 else 
                     FinishHeist(meet)
