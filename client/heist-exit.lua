@@ -18,7 +18,6 @@ local function ChangeClothing(k)
 end
 
 function VaultLobby(blip, old)
-    --RemoveAllBlips()
     if blip then 
         for i = 3, 4 do 
             blips[i] = AddBlipForCoord(keypads[4][i])
