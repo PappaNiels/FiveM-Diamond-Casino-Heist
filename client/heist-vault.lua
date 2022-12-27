@@ -518,11 +518,12 @@ local function OpenSlideDoors(size, num, hash)
     end
     
     DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 0, false, false)
+    DoorSystemSetHoldOpen("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size, true)
+    --Wait(4000)
     
-    Wait(4000)
-    
-    RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
-    FreezeEntityPosition(slideDoorObjs[num], true)
+
+    --RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
+    --FreezeEntityPosition(slideDoorObjs[num], true)
 end
 
 local function VaultGas()
