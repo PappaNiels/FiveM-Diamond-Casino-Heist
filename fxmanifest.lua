@@ -28,7 +28,9 @@ client_scripts {
     "client/heist-vault.lua",
     "client/heist-drilling.lua",
     "client/heist-hacking.lua",
-    "client/heist-exit.lua"
+    "client/heist-exit.lua",
+    "client/guards.lua",
+    "client/cams.lua"
 }
 
 server_scripts { 
