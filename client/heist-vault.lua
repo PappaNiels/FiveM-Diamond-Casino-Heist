@@ -648,6 +648,8 @@ local function VaultGas()
             --TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 2000, 0, 0, false, false, false)
             PlayFacialAnim(PlayerPedId(), cough[2][num], "anim@fidgets@coughs")
             PlaySoundFromEntity(-1, "Male_0".. num, PlayerPedId(), "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500)
+
+            ApplyDamageToPed(PlayerPedId(), 10, false)
         end
     end)
     
