@@ -531,19 +531,37 @@ local function PlantSewerBomb()
     sewer = false
 end
 
-function RoofTerraceEntry(bool)
+function RoofTerraceEntry()
     if IsScreenFadedOut() then 
         DoScreenFadeIn(500)
     end
     
     local terrace = true
+    local sprite = {63, 743}
+    local zCoord = -41.12
+
+    for i = 1, 2 do 
+        blips[i] = AddBlipForCoord(terraceBlips[i])
+        SetBlipSprite(blips[i], sprite[i])
+        SetBlipColour(blips[i], 5)
+    end
 
     CreateThread(function()
         while terrace do 
             Wait(100)
             
+            SubtitleMsg("Go to the ~y~basement.", 110)
 
-
+            if GetEntityCoords(PlayerPedId()).z < zCoord then 
+                if zCoord > -42 then
+                    RemoveBlip(blips[1])
+                    RemoveBlip(blips[2])
+                    zCoord = -55
+                else
+                    Basement()
+                    terrace = false                
+                end
+            end
         end
     end)
 end
@@ -584,13 +602,14 @@ function HeliPadEntry()
                     RopeStart()
                     helipad = false
                 end
-            elseif #(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[4])) - stairBlip) < 2.5 then 
+            elseif (#(GetEntityCoords(GetHeistPlayerPed(hPlayer[1])) - stairBlip) < 1.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[2])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[3])) - stairBlip) < 2.5 or #(GetEntityCoords(GetHeistPlayerPed(hPlayer[4])) - stairBlip) < 2.5) and useShaft then 
                 if useShaft then
                     useShaft = false
                     RemoveBlip(blip2)
                     txt = "Go to the ~y~stairs"
                 end
-            elseif #(GetEntityCoords(PlayerPedId()) - stairBlip) < 2.5 and GetEntityCoords(PlayerPedId()).z < -100 then 
+            elseif GetEntityCoords(PlayerPedId()).z < -27.11 and not useShaft then 
+                RemoveBlip(blip)
                 RoofTerraceEntry()
                 helipad = false
             else

@@ -114,11 +114,6 @@ casinoToLobby = {
 
 sewerBomb = vector3(2480.1, -293.33, -70.67)
 
-staffCoords = {
-    vector3(2520.97, -279.37, -58.72), -- Elevator
-    vector3(2514.67, -280.43, -58.72)  -- Stairs
-} 
-
 mantrapCoords = vector3(2423.94, -254.87, -70.81)
 vaultEntryDoorCoords = vector3(2498.22, -238.43, -70.74)
 
@@ -252,6 +247,16 @@ getawayVehicles = {
 -- Blips 
 
 stairBlip = vector3(2526.51, -252.35, -24.12)
+
+terraceBlips = {
+    vector3(2518.68, -259.58, -39.12), -- Elevator
+    vector3(2509.14, -267.2, -39.12)  -- Stairs
+}
+
+staffCoords = {
+    vector3(2520.97, -279.37, -58.72), -- Elevator
+    vector3(2514.67, -280.43, -58.72)  -- Stairs
+} 
 
 vaultCheckpointBlips = {
     vector3(2504.5, -236.85, -70.74),
