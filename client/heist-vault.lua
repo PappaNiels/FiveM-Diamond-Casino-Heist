@@ -334,7 +334,7 @@ local function GrabLoot(i)
     end)
     
     while animTime < 1.0 do 
-        Wait(GetFrameTime())
+        Wait(0)
 
         DisableControlAction(0, 1, true)
 
@@ -465,7 +465,7 @@ local function CutPainting(j)
     NetworkStartSynchronisedScene(paintingAnims[2][2])
     
     while x < 11 and not quit do 
-        Wait(GetFrameTime())
+        Wait(0)
     
         if x == 10 then 
             SetCamCoord(cam, GetEntityCoords(PlayerPedId()) + GetEntityOffset(PlayerPedId(), true))
@@ -626,7 +626,7 @@ local function VaultGas()
         while x < .02 do 
             Wait(20)
     
-            x = x + (GetFrameTime() * 0.01)
+            x = x + (0 * 0.01)
             
             if x > 1.0 then 
                 x = 1.0
@@ -718,7 +718,7 @@ function Vault()
         RequestScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS", false, -1)
         CreateThread(function()
             while true do 
-                Wait(GetFrameTime())
+                Wait(0)
 
                 if not isBusy and isInVault then 
                     for k, v in pairs(artCabinets) do 
@@ -742,7 +742,7 @@ function Vault()
     elseif loot == 1 or loot == 2 or loot == 4 then 
         CreateThread(function()
             while true do 
-                Wait(GetFrameTime())
+                Wait(0)
                 if not isBusy and isInVault then
                     for k, v in pairs(carts[cartLayout]) do 
                         if status[1][k] < 1.0 then 
@@ -766,7 +766,7 @@ function Vault()
 
     CreateThread(function()
         while true do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             if not isBusy and isInVault then 
                 for k, v in pairs(keypads[3]) do

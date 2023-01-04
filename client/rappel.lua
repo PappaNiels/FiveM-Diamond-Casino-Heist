@@ -114,7 +114,7 @@ function RopeStart()
         DisableControlAction(0, 37, true)
         DisableControlAction(0, 260, true)
 
-        Wait(GetFrameTime())
+        Wait(0)
     end
 
     

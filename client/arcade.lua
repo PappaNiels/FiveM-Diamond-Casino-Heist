@@ -1543,7 +1543,7 @@ RegisterNetEvent("cl:casinoheist:readyUp", hfdsjkfh)
 local function CamSettings()
     CreateThread(function()
         while camIsUsed do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             DisableAllControlActions(2)
             SetPauseMenuActive(false) 
@@ -1554,7 +1554,7 @@ end
 local function FocusThread()
     CreateThread(function()
         while isInGarage and boardUsing == 0 do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             for i = 1, boards do 
                 local distance = #(GetEntityCoords(PlayerPedId()) - boardCoords[i])
@@ -1581,7 +1581,7 @@ local function ScaleformThread()
 
     CreateThread(function()
         while isInGarage do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             DrawScaleformMovie_3dSolid(boardType[1], 2713.3, -366.2, -54.23418, 0.0, 0.0, camHeading[1], 1.0, 1.0, 1.0, 3.0, 1.7, 1.0, 0)
             
@@ -1605,7 +1605,7 @@ end
 function KeypressUnfocused()
     CreateThread(function()
         while boardUsing ~= 0 and camIsUsed and not isFocusedBoard do 
-            Wait(2)
+            Wait(0)
             
             if IsDisabledControlJustPressed(0, 32) then -- W
                 PlaySoundFrontend(-1, "Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS", true)
@@ -1653,7 +1653,7 @@ end
 function KeypressFocused()
     CreateThread(function()
         while isFocusedBoard do 
-            Wait(2)
+            Wait(0)
 
             if IsDisabledControlJustPressed(0, 174) then -- <--
                 if boardUsing == 1 then 
@@ -1720,7 +1720,7 @@ end
 
 CreateThread(function()
     while true do 
-        Wait(GetFrameTime())
+        Wait(0)
         if not heistInProgress then 
             if not isInGarage then 
                 local distance = #(GetEntityCoords(PlayerPedId()) - vector3(759.08, -816.05, 25.3))

@@ -139,7 +139,7 @@ function DrawTeamlives()
 
     CreateThread(function()
         while showTeamLives do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             SetTextColour(teamlivesColour[1], teamlivesColour[2], teamlivesColour[3], teamlivesColour[4])
             SetTextScale(0.28, 0.28)
@@ -168,7 +168,7 @@ function DrawTake()
 
     CreateThread(function()
         while showTake do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             SetTextScale(0.28, 0.28)
             BeginTextCommandDisplayText("STRING")
@@ -195,7 +195,7 @@ function DrawTimer()
 
     CreateThread(function()
         while showTimer do 
-            Wait(GetFrameTime())
+            Wait(0)
             
             SetTextColour(timerColour[1], timerColour[2], timerColour[3], timerColour[4])
             SetTextScale(0.28, 0.28)
@@ -347,7 +347,7 @@ function EndScreen()
     
     CreateThread(function()
         while draw do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             DisableAllControlActions(0)
             DrawScaleformMovieFullscreenMasked(endScreen[1], endScreen[2], 255, 255, 255, 255)

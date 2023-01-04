@@ -121,13 +121,13 @@ local function StartKeypress(cb)
         
         CreateThread(function()
             while position < 0.3 do 
-                Wait(GetFrameTime())
+                Wait(0)
                 HelpMsg("Press ~INPUT_CONTEXT~ to drill the vault door")
             end
         end)
 
         while position < 1.0 do
-            Wait(GetFrameTime()) 
+            Wait(0) 
             DrawScaleformMovieFullscreen(scaleformDrill, 255, 255, 255, 255, 0)
             DisableControlAction(0, 27, true)
             DisableControlAction(0, 1, true)

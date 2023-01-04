@@ -38,7 +38,7 @@ function VaultLobby(blip, old)
 
     CreateThread(function()
         while true do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             if not isSwiping then 
                 SubtitleMsg("Go to one of the ~g~keypads~s~.", 110)
@@ -202,7 +202,7 @@ function GoToExit()
 
     CreateThread(function()
         while isInCasino and not disguise do 
-            Wait(GetFrameTime())
+            Wait(0)
 
             for k, v in pairs(clothingChangeCoords) do 
                 if #(GetEntityCoords(PlayerPedId()) - v.xyz) < 1.5 and DoesBlipExist(blips[k + 1]) then 
