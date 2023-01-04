@@ -583,7 +583,7 @@ function HeliPadEntry()
 
     CreateThread(function()
         while helipad do 
-            Wait(0)
+            Wait(GetFrameTime())
             
             DrawMarker(1, rappelEntry[1].xy, rappelEntry[1].z - 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.75, 200, 200, 50, 100, false, false, 2, false)
         end
@@ -635,7 +635,7 @@ function SewerEntry()
 
         CreateThread(function()
             while sewer do 
-                Wait(0)
+                Wait(GetFrameTime())
 
                 local distance = #(GetEntityCoords(PlayerPedId()) - sewerBomb) 
 

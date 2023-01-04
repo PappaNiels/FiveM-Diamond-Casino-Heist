@@ -1,4 +1,4 @@
-local location = 1
+local isInSecurity = true
 local guards = {
     {   -- Security Lobby 
         {  
@@ -51,9 +51,6 @@ local guards = {
         }
     }
 
-    -- vector3(2513.29,-283.81, -58.72) -> vector3(2511.92, -275.43, -58.72)
-    -- vector3(2542.3, -291.19, -58.72) -> vector3(2504.43, -291.06, -58.72)
-
     --"s_m_m_highsec_03",
     --"s_m_y_westsec_02"
 }
@@ -67,6 +64,7 @@ local function SpawnPed()
     LoadModel(guards[1][3][1])
 
     for i = 1, 1 do 
+        activeGuards[i] = CreatePed(1, GetHashKey(guards[1][i][1]), guards[1][i]["coords"][1], false --[[test]], false)
         --blips[i] = AddBlipForEntity(activeGuards[i])
         --SetBlipScale(blips[i], 0.75)
         --SetBlipSprite(blips[i], 270)
@@ -74,24 +72,17 @@ local function SpawnPed()
         --SetBlipPriority(blips[i], 7)
         --N_0xf83d0febe75e62c9(blips[i], -1.0, 1.0, 0.36, 1.0, 8.2, (250.0 * 0.017453292), 1, 11)
         --SetBlipShowCone(blips[i], true, 11)
-        
-        activeGuards[i] = CreatePed(1, GetHashKey(guards[1][i][1]), 2488.01, -274.31, -70.69, 0.0, false --[[test]], false)
 
-        SetPedHasAiBlipWithColor(activeGuards[i], true, 1)
-        SetPedAiBlipGangId(activeGuards[i], 1)
-        SetPedAiBlipNoticeRange(activeGuards[i], 10.0)
-        SetPedAiBlipSprite(activeGuards[i], 270) 
+
+        SetPedHasAiBlipWithColor(activeGuards[i], true, 1) -- SetPedHasAiBlip()
+        --SetPedAiBlipGangId(activeGuards[i], 1)
+        --SetPedAiBlipNoticeRange(activeGuards[i], 10.0)
+        --SetPedAiBlipSprite(activeGuards[i], 270) -- 
         SetPedAiBlipForcedOn(activeGuards[i], true)
         SetPedAiBlipHasCone(activeGuards[i], true)
-        blips[i] = Citizen.InvokeNative(0x7CD934010E115C2C, activeGuards[i]) -- GetAiBlip_2(activeGuards[i]). Returns: 0
-        blips[i] = GetAiBlip(activeGuards[i]) -- Returns: 0
-        SetBlipPriority(blips[i], 7)
-        
+        blips[i] = GetAiBlip_2(activeGuards[i])
 
-        
-        print(blips[i])
-
-        --repeat Wait(10) print("tick") until DoesBlipExist(blips[i]) 
+        repeat Wait(10) print("tick") until DoesBlipExist(blips[i]) 
 
 
         --
@@ -161,7 +152,7 @@ function StartWalking()
         CreateThread(function()
             local j = i
 
-            while not IsPedDeadOrDying(activeGuards[j]) and location == 1 do
+            while not IsPedDeadOrDying(activeGuards[j]) and isInSecurity do
                 TaskFollowNavMeshToCoord(activeGuards[j], guards[1][j]["coords"][guards[1][j]["tick"]].xyz, 1.0, -1, 1.0, true, 2.0)
 
                 repeat Wait(1000) until not IsPedWalking(activeGuards[j])

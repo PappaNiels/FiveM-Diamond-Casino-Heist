@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 local camPlace = {
     {},
     {
@@ -27,3 +28,5 @@ AddEventHandler("onResourceStart", function(rs)
     --SetFacilityObjects(1)
     --Scale()
 end)
+=======
+>>>>>>> parent of f984ecd (tweak by nta :/)

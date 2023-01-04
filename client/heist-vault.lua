@@ -334,7 +334,7 @@ local function GrabLoot(i)
     end)
     
     while animTime < 1.0 do 
-        Wait(0)
+        Wait(GetFrameTime())
 
         DisableControlAction(0, 1, true)
 
@@ -465,7 +465,7 @@ local function CutPainting(j)
     NetworkStartSynchronisedScene(paintingAnims[2][2])
     
     while x < 11 and not quit do 
-        Wait(0)
+        Wait(GetFrameTime())
     
         if x == 10 then 
             SetCamCoord(cam, GetEntityCoords(PlayerPedId()) + GetEntityOffset(PlayerPedId(), true))
@@ -624,6 +624,7 @@ local function VaultGas()
         SetParticleFxLoopedAlpha(ptfx[i], 255.0)
     end
 
+<<<<<<< HEAD
     UseParticleFxAsset("scr_ch_finale")
     ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
 
@@ -636,6 +637,21 @@ local function VaultGas()
             x = 1.0
         elseif x < 0.0 then 
             x = 0.0
+=======
+        while x < .02 do 
+            Wait(20)
+    
+            x = x + (GetFrameTime() * 0.01)
+            
+            if x > 1.0 then 
+                x = 1.0
+            elseif x < 0.0 then 
+                x = 0.0
+            end
+    
+            SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
+            SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
+>>>>>>> parent of f984ecd (tweak by nta :/)
         end
 
         SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
@@ -722,7 +738,7 @@ function Vault()
         RequestScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS", false, -1)
         CreateThread(function()
             while true do 
-                Wait(0)
+                Wait(GetFrameTime())
 
                 if not isBusy and isInVault then 
                     for k, v in pairs(artCabinets) do 
@@ -746,7 +762,7 @@ function Vault()
     elseif loot == 1 or loot == 2 or loot == 4 then 
         CreateThread(function()
             while true do 
-                Wait(0)
+                Wait(GetFrameTime())
                 if not isBusy and isInVault then
                     for k, v in pairs(carts[cartLayout]) do 
                         if status[1][k] < 1.0 then 
@@ -770,7 +786,7 @@ function Vault()
 
     CreateThread(function()
         while true do 
-            Wait(0)
+            Wait(GetFrameTime())
 
             if not isBusy and isInVault then 
                 for k, v in pairs(keypads[3]) do
