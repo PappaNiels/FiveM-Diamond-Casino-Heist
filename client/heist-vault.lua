@@ -603,40 +603,44 @@ local function VaultGas()
     
     --CreateThread(function()
     RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
-        RequestAnimSet("anim@fidgets@coughs")
+    RequestAnimSet("anim@fidgets@coughs")
 
-        while not HasAnimSetLoaded("anim@fidgets@coughs") do 
-            Wait(0)
-        end
+    while not HasAnimSetLoaded("anim@fidgets@coughs") do 
+        Wait(0)
+    end
 
-        RequestNamedPtfxAsset("scr_ch_finale")
+    RequestNamedPtfxAsset("scr_ch_finale")
 
-        LoadAnim("anim@fidgets@coughs")
+    while not HasNamedPtfxAssetLoaded("scr_ch_finale") do 
+        Wait(0)
+    end
 
-        for i = 1, 3 do 
-            UseParticleFxAsset("scr_ch_finale")
-            ptfx[i] = StartParticleFxLoopedAtCoord("scr_ch_finale_poison_gas", GetGasCoords(i), GetGasRot(i), 1.0, false, false, false, true)
-            SetParticleFxLoopedColour(ptfx[i], 255.0, 255.0, 255.0, true)
-            SetParticleFxLoopedAlpha(ptfx[i], 255.0)
-        end
+    LoadAnim("anim@fidgets@coughs")
 
+    for i = 1, 3 do 
         UseParticleFxAsset("scr_ch_finale")
-        ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
+        ptfx[i] = StartParticleFxLoopedAtCoord("scr_ch_finale_poison_gas", GetGasCoords(i), GetGasRot(i), 1.0, false, false, false, true)
+        SetParticleFxLoopedColour(ptfx[i], 255.0, 255.0, 255.0, true)
+        SetParticleFxLoopedAlpha(ptfx[i], 255.0)
+    end
 
-        while x < .02 do 
-            Wait(20)
-    
-            x = x + (0 * 0.01)
-            
-            if x > 1.0 then 
-                x = 1.0
-            elseif x < 0.0 then 
-                x = 0.0
-            end
-    
-            SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
-            SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
+    UseParticleFxAsset("scr_ch_finale")
+    ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
+
+    while x < .02 do 
+        Wait(20)
+
+        x = x + (0 * 0.01)
+        
+        if x > 1.0 then 
+            x = 1.0
+        elseif x < 0.0 then 
+            x = 0.0
         end
+
+        SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
+        SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
+    end
     --end)
     
     --sId = GetSoundId()
