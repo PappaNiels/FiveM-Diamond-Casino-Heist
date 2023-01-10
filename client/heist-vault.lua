@@ -624,7 +624,6 @@ local function VaultGas()
         SetParticleFxLoopedAlpha(ptfx[i], 255.0)
     end
 
-<<<<<<< HEAD
     UseParticleFxAsset("scr_ch_finale")
     ptfx[4] = StartParticleFxLoopedAtCoord("scr_ch_finale_vault_haze", 2527.0, -238.5, -71.8, 0.0, 0.0, 0.0, 1.0, false, false, false, true)
 
@@ -637,7 +636,8 @@ local function VaultGas()
             x = 1.0
         elseif x < 0.0 then 
             x = 0.0
-=======
+        end
+        
         while x < .02 do 
             Wait(20)
     
@@ -651,7 +651,6 @@ local function VaultGas()
     
             SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
             SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
->>>>>>> parent of f984ecd (tweak by nta :/)
         end
 
         SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
