@@ -763,6 +763,8 @@ function Basement()
         DoScreenFadeIn(500)
     end
 
+    isInStaff = true
+
     RemoveAllBlips()
     local sprite = {63, 743}
     
@@ -773,6 +775,8 @@ function Basement()
         SetBlipColour(blips[i], 5)
     end
     
+    AddBlipsForSelectedRoom(1)
+
     local num = 1
     local zCoord = -61
     CreateThread(function()
@@ -789,6 +793,7 @@ function Basement()
                     zCoord = -67
                     num = 2
                 elseif num == 2 then 
+                    AddBlipsForSelectedRoom(2)
                     zCoord = -70
                     num = 3
                 else

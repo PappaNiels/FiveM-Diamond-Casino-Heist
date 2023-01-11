@@ -57,6 +57,9 @@ playerCut = {
 
 alarmTriggered = 0
 
+isInStaff = false
+isInSecurity = false
+
 local models = { 
     GetHashKey("a_f_m_bevhills_01"),
     GetHashKey("a_f_m_bevhills_02"),

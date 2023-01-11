@@ -1,10 +1,10 @@
 local camPlace = {
     {   -- Big Cams
-        vector4(2501.200, -279.2152, -69.02602, 90.0),
+        vector4(2501.200, -279.2152, -69.42602, 90.0),
         vector4(2506.87181, -279.2152, -66.25569, 90.0),
 
-        vector4(2515.37964, -273.2429, -57.0345764, 0.0),
-        vector4(2501.84839, -263.377228, -55.33636, 90.0)
+        vector4(2515.37964, -273.2429, -57.4545764, 0.0),
+        vector4(2501.84839, -263.377228, -55.53636, 90.0)
     },
 
     {   -- Small cam
@@ -22,12 +22,12 @@ local camRot = {
             140.0
         },
         {
-            120.0,
-            60.0
+            110.0,
+            70.0
         },
         {
-            300.0,
-            60.0,
+            290.0,
+            70.0,
         },
         {
             120.0,
@@ -77,6 +77,14 @@ local cams = {
 
 local blips = {{}, {}}
 
+local function Helper(vec)
+    local var = Vmag(vec)
+
+    if var ~= 0.0 then 
+        return vec * (-8.2 / var)
+    end
+end
+
 local function RemoveAllBlips()
     N_0x8410c5e0cd847b9d()
 
@@ -87,12 +95,40 @@ local function RemoveAllBlips()
     end
 end
 
+local function GetRoom()
+    if isInStaff then 
+        return 1
+    elseif isInSecurity then 
+        return 2
+    end
+    return 2
+end
+
+local function GetColour(i, j)
+    if (approach == 2 and ((i == 1 and j == 4) or (i == 2 and j == 1))) or selectedEntryDisguise == 3 then 
+        return 0
+    else
+        return 1 
+    end 
+end
+
+local function GetCamEntities()
+    for i = 1, 2 do 
+        for j = 1, #camPlace[i] do 
+            if i == 1 then 
+                cams[1][j] = GetClosestObjectOfType(camPlace[1][j].xyz, 2.0, GetHashKey(camModels[2]), false, false, false)
+            else 
+                cams[2][j] = GetClosestObjectOfType(camPlace[2][j].xyz, 1.0, GetHashKey(camModels[3]), false, false, false)
+            end
+        end
+    end
+end
+
 local function SpawnCams()
-    LoadModel(camModels[1])
-    LoadModel(camModels[2])
-    LoadModel(camModels[3])
+    for i = 1 , 3 do 
+        LoadModel(camModels[i])
+    end
     
-    --local j = 2
     local obj = {{}, {}}
     
     for i = 1, 2 do 
@@ -111,28 +147,41 @@ local function SpawnCams()
         --N_0x9097eb6d4bb9a12a(PlayerId(), obj[i])
         --SetObjectTargettable(obj, true)
     end
-    for i = 1, 2 do 
-        for j = 1, #camPlace[i] do 
-            CreateThread(function()
-                test(i, j)
-            end)
-        end
+    
+    for i = 1, 3 do 
+        SetModelAsNoLongerNeeded(camModels[i])
+    end
+    
+    AddBlipsForSelectedRoom(2)
+    --for i = 1, 2 do 
+    --    for j = 1, #camPlace[i] do 
+    --        CreateThread(function()
+    --            test(i, j)
+    --        end)
+    --    end
+    --end
+end
+
+local function CheckCamVision(i, j)
+    local coords = GetEntityCoords(cams[i][j])
+    if HasEntityClearLosToEntity(cams[i][j], PlayerPedId(), 17) and IsEntityInAngledArea(PlayerPedId(), coords, Helper(GetEntityForwardVector(cams[i][j])) + coords - vector3(0.0, 0.0, 5.0), 3.0, true, true, 0) then 
+        print("seen", j)
     end
 end
 
-function test(i, j)
+local function CamLoop(i, j)
     local delta = (camRot[i][j][2] - camRot[i][j][1]) / 300
     
-    if i == 1 and j == 3 then delta = 0.33 end
+    if delta < 0 then delta = -0.33 else delta = 0.33 end
     
+    --ApplyForceToEntity(cams[i][j], 3, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0, false, false, false, false, true)
+    --ApplyForceToEntity(cams[i][j], 3, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1, false, false, false, false, true)
+    --ApplyForceToEntity(cams[i][j], 3, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 2, false, false, false, false, true)
     repeat
         SetEntityHeading(cams[i][j], GetEntityHeading(cams[i][j]) + delta)
-        
-        local fvec = -GetEntityForwardVector(cams[i][j])
-        local te = Atan2(fvec.x, -fvec.y)
-        
+
         SetBlipSquaredRotation(blips[i][j], GetEntityHeading(cams[i][j]))
-        N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((te + 180.00) * 0.017453292), 1, 6)
+        N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 1, 6)
         Wait(10)
     until math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][2] or math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][2] - 360
     
@@ -141,43 +190,91 @@ function test(i, j)
     repeat
         SetEntityHeading(cams[i][j], GetEntityHeading(cams[i][j]) - delta)
         
-        local fvec = -GetEntityForwardVector(cams[i][j])
-        local te = Atan2(fvec.x, -fvec.y)
-        
         SetBlipSquaredRotation(blips[i][j], GetEntityHeading(cams[i][j]))
-        N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((te + 180.00) * 0.017453292), 1, 6)
+        N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 1, 6)
         Wait(10)
     until math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][1] or math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][1] - 360
+
+    Wait(math.random(1000, 3000))
 end
 
 function AddBlipsForSelectedRoom(room)
     RemoveAllBlips()
 
-    local one = rooms[room][i][1]
-    local two = rooms[room][i][2]
-    local fvec = -GetEntityForwardVector(cams[one][two])
-    local te = Atan2(fvec.x, -fvec.y)
+    if not DoesEntityExist(cams[1][1]) then 
+        if player == 1 then 
+            SpawnCams()
+        else
+            GetCamEntities()
+        end
+    end
 
-    blips[one][two] = AddBlipForEntity(cams[one][two])
-    SetBlipSprite(blips[one][two], 604)
-    SetBlipScale(blips[one][two], 1.0)
-    SetBlipColour(blips[one][two], 59)
-    SetBlipNameFromTextFile(blips[one][two], "CSH_BLIP_CCTV")
-    ShowHeightOnBlip(blips[one][two], false)
-    SetBlipAsShortRange(blips[one][two], true)
-    SetBlipPriority(blips[one][two], 12)
-    SetBlipSquaredRotation(blips[one][two], te)
-    
-    N_0xf83d0febe75e62c9(blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((te + 180.00) * 0.017453292), 1, 6)
-    SetBlipShowCone(blips[one][two], true, 6)
+    if approach == 3 then return end
+
+    if room == 2 and false then 
+        isInSecurity = true 
+        isInStaff = false 
+    elseif false then 
+        isInSecurity = false 
+        isInStaff = true 
+    end
+
+    for i = 1, #rooms[room] do 
+        local one = rooms[room][i][1]
+        local two = rooms[room][i][2]
+        local fvec = -GetEntityForwardVector(cams[one][two])
+        local te = Atan2(fvec.x, -fvec.y)
+
+        blips[one][two] = AddBlipForEntity(cams[one][two])
+        SetBlipSprite(blips[one][two], 604)
+        SetBlipScale(blips[one][two], 1.0)
+        SetBlipColour(blips[one][two], GetColour(room, i))
+        print("tick")
+        SetBlipNameFromTextFile(blips[one][two], "CSH_BLIP_CCTV")
+        ShowHeightOnBlip(blips[one][two], false)
+        SetBlipAsShortRange(blips[one][two], true)
+        SetBlipPriority(blips[one][two], 12)
+        SetBlipSquaredRotation(blips[one][two], te)
+        
+        N_0xf83d0febe75e62c9(blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((te + 180.00) * 0.017453292), 1, 6)
+        SetBlipShowCone(blips[one][two], true, 6)
+
+        CreateThread(function()
+            while GetRoom() == room and not IsEntityDead(cams[one][two]) do 
+                CamLoop(one, two)
+                Wait(1000)
+            end
+
+
+            N_0x35a3cd97b2c0a6d2(blips[one][two])
+            RemoveBlip(blips[one][two])
+        end)
+        CreateThread(function()
+            while GetRoom() == room and not IsEntityDead(cams[one][two]) and alarmTriggered == 0 do 
+                Wait(100)
+                CheckCamVision(one, two)
+            end
+        end)
+
+        Wait(math.random(100, 1000))
+    end
 end
+
+AddEventHandler("onResourceStop", function(rs)
+    if res ~= GetCurrentResourceName() then return end 
+
+    for i = 1, 2 do 
+        for j = 1, #camPlace[i] do 
+            DeleteEntity(cams[i][j])
+        end
+    end
+
+end)
 
 AddEventHandler("onResourceStart", function(rs)
     if rs ~= "Diamond-Casino-Heist" then return end 
-    
+    print(vector3(1.0, 1.0, 1.0) * 3)
     SpawnCams()
-    
-    
     --SetFacilityObjects(1)
     --Scale()
 end)
