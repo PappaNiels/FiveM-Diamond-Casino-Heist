@@ -104,6 +104,7 @@ local function SetupCargobob()
         
         cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobCoords, 0, false, false)
         SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
+        --SET_PED_CAN_BE_DRAGGED_OUT
         SetEntityInvincible(cargobob[2], true)
         SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
         
