@@ -1,3 +1,8 @@
+local currentRoom = 0
+local sId = 0
+
+local seen = {0, 0, 0, 0}
+
 local camPlace = {
     {   -- Big Cams
         vector4(2501.200, -279.2152, -69.42602, 90.0),
@@ -95,15 +100,6 @@ local function RemoveAllBlips()
     end
 end
 
-local function GetRoom()
-    if isInStaff then 
-        return 1
-    elseif isInSecurity then 
-        return 2
-    end
-    return 2
-end
-
 local function GetColour(i, j)
     if (approach == 2 and ((i == 1 and j == 4) or (i == 2 and j == 1))) or selectedEntryDisguise == 3 then 
         return 0
@@ -134,54 +130,66 @@ local function SpawnCams()
     for i = 1, 2 do 
         for j = 1, #camPlace[i] do 
             if i == 1 then 
-                obj[1][j] = CreateObject(GetHashKey(camModels[1]), camPlace[1][j].xyz, false, false, false)
+                obj[1][j] = CreateObject(GetHashKey(camModels[1]), camPlace[1][j].xyz, true, false, false)
                 SetEntityHeading(obj[1][j], camPlace[1][j].w)
-                cams[1][j] = CreateObject(GetHashKey(camModels[2]), camPlace[1][j].xyz - (GetEntityOffset(obj[1][j], false) * 0.37) + vector3(0.0, 0.0, 0.05), false, false, false)
+                cams[1][j] = CreateObject(GetHashKey(camModels[2]), camPlace[1][j].xyz - (GetEntityOffset(obj[1][j], false) * 0.37) + vector3(0.0, 0.0, 0.05), true, false, false)
             else
-                cams[2][j] = CreateObject(GetHashKey(camModels[3]), camPlace[2][j].xyz, false, false, false)
+                cams[2][j] = CreateObject(GetHashKey(camModels[3]), camPlace[2][j].xyz, true, false, false)
             end
             
             SetEntityHeading(cams[i][j], camRot[i][j][1])
         end
-        --SetEntityHeading(obj[2], 100.0)
-        --N_0x9097eb6d4bb9a12a(PlayerId(), obj[i])
-        --SetObjectTargettable(obj, true)
     end
     
     for i = 1, 3 do 
         SetModelAsNoLongerNeeded(camModels[i])
     end
     
-    AddBlipsForSelectedRoom(2)
-    --for i = 1, 2 do 
-    --    for j = 1, #camPlace[i] do 
-    --        CreateThread(function()
-    --            test(i, j)
-    --        end)
-    --    end
-    --end
+    --AddBlipsForSelectedRoom(1)
 end
 
 local function CheckCamVision(i, j)
     local coords = GetEntityCoords(cams[i][j])
     if HasEntityClearLosToEntity(cams[i][j], PlayerPedId(), 17) and IsEntityInAngledArea(PlayerPedId(), coords, Helper(GetEntityForwardVector(cams[i][j])) + coords - vector3(0.0, 0.0, 5.0), 3.0, true, true, 0) then 
-        print("seen", j)
+        print("seen", j, seen[j])
+
+        if HasSoundFinished(sId) then 
+            sId = GetSoundId()
+            PlaySoundFromEntity(sId, "CCTV_Alarm", cams[i][j], "dlc_vw_casino_finale_sounds", true, 0)
+        end
+
+        seen[j] = seen[j] + 1
+        if seen[j] > 6 then 
+            TriggerServerEvent("sv:casinoheist:alarm")
+            print("Alarm!")
+            seen[j] = 0
+            Wait(1000)
+            StopSound(sId)
+            ReleaseSoundId(sId)
+        end
+    elseif seen[j] ~= 0 then 
+        StopSound(sId)
+        ReleaseSoundId(sId)
+        sId = 0
+        seen[j] = 0
     end
+end
+
+local function BlipLoop(i, j)
+    SetBlipSquaredRotation(blips[i][j], GetEntityHeading(cams[i][j]))
+    N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 1, 6)
 end
 
 local function CamLoop(i, j)
     local delta = (camRot[i][j][2] - camRot[i][j][1]) / 300
     
     if delta < 0 then delta = -0.33 else delta = 0.33 end
+    if i == 1 and j == 3 then delta = delta * -1 end
     
-    --ApplyForceToEntity(cams[i][j], 3, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0, false, false, false, false, true)
-    --ApplyForceToEntity(cams[i][j], 3, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1, false, false, false, false, true)
-    --ApplyForceToEntity(cams[i][j], 3, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 2, false, false, false, false, true)
     repeat
         SetEntityHeading(cams[i][j], GetEntityHeading(cams[i][j]) + delta)
 
-        SetBlipSquaredRotation(blips[i][j], GetEntityHeading(cams[i][j]))
-        N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 1, 6)
+        BlipLoop(i, j)
         Wait(10)
     until math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][2] or math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][2] - 360
     
@@ -190,70 +198,86 @@ local function CamLoop(i, j)
     repeat
         SetEntityHeading(cams[i][j], GetEntityHeading(cams[i][j]) - delta)
         
-        SetBlipSquaredRotation(blips[i][j], GetEntityHeading(cams[i][j]))
-        N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 1, 6)
+        BlipLoop(i, j)
         Wait(10)
     until math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][1] or math.ceil(GetEntityHeading(cams[i][j])) == camRot[i][j][1] - 360
 
     Wait(math.random(1000, 3000))
 end
 
+function GetRoom()
+    return currentRoom
+end
+
 function AddBlipsForSelectedRoom(room)
     RemoveAllBlips()
+
+    seen = {0, 0, 0, 0}
+    RequestScriptAudioBank("DLC_VINEWOOD/VW_CASINO_FINALE", false, -1)
+
+    currentRoom = room
 
     if not DoesEntityExist(cams[1][1]) then 
         if player == 1 then 
             SpawnCams()
         else
+            Wait(100)
             GetCamEntities()
         end
     end
 
     if approach == 3 then return end
 
-    if room == 2 and false then 
-        isInSecurity = true 
-        isInStaff = false 
-    elseif false then 
-        isInSecurity = false 
-        isInStaff = true 
-    end
-
     for i = 1, #rooms[room] do 
         local one = rooms[room][i][1]
         local two = rooms[room][i][2]
-        local fvec = -GetEntityForwardVector(cams[one][two])
-        local te = Atan2(fvec.x, -fvec.y)
+        local heading = GetEntityHeading(cams[one][two])
 
         blips[one][two] = AddBlipForEntity(cams[one][two])
         SetBlipSprite(blips[one][two], 604)
         SetBlipScale(blips[one][two], 1.0)
         SetBlipColour(blips[one][two], GetColour(room, i))
-        print("tick")
         SetBlipNameFromTextFile(blips[one][two], "CSH_BLIP_CCTV")
         ShowHeightOnBlip(blips[one][two], false)
         SetBlipAsShortRange(blips[one][two], true)
         SetBlipPriority(blips[one][two], 12)
-        SetBlipSquaredRotation(blips[one][two], te)
+        SetBlipSquaredRotation(blips[one][two], heading)
         
-        N_0xf83d0febe75e62c9(blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((te + 180.00) * 0.017453292), 1, 6)
+        N_0xf83d0febe75e62c9(blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((heading + 180.00) * 0.017453292), 1, 6)
         SetBlipShowCone(blips[one][two], true, 6)
 
-        CreateThread(function()
-            while GetRoom() == room and not IsEntityDead(cams[one][two]) do 
-                CamLoop(one, two)
-                Wait(1000)
-            end
+        if player == 1 then 
+            CreateThread(function()
+                while currentRoom == room and not IsEntityDead(cams[one][two]) do 
+                    Wait(1000)
+                    
+                    CamLoop(one, two)
+                end
+                
+                N_0x35a3cd97b2c0a6d2(blips[one][two])
+                RemoveBlip(blips[one][two])
+            end)
+        else 
+            CreateThread(function()
+                while currentRoom == room and not IsEntityDead(cams[one][two]) do 
+                    Wait(0)
+    
+                    BlipLoop(one, two)
+                end
 
+                N_0x35a3cd97b2c0a6d2(blips[one][two])
+                RemoveBlip(blips[one][two])
+            end)
+        end 
 
-            N_0x35a3cd97b2c0a6d2(blips[one][two])
-            RemoveBlip(blips[one][two])
-        end)
         CreateThread(function()
-            while GetRoom() == room and not IsEntityDead(cams[one][two]) and alarmTriggered == 0 do 
+            while currentRoom == room and not IsEntityDead(cams[one][two]) and not IsAmbientZoneEnabled("AZ_H3_Casino_Alarm_Zone_01_Exterior") do 
                 Wait(100)
+
                 CheckCamVision(one, two)
             end
+
+            alarmTriggered = 1
         end)
 
         Wait(math.random(100, 1000))
@@ -261,7 +285,9 @@ function AddBlipsForSelectedRoom(room)
 end
 
 AddEventHandler("onResourceStop", function(rs)
-    if res ~= GetCurrentResourceName() then return end 
+    if rs ~= GetCurrentResourceName() then return end 
+
+    DisableAlarm()
 
     for i = 1, 2 do 
         for j = 1, #camPlace[i] do 
@@ -273,9 +299,19 @@ end)
 
 AddEventHandler("onResourceStart", function(rs)
     if rs ~= "Diamond-Casino-Heist" then return end 
-    print(vector3(1.0, 1.0, 1.0) * 3)
-    SpawnCams()
+    
+    --TriggerAlarm()
+    
+    --SpawnCams()
+
+    PrepareMusicEvent("CH_IDLE")
+    TriggerMusicEvent("CH_IDLE")
+
+    if PlayerId() == GetPlayerFromServerId(1) then 
+        player = 1 
+    end
+
+    AddBlipsForSelectedRoom(1)
     --SetFacilityObjects(1)
     --Scale()
 end)
-
