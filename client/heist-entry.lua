@@ -215,6 +215,8 @@ function StartHeist()
     --selectedBuyer = 3
     --selectedExit = 11
 
+    PrepareMusicEvent("CH_IDLE_START")
+    TriggerMusicEvent("CH_IDLE_START")
 
     playerAmount = #hPlayer
 
