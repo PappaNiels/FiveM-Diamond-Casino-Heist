@@ -148,7 +148,9 @@ function GoToExit()
         while isInCasino do 
             Wait(100)
 
-            if #(GetEntityCoords(PlayerPedId()) - casinoEntryCoords[selectedExit][1][1]) < 3 then 
+            local coords = GetEntityCoords(PlayerPedId())
+
+            if #(coords - casinoEntryCoords[selectedExit][1][1]) < 3 then 
                 if IsNotClose(casinoEntryCoords[selectedExit][1][1], 3) then 
                     SubtitleMsg("Wait for your team members", 110)
                 else 
@@ -159,6 +161,10 @@ function GoToExit()
                 end
             else 
                 SubtitleMsg("Exit the Casino via the ~y~" .. txt[selectedExit], 110)
+            end
+
+            if coords.z > -59 and GetRoom == 2 then 
+                AddBlipsForSelectedRoom(1)
             end
         end
     end)
@@ -278,6 +284,15 @@ function ExitCasino()
             SubtitleMsg("Deliver the ~g~loot~s~ to the ~y~buyer", 110)
         end 
     end
+
+    if alarmTriggered == 1 then 
+        CancelMusicEvent("CH_GUNFIGHT_START")
+    else 
+        CancelMusicEvent("CH_IDLE")
+    end
+
+    PrepareMusicEvent("CH_DELIVERING")
+    TriggerMusicEvent("CH_DELIVERING")
     
     RemoveBlip(blips[2])
     RemoveBlip(blips[1])
@@ -340,12 +355,15 @@ local function Route(meet)
         Wait(1000)
     end
 
-    vehs[3] = CreateVehicle(GetHashKey(model[selectedBuyer]), meetingPoint[selectedBuyer][meet], true, false)
+    DisableAlarm()
+    ReleaseNamedScriptAudioBank("DLC_VINEWOOD/VW_CASINO_FINALE")
+
+    vehs[3] = CreateVehicle(GetHashKey(model[selectedBuyer]), meetingPoint[selectedBuyer][meet], false, false)
 
     repeat Wait(10) print("tick") until DoesEntityExist(vehs[3])
 
     for i = 1, 3 do 
-        peds[i] = CreatePedInsideVehicle(vehs[3], 1, GetHashKey(pedModels[selectedBuyer][i]), -2 + i, true, false)
+        peds[i] = CreatePedInsideVehicle(vehs[3], 1, GetHashKey(pedModels[selectedBuyer][i]), -2 + i, false, false)
     end
 
     for i = 1, 3 do 
