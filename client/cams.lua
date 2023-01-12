@@ -304,14 +304,14 @@ AddEventHandler("onResourceStart", function(rs)
     
     --SpawnCams()
 
-    PrepareMusicEvent("CH_IDLE")
-    TriggerMusicEvent("CH_IDLE")
+    --PrepareMusicEvent("CH_IDLE")
+    --TriggerMusicEvent("CH_IDLE")
 
     if PlayerId() == GetPlayerFromServerId(1) then 
         player = 1 
     end
 
-    AddBlipsForSelectedRoom(1)
+    --AddBlipsForSelectedRoom(1)
     --SetFacilityObjects(1)
     --Scale()
 end)

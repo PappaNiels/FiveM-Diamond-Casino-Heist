@@ -164,7 +164,7 @@ function GoToExit()
             end
 
             if coords.z > -59 and GetRoom == 2 then 
-                AddBlipsForSelectedRoom(1)
+                SetRoom(1)
             end
         end
     end)

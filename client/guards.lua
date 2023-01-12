@@ -169,6 +169,10 @@ function StartWalking()
     end
 end
 
+function AddGuardsForSelectedRoom(room)
+
+end
+
 RegisterCommand("test_nav", function()
     StartNav(1)
 end, false)

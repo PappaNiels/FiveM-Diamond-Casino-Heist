@@ -775,7 +775,7 @@ function Basement()
         SetBlipColour(blips[i], 5)
     end
     
-    AddBlipsForSelectedRoom(1)
+    SetRoom(1)
 
     local num = 1
     local zCoord = -61
@@ -793,7 +793,7 @@ function Basement()
                     zCoord = -67
                     num = 2
                 elseif num == 2 then 
-                    AddBlipsForSelectedRoom(2)
+                    SetRoom(2)
                     zCoord = -70
                     num = 3
                 else

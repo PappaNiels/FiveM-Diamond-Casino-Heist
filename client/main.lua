@@ -118,6 +118,11 @@ function Models()
     end
 end
 
+function SetRoom(room)
+    AddBlipsForSelectedRoom(room)
+    AddGuardsForSelectedRoom(room)
+end
+
 function TriggerAlarm()
     SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_01_Exterior", true, true)
     SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_02_Interior", true, true)
