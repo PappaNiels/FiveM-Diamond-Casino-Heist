@@ -57,9 +57,6 @@ playerCut = {
 
 alarmTriggered = 0
 
-isInStaff = false
-isInSecurity = false
-
 local models = { 
     GetHashKey("a_f_m_bevhills_01"),
     GetHashKey("a_f_m_bevhills_02"),
@@ -119,6 +116,20 @@ function Models()
     for i = 1, #models, 1 do 
         LoadModel(models[i])
     end
+end
+
+function TriggerAlarm()
+    SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_01_Exterior", true, true)
+    SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_02_Interior", true, true)
+
+    CancelMusicEvent("CH_IDLE")
+    PrepareMusicEvent("CH_GUNFIGHT_START")
+    TriggerMusicEvent("CH_GUNFIGHT_START")
+end
+
+function DisableAlarm()
+    SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_01_Exterior", false, true)
+    SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_02_Interior", false, true)
 end
 
 --function SetLoot()
@@ -200,6 +211,8 @@ RegisterNetEvent("cl:casinoheist:startHeist", function(obj)
 
     StartHeist()
 end)
+
+RegisterNetEvent("cl:casinoheist:alarm", TriggerAlarm)
 
 AddEventHandler("baseevents:onPlayerDied", function(o, i)
     if hPlayer[1] == GetPlayerServerId(PlayerId()) or hPlayer[2] == GetPlayerServerId(PlayerId()) or hPlayer[3] == GetPlayerServerId(PlayerId()) or hPlayer[4] == GetPlayerServerId(PlayerId()) then 
