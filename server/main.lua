@@ -113,6 +113,12 @@ RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
     return true
 end)
 
+RegisterNetEvent("sv:casinoheist:alarm", function()
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:alarm", hPlayer[i])
+    end
+end)
+
 RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
     --if GetInvokingResource() ~= "Diamond-Casino-Heist" then return end 
     if heistInProgress then return end
