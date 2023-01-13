@@ -117,8 +117,31 @@ RegisterCommand("cut_dropoff", function(src, args)
     EndScreen()
 end, false)
 
-RegisterCommand("keyframe", function()
-    EnableMovieKeyframeWait(true)
+RegisterCommand("nativeb", function()
+    
+    LoadModel("ch_prop_ch_cctv_cam_02a")
+    
+    local obj = CreateObject(GetHashKey("ch_prop_ch_cctv_cam_02a"), GetEntityCoords(PlayerPedId()), false, false, false)
+    
+    local blip = AddBlipForEntity(obj)
+    local heading = GetEntityHeading(obj)
+    
+    SetBlipSprite(blip, 604)
+    SetBlipScale(blip, 1.0)
+    SetBlipColour(blip, 1)
+    SetBlipNameFromTextFile(blip, "CSH_BLIP_CCTV")
+    ShowHeightOnBlip(blip, false)
+    SetBlipAsShortRange(blip, true)
+    --SetBlipPriority(blip, 12)
+    SetBlipSquaredRotation(blip, heading)
+    
+    --                Blip (ent), ?, ?,  width,  ?,  length,  heading, ? Hud_colour 
+    N_0xf83d0febe75e62c9(blip, -1.0, 1.0, 3.35, 1.0, 8.2, ((0.0 + 180.00) * 0.017453292), 11, 11)
+    SetBlipShowCone(blip, true, 11)
+    
+    Wait(3000)
+    SetBlipShowCone(blip, false, 11)
+    N_0x35a3cd97b2c0a6d2(blip)
 end, false)
 
 -- Aggressive entry
