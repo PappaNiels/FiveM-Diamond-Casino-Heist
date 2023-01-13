@@ -95,6 +95,8 @@ local function RemoveAllBlips()
 
     for i = 1, 2 do 
         for j = 1, #blips[i] do 
+            SetBlipShowCone(blips[i][j], false, 11)
+            N_0x35a3cd97b2c0a6d2(blips[i][j])
             RemoveBlip(blips[i][j])
         end
     end
