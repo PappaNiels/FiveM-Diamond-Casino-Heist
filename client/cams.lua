@@ -179,7 +179,7 @@ end
 
 local function BlipLoop(i, j)
     SetBlipSquaredRotation(blips[i][j], GetEntityHeading(cams[i][j]))
-    N_0xf83d0febe75e62c9(blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 1, 6)
+    Citizen.InvokeNative(0xf83d0febe75e62c9, blips[i][j], -1.0, 1.0, 0.36, 1.0, 8.2, ((GetEntityHeading(cams[i][j]) + 180.00) * 0.017453292), 0, 11)
 end
 
 local function CamLoop(i, j)
@@ -245,8 +245,8 @@ function AddBlipsForSelectedRoom(room)
         SetBlipPriority(blips[one][two], 12)
         SetBlipSquaredRotation(blips[one][two], heading)
         
-        N_0xf83d0febe75e62c9(blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((heading + 180.00) * 0.017453292), 1, 6)
-        SetBlipShowCone(blips[one][two], true, 6)
+        Citizen.InvokeNative(0xf83d0febe75e62c9, blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((heading + 180.00) * 0.017453292), 0, 11)
+        SetBlipShowCone(blips[one][two], true, 11)
 
         if player == 1 then 
             CreateThread(function()
@@ -313,7 +313,7 @@ AddEventHandler("onResourceStart", function(rs)
         player = 1 
     end
 
-    --AddBlipsForSelectedRoom(1)
+    AddBlipsForSelectedRoom(1)
     --SetFacilityObjects(1)
     --Scale()
 end)
