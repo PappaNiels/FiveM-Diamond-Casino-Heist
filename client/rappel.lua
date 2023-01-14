@@ -55,6 +55,7 @@ end
 
 function RopeStart()
     player = 1
+    print("data sets")
     LoadCutscene("hs3f_mul_rp1")
     StartCutscene(0)
 
@@ -114,7 +115,7 @@ function RopeStart()
         DisableControlAction(0, 37, true)
         DisableControlAction(0, 260, true)
 
-        Wait(GetFrameTime())
+        Wait(0)
     end
 
     
