@@ -101,6 +101,7 @@ function VaultLobby(blip, old)
                     isSwiping = true
                     RemoveBlip(blips[1])
                     RemoveBlip(blips[2])
+                    SetRoom(2)
                     GoToExit()
                     break
                 elseif swiped then 
@@ -167,7 +168,7 @@ function GoToExit()
         Wait(10)
     end
 
-    AddBlipsForSelectedRoom(1)
+    SetRoom(1)
 
     if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
         local bag = "ch_prop_ch_duffelbag_01x"
