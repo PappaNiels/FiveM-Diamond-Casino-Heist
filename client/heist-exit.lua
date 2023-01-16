@@ -119,12 +119,6 @@ function VaultLobby(blip, old)
 end
 
 function GoToExit()
-    print("data set")
-    approach = 2
-    player = 1
-    selectedExit = 11
-    selectedExitDisguise = 1
-
     local isInCasino = true 
     local disguise = false 
 
@@ -172,6 +166,8 @@ function GoToExit()
     while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z < -59 do 
         Wait(10)
     end
+
+    AddBlipsForSelectedRoom(1)
 
     if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
         local bag = "ch_prop_ch_duffelbag_01x"
