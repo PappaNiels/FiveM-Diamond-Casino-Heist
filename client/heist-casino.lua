@@ -759,6 +759,7 @@ function MainEntry()
 end
     
 function Basement()
+    InitRoutes()
     if IsScreenFadedOut() then 
         DoScreenFadeIn(500)
     end
