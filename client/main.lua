@@ -120,7 +120,7 @@ end
 
 function SetRoom(room)
     AddBlipsForSelectedRoom(room)
-    AddGuardsForSelectedRoom(room)
+    SetGuardVision(room)
 end
 
 function TriggerAlarm()

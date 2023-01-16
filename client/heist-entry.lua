@@ -102,11 +102,12 @@ local function SetupCargobob()
         cargobob[1] = CreateVehicle(GetHashKey("cargobob2"), cargobobCoords, 328.34, true, false)
         SetVehicleColours(cargobob[1], 0, 0)
         
-        cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobCoords, 0, false, false)
+        cargobob[2] = CreatePed(0, GetHashKey("s_m_y_pilot_01"), cargobobCoords, 0, true, false)
         SetPedIntoVehicle(cargobob[2], cargobob[1], -1)
         --SET_PED_CAN_BE_DRAGGED_OUT
+        SetPedCanBeDraggedOut(cargobob[2], false)
         SetEntityInvincible(cargobob[2], true)
-        SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
+        --SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
         
         while not DoesEntityExist(cargobob[2]) do 
             Wait(10)
@@ -115,6 +116,9 @@ local function SetupCargobob()
         netIds[1] = VehToNet(cargobob[1])
         netIds[2] = PedToNet(cargobob[2])
         
+        print(NetworkDoesNetworkIdExist(netIds[1]))
+        print(NetworkDoesNetworkIdExist(netIds[2]))
+
         TriggerServerEvent("sv:casinoheist:syncNetIds", netIds)
     else
         Wait(100)
@@ -130,7 +134,7 @@ local function SetupCargobob()
 
         cargobob[1] = NetToVeh(netIds[1])
         cargobob[2] = NetToPed(netIds[2])
-        SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
+        --SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
     end
 
     cargobob[3] = AddBlipForCoord(cargobobCoords)
@@ -139,18 +143,19 @@ local function SetupCargobob()
     SetBlipColour(cargobob[3], 54)
     SetBlipHighDetail(cargobob[3], true)
     
-    while not IsPedInAnyHeli(PlayerPedId()) and IsPedInAnyVehicle(PlayerPedId(), true) do 
+    while not IsPedInAnyHeli(PlayerPedId()) do 
         Wait(50)
         if #(vector3(1060.1, -288.31, 50.81) - GetEntityCoords(PlayerPedId())) < 4 and IsControlPressed(0, 23) then 
             for i = 0, 4 do 
                 if IsVehicleSeatFree(cargobob[1], i) then 
-                    TaskEnterVehicle(GetHeistPlayerPed(hPlayer[i + 1]), cargobob[1], 1.0, i, 2.0, 0, 0)
+                    TaskEnterVehicle(PlayerPedId(), cargobob[1], 1.0, i, 2.0, 0, 0)
                 else 
-                    TaskEnterVehicle(GetHeistPlayerPed(hPlayer[i + 1]), cargobob[1], 1.0, i + 1, 2.0, 0, 0)
+                    TaskEnterVehicle(PlayerPedId(), cargobob[1], 1.0, i + 1, 2.0, 0, 0)
                 end
             end
         end
     end
+
 
     RemoveBlip(cargobob[3])
 

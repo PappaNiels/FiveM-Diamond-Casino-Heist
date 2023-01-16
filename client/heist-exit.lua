@@ -158,17 +158,11 @@ function GoToExit()
                 SubtitleMsg("Exit the Casino via the ~y~" .. txt[selectedExit], 110)
             end
 
-            if coords.z > -59 and GetRoom == 2 then 
+            if coords.z > -59 and GetRoom() == 2 then 
                 SetRoom(1)
             end
         end
     end)
-
-    while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z < -59 do 
-        Wait(10)
-    end
-
-    SetRoom(1)
 
     if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
         local bag = "ch_prop_ch_duffelbag_01x"
@@ -225,6 +219,9 @@ function ExitCasino()
     for i = 1, #blips do 
         RemoveBlip(blips[i])
     end
+
+    DeletePaths()
+
     DoScreenFadeIn(1000)
     print("Data set")
     player = 1
