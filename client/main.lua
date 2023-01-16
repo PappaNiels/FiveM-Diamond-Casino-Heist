@@ -157,7 +157,7 @@ AddEventHandler("onResourceStart", function()
     --    StopResource(GetCurrentResourceName())
     --end
     --TriggerServerEvent("sv:casinoheist:setupheist" )
-    SetEntityVisible(PlayerPedId(), true)
+    --SetEntityVisible(PlayerPedId(), true)
 end)
 
 function SetupCheckpoint()
