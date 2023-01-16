@@ -228,7 +228,7 @@ function AddBlipsForSelectedRoom(room)
         end
     end
 
-    if approach == 3 then return end
+    if approach == 3 or alarmTriggered == 1 then return end
 
     for i = 1, #rooms[room] do 
         if not IsEntityDead(cams[one][two]) then 
