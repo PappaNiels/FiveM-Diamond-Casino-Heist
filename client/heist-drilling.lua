@@ -100,6 +100,8 @@ end
 local function SetLaser(bool)
     isDrilling = bool
     
+    StopParticleFxLooped(laserFx, 0)
+
     BeginScaleformMovieMethod(scaleformDrill, "SET_LASER_VISIBLE")
     ScaleformMovieMethodAddParamBool(bool)
     EndScaleformMovieMethod()
@@ -175,6 +177,7 @@ local function StartKeypress(cb)
                 NetworkStartSynchronisedScene(drillAnims[2][6])
                 SetLaser(false)
                 repeat Wait(10) SetTempAndSpeed(false) until temp < 0.5
+                StartParticleFxLoopedOnEntity("scr_ch_finale_laser", drillObj, -0.00375, -0.3, 0.015, 0.0, 0.0, -90.0, 1.0, false, false, false)
                 StopSound(id)
             else
                 SetLaser(false)
