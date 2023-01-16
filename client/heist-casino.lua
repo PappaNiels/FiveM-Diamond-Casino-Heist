@@ -759,7 +759,7 @@ function MainEntry()
 end
     
 function Basement()
-    if selectedEntrance == 11 and selectedEntrance == 1 then 
+    if IsScreenFadedOut() then 
         DoScreenFadeIn(500)
     end
 
