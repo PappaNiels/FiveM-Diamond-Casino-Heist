@@ -147,7 +147,7 @@ local function SpawnCams()
         SetModelAsNoLongerNeeded(camModels[i])
     end
     
-    --AddBlipsForSelectedRoom(1)
+    --SetRoom(1)
 end
 
 local function CheckCamVision(i, j)
@@ -231,59 +231,65 @@ function AddBlipsForSelectedRoom(room)
     if approach == 3 then return end
 
     for i = 1, #rooms[room] do 
-        local one = rooms[room][i][1]
-        local two = rooms[room][i][2]
-        local heading = GetEntityHeading(cams[one][two])
+        if not IsEntityDead(cams[one][two]) then 
+            local one = rooms[room][i][1]
+            local two = rooms[room][i][2]
+            local heading = GetEntityHeading(cams[one][two])
 
-        blips[one][two] = AddBlipForEntity(cams[one][two])
-        SetBlipSprite(blips[one][two], 604)
-        SetBlipScale(blips[one][two], 1.0)
-        SetBlipColour(blips[one][two], GetColour(room, i))
-        SetBlipNameFromTextFile(blips[one][two], "CSH_BLIP_CCTV")
-        ShowHeightOnBlip(blips[one][two], false)
-        SetBlipAsShortRange(blips[one][two], true)
-        SetBlipPriority(blips[one][two], 12)
-        SetBlipSquaredRotation(blips[one][two], heading)
-        
-        Citizen.InvokeNative(0xf83d0febe75e62c9, blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((heading + 180.00) * 0.017453292), 0, 11)
-        SetBlipShowCone(blips[one][two], true, 11)
+            blips[one][two] = AddBlipForEntity(cams[one][two])
+            SetBlipSprite(blips[one][two], 604)
+            SetBlipScale(blips[one][two], 1.0)
+            SetBlipColour(blips[one][two], GetColour(room, i))
+            SetBlipNameFromTextFile(blips[one][two], "CSH_BLIP_CCTV")
+            ShowHeightOnBlip(blips[one][two], false)
+            SetBlipAsShortRange(blips[one][two], true)
+            SetBlipPriority(blips[one][two], 12)
+            SetBlipSquaredRotation(blips[one][two], heading)
+            
+            Citizen.InvokeNative(0xf83d0febe75e62c9, blips[one][two], -1.0, 1.0, 0.36, 1.0, 8.2, ((heading + 180.00) * 0.017453292), 0, 11)
+            SetBlipShowCone(blips[one][two], true, 11)
 
-        if player == 1 then 
-            CreateThread(function()
-                while currentRoom == room and not IsEntityDead(cams[one][two]) do 
-                    Wait(1000)
+            if player == 1 then 
+                CreateThread(function()
+                    while currentRoom == room and not IsEntityDead(cams[one][two]) do 
+                        Wait(1000)
+
+                        CamLoop(one, two)
+                    end
+
+                    N_0x35a3cd97b2c0a6d2(blips[one][two])
+                    RemoveBlip(blips[one][two])
+                end)
+            else 
+                CreateThread(function()
+                    while currentRoom == room and not IsEntityDead(cams[one][two]) do 
+                        Wait(0)
                     
-                    CamLoop(one, two)
-                end
-                
-                N_0x35a3cd97b2c0a6d2(blips[one][two])
-                RemoveBlip(blips[one][two])
-            end)
-        else 
+                        BlipLoop(one, two)
+                    end
+
+                    N_0x35a3cd97b2c0a6d2(blips[one][two])
+                    RemoveBlip(blips[one][two])
+                end)
+            end 
+
             CreateThread(function()
-                while currentRoom == room and not IsEntityDead(cams[one][two]) do 
-                    Wait(0)
-    
-                    BlipLoop(one, two)
+                while currentRoom == room and not IsEntityDead(cams[one][two]) and not IsAmbientZoneEnabled("AZ_H3_Casino_Alarm_Zone_01_Exterior") do 
+                    Wait(100)
+
+                    CheckCamVision(one, two)
                 end
 
-                N_0x35a3cd97b2c0a6d2(blips[one][two])
-                RemoveBlip(blips[one][two])
+                alarmTriggered = 1
             end)
-        end 
 
-        CreateThread(function()
-            while currentRoom == room and not IsEntityDead(cams[one][two]) and not IsAmbientZoneEnabled("AZ_H3_Casino_Alarm_Zone_01_Exterior") do 
-                Wait(100)
-
-                CheckCamVision(one, two)
-            end
-
-            alarmTriggered = 1
-        end)
-
-        Wait(math.random(100, 1000))
+            Wait(math.random(100, 1000))
+        end
     end
+end
+
+function StopCams()
+    currentRoom = 0
 end
 
 AddEventHandler("onResourceStop", function(rs)
