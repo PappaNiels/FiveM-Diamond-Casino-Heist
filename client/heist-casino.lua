@@ -10,7 +10,7 @@ local timerStarted = false
 local plantBombs = false
 local leftBombs = false                        
 local rightBombs = false
-local sewer                        
+local sewer = false                       
 
 local bombObjs = {}
 local blips = {}
@@ -910,6 +910,8 @@ function SecurityLobby(blip, old)
 end
 
 function FirstMantrap()
+    StopCams()
+
     blips[1] = AddBlipForCoord(mantrapCoords)
     SetBlipColour(blips[1], 5)
 
