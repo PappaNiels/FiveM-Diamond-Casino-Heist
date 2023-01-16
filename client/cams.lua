@@ -231,7 +231,7 @@ function AddBlipsForSelectedRoom(room)
     if approach == 3 or alarmTriggered == 1 then return end
 
     for i = 1, #rooms[room] do 
-        if not IsEntityDead(cams[one][two]) then 
+        if not IsEntityDead(cams[rooms[room][i][1]][rooms[room][i][2]]) then 
             local one = rooms[room][i][1]
             local two = rooms[room][i][2]
             local heading = GetEntityHeading(cams[one][two])
