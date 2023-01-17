@@ -208,8 +208,6 @@ function InitRoutes()
                 AddPatrolRouteLink(k, k + 1)
             end
             
-
-
             AddPatrolRouteLink(#guards[i][j][2], 1)
             ClosePatrolRoute()
             CreatePatrolRoute()
