@@ -128,8 +128,9 @@ function TriggerAlarm()
     SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_02_Interior", true, true)
 
     CancelMusicEvent("CH_IDLE")
-    PrepareMusicEvent("CH_GUNFIGHT_START")
-    TriggerMusicEvent("CH_GUNFIGHT_START")
+    PrepareMusicEvent("CH_GUNFIGHT")
+    TriggerMusicEvent("CH_GUNFIGHT")
+    alarmTriggered = 1
 end
 
 function DisableAlarm()
