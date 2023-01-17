@@ -98,6 +98,7 @@ local function SpawnPed()
 
     Wait(1000)
 
+    -- Still doesn't work :/
     for i = 2, 2 do 
         for j = 1, #guards[i] -1 do
             TaskPatrol(activeGuards[i][j], "MISS_PATROL_" .. j - 1, 1, false, true)
