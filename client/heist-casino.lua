@@ -1074,6 +1074,8 @@ RegisterNetEvent("cl:casinoheist:syncVault", function(key)
             LoadCutscene("hs3f_mul_vlt")
             StartCutscene(0)
 
+            DeleteEntity(vaultObjs[2])
+
             while not DoesCutsceneEntityExist("MP_3") do 
                 Wait(0)
             end
