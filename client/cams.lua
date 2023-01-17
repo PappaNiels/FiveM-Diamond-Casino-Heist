@@ -274,7 +274,7 @@ function AddBlipsForSelectedRoom(room)
             end 
 
             CreateThread(function()
-                while currentRoom == room and not IsEntityDead(cams[one][two]) and not IsAmbientZoneEnabled("AZ_H3_Casino_Alarm_Zone_01_Exterior") do 
+                while currentRoom == room and not IsEntityDead(cams[one][two]) and alarmTriggered == 0 do 
                     Wait(100)
 
                     CheckCamVision(one, two)
