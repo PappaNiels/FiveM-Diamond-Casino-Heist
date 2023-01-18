@@ -251,7 +251,7 @@ function AddBlipsForSelectedRoom(room)
 
             if player == 1 then 
                 CreateThread(function()
-                    while currentRoom == room and not IsEntityDead(cams[one][two]) do 
+                    while currentRoom == room and not HasObjectBeenBroken(cams[one][two]) do 
                         Wait(1000)
 
                         CamLoop(one, two)
@@ -262,7 +262,7 @@ function AddBlipsForSelectedRoom(room)
                 end)
             else 
                 CreateThread(function()
-                    while currentRoom == room and not IsEntityDead(cams[one][two]) do 
+                    while currentRoom == room and not HasObjectBeenBroken(cams[one][two]) do 
                         Wait(0)
                     
                         BlipLoop(one, two)
@@ -274,7 +274,7 @@ function AddBlipsForSelectedRoom(room)
             end 
 
             CreateThread(function()
-                while currentRoom == room and not IsEntityDead(cams[one][two]) and alarmTriggered == 0 do 
+                while currentRoom == room and not HasObjectBeenBroken(cams[one][two]) and alarmTriggered == 0 do 
                     Wait(100)
 
                     CheckCamVision(one, two)
