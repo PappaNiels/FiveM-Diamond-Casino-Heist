@@ -132,6 +132,11 @@ local function SpawnPed()
         for j = 1, #guards[i] do
             activeGuards[i][j] = CreatePed(1, GetHashKey(guards[i][j][1]), guards[i][j][2][1], true, false)
 
+            SetPedAccuracy(activeGuards[i][j], 70.0) -- Lookup
+            GiveWeaponToPed(activeGuards[i][j], GetHashKey("weapon_combatpistol"), 2000, false, false)
+            SetPedDropsWeaponsWhenDead(activeGuards[i][j], false)
+            SetPedCombatMovement(activeGuards[i][j], 3)
+            SetPedCombatRange(activeGuards[i][j], 2)
             --blips[i][j] = AddBlipForEntity(activeGuards[i][j])
             --SetBlipScale(blips[i][j], 0.75)
             --SetBlipSprite(blips[i][j], 270)
@@ -143,12 +148,13 @@ local function SpawnPed()
             SetPedAiBlipNoticeRange(activeGuards[i][j], 100.0)
             SetPedAiBlipSprite(activeGuards[i][j], 270)
             SetPedAiBlipForcedOn(activeGuards[i][j], true)
+            SetPedAiBlipHasCone(activeGuards[i][j], true)
 
             -- Cone
 
-            BeginTextCommandSetBlipName("STRING")
-            AddTextComponentSubstringPlayerName("Guard")
-            EndTextCommandSetBlipName(blips[i][j])
+            --BeginTextCommandSetBlipName("STRING")
+            --AddTextComponentSubstringPlayerName("Guard")
+            --EndTextCommandSetBlipName(blips[i][j])
         end
     end 
     
@@ -164,7 +170,7 @@ local function SpawnPed()
         end
     end
 
-    --SetGuardVision(1)
+    SetGuardVision(1)
 end
     
 function SetGuardVision(room)
@@ -182,6 +188,7 @@ function SetGuardVision(room)
 
                     if seen[i] > 6 then 
                         TriggerServerEvent("sv:casinoheist:alarm")
+                        SetGuardAgg()
                     end
                 elseif seen[i] ~= 0 then 
                     seen[i] = 0
@@ -231,10 +238,18 @@ function SetGuardAgg()
     for i = 1, 2 do 
         for j = 1, #activeGuards[i] do 
             SetPedRelationshipGroupHash(activeGuards[i][j], GetHashKey("GUARDS"))
+            SetPedAiBlipHasCone(activeGuards[i][j], false)
+            --TaskCombatPed(activeGuards[i][j], PlayerPedId(), 0, 16)
         end
     end
 end
 
 RegisterCommand("test_nav", function()
+    SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
+    AddRelationshipGroup("GUARDS")
+    SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
+    SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
+    SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
+    
     InitRoutes()
 end, false)
