@@ -255,6 +255,28 @@ function GetXTextPlace(x, y)
     return (0.5 - ((0.5 - x) / ratio))
 end
 
+function GetClothingModel(num)
+    if num == 13 then 
+        return 5
+    elseif num == 8 then 
+        return 4
+    elseif num == 3 then 
+        return 3
+    elseif num == 0 then 
+        return 2
+    elseif num == 9 then 
+        return 1
+    elseif num == 10 then 
+        return 8
+    elseif num == 11 then 
+        return 9
+    elseif num == 13 then 
+        return 5
+    elseif num == 7 then   
+        return 3
+    end  
+end
+
 RegisterNetEvent("cl:casinoheist:startCutscene", function(cutscene)
     if source == hPlayer[1] or source == hPlayer[2] or source == hPlayer[3] or source == hPlayer[4] then  
         LoadCutscene(cutscene)
