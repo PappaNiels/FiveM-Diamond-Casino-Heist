@@ -407,7 +407,6 @@ RegisterCommand("test_exp", VaultExplosionSetup, false)
 local function PlantVaultBombs(num)
     local animDict = ""
     local bomb = "ch_prop_ch_explosive_01a"
-    --local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
     local camNum = 4 + num 
 
     LoadModel(bomb)

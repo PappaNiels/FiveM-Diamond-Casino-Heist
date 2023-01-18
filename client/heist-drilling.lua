@@ -8,11 +8,13 @@ local position = 0
 local place = 2
 local sparksFx = 0
 local laserFx = 0
+local bagColour = 0
 
 local isDrilling = false
 
 local animDict = ""
 local drillName = ""
+local bag = ""
 
 local drillAnims = { -- Laser: "anim_heist@hs3f@ig9_vault_drill@laser_drill@", "ch_prop_laserdrill_01a" Regular: "anim_heist@hs3f@ig9_vault_drill@drill@", "hei_prop_heist_drill"
     {   -- Ped, Drill, Bag, Cam
@@ -43,9 +45,12 @@ local function LoadDrilling()
             drillName = "hei_prop_heist_drill"
         end
 
+        bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+        bag = "ch_p_m_bag_var0" .. GetClothingModel(bagColour) .. "_arm_s"
+
         LoadAnim(animDict)
         LoadModel(drillName)
-        LoadModel("hei_p_m_bag_var22_arm_s")
+        LoadModel(bag)
 
         repeat Wait(10) until HasScaleformMovieLoaded(scaleformDrill)
     end
@@ -55,7 +60,7 @@ local function UnloadDrilling()
     SetScaleformMovieAsNoLongerNeeded(scaleformDrill)
     RemoveAnimDict(animDict)
     SetModelAsNoLongerNeeded(drillName)
-    SetModelAsNoLongerNeeded("hei_p_m_bag_var22_arm_s")
+    SetModelAsNoLongerNeeded(bag)
     
     if approach == 1 then 
         ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_LASER_DRILL")
@@ -239,10 +244,10 @@ function StartDrilling(k)
     --SetEntityHeading(vaultObj, 90.0)
 
     isBusy = true
-
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
-    bagObj = CreateObject(GetHashKey("hei_p_m_bag_var22_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
+    bagObj = CreateObject(GetHashKey("ch_p_m_bag_var0" .. GetClothingModel(bagColour) .. "_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
+    SetPedComponentVariation(ped, 5, 0, 0, 0)
 
     if approach == 1 then 
         syncPos = vaultDrillPos[k] + vector3(-0.1, 0.0, 0.0)
@@ -308,6 +313,7 @@ function StartDrilling(k)
 
             DeleteEntity(drillObj)
             DeleteEntity(bagObj)
+            SetPedComponentVariation(ped, 5, 82, bagColour, 0)
 
             isBusy = false
         end

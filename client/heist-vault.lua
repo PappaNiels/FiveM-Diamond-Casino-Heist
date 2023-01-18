@@ -267,7 +267,8 @@ local function GrabLoot(i)
     local quit = false
     local waiting = false
     local animDict = "anim@heists@ornate_bank@grab_cash"
-    local bag = "hei_p_m_bag_var22_arm_s"
+    local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+    local bag = "ch_p_m_bag_var0" .. GetClothingModel(bagColour) .. "_arm_s"
     local propType = {
         "ch_prop_20dollar_pile_01a",
         "ch_prop_gold_bar_01a",
@@ -290,6 +291,7 @@ local function GrabLoot(i)
     LoadAnim(animDict)
     LoadModel(propType[loot])
     LoadModel(bag)
+    SetPedComponentVariation(ped, 5, 0, 0, 0)
         
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
     boxObj = CreateObject(propType[loot], GetEntityCoords(PlayerPedId()), true, false, false)
@@ -408,6 +410,7 @@ local function GrabLoot(i)
     DeleteEntity(bagObj)
     DeleteEntity(boxObj)
     DestroyCam(cam)
+    SetPedComponentVariation(ped, 5, 82, bagColour, 0)
 
     isBusy = false
 end
@@ -416,7 +419,8 @@ local function CutPainting(j)
     DestroyAllCams()
     local animDict = "anim_heist@hs3f@ig11_steal_painting@male@"
     local blade = "w_me_switchblade"
-    local bag = "hei_p_m_bag_var22_arm_s"
+    local bagColour = GetPedTextureVariation(PlayerPedId(), 5)
+    local bag = "ch_p_m_bag_var0" .. GetClothingModel(bagColour) .. "_arm_s"
     local x = 3
     local quit = false
     local txt = {
@@ -509,6 +513,7 @@ local function CutPainting(j)
     DeleteEntity(bladeObj)
     SetCamActive(cam, false)
     DestroyAllCams()
+    SetPedComponentVariation(ped, 5, 82, bagColour, 0)
     isBusy = false
 end
 
