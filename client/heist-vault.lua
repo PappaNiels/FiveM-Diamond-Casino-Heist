@@ -729,14 +729,10 @@ function Vault()
         GetVaultObjs()
     end
 
-    LoadTexture("timerbars") -- Needs to be removed
     RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
 
+    ShowTimerBars(true)
     DrawTimer()
-
-    if not showTake then 
-        DrawTake()
-    end
 
     if loot == 3 then 
         RequestScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS", false, -1)
