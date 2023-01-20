@@ -19,6 +19,9 @@ local selectedExitDisguise = 1
 local boughtCleanVehicle = false
 local boughtDecoy = false
 
+local vaultLayout = 0
+local cartLayout = 0
+
 local cuts = {}
 local invitedPlayers = {}
 
@@ -145,6 +148,9 @@ RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
 
         boughtCleanVehicle = obj[16]
         boughtDecoy = obj[17]
+
+        vaultLayout = obj[18]
+        cartLayout = obj[19]
 
         for i = 2, #hPlayer do 
             TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i], obj)
