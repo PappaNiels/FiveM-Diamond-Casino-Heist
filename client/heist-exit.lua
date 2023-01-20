@@ -160,6 +160,10 @@ function GoToExit()
 
             if coords.z > -59 and GetRoom() == 2 then 
                 SetRoom(1)
+
+                if alarmTriggered == 0 then 
+                    SetBlipsColour()
+                end 
             end
         end
     end)
