@@ -152,7 +152,7 @@ end
 
 local function CheckCamVision(i, j)
     local coords = GetEntityCoords(cams[i][j])
-    if HasEntityClearLosToEntity(cams[i][j], PlayerPedId(), 17) and IsEntityInAngledArea(PlayerPedId(), coords, Helper(GetEntityForwardVector(cams[i][j])) + coords - vector3(0.0, 0.0, 5.0), 3.0, true, true, 0) then 
+    if GetBlipColour(blips[i][j]) == 1 and HasEntityClearLosToEntity(cams[i][j], PlayerPedId(), 17) and IsEntityInAngledArea(PlayerPedId(), coords, Helper(GetEntityForwardVector(cams[i][j])) + coords - vector3(0.0, 0.0, 5.0), 3.0, true, true, 0) then 
         print("seen", j, seen[j])
 
         if HasSoundFinished(sId) then 
@@ -284,6 +284,14 @@ function AddBlipsForSelectedRoom(room)
             end)
 
             Wait(math.random(100, 1000))
+        end
+    end
+end
+
+function SetCamColour()
+    for i = 1, 2 do 
+        for j = 1, #blips[i] do 
+            SetBlipColour(blips[i][j], 1)
         end
     end
 end

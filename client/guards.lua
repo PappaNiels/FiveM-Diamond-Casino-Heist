@@ -152,6 +152,7 @@ local function SpawnPed()
 
             -- Cone
 
+            -- Blip Name
             --BeginTextCommandSetBlipName("STRING")
             --AddTextComponentSubstringPlayerName("Guard")
             --EndTextCommandSetBlipName(blips[i][j])
@@ -174,14 +175,17 @@ local function SpawnPed()
 end
     
 function SetGuardVision(room)
+    if not DoesEntityExist(activeGuards[1][1]) then 
+        InitRoutes()
+    end
+
     currentRoom = room
     for i = 1, #activeGuards[room] do 
         CreateThread(function()
-            local room2 = room
-            while currentRoom == room2 and not IsPedDeadOrDying(activeGuards[room2][i]) and alarmTriggered == 0 do 
+            while currentRoom == room and not IsPedDeadOrDying(activeGuards[room2][i]) and alarmTriggered == 0 do 
                 Wait(100)
 
-                if IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0) and HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17) and #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8 then 
+                if GetBlipColour(blips[room][i]) == 1 and IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0) and HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17) and #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8 then 
                     print("seen", i, seen[i], currentRoom == room2, not IsPedDeadOrDying(activeGuards[room2][i]), alarmTriggered == 0)
                     
                     seen[i] += 1
@@ -232,6 +236,14 @@ function DeletePaths()
     end
     
     initRoutes = false
+end
+
+function SetGuardColour()
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do 
+            SetBlipColour(blips[i][j], 1)
+        end
+    end
 end
 
 function SetGuardAgg()
