@@ -811,8 +811,9 @@ function TunnelEntry()
     
     while IsPedInAnyVehicle(PlayerPedId(), false) do
         Wait(100)
-        if #(GetEntityCoords(PlayerPedId()) - vector3(2524.63, -288.3, -64.72)) > 5 
-        SubtitleMsg("Park the ~y~vehicle~s~", 110)
+        if #(GetEntityCoords(PlayerPedId()) - vector3(2524.63, -288.3, -64.72)) > 5 then
+            SubtitleMsg("Park the ~y~vehicle~s~", 110)
+        end
     else
         SubtitleMsg("Get out of the vehicle", 110)
     end
