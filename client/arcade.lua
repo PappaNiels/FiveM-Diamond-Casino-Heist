@@ -1344,9 +1344,21 @@ local function ExecuteButtonFunction(i)
                     selectedExitDisguise = imageOrder[3][approach][14][imageOrderNum[3][14] - 1]
                 end
 
-                print("Heist Leader " .. hPlayer[1] .. "\n", "Approach " .. approach .. "\n", "Loot " .. loot  .. "\n", "Cut " .. playerCut[#hPlayer][1]  .. "\n", "Gunman " .. selectedGunman   .. "\n", "Loadout " .. selectedLoadout  .. "\n", "Driver " .. selectedDriver  .. "\n", "Vehicle " .. selectedVehicle  .. "\n", "Hacker " .. selectedHacker  .. "\n", "Keycard " .. selectedKeycard  .. "\n","Entrance" .. selectedEntrance  .. "\n", "Exit " .. selectedExit  .. "\n", "Buyer " .. selectedBuyer  .. "\n", "Entry Disguise " ..  selectedEntryDisguise  .. "\n", "Exit Disguise " .. selectedExitDisguise  .. "\n", "Clean Vehicle " ..  tostring(boughtCleanVehicle)  .. "\n", "Decoy " .. tostring(boughtDecoy))
+                if loot == 3 then 
+                    vaultLayout = math.random(7, 10)
+                else
+                    vaultLayout = math.random(1, 6)
+        
+                    if vaultLayout < 3 then 
+                        cartLayout = 1
+                    else 
+                        cartLayout = 2
+                    end
+                end
 
-                TriggerServerEvent("sv:casinoheist:startHeist", {hPlayer, approach, loot, playerCut[#hPlayer], selectedGunman, selectedLoadout, selectedDriver, selectedVehicle, selectedHacker, selectedKeycard, selectedEntrance, selectedExit, selectedBuyer, selectedEntryDisguise, selectedExitDisguise, boughtCleanVehicle, boughtDecoy})
+                print("Heist Leader " .. hPlayer[1] .. "\n", "Approach " .. approach .. "\n", "Loot " .. loot  .. "\n", "Cut " .. playerCut[#hPlayer][1]  .. "\n", "Gunman " .. selectedGunman   .. "\n", "Loadout " .. selectedLoadout  .. "\n", "Driver " .. selectedDriver  .. "\n", "Vehicle " .. selectedVehicle  .. "\n", "Hacker " .. selectedHacker  .. "\n", "Keycard " .. selectedKeycard  .. "\n","Entrance " .. selectedEntrance  .. "\n", "Exit " .. selectedExit  .. "\n", "Buyer " .. selectedBuyer  .. "\n", "Entry Disguise " ..  selectedEntryDisguise  .. "\n", "Exit Disguise " .. selectedExitDisguise  .. "\n", "Clean Vehicle " ..  tostring(boughtCleanVehicle)  .. "\n", "Decoy " .. tostring(boughtDecoy))
+
+                TriggerServerEvent("sv:casinoheist:startHeist", {hPlayer, approach, loot, playerCut[#hPlayer], selectedGunman, selectedLoadout, selectedDriver, selectedVehicle, selectedHacker, selectedKeycard, selectedEntrance, selectedExit, selectedBuyer, selectedEntryDisguise, selectedExitDisguise, boughtCleanVehicle, boughtDecoy, vaultLayout, cartLayout})
                 heistInProgress = true
                 isInGarage = false
 
