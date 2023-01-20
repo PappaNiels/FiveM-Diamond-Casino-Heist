@@ -804,7 +804,39 @@ function Basement()
         end
     end)
 end
- 
+
+function TunnelEntry()
+    blips[1] = AddBlipForCoord(2524.63, -288.3, -64.72)
+    SetBlipColour(blips[1], 2)
+    
+    while IsPedInAnyVehicle(PlayerPedId(), false) do
+        Wait(100)
+        if #(GetEntityCoords(PlayerPedId()) - vector3(2524.63, -288.3, -64.72)) > 5 
+        SubtitleMsg("Park the ~y~vehicle~s~", 110)
+    else
+        SubtitleMsg("Get out of the vehicle", 110)
+    end
+
+    SetBlipCoords(blips[1], vector3(2514.73, -279.29, -64.72))
+    SetBlipSprite(blips[1], 743)
+    SetBlipColour(blips[1], 5)
+
+    AddDoorToSystem(642441681, GetHashKey("ch_prop_ch_gendoor_01"), 2515.308, -281.5983, -64.57317, true, false, false)
+    DoorSystemSetDoorState(642441681, 0, false, true)
+    
+    while GetEntityCoords(PlayerPedId()).z > -68 do
+        Wait(100)
+        SubtitleMsg("Go to the ~y~basement", 110) 
+    end
+    
+    SecurityLobby(true, false)
+    DoorSystemSetDoorState(642441681, 1, false, true)
+    RemoveDoorFromSystem(642441681)
+    RemoveBlip(blips[1])
+
+    SetRoom(2)
+end
+
 swiped = false
 sync = false
 
@@ -944,6 +976,9 @@ function FirstMantrap()
                         vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
                         SetEntityVisible(vaultObjs[1], false, false)
                     end
+
+                    HideTimerBars()
+
                     LoadCutscene("hs3f_sub_vlt")
                     StartCutscene(0)
 
@@ -965,6 +1000,8 @@ function FirstMantrap()
                         end
                     end
                     --SetVaultObjs()
+                    repeat Wait(100) until HasCutsceneFinished()
+
                     Vault()
                     break
                 elseif IsNotClose(vaultEntryDoorCoords, 6) then 
