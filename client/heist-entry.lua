@@ -226,20 +226,13 @@ function StartHeist()
     playerAmount = #hPlayer
 
     if player == 1 then 
-        if loot == 3 then 
-            vaultLayout = math.random(7, 10)
-        else
-            vaultLayout = math.random(1, 6)
-
-            if vaultLayout < 3 then 
-                cartLayout = 1
-            else 
-                cartLayout = 2
-            end
-        end
+        
     end
 
-    SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
+    for i = 1, #hPlayer do 
+        SetPedRelationshipGroupHash(GetHeistPlayerPed(hPlayer[i]), GetHashKey("PLAYER"))
+    end
+
     AddRelationshipGroup("GUARDS")
     SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
     SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
