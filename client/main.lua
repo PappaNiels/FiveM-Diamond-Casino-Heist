@@ -122,9 +122,9 @@ function SetRoom(room)
     SetGuardVision(room)
 end
 
-function SetBlipsColour()
-    SetGuardColour()
-    SetCamColour()
+function SetBlipsColour(colour)
+    SetGuardColour(colour)
+    SetCamColour(colour)
 end
 
 function TriggerAlarm()
