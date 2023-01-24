@@ -692,9 +692,9 @@ RegisterCommand("test_gas", VaultGas, false)
 
 function VaultCheck()
     for i = 1, #hPlayer do 
-        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords) > 7 then 
+        if #(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords) > 7 and isInVault then 
             print("gas active")
-            alarmTriggered = 1
+            TriggerServerEvent("sv:casinoheist:alarm")
             VaultGas()
             return 
         end
@@ -703,13 +703,13 @@ end
 
 function Vault()
     print("Data set")
-    loot = 3
+    --loot = 3
     local bTake = take
     playerAmount = 2
-    vaultLayout = 1
-    cartLayout = 1
+    --vaultLayout = 1
+    --cartLayout = 1
     player = 1--GetCurrentHeistPlayer() -- 1 
-    selectedHacker = 5
+    --selectedHacker = 5
     
     isInVault = true
 
@@ -731,7 +731,7 @@ function Vault()
 
     RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
 
-    ShowTimerBars(true)
+    ShowTimerbars(true)
     DrawTimer()
 
     if loot == 3 then 
