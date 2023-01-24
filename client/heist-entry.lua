@@ -408,6 +408,7 @@ function EnterCasinoTunnel()
     local cam = CreateCamWithParams("DEFAULT_SCRIPTED_CAMERA", 1007.69, -56.7, 75.5, 0, 0, 112.75, 40.0, true, 2)
     local garageDoor = GetClosestObjectOfType(998.97, -52.5, 73.95, 1.0, GetHashKey("vw_prop_vw_garagedoor_01a"), false, false, false)
     player = GetCurrentHeistPlayer()
+    DisplayRadar(false)
 
     SetCamActive(cam, true)
     RenderScriptCams(true, false, 0, true, true)
@@ -441,7 +442,7 @@ function EnterCasinoTunnel()
     
     RenderScriptCams(false, false, 0, true, false)
     DestroyCam(cam)
-    
+
     if player == 1 then 
         SetEntityCoords(veh, casinoEntryCoords[selectedEntrance][1], true, false, false, true)
         SetEntityHeading(veh, casinoEntryCoords[selectedEntrance][2])
@@ -476,7 +477,7 @@ function EnterCasinoTunnel()
     --    SetPedIntoVehicle(PlayerPedId(), veh, i)
     --end
 
-    
+    DisplayRadar(true)
     Wait(5000) 
     DoScreenFadeIn(1500)
 
