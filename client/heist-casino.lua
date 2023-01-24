@@ -711,7 +711,7 @@ function MainEntry()
 
         TaskPutPedDirectlyIntoCover(PlayerPedId(), GetEntityCoords(PlayerPedId(), true), -1, false, false, false, false, false, false)
 
-        alarmTriggered = 1
+        TriggerServerEvent("sv:casinoheist:alarm")
 
         blips[1] = AddBlipForCoord(2525.77, -251.71, -60.31)
         SetBlipColour(blips[1], 5) 
@@ -807,7 +807,7 @@ end
 
 function TunnelEntry()
     blips[1] = AddBlipForCoord(2524.63, -288.3, -64.72)
-    SetBlipColour(blips[1], 2)
+    SetBlipColour(blips[1], 5)
     
     while IsPedInAnyVehicle(PlayerPedId(), false) do
         Wait(100)
@@ -829,11 +829,11 @@ function TunnelEntry()
         Wait(100)
         SubtitleMsg("Go to the ~y~basement", 110) 
     end
+    RemoveAllBlips()
     
     SecurityLobby(true, false)
     DoorSystemSetDoorState(642441681, 1, false, true)
     RemoveDoorFromSystem(642441681)
-    RemoveBlip(blips[1])
 
     SetRoom(2)
 end
@@ -944,6 +944,7 @@ end
 
 function FirstMantrap()
     StopCams()
+    StopGuards()
 
     blips[1] = AddBlipForCoord(mantrapCoords)
     SetBlipColour(blips[1], 5)
