@@ -211,6 +211,11 @@ function GetRoom()
     return currentRoom
 end
 
+function GetCamBlipColour()
+    --return 1
+    return GetBlipColour(blips[1][1]) 
+end
+
 function AddBlipsForSelectedRoom(room)
     RemoveAllBlips()
 
@@ -228,10 +233,12 @@ function AddBlipsForSelectedRoom(room)
         end
     end
 
+    print("test cams")
+
     if approach == 3 or alarmTriggered == 1 then return end
 
     for i = 1, #rooms[room] do 
-        if not IsEntityDead(cams[rooms[room][i][1]][rooms[room][i][2]]) then 
+        if not HasObjectBeenBroken(cams[rooms[room][i][1]][rooms[room][i][2]]) then 
             local one = rooms[room][i][1]
             local two = rooms[room][i][2]
             local heading = GetEntityHeading(cams[one][two])
@@ -239,7 +246,7 @@ function AddBlipsForSelectedRoom(room)
             blips[one][two] = AddBlipForEntity(cams[one][two])
             SetBlipSprite(blips[one][two], 604)
             SetBlipScale(blips[one][two], 1.0)
-            SetBlipColour(blips[one][two], GetColour(room, i))
+            SetBlipColour(blips[one][two], GetColour(one, two))
             SetBlipNameFromTextFile(blips[one][two], "CSH_BLIP_CCTV")
             ShowHeightOnBlip(blips[one][two], false)
             SetBlipAsShortRange(blips[one][two], true)
@@ -280,7 +287,6 @@ function AddBlipsForSelectedRoom(room)
                     CheckCamVision(one, two)
                 end
 
-                alarmTriggered = 1
             end)
 
             Wait(math.random(100, 1000))
@@ -288,10 +294,10 @@ function AddBlipsForSelectedRoom(room)
     end
 end
 
-function SetCamColour()
+function SetCamColour(colour)
     for i = 1, 2 do 
         for j = 1, #blips[i] do 
-            SetBlipColour(blips[i][j], 1)
+            SetBlipColour(blips[i][j], colour)
         end
     end
 end
