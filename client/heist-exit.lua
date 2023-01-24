@@ -99,8 +99,8 @@ function VaultLobby(blip, old)
 
                     swiped = false
                     isSwiping = true
-                    RemoveBlip(blips[1])
-                    RemoveBlip(blips[2])
+                    RemoveBlip(blips[3])
+                    RemoveBlip(blips[4])
                     SetRoom(2)
                     GoToExit()
                     break
@@ -162,47 +162,47 @@ function GoToExit()
                 SetRoom(1)
 
                 if alarmTriggered == 0 then 
-                    SetBlipsColour()
+                    SetBlipsColour(1)
                 end 
+
+                if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
+                    local bag = "ch_prop_ch_duffelbag_01x"
+                    local basket = "v_res_tre_laundrybasket"
+            
+                    if player == 1 then 
+                        LoadModel(bag)
+            
+                        for i = 1, 2 do 
+                            clothingChange[i] = CreateObject(GetHashKey(bag), clothingChangeCoords[i].xyz, true, false, false)
+                            SetEntityHeading(clothingChange[i], clothingChangeCoords[i].w)
+                        end
+                    else 
+                        Wait(10)
+            
+                        for i = 1, 2 do 
+                            clothingChange[i] = GetClosestObjectOfType(clothingChangeCoords[i].xyz, 1.0, GetHashKey(bag), false, false, false)
+                        end
+                    end
+            
+                    if playerAmount == 3 then 
+                        clothingChange[3] = GetClosestObjectOfType(clothingChangeCoords[3], 1.0, GetHashKey(basket), false, false, false)
+                    elseif playerAmount == 4 then 
+                        clothingChange[3] = GetClosestObjectOfType(clothingChangeCoords[3], 1.0, GetHashKey(basket), false, false, false)
+                        clothingChange[4] = GetClosestObjectOfType(clothingChangeCoords[4], 1.0, GetHashKey(basket), false, false, false)
+                    end
+            
+                    for i = 1, #clothingChange do 
+                        blips[i + 1] = AddBlipForEntity(clothingChange[i])
+                        SetBlipSprite(blips[i + 1], 73)
+                        SetBlipScale(blips[i + 1], 0.75)
+                    end
+                end
             end
         end
     end)
 
-    if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
-        local bag = "ch_prop_ch_duffelbag_01x"
-        local basket = "v_res_tre_laundrybasket"
-
-        if player == 1 then 
-            LoadModel(bag)
-
-            for i = 1, 2 do 
-                clothingChange[i] = CreateObject(GetHashKey(bag), clothingChangeCoords[i].xyz, true, false, false)
-                SetEntityHeading(clothingChange[i], clothingChangeCoords[i].w)
-            end
-        else 
-            Wait(10)
-
-            for i = 1, 2 do 
-                clothingChange[i] = GetClosestObjectOfType(clothingChangeCoords[i].xyz, 1.0, GetHashKey(bag), false, false, false)
-            end
-        end
-
-        if playerAmount == 3 then 
-            clothingChange[3] = GetClosestObjectOfType(clothingChangeCoords[3], 1.0, GetHashKey(basket), false, false, false)
-        elseif playerAmount == 4 then 
-            clothingChange[3] = GetClosestObjectOfType(clothingChangeCoords[3], 1.0, GetHashKey(basket), false, false, false)
-            clothingChange[4] = GetClosestObjectOfType(clothingChangeCoords[4], 1.0, GetHashKey(basket), false, false, false)
-        end
-
-        for i = 1, #clothingChange do 
-            blips[i + 1] = AddBlipForEntity(clothingChange[i])
-            SetBlipSprite(blips[i + 1], 73)
-            SetBlipScale(blips[i + 1], 0.75)
-        end
-    end
-
     CreateThread(function()
-        while isInCasino and not disguise do 
+        while isInCasino and not disguise and alarmTriggered == 0 do 
             Wait(GetFrameTime())
 
             for k, v in pairs(clothingChangeCoords) do 
@@ -211,10 +211,14 @@ function GoToExit()
 
                     if IsControlJustPressed(0, 38) then 
                         ChangeClothing(k)
+                        SetBlipsColour(0)
                         disguise = true
                     end
                 end
             end
+        end
+        for i = 1, #blips do 
+            RemoveBlip(blips[i])
         end
     end)
 end
@@ -417,6 +421,7 @@ function FinishHeist(meet)
     --    Wait(10)
     --end
 
+    CancelMusicEvent("CH_DELIVERING")
     EndScreen()
     --LoadCutscene("")
 end
