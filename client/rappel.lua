@@ -8,6 +8,20 @@ end, false)
 
 local rope = false
 
+local coords1 = { -- func_11488
+    vector3(2572.225, -254.2, -64.8),
+    vector3(2573.575, -254.2, -64.8),
+    vector3(2571.0, -254.2, -64.8),
+    vector3(2574.8, -254.2, -64.8)
+}
+
+local coords2 = { -- func_11487
+    vector3(2572.35, -255.4523, -73.3),
+    vector3(2573.575, -255.4523, -73.3),
+    vector3(2571.0, -255.4523, -73.3),
+    vector3(2574.8, -255.4523, -73.3)
+}
+
 function Start()
     RequestCutscene("hs3f_mul_rp1", 8)
 
@@ -34,9 +48,9 @@ local function HideCutProps(bool)
     end
 
     local arr = {}
-    if #hPlayer == 2 then 
+    if playerAmount == 2 then 
         arr = {"MP_3", "Player_Rope_3", "Player_Pulley_3", "MP_4", "Player_Rope_4", "Player_Pulley_4"}
-    elseif #hPlayer == 3 then 
+    elseif playerAmount == 3 then 
         arr = {"MP_4", "Player_Rope_4", "Player_Pulley_4"}
     end
     
@@ -49,7 +63,7 @@ local function HideCutProps(bool)
     --if bool then 
     --    repeat Wait(100) until HasCutsceneFinished()
     --else
-        repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 1000
+        repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 500
     --end
 end
 
@@ -67,19 +81,7 @@ function RopeStart()
         Wait(10)
     end
 
-    local coords1 = { -- func_11488
-        vector3(2572.225, -254.2, -64.8),
-        vector3(2573.575, -254.2, -64.8),
-        vector3(2571.0, -254.2, -64.8),
-        vector3(2574.8, -254.2, -64.8)
-    }
-    
-    local coords2 = { -- func_11487
-        vector3(2572.35, -255.4523, -73.3),
-        vector3(2573.575, -255.4523, -73.3),
-        vector3(2571.0, -255.4523, -73.3),
-        vector3(2574.8, -255.4523, -73.3)
-    }
+    Wait(1000)
 
     RopeLoadTextures()
 
@@ -93,9 +95,8 @@ function RopeStart()
     end
 
     SetCurrentPedWeapon(PlayerPedId(), GetHashKey("WEAPON_UNARMED"), true)
-
     
-    local ropeId = AddRope(var3, var8, var6, 7, var6, var6, 1.2, false, false, true, 10.0, false, 0)
+    local ropeId = AddRope(var3, var8, var6, 7, var6, var6, 1.2, false, true, true, 10.0, false, 0)
     N_0xa1ae736541b0fca3(ropeId, true)
     
     SetEntityCoords(PlayerPedId(), var4, true, false, false, true)
