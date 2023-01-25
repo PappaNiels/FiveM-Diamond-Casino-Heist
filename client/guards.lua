@@ -121,16 +121,47 @@ local guards = {
     --"s_m_y_westsec_02"
 }
 
-local blips = {{}, {}}
+--local blips = {{}, {}}
 local activeGuards = {{}, {}}
+
+local function IsUsingSuppressor(ped)
+    if approach == 2 then 
+        return false
+    end 
+
+    if GetCurrentPedWeapon(ped, GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][1][1]), 1) and HasPedGotWeaponComponent(ped, GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][1][1]), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][1][2])) then 
+        return true 
+    end
+    return false
+end
+
+local function HasAnyPedShot()
+    for i = 1, #hPlayer do 
+        if IsPedShooting(GetHeistPlayerPed(hPlayer[i])) and not IsUsingSuppressor(GetHeistPlayerPed(hPlayer[i])) then 
+            return true 
+        end
+    end
+
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do 
+            if IsPedShooting(activeGuards[i][j]) then
+                return true 
+            end
+        end
+    end 
+
+    return false
+end
 
 local function SpawnPed()
     LoadModel(guards[2][1][1])
     LoadModel(guards[2][3][1])
     
-    for i = 1, 1 do 
+    for i = 1, 2 do 
         for j = 1, #guards[i] do
             activeGuards[i][j] = CreatePed(1, GetHashKey(guards[i][j][1]), guards[i][j][2][1], true, false)
+
+            SetPedRelationshipGroupHash(activeGuards[i][j], GetHashKey("GUARDS"))
 
             SetPedAccuracy(activeGuards[i][j], 70.0) -- Lookup
             GiveWeaponToPed(activeGuards[i][j], GetHashKey("weapon_combatpistol"), 2000, false, false)
@@ -143,35 +174,46 @@ local function SpawnPed()
             --SetBlipColour(blips[i][j], 1)
             --SetBlipPriority(blips[i][j], 7)
 
-            SetPedHasAiBlipWithColor(activeGuards[i][j], true, 1)
-            SetPedAiBlipGangId(activeGuards[i][j], 1)
+            SetPedHasAiBlip(activeGuards[i][j], true)
+            SetPedAiBlipGangId(activeGuards[i][j], 0--[[GetCamBlipColour()]])
             SetPedAiBlipNoticeRange(activeGuards[i][j], 100.0)
             SetPedAiBlipSprite(activeGuards[i][j], 270)
             SetPedAiBlipForcedOn(activeGuards[i][j], true)
             SetPedAiBlipHasCone(activeGuards[i][j], true)
 
             -- Cone
-
+            
             -- Blip Name
             --BeginTextCommandSetBlipName("STRING")
             --AddTextComponentSubstringPlayerName("Guard")
             --EndTextCommandSetBlipName(blips[i][j])
         end
     end 
-    
+
     SetModelAsNoLongerNeeded(guards[2][1][1])
     SetModelAsNoLongerNeeded(guards[2][3][1])
 
     Wait(1000)
 
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do 
+            SetPedHasAiBlipWithColor(activeGuards[i][j], true, 0)
+        end
+    end
+    --SetPedAiBlipGangId(activeGuards[1][1], 3)
+
+    local tick2 = 0
     -- Still doesn't work :/
-    for i = 1, 1 do 
-        for j = 1, 2 do
-            TaskPatrol(activeGuards[i][j], "MISS_PATROL_" .. j - 1, 1, false, true)
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do
+            if #guards[i][j][2] > 1 then
+                TaskPatrol(activeGuards[i][j], "MISS_PATROL_" .. tick2, 1, false, true)
+                tick2 += 1
+            end
         end
     end
 
-    SetGuardVision(1)
+    --SetGuardVision(1)
 end
     
 function SetGuardVision(room)
@@ -179,51 +221,85 @@ function SetGuardVision(room)
         InitRoutes()
     end
 
+    if room == 1 then 
+        for i = 1, #guards[1] do 
+            SetPedAiBlipForcedOn(activeGuards[1][i], true)
+        end
+        for i = 1, #guards[2] do 
+            SetPedAiBlipForcedOn(activeGuards[2][i], false)
+        end
+    elseif room == 2 then 
+        for i = 1, #guards[1] do 
+            SetPedAiBlipForcedOn(activeGuards[1][i], false)
+        end
+        for i = 1, #guards[2] do 
+            SetPedAiBlipForcedOn(activeGuards[2][i], true)
+        end
+    else
+        for i = 1, 2 do 
+            for j = 1, #guards[i] do 
+                SetPedAiBlipForcedOn(activeGuards[i][j], false)
+            end
+        end
+    end
+
     currentRoom = room
     for i = 1, #activeGuards[room] do 
         CreateThread(function()
-            while currentRoom == room and not IsPedDeadOrDying(activeGuards[room2][i]) and alarmTriggered == 0 do 
+            while currentRoom == room and not IsPedDeadOrDying(activeGuards[room][i]) and alarmTriggered == 0 do 
                 Wait(100)
 
-                if GetBlipColour(blips[room][i]) == 1 and IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0) and HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17) and #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8 then 
-                    print("seen", i, seen[i], currentRoom == room2, not IsPedDeadOrDying(activeGuards[room2][i]), alarmTriggered == 0)
-                    
+                if HasAnyPedShot() then 
+                    Wait(1000)
+                    TriggerServerEvent("sv:casinoheist:alarm")
+                end
+
+                --print(GetCamBlipColour() == 1, IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0),HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17), #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8)
+
+                if GetCamBlipColour() == 1 and IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0) and HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17) and #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8 then 
+                    print("seen", i, seen[i], currentRoom == room, not IsPedDeadOrDying(activeGuards[room][i]), alarmTriggered == 0)
+                    --print(GetBlipColour(blips[room][i]))
+
                     seen[i] += 1
 
                     if seen[i] > 6 then 
                         TriggerServerEvent("sv:casinoheist:alarm")
-                        SetGuardAgg()
+                        --SetGuardAgg()
                     end
                 elseif seen[i] ~= 0 then 
                     seen[i] = 0
                 end
+
             end
+            print("end")
         end)
     end
 end
 
 function InitRoutes()
-    if initRoutes then return end
+    if initRoutes or player ~= 1 then return end
     
     initRoutes = true
 
-    for i = 1, 1 do 
-        for j = 1, i + 1 do 
-            OpenPatrolRoute("MISS_PATROL_" .. tick)
-            for k = 1, #guards[i][j][2] do 
-                AddPatrolRouteNode(k, guards[i][j][3], guards[i][j][2][k].xyz, guards[i][j][2][k].xyz, guards[i][j][4] or math.random(3000, 5000))
-                print(k, j)
-            end
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do 
+            if #guards[i][j][2] > 1 then 
+                OpenPatrolRoute("MISS_PATROL_" .. tick)
+                for k = 1, #guards[i][j][2] do 
+                    AddPatrolRouteNode(k, guards[i][j][3], guards[i][j][2][k].xyz, guards[i][j][2][k].xyz, guards[i][j][4] or math.random(3000, 5000))
+                    print(k, j)
+                end
 
-            for k = 1, #guards[i][j][2] - 1 do
-                AddPatrolRouteLink(k, k + 1)
-            end
-            
-            AddPatrolRouteLink(#guards[i][j][2], 1)
-            ClosePatrolRoute()
-            CreatePatrolRoute()
+                for k = 1, #guards[i][j][2] - 1 do
+                    AddPatrolRouteLink(k, k + 1)
+                end
 
-            tick += 1 
+                AddPatrolRouteLink(#guards[i][j][2], 1)
+                ClosePatrolRoute()
+                CreatePatrolRoute()
+
+                tick += 1 
+            end
         end
     end
 
@@ -238,20 +314,41 @@ function DeletePaths()
     initRoutes = false
 end
 
-function SetGuardColour()
+function StopGuards()
+    currentRoom = 0
+
     for i = 1, 2 do 
         for j = 1, #guards[i] do 
-            SetBlipColour(blips[i][j], 1)
+            SetPedAiBlipForcedOn(activeGuards[i][j], false)
+        end
+    end
+end
+
+function SetGuardColour(colour)
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do 
+            --SetPedAiBlipGangId(activeGuards[i][j], colour)
+        end
+    end
+end
+
+function RemoveGuards()
+    for i = 1, 2 do 
+        for j = 1, #guards[i] do 
+            DeletePed(activeGuards[i][j])
         end
     end
 end
 
 function SetGuardAgg()
+    SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
+    SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
+
     for i = 1, 2 do 
         for j = 1, #activeGuards[i] do 
             SetPedRelationshipGroupHash(activeGuards[i][j], GetHashKey("GUARDS"))
             SetPedAiBlipHasCone(activeGuards[i][j], false)
-            --TaskCombatPed(activeGuards[i][j], PlayerPedId(), 0, 16)
+            TaskCombatPed(activeGuards[i][j], PlayerPedId(), 0, 16)
         end
     end
 end
@@ -263,5 +360,7 @@ RegisterCommand("test_nav", function()
     SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
     SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
     
-    InitRoutes()
+
+
+    SetRoom(1)
 end, false)
