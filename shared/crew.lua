@@ -29,13 +29,13 @@ weaponLoadout = {
     { -- Approach
         { -- Gunman 
             { -- Loadout 1
-                "WEAPON_MICROSMG",
+                {"WEAPON_MICROSMG", "COMPONENT_AT_AR_SUPP_02"},
                 "WEAPON_VINTAGEPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
             { -- Loadout 2
-                "WEAPON_MACHINEPISTOL",
+                {"WEAPON_MACHINEPISTOL", "COMPONENT_AT_PI_SUPP"},
                 "WEAPON_COMBATPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
@@ -43,13 +43,13 @@ weaponLoadout = {
         },
         {
             { 
-                "WEAPON_ASSAULTSMG",
+                {"WEAPON_ASSAULTSMG", "COMPONENT_AT_AR_SUPP_02"},
                 "WEAPON_COMBATPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
             {
-                "WEAPON_BULLPUPSHOTGUN",
+                {"WEAPON_BULLPUPSHOTGUN", "COMPONENT_AT_AR_SUPP_02"},
                 "WEAPON_HEAVYPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
@@ -63,7 +63,7 @@ weaponLoadout = {
                 "WEAPON_KNIFE"
             },
             {
-                "WEAPON_ASSAULTRIFLE",
+                {"WEAPON_ASSAULTRIFLE", "COMPONENT_AT_AR_SUPP_02"},
                 "WEAPON_PISTOL50",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
@@ -71,13 +71,13 @@ weaponLoadout = {
         },
         {
             { 
-                "WEAPON_CARBINERIFLE",
+                {"WEAPON_CARBINERIFLE", "COMPONENT_AT_AR_SUPP"},
                 "WEAPON_HEAVYPISTOL",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
             {
-                "WEAPON_ASSAULTSHOTGUN",
+                {"WEAPON_ASSAULTSHOTGUN", "COMPONENT_AT_AR_SUPP"},
                 "WEAPON_PISTOL50",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
@@ -85,13 +85,13 @@ weaponLoadout = {
         },
         { 
             {  
-                "WEAPON_PUMPSHOTGUN_MK2",
+                {"WEAPON_PUMPSHOTGUN_MK2", "COMPONENT_AT_SR_SUPP_03"},
                 "WEAPON_PISTOL50",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
             },
             { 
-                "WEAPON_CARBINERIFLE_MK2",
+                {"WEAPON_CARBINERIFLE_MK2", "COMPONENT_AT_AR_SUPP"},
                 "WEAPON_PISTOL50",
                 "WEAPON_STUNGUN",
                 "WEAPON_KNIFE"
