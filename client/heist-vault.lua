@@ -856,7 +856,13 @@ end)
 
 RegisterNetEvent("test:cl:vault", Vault)
 
-RegisterCommand("test_offset", Vault, false)
+RegisterCommand("test_offset", function()
+    selectedHacker = 4
+    loot = 1
+    vaultLayout = 1
+    cartLayout = 1
+    Vault()
+end, false)
 
 RegisterCommand("dist", function()
     CreateThread(function()

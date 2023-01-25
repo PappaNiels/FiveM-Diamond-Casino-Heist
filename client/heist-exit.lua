@@ -10,6 +10,7 @@ local function ChangeClothing(k)
     TriggerServerEvent("sv:casinoheist:syncClotingBlips", k)
     LoadAnim(animDict)
     TaskLookAtEntity(PlayerPedId(), clothingChange[k], 1000, 2048, 3)
+    Wait(1000)
     
     TaskPlayAnim(PlayerPedId(), animDict, "action_01_male", -4.0, 4.0, -1, 0, 2, false, false, false)
     
@@ -158,12 +159,12 @@ function GoToExit()
                 SubtitleMsg("Exit the Casino via the ~y~" .. txt[selectedExit], 110)
             end
 
-            if coords.z > -59 and GetRoom() == 2 then 
-                SetRoom(1)
+            if coords.z > -59 --[[and GetRoom() == 2]] then 
+                --SetRoom(1)
 
-                if alarmTriggered == 0 then 
-                    SetBlipsColour(1)
-                end 
+                --if alarmTriggered == 0 then 
+                --    SetBlipsColour(1)
+                --end 
 
                 if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
                     local bag = "ch_prop_ch_duffelbag_01x"
@@ -217,7 +218,7 @@ function GoToExit()
                 end
             end
         end
-        for i = 1, #blips do 
+        for i = 2, #blips do 
             RemoveBlip(blips[i])
         end
     end)
@@ -227,6 +228,8 @@ function ExitCasino()
     for i = 1, #blips do 
         RemoveBlip(blips[i])
     end
+
+    RemoveObjs()
 
     DeletePaths()
 
@@ -399,6 +402,7 @@ function FinishHeist(meet)
     end
 
     HideTimerBars()
+    CancelMusicEvent("CH_DELIVERING")
 
     local arr = {}
     if #hPlayer == 2 then 
@@ -421,7 +425,6 @@ function FinishHeist(meet)
     --    Wait(10)
     --end
 
-    CancelMusicEvent("CH_DELIVERING")
     EndScreen()
     --LoadCutscene("")
 end
@@ -444,5 +447,10 @@ RegisterCommand("skip_swipe2", function()
 end)
 
 RegisterCommand("test_cc", function()
+    selectedExit = 11
+    approach = 2
+    player = 1
+    selectedEntryDisguise = 3
+    selectedExitDisguise = 3
     GoToExit()
 end, false)

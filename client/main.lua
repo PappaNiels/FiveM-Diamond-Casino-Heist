@@ -134,7 +134,14 @@ function TriggerAlarm()
     CancelMusicEvent("CH_IDLE")
     PrepareMusicEvent("CH_GUNFIGHT")
     TriggerMusicEvent("CH_GUNFIGHT")
+    SetGuardAgg()
+
     alarmTriggered = 1
+end
+
+function RemoveObjs()
+    RemoveCams()
+    RemoveGuards()
 end
 
 function DisableAlarm()

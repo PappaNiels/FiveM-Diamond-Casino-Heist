@@ -75,6 +75,8 @@ local rooms = {
     }
 }
 
+local obj = {}
+
 local cams = {
     {},
     {}
@@ -127,14 +129,12 @@ local function SpawnCams()
         LoadModel(camModels[i])
     end
     
-    local obj = {{}, {}}
-    
     for i = 1, 2 do 
         for j = 1, #camPlace[i] do 
             if i == 1 then 
-                obj[1][j] = CreateObject(GetHashKey(camModels[1]), camPlace[1][j].xyz, true, false, false)
-                SetEntityHeading(obj[1][j], camPlace[1][j].w)
-                cams[1][j] = CreateObject(GetHashKey(camModels[2]), camPlace[1][j].xyz - (GetEntityOffset(obj[1][j], false) * 0.37) + vector3(0.0, 0.0, 0.05), true, false, false)
+                obj[j] = CreateObject(GetHashKey(camModels[1]), camPlace[1][j].xyz, true, false, false)
+                SetEntityHeading(obj[j], camPlace[1][j].w)
+                cams[1][j] = CreateObject(GetHashKey(camModels[2]), camPlace[1][j].xyz - (GetEntityOffset(obj[j], false) * 0.37) + vector3(0.0, 0.0, 0.05), true, false, false)
             else
                 cams[2][j] = CreateObject(GetHashKey(camModels[3]), camPlace[2][j].xyz, true, false, false)
             end
@@ -213,7 +213,7 @@ end
 
 function GetCamBlipColour()
     --return 1
-    return GetBlipColour(blips[1][1]) 
+    return GetBlipColour(blips[1][3]) 
 end
 
 function AddBlipsForSelectedRoom(room)
@@ -258,7 +258,7 @@ function AddBlipsForSelectedRoom(room)
 
             if player == 1 then 
                 CreateThread(function()
-                    while currentRoom == room and not HasObjectBeenBroken(cams[one][two]) do 
+                    while currentRoom == room and not IsEntityDead(cams[one][two]) do 
                         Wait(1000)
 
                         CamLoop(one, two)
@@ -269,7 +269,7 @@ function AddBlipsForSelectedRoom(room)
                 end)
             else 
                 CreateThread(function()
-                    while currentRoom == room and not HasObjectBeenBroken(cams[one][two]) do 
+                    while currentRoom == room and not IsEntityDead(cams[one][two]) do 
                         Wait(0)
                     
                         BlipLoop(one, two)
@@ -304,6 +304,20 @@ end
 
 function StopCams()
     currentRoom = 0
+end
+
+function RemoveCams()
+    for i = 1, #obj do 
+        DeleteEntity(obj[i])
+    end
+
+    RemoveAllBlips()
+
+    for i = 1, 2 do 
+        for j = 1, #cams[i] do 
+            DeleteEntity(cams[i][j])
+        end
+    end
 end
 
 AddEventHandler("onResourceStop", function(rs)

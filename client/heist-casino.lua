@@ -825,7 +825,7 @@ function TunnelEntry()
     AddDoorToSystem(642441681, GetHashKey("ch_prop_ch_gendoor_01"), 2515.308, -281.5983, -64.57317, true, false, false)
     DoorSystemSetDoorState(642441681, 0, false, true)
     
-    while GetEntityCoords(PlayerPedId()).z > -68 do
+    while GetEntityCoords(PlayerPedId()).z > -65 do
         Wait(100)
         SubtitleMsg("Go to the ~y~basement", 110) 
     end
