@@ -235,8 +235,8 @@ function StartHeist()
 
     AddRelationshipGroup("GUARDS")
     SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
-    SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
-    SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
+    --SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
+    --SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
 
     DoScreenFadeOut(800)
 
@@ -248,6 +248,22 @@ function StartHeist()
     SetEntityHeading(PlayerPedId(), 180.0)
 
     SetPedComponents(1)
+
+    RemoveAllPedWeapons(PlayerPedId(), true)
+
+    -- To do
+    if approach == 2 then 
+        GiveWeaponToPed(PlayerPedId(), GetHashKey("weapon_ceramicpistol"), 300, false, false)
+    else 
+        for i = 1, #weaponLoadout[approach][selectedGunman][selectedLoadout] do 
+            if type(weaponLoadout[approach][selectedGunman][selectedLoadout][i]) == "table" then 
+                GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][1]), 300, false, false)
+                GiveWeaponComponentToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][1]), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][2]))
+            else
+                GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i]), 300, false, false)
+            end
+        end
+    end
 
     blip = AddBlipForCoord(entryCoords[selectedEntrance])
     SetBlipHighDetail(blip, true)
