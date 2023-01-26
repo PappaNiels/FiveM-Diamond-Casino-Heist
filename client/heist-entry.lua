@@ -115,6 +115,11 @@ local function SetupCargobob()
 
         netIds[1] = VehToNet(cargobob[1])
         netIds[2] = PedToNet(cargobob[2])
+
+        SetNetworkIdExistsOnAllMachines(netIds[1], true)
+        SetNetworkIdExistsOnAllMachines(netIds[2], true)
+        SetNetworkIdCanMigrate(netIds[1], true)
+        SetNetworkIdCanMigrate(netIds[2], true)
         
         print(NetworkDoesNetworkIdExist(netIds[1]))
         print(NetworkDoesNetworkIdExist(netIds[2]))
