@@ -119,7 +119,12 @@ end
 
 function SetRoom(room)
     AddBlipsForSelectedRoom(room)
-    SetGuardVision(room)
+    
+    if alarmTriggered == 0 then 
+        SetGuardVision(room)
+    else 
+        StartGuardSpawn(room)
+    end
 end
 
 function SetBlipsColour(colour)

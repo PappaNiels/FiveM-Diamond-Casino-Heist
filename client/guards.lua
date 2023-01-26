@@ -3,7 +3,7 @@ local currentRoom = 0
 local tick = 0
 
 local seen = {0, 0, 0, 0, 0}
-local netids = {{}, {}}
+local netIds = {{}, {}}
 
 local guards = {
     {   -- Staff Lobby
@@ -121,8 +121,26 @@ local guards = {
     --"s_m_y_westsec_02"
 }
 
+local spawnCoords = {
+    {
+        vector4(2526.38, -261.33, -58.72, 180.0),
+        vector4(2543.86, -266.57, 58.72, 130.0), 
+        vector4(2530.79, -301.04, -58.72, 353.32),
+        vector4(2516.34, -300.83, -58.72, 302.85),
+        vector4(2502.25, -270.98, -58.72, 280.99),
+        vector4(2526.55, -283.29, -58.72, 356.11)
+    },
+    {
+
+    },
+    {
+
+    }
+}
+
 --local blips = {{}, {}}
 local activeGuards = {{}, {}}
+local aggrGuards = {}
 
 local function IsUsingSuppressor(ped)
     if approach == 2 then 
@@ -131,6 +149,15 @@ local function IsUsingSuppressor(ped)
 
     if GetCurrentPedWeapon(ped, GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][1][1]), 1) and HasPedGotWeaponComponent(ped, GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][1][1]), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][1][2])) then 
         return true 
+    end
+    return false
+end
+
+local function IsAnyPedLookingAtCoord(coord)
+    for i = 1, #hPlayer do 
+        if IsPedHeadingTowardsPosition(GetHeistPlayerPed(hPlayer[i]), coord 1.0) then 
+            return true
+        end
     end
     return false
 end
@@ -163,11 +190,16 @@ local function SpawnPed()
 
             SetPedRelationshipGroupHash(activeGuards[i][j], GetHashKey("GUARDS"))
 
+            SetPedAlertness(activeGuards[i][j], 0)
+            SetPedHearingRange(activeGuards[i][j], 30.0)
+
             SetPedAccuracy(activeGuards[i][j], 70.0) -- Lookup
             GiveWeaponToPed(activeGuards[i][j], GetHashKey("weapon_combatpistol"), 2000, false, false)
             SetPedDropsWeaponsWhenDead(activeGuards[i][j], false)
             SetPedCombatMovement(activeGuards[i][j], 3)
-            SetPedCombatRange(activeGuards[i][j], 2)
+            SetPedCombatRange(activeGuards[i][j], 0)
+
+            SetPedSeeingRange(activeGuards[i][j], 20.0)
             --blips[i][j] = AddBlipForEntity(activeGuards[i][j])
             --SetBlipScale(blips[i][j], 0.75)
             --SetBlipSprite(blips[i][j], 270)
@@ -195,15 +227,14 @@ local function SpawnPed()
 
     Wait(1000)
 
-    for i = 1, 2 do 
-        for j = 1, #guards[i] do 
-            SetPedHasAiBlipWithColor(activeGuards[i][j], true, 0)
-        end
-    end
+    --for i = 1, 2 do 
+    --    for j = 1, #guards[i] do 
+    --        SetPedHasAiBlipWithColor(activeGuards[i][j], true, 0)
+    --    end
+    --end
     --SetPedAiBlipGangId(activeGuards[1][1], 3)
 
     local tick2 = 0
-    -- Still doesn't work :/
     for i = 1, 2 do 
         for j = 1, #guards[i] do
             if #guards[i][j][2] > 1 then
@@ -216,6 +247,41 @@ local function SpawnPed()
     --SetGuardVision(1)
 end
     
+local function SetAggrPed(ped)
+    SetPedRelationshipGroupHash(ped, GetHashKey("GUARDS"))
+
+    SetPedAlertness(ped, 0)
+    SetPedHearingRange(ped, 30.0)
+    
+    SetPedAccuracy(ped, 70.0) -- Lookup
+    GiveWeaponToPed(ped, GetHashKey("weapon_combatpistol"), 2000, false, false)
+    SetPedDropsWeaponsWhenDead(ped, false)
+    SetPedCombatMovement(ped, 3)
+    SetPedCombatRange(ped, 2)
+    SetPedAsEnemy(ped, true)
+    
+    SetPedHasAiBlip(ped, true)
+    SetPedAiBlipGangId(ped, 0--[[GetCamBlipColour()]])
+    SetPedAiBlipNoticeRange(ped, 100.0)
+    SetPedAiBlipSprite(ped, 270)
+    SetPedAiBlipForcedOn(ped, true)
+    SetPedAiBlipHasCone(ped, false)
+    
+    --TaskCombatPed(activeGuards[i][j], PlayerPedId(), 0, 16)
+end
+
+local function SpawnAggrPed(room, loc)
+    aggrGuards[#aggrGuards + 1] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][loc], true, false)
+    SetAggrPed(aggrGuards[#aggrGuards])
+end
+
+local function InitAggrPeds(room)
+    for i = 1, #spawnCoords[room] do 
+        aggrGuards[i] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][i], true, false)
+        SetAggrPed(aggrGuards[i])
+    end
+end
+
 function SetGuardVision(room)
     if not DoesEntityExist(activeGuards[1][1]) then 
         InitRoutes()
@@ -347,10 +413,46 @@ function SetGuardAgg()
     for i = 1, 2 do 
         for j = 1, #activeGuards[i] do 
             SetPedRelationshipGroupHash(activeGuards[i][j], GetHashKey("GUARDS"))
+            SetPedCombatRange(activeGuards[i][j], 2)
             SetPedAiBlipHasCone(activeGuards[i][j], false)
-            TaskCombatPed(activeGuards[i][j], PlayerPedId(), 0, 16)
+            SetPedAsEnemy(activeGuards[i][j], true)
+            SetPedSeeingRange(activeGuards[i][j], 100.0)
+            --for i = 1, #hPlayer do 
+            --    TaskCombatPed(activeGuards[i][j], GetHeistPlayer, 0, 16)
+            --end
         end
     end
+end
+
+function StartGuardSpawn(room)
+    local num = 0
+    local sleep = 2000
+    
+    currentRoom = room
+
+    InitAggrPeds(room)
+    
+    CreateThread(function()
+        while currentRoom == room do 
+            Wait(sleep)
+
+            num = math.random(1, #spawnCoords[room])
+
+            if #aggrGuards < 3 then 
+                sleep = 100
+            elseif sleep == 100 then 
+                sleep = 2000
+            end
+
+            if #aggrGuards < 15 and IsNotClose(spawnCoords[room][num], 20) and not IsAnyPedLookingAtCoord(spawnCoords[room][num]) then 
+                SpawnAggrPed(room, num)
+            end
+        end
+
+        for i = 1, #aggrGuards do 
+            DeletePed(aggrGuards[i])
+        end
+    end)
 end
 
 RegisterCommand("test_nav", function()

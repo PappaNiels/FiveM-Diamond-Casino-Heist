@@ -142,6 +142,7 @@ end
 
 local function SetDoors(doorHash, objHash, coords, num)
     if not IsDoorRegisteredWithSystem(doorHash) then 
+        print("door registered: " .. doorHash)
         AddDoorToSystem(doorHash, objHash, coords, false, false, false)
     end 
 
@@ -706,6 +707,8 @@ function MainEntry()
         
         repeat Wait(100) until HasCutsceneFinished()
 
+        StartGuardSpawn(3)
+
         ShowTimerbars(false)
         Wait(30)
 
@@ -758,7 +761,12 @@ function MainEntry()
 end
     
 function Basement()
-    InitRoutes()
+    if alarmTriggered == 0 then 
+        InitRoutes()
+    else 
+        StartGuardSpawn(1)
+    end
+
     if IsScreenFadedOut() then 
         DoScreenFadeIn(500)
     end
