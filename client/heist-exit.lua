@@ -389,11 +389,11 @@ function FinishHeist(meet)
     SetCutsceneOrigin(meetingPoint[selectedBuyer][meet])
     StartCutscene(0)
 
-    for i = 1, 3 do 
+    for i = 1, #vehs do 
         DeleteVehicle(vehs[i])
     end
 
-    for i = 1, 3 do 
+    for i = 1, #peds do 
         DeletePed(peds[i])
     end
 
