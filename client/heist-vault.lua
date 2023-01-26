@@ -666,7 +666,7 @@ local function VaultGas()
     --sId = GetSoundId()
     CreateThread(function()
         while isInVault do 
-            Wait(3000)
+            Wait(1500)
             local num = math.random(1, 3)
             
             --TaskScriptedAnimation(PlayerPedId(), 0xC1C26FF930, 0xC1C26FF998, 0xC1C26FF998, 0.125, 0.125)
