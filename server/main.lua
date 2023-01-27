@@ -1,4 +1,4 @@
-hPlayer = {1}
+hPlayer = {1, 2}
 heistInProgress = false
 
 local approach = 0
@@ -155,6 +155,19 @@ RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
         for i = 2, #hPlayer do 
             TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i], obj)
         end 
+    end
+end)
+
+RegisterNetEvent("sv:casinoheist:initGuardBlips", function(netIds)
+    print("test")
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:initGuardBlips", hPlayer[i], netIds)
+    end
+end)
+
+RegisterNetEvent("sv:casinoheist:guardBlips", function(netId)
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:guardBlips", hPlayer[i], netId)
     end
 end)
 

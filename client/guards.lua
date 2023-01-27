@@ -4,6 +4,7 @@ local tick = 0
 
 local seen = {0, 0, 0, 0, 0}
 local netIds = {{}, {}}
+local aggrNetIds = {}
 
 local guards = {
     {   -- Staff Lobby
@@ -155,6 +156,7 @@ local spawnCoords = {
 --local blips = {{}, {}}
 local activeGuards = {{}, {}}
 local aggrGuards = {}
+local aggrGuards2 = {}
 
 local function IsUsingSuppressor(ped)
     if approach == 2 then 
@@ -260,11 +262,24 @@ local function SpawnPed()
 
     --SetGuardVision(1)
 end
-    
+
+local function SetAiBlip(ped)
+    print(DoesEntityExist(ped))
+
+    SetPedHasAiBlip(ped, true)
+    SetPedAiBlipGangId(ped, 0--[[GetCamBlipColour()]])
+    SetPedAiBlipNoticeRange(ped, 100.0)
+    SetPedAiBlipSprite(ped, 270)
+    SetPedAiBlipForcedOn(ped, true)
+    SetPedAiBlipHasCone(ped, false)
+
+    print(DoesPedHaveAiBlip(ped))
+end
+
 local function SetAggrPed(ped)
     SetPedRelationshipGroupHash(ped, GetHashKey("GUARDS"))
 
-    SetPedAlertness(ped, 0)
+    SetPedAlertness(ped, 3)
     SetPedHearingRange(ped, 30.0)
     
     SetPedAccuracy(ped, 70.0) -- Lookup
@@ -274,26 +289,42 @@ local function SetAggrPed(ped)
     SetPedCombatRange(ped, 2)
     SetPedAsEnemy(ped, true)
     
-    SetPedHasAiBlip(ped, true)
-    SetPedAiBlipGangId(ped, 0--[[GetCamBlipColour()]])
-    SetPedAiBlipNoticeRange(ped, 100.0)
-    SetPedAiBlipSprite(ped, 270)
-    SetPedAiBlipForcedOn(ped, true)
-    SetPedAiBlipHasCone(ped, false)
     
-    --TaskCombatPed(activeGuards[i][j], PlayerPedId(), 0, 16)
+    TaskCombatPed(ped, PlayerPedId(), 0, 16)
+    TaskCombatPed(ped, GetHeistPlayerPed(2), 0, 16)
 end
 
 local function SpawnAggrPed(room, loc)
     aggrGuards[#aggrGuards + 1] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][loc], true, false)
     SetAggrPed(aggrGuards[#aggrGuards])
+
+    NetworkRegisterEntityAsNetworked(aggrGuards[#aggrGuards])
+        
+    aggrNetIds[#aggrGuards + 1] = PedToNet(aggrGuards[#aggrGuards])
+    SetNetworkIdExistsOnAllMachines(aggrNetIds[#aggrGuards], true)
+    SetNetworkIdCanMigrate(aggrNetIds[#aggrGuards], true)
+
+    TriggerServerEvent("sv:casinoheist:guardBlips", aggrNetIds[#aggrGuards])
+    --SetAiBlip(aggrGuards[i])
 end
 
 local function InitAggrPeds(room)
     for i = 1, #spawnCoords[room] do 
         aggrGuards[i] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][i], true, false)
         SetAggrPed(aggrGuards[i])
+        --SetAiBlip(aggrGuards[i])
+
+        NetworkRegisterEntityAsNetworked(aggrGuards[i])
+
+        aggrNetIds[i] = PedToNet(aggrGuards[i])
+
+        SetNetworkIdExistsOnAllMachines(aggrNetIds[i], true)
+        SetNetworkIdCanMigrate(aggrNetIds[i], true)
+
+        repeat Wait(0) print("tick") until NetworkDoesEntityExistWithNetworkId(aggrNetIds[i])
     end
+
+    TriggerServerEvent("sv:casinoheist:initGuardBlips", aggrNetIds)
 end
 
 function SetGuardVision(room)
@@ -439,35 +470,81 @@ function SetGuardAgg()
 end
 
 function StartGuardSpawn(room)
-    local num = 0
-    local sleep = 2000
+    if not HasModelLoaded(guards[2][1][1]) then 
+        LoadModel(guards[2][1][1])
+        LoadModel(guards[2][3][1]) 
+    end
     
+    local num = 0
+    local sleep = 100
+
     currentRoom = room
 
     InitAggrPeds(room)
-    
+
     CreateThread(function()
         while currentRoom == room do 
             Wait(sleep)
 
+            --print("tick")
+
             num = math.random(1, #spawnCoords[room])
 
-            if #aggrGuards < 3 then 
+            if #aggrGuards2 < 5 then 
+                sleep = 50
+            elseif sleep == 50 then 
                 sleep = 100
-            elseif sleep == 100 then 
-                sleep = 2000
             end
 
-            if #aggrGuards < 15 and IsNotClose(spawnCoords[room][num], 20) and not IsAnyPedLookingAtCoord(spawnCoords[room][num]) then 
+            --print(#aggrGuards2 < 15, IsNotClose(spawnCoords[room][num].xyz, 15), not IsAnyPedLookingAtCoord(spawnCoords[room][num].xyz))
+
+            if #aggrGuards2 < 15 and not IsAnyCrewNear(spawnCoords[room][num].xyz, 20) and not IsAnyPedLookingAtCoord(spawnCoords[room][num].xyz) then 
                 SpawnAggrPed(room, num)
+                print("guard spawned", "guard count: " .. #aggrGuards2)
+
             end
         end
 
-        for i = 1, #aggrGuards do 
-            DeletePed(aggrGuards[i])
+        for i = 1, #aggrGuards2 do 
+            DeletePed(aggrGuards2[i])
+        end
+
+        aggrGuards2 = {}
+    end)
+    CreateThread(function()
+        while currentRoom == room do 
+            Wait(500)
+
+            for i = 1, #aggrGuards2 do 
+                if IsPedDeadOrDying(aggrGuards2[i], true) then
+                    table.remove(aggrGuards2, i)
+                    print("removed: " .. i, "guard count: " .. #aggrGuards2)
+                end
+            end
         end
     end)
 end
+
+RegisterNetEvent("cl:casinoheist:initGuardBlips", function(netIds)
+    print("test")
+    for i = 1, #netIds do 
+        repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netIds[i])
+        aggrGuards2[i] = NetToPed(netIds[i])
+
+        SetAiBlip(aggrGuards2[i])
+        SetPedAsEnemy(aggrGuards2[i], true)
+    end
+end)
+
+RegisterNetEvent("cl:casinoheist:guardBlips", function(netId)
+    if netId == nil then return end
+    
+    repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netId)
+    aggrGuards2[#aggrGuards2 + 1] = NetToPed(netId)
+
+    SetAiBlip(aggrGuards2[#aggrGuards2])
+    SetPedAsEnemy(aggrGuards2[#aggrGuards2], true)
+end)
 
 RegisterCommand("test_nav", function()
     SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
@@ -479,4 +556,15 @@ RegisterCommand("test_nav", function()
 
 
     SetRoom(1)
+end, false)
+
+RegisterCommand("test_gs", function()
+    SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
+    AddRelationshipGroup("GUARDS")
+    SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
+    SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
+    SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
+
+    playerAmount = 2
+    StartGuardSpawn(3)
 end, false)
