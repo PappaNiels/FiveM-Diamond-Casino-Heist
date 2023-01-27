@@ -131,10 +131,24 @@ local spawnCoords = {
         vector4(2526.55, -283.29, -58.72, 356.11)
     },
     {
-
+        vector4(2534.01, -276.96, -70.69, 82.03),
+        vector4(2534.01, -281.0, -70.69, 82.03),
+        vector4(2486.44, -286.64, -70.69, 270.0),
+        vector4(2479.62, -266.24, -70.67, 270.0),
+        vector4(2487.74, -259.04, -70.69, 270.0),
+        vector4(2467.45, -267.83, -70.69, 240.0)
     },
     {
-
+        vector4(2486.86, -257.22, -59.11, 196.25),
+        vector4(2495.12, -257.16, -59.11, 147.89),
+        vector4(2511.09, -251.79, -59.31, 218.75),
+        vector4(2503.75, -244.5, -59.31, 46.31),
+        vector4(2485.1, -231.08, -60.11, 177.77),
+        vector4(2472.41, -241.92, -60.11, 254.58),
+        vector4(2510.78, -215.5, -60.31, 178.72),
+        vector4(2537.91, -244.37, -60.91, 94.76),
+        vector4(2510.23, -234.14, -60.32, 340.57),
+        vector4(2513.71, -241.36, -60.32, 152.31),
     }
 }
 
@@ -155,7 +169,7 @@ end
 
 local function IsAnyPedLookingAtCoord(coord)
     for i = 1, #hPlayer do 
-        if IsPedHeadingTowardsPosition(GetHeistPlayerPed(hPlayer[i]), coord 1.0) then 
+        if IsPedHeadingTowardsPosition(GetHeistPlayerPed(hPlayer[i]), coord, 1.0) then 
             return true
         end
     end
