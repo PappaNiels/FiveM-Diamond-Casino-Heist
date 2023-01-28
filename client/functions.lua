@@ -74,9 +74,7 @@ function LoadCutscene(name)
         RegisterEntityForCutscene(GetHeistPlayerPed(hPlayer[4]), "MP_4", 0, 0, 64)
     end
     
-    while not HasCutsceneLoaded() do 
-        Wait(10)
-    end
+    repeat Wait(0) until HasCutsceneLoaded() 
 end
 
 function LoadModel(model)
