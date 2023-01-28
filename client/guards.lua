@@ -4,7 +4,6 @@ local tick = 0
 
 local seen = {0, 0, 0, 0, 0}
 local netIds = {{}, {}}
-local aggrNetIds = {}
 
 local guards = {
     {   -- Staff Lobby
@@ -155,7 +154,6 @@ local spawnCoords = {
 
 --local blips = {{}, {}}
 local activeGuards = {{}, {}}
-local aggrGuards = {}
 local aggrGuards2 = {}
 
 local function IsUsingSuppressor(ped)
@@ -309,6 +307,9 @@ local function SpawnAggrPed(room, loc)
 end
 
 local function InitAggrPeds(room)
+    local aggrGuards = {}
+    local aggrNetIds = {}
+
     for i = 1, #spawnCoords[room] do 
         aggrGuards[i] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][i], true, false)
         SetAggrPed(aggrGuards[i])
