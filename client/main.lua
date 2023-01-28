@@ -24,9 +24,6 @@ playerAmount = 0
 teamlives = 0
 take = 0
 
-cash = 5875
-goldbar = 16156
-
 selectedGunman = 0         
 selectedLoadout = 0         
 selectedDriver = 0          
