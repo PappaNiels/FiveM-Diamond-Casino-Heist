@@ -239,6 +239,13 @@ RegisterNetEvent("cl:casinoheist:alarm", TriggerAlarm)
 AddEventHandler("baseevents:onPlayerDied", function(o, i)
     if hPlayer[1] == GetPlayerServerId(PlayerId()) or hPlayer[2] == GetPlayerServerId(PlayerId()) or hPlayer[3] == GetPlayerServerId(PlayerId()) or hPlayer[4] == GetPlayerServerId(PlayerId()) then 
         TriggerServerEvent("sv:casinoheist:removeteamlive")
+        exports.spawnmanager:spawnPlayer({
+            x = 2516.84,
+            y = -256.21,
+            z = -55.12,
+            heading = 117.02,
+            skipFade = false
+        })
         print("works")
     else 
         print("isnt")

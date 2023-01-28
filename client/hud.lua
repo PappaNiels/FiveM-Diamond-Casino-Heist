@@ -9,7 +9,7 @@ local teamlivesColour = {255, 255, 255, 255}
 local amountSize = 0.5
 local height = 0.903
 local tw = 1.35
-local takef = ""
+local takef = "0.000"
 
 local timeExpired = 0
 local min = 0

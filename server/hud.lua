@@ -7,5 +7,7 @@ RegisterNetEvent("sv:casinoheist:addtake", function(add)
 end)
 
 RegisterNetEvent("sv:casinoheist:removeteamlive", function()
-    TriggerClientEvent("cl:casinoheist:syncteamlives", -1, teamlives - 1)
+    if teamlives > 0 then 
+        TriggerClientEvent("cl:casinoheist:syncteamlives", -1, teamlives - 1)
+    end
 end)

@@ -212,6 +212,7 @@ function StartHeist()
     player = GetCurrentHeistPlayer()
     print(player)
     print(selectedEntrance)
+    exports.spawnmanager:setAutoSpawn(false)
 
     --loot = 3
     --approach = 3

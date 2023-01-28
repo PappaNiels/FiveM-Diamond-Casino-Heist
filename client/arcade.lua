@@ -1076,7 +1076,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
-                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
+                    --TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
@@ -1090,7 +1090,7 @@ local function ExecuteButtonFunction(i)
 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
-                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
+                    --TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
@@ -1122,7 +1122,7 @@ local function ExecuteButtonFunction(i)
                 
                 if (loot ~= 0 and approach ~= 0) then 
                     PrepBoardInfo()
-                    TriggerServerEvent("sv:casinoheist:setHeistLeader")
+                    --TriggerServerEvent("sv:casinoheist:setHeistLeader")
                     SetBarButtons()
                 end
             end
@@ -1765,7 +1765,7 @@ CreateThread(function()
                             boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
                             boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
                             barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
-                            hPlayer = {GetPlayerServerId(PlayerId())} 
+                            --hPlayer = {GetPlayerServerId(PlayerId())} 
                             print(hPlayer[1])
 
                             while not HasScaleformMovieLoaded(boardType[3]) do 
@@ -1802,7 +1802,7 @@ CreateThread(function()
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(759.08, -816.05, 25.3, 275.0)
                             ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD")
-                            TriggerServerEvent("sv:casinoheist:setHeistLeader", false)
+                            --TriggerServerEvent("sv:casinoheist:setHeistLeader", false)
                             
                             hPlayer = {} 
                             for i = 1, 3 do 

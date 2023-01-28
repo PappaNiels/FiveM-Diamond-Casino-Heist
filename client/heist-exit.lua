@@ -457,6 +457,7 @@ function FinishHeist(meet)
     --LoadCutscene("")
 
     ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
+    exports.spawnmanager:setAutoSpawn(true)
 end
 
 RegisterNetEvent("cl:casinoheist:syncMeet", Route)
