@@ -84,50 +84,6 @@ local drillAnims = { -- Laser: "anim_heist@hs3f@ig9_vault_drill@laser_drill@", "
     {}
 }
 
-local function PlaceCarts()
-    if player == 1 then 
-        local cartType = {
-            {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-            {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
-            {"ch_prop_ch_sec_cabinet_02a"},
-            {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
-        }
-
-        for i = 1, #cartType[loot] do 
-            LoadModel(cartType[loot][i])
-        end
-        if loot ~= 3 then 
-            if vaultLayout < 3 then 
-                cartLayout = 1
-            else 
-                cartLayout = 2
-            end
-
-            for i = 1, #cartLoc[cartLayout] do 
-                j = CartType(i)
-
-                cartObjs[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
-                SetEntityHeading(cartObjs[i], carts[cartLayout][i].w)
-                print("i: " .. i)
-                print("j: " .. j)
-                print("---")
-            end
-        end
-    end
-end
-
-local function PlaceArt()
-    LoadModel("ch_prop_ch_sec_cabinet_02a")
-    LoadModel("ch_prop_vault_painting_01a")
-
-    for i = 1, #artCabinets do 
-        artCabinetObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, false, false, false)
-        SetEntityHeading(artCabinetObjs[i], artCabinets[i].w)
-        paintingObjs[i] = CreateObject(GetHashKey("ch_prop_vault_painting_01a"), paintings[i], false, false, false)
-        SetEntityHeading(paintingObjs[i], artCabinets[i].w)
-    end
-end
-
 local function RemoveAllBlips()
     for i = 1, #blips do 
         RemoveBlip(blips[i])
