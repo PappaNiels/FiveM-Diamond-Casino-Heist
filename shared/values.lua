@@ -13,6 +13,13 @@ potential = { -- Total Take
     }
 }
 
+lootPerItem = {
+    5875, -- 45
+    14687, -- 22
+    391667,
+    18693
+}
+
 lootChances = {
     40, -- Cash
     20, -- Gold

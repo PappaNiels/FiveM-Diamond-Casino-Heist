@@ -259,7 +259,7 @@ function ExitCasino()
 
     EnableMantrapDoors(1, 1)
 
-    for i = #doorHash do 
+    for i = 1, #doorHash do 
         RemoveDoorFromSystem(doorHash[i])
     end
 

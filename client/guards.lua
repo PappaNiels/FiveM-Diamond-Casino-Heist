@@ -450,7 +450,7 @@ function RemoveGuards()
             end
         end
     else 
-        for i = 1, #aggrGuards2 do =
+        for i = 1, #aggrGuards2 do 
             DeletePed(aggrGuards2[i])
         end
     end

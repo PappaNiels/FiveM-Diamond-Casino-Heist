@@ -18,7 +18,7 @@ entrypointsCasino = {
 }
 
 difficulty = 1 -- 1 = Normal, 2 = Hard
-loot = 3 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
+loot = 0 -- 1 = CASH, 2 = GOLD, 3 = ARTWORK, 4 = DIAMONDS
 approach = 0 -- 1 = Silent and Sneaky, 2 = The Big Con, 3 = Aggressive
 playerAmount = 0
 teamlives = 0

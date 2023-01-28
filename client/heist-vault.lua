@@ -840,10 +840,6 @@ function Vault()
                         RemoveAnimDict("anim_heist@hs3f@ig11_steal_painting@male@")
                         ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS")
                     else 
-                        for i = 1, # do 
-                            SetModelAsNoLongerNeeded()
-                        end
-                        
                         if loot == 1 then 
                             SetModelAsNoLongerNeeded("ch_prop_20dollar_pile_01a")
                         elseif loot == 2 then 
@@ -899,7 +895,7 @@ RegisterNetEvent("test:cl:vault", Vault)
 
 RegisterCommand("test_offset", function()
     selectedHacker = 4
-    loot = 1
+    loot = 2
     vaultLayout = 1
     cartLayout = 1
     Vault()
