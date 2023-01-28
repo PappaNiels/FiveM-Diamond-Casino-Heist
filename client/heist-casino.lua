@@ -325,6 +325,7 @@ local function SetupVault()
         vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
         SetEntityHeading(vaultObjs[2], 90.0)
         FreezeEntityPosition(vaultObjs[2], true)
+        SetModelAsNoLongerNeeded("ch_prop_ch_vaultdoor01x")
     elseif approach == 3 then 
         LoadModel("ch_des_heist3_vault_01")
         LoadModel("ch_des_heist3_vault_02")
@@ -336,6 +337,10 @@ local function SetupVault()
         
         SetEntityVisible(vaultObjs[4], false, false)
         SetEntityCollision(vaultObjs[4], false, true)
+
+        SetModelAsNoLongerNeeded("ch_des_heist3_vault_01")
+        SetModelAsNoLongerNeeded("ch_des_heist3_vault_02")
+        SetModelAsNoLongerNeeded("ch_des_heist3_vault_end")
     end
 end
 
@@ -381,6 +386,9 @@ local function VaultExplosion()
     Wait(4000)
     
     ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
+    RemoveNamedPtfxAsset("cut_hs3f")
+    RemoveAnimDict(animDict)
+    RemoveAnimDict(reactAnimDict)
     SetEntityVisible(vaultObjs[4], true, false)
     SetEntityCollision(vaultObjs[4], true, true)
     DeleteEntity(vaultObjs[2])

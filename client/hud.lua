@@ -249,7 +249,7 @@ function EndScreen()
         "BRONZE"
     }
     
-    playerCount = 4
+    --playerCount = 4
     
     --CAM::_0x5A43C76F7FC7BA5F()
     --Citizen.InvokeNative(0x5A43C76F7FC7BA5F)

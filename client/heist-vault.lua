@@ -26,6 +26,7 @@ status = {
     }
 }
 
+local doorHash = {}
 local ptfx = {}
 local test = {}
 local takeObjs = {}
@@ -291,7 +292,7 @@ local function GrabLoot(i)
     LoadAnim(animDict)
     LoadModel(propType[loot])
     LoadModel(bag)
-    SetPedComponentVariation(ped, 5, 0, 0, 0)
+    SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
         
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
     boxObj = CreateObject(propType[loot], GetEntityCoords(PlayerPedId()), true, false, false)
@@ -410,7 +411,8 @@ local function GrabLoot(i)
     DeleteEntity(bagObj)
     DeleteEntity(boxObj)
     DestroyCam(cam)
-    SetPedComponentVariation(ped, 5, 82, bagColour, 0)
+    SetModelAsNoLongerNeeded(bag)
+    SetPedComponentVariation(PlayerPedId(), 5, 82, bagColour, 0)
 
     isBusy = false
 end
@@ -437,6 +439,7 @@ local function CutPainting(j)
     LoadAnim(animDict)
     LoadModel(blade)
     LoadModel(bag)
+    SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
     
     local bladeObj = CreateObject(GetHashKey(blade), GetEntityCoords(PlayerPedId()), true, false, false)
     local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
@@ -459,7 +462,6 @@ local function CutPainting(j)
             NetworkAddEntityToSynchronisedScene(bagObj, paintingAnims[2][i], animDict, paintingAnims[1][i][4], 1000.0, -1000.0, 0)
         end
     end
-
     
     NetworkStartSynchronisedScene(paintingAnims[2][1])
     PlayCamAnim(cam, paintingAnims[1][1][6], animDict, GetEntityCoords(takeObjs[j]), GetEntityRotation(takeObjs[j]), false, 2)
@@ -513,20 +515,23 @@ local function CutPainting(j)
     DeleteEntity(bladeObj)
     SetCamActive(cam, false)
     DestroyAllCams()
-    SetPedComponentVariation(ped, 5, 82, bagColour, 0)
+    SetModelAsNoLongerNeeded(bag)
+    SetPedComponentVariation(PlayerPedId(), 5, 82, bagColour, 0)
     isBusy = false
 end
 
 local function OpenSlideDoors(size, num, hash)
-    if not IsDoorRegisteredWithSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size)) then
-        AddDoorToSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), GetHashKey(hash), slideDoors[num], false, false, false)
+    local dHash = GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size)
+
+    if not IsDoorRegisteredWithSystem(dHash) then
+        AddDoorToSystem(dHash, GetHashKey(hash), slideDoors[num], false, false, false)
     end
     
-    DoorSystemSetDoorState(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size), 0, false, false)
-    DoorSystemSetHoldOpen("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size, true)
+    DoorSystemSetDoorState(dHash, 0, false, false)
+    DoorSystemSetHoldOpen(dHash, true)
     --Wait(4000)
     
-
+    doorHash[#doorHash + 1] = dHash
     --RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
     --FreezeEntityPosition(slideDoorObjs[num], true)
 end
@@ -676,6 +681,10 @@ local function VaultGas()
 
             ApplyDamageToPed(PlayerPedId(), 10, false)
         end
+
+        RemoveAnimDict("anim@fidgets@coughs")
+        RemoveAnimSet("anim@fidgets@coughs")
+        RemoveNamedPtfxAsset("scr_ch_finale")
     end)
     
     repeat Wait(3000) until x > 0.02
@@ -820,11 +829,43 @@ function Vault()
                 if not IsNotClose(vaultEntryDoorCoords, 7) then
                     print("Distance " .. distance)
                     RemoveAllBlips()
+
+                    if loot == 3 then 
+                        for i = 1, #paintingNames do 
+                            SetModelAsNoLongerNeeded(paintingNames[i])
+                        end
+                        
+                        SetModelAsNoLongerNeeded("w_me_switchblade")
+
+                        RemoveAnimDict("anim_heist@hs3f@ig11_steal_painting@male@")
+                        ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_STEAL_PAINTINGS")
+                    else 
+                        for i = 1, # do 
+                            SetModelAsNoLongerNeeded()
+                        end
+                        
+                        if loot == 1 then 
+                            SetModelAsNoLongerNeeded("ch_prop_20dollar_pile_01a")
+                        elseif loot == 2 then 
+                            SetModelAsNoLongerNeeded("ch_prop_gold_bar_01a")
+                        elseif loot == 4 then 
+                            SetModelAsNoLongerNeeded("ch_prop_dimaondbox_01a")
+                        end
+                        
+                        RemoveAnimDict("anim@heists@ornate_bank@grab_cash")
+                    end
+
+                    for i = 1, #doorHash do 
+                        DoorSystemSetHoldOpen(doorHash, false)
+                        DoorSystemSetDoorState(doorHash, 1, false, false)
+                        RemoveDoorFromSystem(doorHash)
+                    end
+
                     isInVault = false 
                     isBusy = true 
                     showTimer = false
                     VaultLobby(true, false)
-    
+
                     break
                 elseif distance < 7 then 
                     isInVault = false 

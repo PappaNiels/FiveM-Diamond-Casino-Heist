@@ -58,9 +58,11 @@ end
 
 local function UnloadDrilling()
     SetScaleformMovieAsNoLongerNeeded(scaleformDrill)
+    RemoveNamedPtfxAsset("scr_ch_finale")
     RemoveAnimDict(animDict)
     SetModelAsNoLongerNeeded(drillName)
     SetModelAsNoLongerNeeded(bag)
+    SetModelAsNoLongerNeeded("ch_prop_ch_vaultdoor01x")
     
     if approach == 1 then 
         ReleaseNamedScriptAudioBank("DLC_HEIST3/HEIST_FINALE_LASER_DRILL")
@@ -105,7 +107,9 @@ end
 local function SetLaser(bool)
     isDrilling = bool
     
-    StopParticleFxLooped(laserFx, 0)
+    if approach == 1 then
+        StopParticleFxLooped(laserFx, 0)
+    end
 
     BeginScaleformMovieMethod(scaleformDrill, "SET_LASER_VISIBLE")
     ScaleformMovieMethodAddParamBool(bool)
@@ -247,7 +251,7 @@ function StartDrilling(k)
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
     bagObj = CreateObject(GetHashKey("ch_p_m_bag_var0" .. GetClothingModel(bagColour) .. "_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
     cam = CreateCam("DEFAULT_ANIMATED_CAMERA", true)
-    SetPedComponentVariation(ped, 5, 0, 0, 0)
+    SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
 
     if approach == 1 then 
         syncPos = vaultDrillPos[k] + vector3(-0.1, 0.0, 0.0)
@@ -313,7 +317,7 @@ function StartDrilling(k)
 
             DeleteEntity(drillObj)
             DeleteEntity(bagObj)
-            SetPedComponentVariation(ped, 5, 82, bagColour, 0)
+            SetPedComponentVariation(PlayerPedId(), 5, 82, bagColour, 0)
 
             isBusy = false
         end

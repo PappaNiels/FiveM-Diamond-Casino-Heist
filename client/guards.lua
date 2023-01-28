@@ -320,7 +320,7 @@ local function InitAggrPeds(room)
         SetNetworkIdExistsOnAllMachines(aggrNetIds[i], true)
         SetNetworkIdCanMigrate(aggrNetIds[i], true)
 
-        repeat Wait(0) print("tick") until NetworkDoesEntityExistWithNetworkId(aggrNetIds[i])
+        --repeat Wait(0) print("tick") until NetworkDoesEntityExistWithNetworkId(aggrNetIds[i])
     end
 
     TriggerServerEvent("sv:casinoheist:initGuardBlips", aggrNetIds)
@@ -443,11 +443,20 @@ function SetGuardColour(colour)
 end
 
 function RemoveGuards()
-    for i = 1, 2 do 
-        for j = 1, #guards[i] do 
-            DeletePed(activeGuards[i][j])
+    if alarmTriggered == 0 then 
+        for i = 1, 2 do 
+            for j = 1, #guards[i] do 
+                DeletePed(activeGuards[i][j])
+            end
+        end
+    else 
+        for i = 1, #aggrGuards2 do =
+            DeletePed(aggrGuards2[i])
         end
     end
+
+    SetModelAsNoLongerNeeded(guards[2][1][1])
+    SetModelAsNoLongerNeeded(guards[2][3][1])
 end
 
 function SetGuardAgg()

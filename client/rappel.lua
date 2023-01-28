@@ -74,6 +74,7 @@ function RopeStart()
     StartCutscene(0)
 
     HideCutProps(true)
+    RemoveCutscene()
 
     DoScreenFadeOut(500)
 
@@ -127,6 +128,7 @@ function RopeStart()
     RopeUnloadTextures()
 
     HideCutProps(false)
+    RemoveCutscene()
 
     DoScreenFadeOut(500)
 

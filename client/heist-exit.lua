@@ -177,6 +177,7 @@ function GoToExit()
                             clothingChange[i] = CreateObject(GetHashKey(bag), clothingChangeCoords[i].xyz, true, false, false)
                             SetEntityHeading(clothingChange[i], clothingChangeCoords[i].w)
                         end
+                        SetModelAsNoLongerNeeded(bag)
                     else 
                         Wait(10)
             
@@ -225,6 +226,8 @@ function GoToExit()
 end
 
 function ExitCasino()
+    local doorHash = {1466913421, -2088850773, 1969557112, -1608031236}
+
     for i = 1, #blips do 
         RemoveBlip(blips[i])
     end
@@ -246,8 +249,24 @@ function ExitCasino()
         Wait(10)
     end
 
+    RemoveAnimDict("anim_heist@hs3f@ig1_hack_keypad@arcade@male@")
+    RemoveAnimDict("anim_heist@hs3f@ig3_cardswipe@male@")
+    RemoveAnimDict("anim_heist@hs3f@ig3_cardswipe_insync@male@")
+
+    SetModelAsNoLongerNeeded("prop_phone_ing")
+    SetModelAsNoLongerNeeded("ch_prop_ch_usb_drive01x")
+    SetModelAsNoLongerNeeded("ch_prop_vault_key_card_01a")
+
+    EnableMantrapDoors(1, 1)
+
+    for i = #doorHash do 
+        RemoveDoorFromSystem(doorHash[i])
+    end
+
     SetEntityCoords(PlayerPedId(), entryCoords[selectedExit], true, false, false, true)
     SetEntityHeading(PlayerPedId(), 0)
+
+    ClearAreaOfPeds(entryCoords[selectedExit], 1000, 1)
 
     HideTimerBars()
 
@@ -264,12 +283,13 @@ function ExitCasino()
     end
 
     ShowTimerbars(true)
+    RemoveCutscene()
 
     if player == 1 then 
         LoadModel(availableVehicles[selectedDriver][1][selectedVehicle][1])
-        print(print(availableVehicles[selectedDriver][1][selectedVehicle][1]))
         vehs[1] = CreateVehicle(GetHashKey(availableVehicles[selectedDriver][1][selectedVehicle][1]), 982.61, -211.15, 70.38, 57.54, true, false)
         vehs[2] = CreateVehicle(GetHashKey(availableVehicles[selectedDriver][1][selectedVehicle][1]), 992.93, -214.45, 69.83, 238.67, true, false)
+        SetModelAsNoLongerNeeded(availableVehicles[selectedDriver][1][selectedVehicle][1])
     end
     
     for i = 1 , 2 do 
@@ -371,6 +391,12 @@ local function Route(meet)
         peds[i] = CreatePedInsideVehicle(vehs[3], 1, GetHashKey(pedModels[selectedBuyer][i]), -2 + i, false, false)
     end
 
+    SetModelAsNoLongerNeeded(model[selectedBuyer])
+
+    for i = 1, #pedModels[selectedBuyer] do 
+        SetModelAsNoLongerNeeded(pedModels[selectedBuyer][i])
+    end
+
     for i = 1, 3 do 
         SetPedRelationshipGroupHash(peds[i], GetHashKey("PLAYER"))
     end
@@ -426,7 +452,11 @@ function FinishHeist(meet)
     --end
 
     EndScreen()
+    RemoveCutscene()
+    SetStreamedTextureDictAsNoLongerNeeded("timerbars")
     --LoadCutscene("")
+
+    ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
 end
 
 RegisterNetEvent("cl:casinoheist:syncMeet", Route)
