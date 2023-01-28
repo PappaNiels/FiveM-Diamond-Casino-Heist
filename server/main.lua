@@ -1,4 +1,4 @@
-hPlayer = {1, 2}
+hPlayer = {}
 heistInProgress = false
 
 local approach = 0
@@ -10,11 +10,11 @@ local selectedDriver = 0
 local selectedVehicle = 0         
 local selectedHacker = 0          
 local selectedKeycard = 0
-local selectedEntrance = 1        
+local selectedEntrance = 0        
 local selectedExit = 0            
 local selectedBuyer = 0          
-local selectedEntryDisguise = 1      
-local selectedExitDisguise = 1 
+local selectedEntryDisguise = 0      
+local selectedExitDisguise = 0 
 
 local boughtCleanVehicle = false
 local boughtDecoy = false
@@ -60,6 +60,7 @@ RegisterCommand("join_casinoheist", function(src)
 
                     for i = 1, #hPlayer - 1 do 
                         TriggerClientEvent("cl:casinoheist:infoMessage", i, "%s has joined the crew", src)
+                        SetPlayerRoutingBucket(src, 2)
                     end
 
                     TriggerClientEvent("cl:casinoheist:infoMessage", src, "You joined the crew of %s", hPlayer[1])
@@ -71,6 +72,13 @@ RegisterCommand("join_casinoheist", function(src)
         else 
             TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
         end
+    end
+end, false)
+
+RegisterCommand("start_casinoheist", function(src, args)
+    if not heistInProgress and hPlayer[1] == nil then 
+        hPlayer[1] = src 
+        SetPlayerRoutingBucket(src, 2)
     end
 end, false)
 
