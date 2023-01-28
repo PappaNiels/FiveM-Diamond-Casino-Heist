@@ -261,7 +261,7 @@ local function SpawnPed()
     --SetGuardVision(1)
 end
 
-local function SetAiBlip(ped)
+local function SetAiBlip(ped, cone)
     print(DoesEntityExist(ped))
 
     SetPedHasAiBlip(ped, true)
@@ -269,7 +269,7 @@ local function SetAiBlip(ped)
     SetPedAiBlipNoticeRange(ped, 100.0)
     SetPedAiBlipSprite(ped, 270)
     SetPedAiBlipForcedOn(ped, true)
-    SetPedAiBlipHasCone(ped, false)
+    SetPedAiBlipHasCone(ped, cone)
 
     print(DoesPedHaveAiBlip(ped))
 end
@@ -293,31 +293,29 @@ local function SetAggrPed(ped)
 end
 
 local function SpawnAggrPed(room, loc)
-    aggrGuards[#aggrGuards + 1] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][loc], true, false)
-    SetAggrPed(aggrGuards[#aggrGuards])
+    local aggrGuards = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][loc], true, false)
+    SetAggrPed(aggrGuards)
 
-    NetworkRegisterEntityAsNetworked(aggrGuards[#aggrGuards])
+    NetworkRegisterEntityAsNetworked(aggrGuards)
         
-    aggrNetIds[#aggrGuards + 1] = PedToNet(aggrGuards[#aggrGuards])
-    SetNetworkIdExistsOnAllMachines(aggrNetIds[#aggrGuards], true)
-    SetNetworkIdCanMigrate(aggrNetIds[#aggrGuards], true)
+    local aggrNetIds = PedToNet(aggrGuards)
+    SetNetworkIdExistsOnAllMachines(aggrNetIds, true)
+    SetNetworkIdCanMigrate(aggrNetIds, true)
 
-    TriggerServerEvent("sv:casinoheist:guardBlips", aggrNetIds[#aggrGuards])
+    TriggerServerEvent("sv:casinoheist:guardBlips", aggrNetIds)
     --SetAiBlip(aggrGuards[i])
 end
 
 local function InitAggrPeds(room)
-    local aggrGuards = {}
-    local aggrNetIds = {}
-
+    local aggrNetIds = {} 
     for i = 1, #spawnCoords[room] do 
-        aggrGuards[i] = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][i], true, false)
-        SetAggrPed(aggrGuards[i])
+        local aggrGuards = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][i], true, false)
+        SetAggrPed(aggrGuards)
         --SetAiBlip(aggrGuards[i])
 
-        NetworkRegisterEntityAsNetworked(aggrGuards[i])
+        NetworkRegisterEntityAsNetworked(aggrGuards)
 
-        aggrNetIds[i] = PedToNet(aggrGuards[i])
+        aggrNetIds[i] = PedToNet(aggrGuards)
 
         SetNetworkIdExistsOnAllMachines(aggrNetIds[i], true)
         SetNetworkIdCanMigrate(aggrNetIds[i], true)
@@ -532,7 +530,7 @@ RegisterNetEvent("cl:casinoheist:initGuardBlips", function(netIds)
         repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netIds[i])
         aggrGuards2[i] = NetToPed(netIds[i])
 
-        SetAiBlip(aggrGuards2[i])
+        SetAiBlip(aggrGuards2[i], false)
         SetPedAsEnemy(aggrGuards2[i], true)
     end
 end)
@@ -543,7 +541,7 @@ RegisterNetEvent("cl:casinoheist:guardBlips", function(netId)
     repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netId)
     aggrGuards2[#aggrGuards2 + 1] = NetToPed(netId)
 
-    SetAiBlip(aggrGuards2[#aggrGuards2])
+    SetAiBlip(aggrGuards2[#aggrGuards2], false)
     SetPedAsEnemy(aggrGuards2[#aggrGuards2], true)
 end)
 
