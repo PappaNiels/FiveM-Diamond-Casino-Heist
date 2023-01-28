@@ -121,6 +121,8 @@ local function SetupCargobob()
         SetNetworkIdCanMigrate(netIds[1], true)
         SetNetworkIdCanMigrate(netIds[2], true)
         
+        repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netIds[1]) and NetworkDoesEntityExistWithNetworkId(netIds[2])
+
         print(NetworkDoesNetworkIdExist(netIds[1]))
         print(NetworkDoesNetworkIdExist(netIds[2]))
 
@@ -128,11 +130,7 @@ local function SetupCargobob()
     else
         Wait(100)
 
-        NetworkRequestControlOfNetworkId(netIds[1])
-        NetworkRequestControlOfNetworkId(netIds[2])
-        
-        Wait(2000)
-
+        repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netIds[1]) and NetworkDoesEntityExistWithNetworkId(netIds[2])
         --while not NetworkHasControlOfNetworkId(netIds[1]) and not NetworkHasControlOfNetworkId(netIds[2]) do 
         --    Wait(10)
         --end
@@ -142,7 +140,7 @@ local function SetupCargobob()
         --SetPedRelationshipGroupHash(cargobob[2], GetHashKey("PLAYER"))
     end
 
-    cargobob[3] = AddBlipForCoord(cargobobCoords)
+    cargobob[3] = AddBlipForEntity(cargobob[1])
     
     SetBlipSprite(cargobob[3], 422)
     SetBlipColour(cargobob[3], 54)
