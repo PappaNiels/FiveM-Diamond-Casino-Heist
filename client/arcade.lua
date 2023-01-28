@@ -1811,6 +1811,10 @@ CreateThread(function()
                             
                             SetScaleformMovieAsNoLongerNeeded(barMenu)
 
+                            setupLists = false
+                            prepLists = false
+                            finalLists = false
+
                             isInGarage = false
                         end
                     end
