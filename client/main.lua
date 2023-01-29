@@ -184,7 +184,7 @@ RegisterNetEvent("cl:casinoheist:startHeist", function(obj)
     hPlayer = obj[1]
     approach = obj[2]
     loot = obj[3]
-    cuts = obj[4]
+    playerCut[#hPlayer] = obj[4]
     selectedGunman = obj[5]
     selectedLoadout = obj[6]         
     selectedDriver = obj[7]          
