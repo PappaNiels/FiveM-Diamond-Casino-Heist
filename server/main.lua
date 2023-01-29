@@ -103,9 +103,19 @@ RegisterNetEvent("sv:casinoheist:playerLeftMarker", function()
     end
 end)
 
+RegisterNetEvent("sv:casinoheist:calmGuard", function(room, net)
+    for i = 1, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:calmGuard", hPlayer[i], room, net)
+    end 
+end)
+
 RegisterNetEvent("sv:casinoheist:joinHeist", function(src)
-    local src = source
     if heistInProgress then return end 
+    
+    if src == nil then 
+        src = source
+    end 
+    
     if #hPlayer >= 4 then TriggerClientEvent("cl:casinoheist:infoMessage", src, "The crew is full.") return end
 
     if #invitedPlayers ~= 0 then 
