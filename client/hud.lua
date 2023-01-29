@@ -4,8 +4,8 @@ showTimer = false
 
 local test = false
 
---local teamlivesColour = {255, 255, 255, 255}
-local teamlivesColour = {255, 100, 100, 255}
+local teamlivesColour = {255, 255, 255, 255}
+--local teamlivesColour = {255, 100, 100, 255}
 
 local amountSize = 0.5
 local height = 0.903
@@ -96,7 +96,7 @@ local function SetMoney(i, start, limit, k)
     ScaleformMovieMethodAddParamInt(start)
     ScaleformMovieMethodAddParamInt(limit)
     if k == 3 then 
-        ScaleformMovieMethodAddParamPlayerNameString("50" .. txtTake[k])
+        ScaleformMovieMethodAddParamPlayerNameString(tostring(cuts[playerAmount][GetCurrentHeistPlayer()]) .. txtTake[k])
     else
         ScaleformMovieMethodAddParamPlayerNameString(txtTake[k])
     end
@@ -137,6 +137,9 @@ end)
 function DrawTeamlives()
     LoadTexture("timerbars")
     showTeamLives = true
+    if teamlives < 1 then 
+        teamlivesColour = {201, 35, 37, 255}
+    end
 
     CreateThread(function()
         while showTeamLives do 
@@ -287,11 +290,11 @@ function EndScreen()
         ScaleformMovieMethodAddParamInt(10)
         EndScaleformMovieMethod()
         
-        for j = 1, 4 do 
+        for j = 1, #hPlayer do 
             BeginScaleformMovieMethod(endScreen[i], "ADD_STAT_TO_TABLE")
             ScaleformMovieMethodAddParamInt(1)
             ScaleformMovieMethodAddParamInt(10)
-            ScaleformMovieMethodAddParamPlayerNameString("~w~" .. GetPlayerName(PlayerId()))
+            ScaleformMovieMethodAddParamPlayerNameString("~w~" .. GetPlayerName(GetPlayerFromServerId(hPlayer[i])))
             
             ScaleformMovieMethodAddParamPlayerNameString("~HUD_COLOUR_" .. txt[j] .. "~" .. txt[j])
             ScaleformMovieMethodAddParamBool(true)
@@ -312,10 +315,12 @@ function EndScreen()
         ScaleformMovieMethodAddParamInt(20)
         EndScaleformMovieMethod()
         
-        SetMoney(i, 0, 200000, 1)
-        SetMoney(i, 200000, 100000, 2)
-        SetMoney(i, 100000, 50000, 3)
-        SetMoney(i, 50000, 50000, 4)
+        local accTake = take * (playerCut[playerAmount][GetCurrentHeistPlayer()] / 100.0)
+
+        SetMoney(i, 0, potential[difficulty][loot], 1)
+        SetMoney(i, potential[difficulty][loot], take, 2)
+        SetMoney(i, take, accTake, 3)
+        SetMoney(i, accTake, accTake, 4)
         
         BeginScaleformMovieMethod(endScreen[i], "ADD_JOB_POINTS_TO_WALL")
         ScaleformMovieMethodAddParamInt(1)
