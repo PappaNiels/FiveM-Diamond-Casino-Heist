@@ -257,14 +257,14 @@ function StartHeist()
 
     -- To do
     if approach == 2 then 
-        GiveWeaponToPed(PlayerPedId(), GetHashKey("weapon_ceramicpistol"), 300, false, false)
+        GiveWeaponToPed(PlayerPedId(), GetHashKey("weapon_ceramicpistol"), 500, false, false)
     else 
         for i = 1, #weaponLoadout[approach][selectedGunman][selectedLoadout] do 
             if type(weaponLoadout[approach][selectedGunman][selectedLoadout][i]) == "table" then 
-                GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][1]), 300, false, false)
+                GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][1]), 500, false, false)
                 GiveWeaponComponentToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][1]), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i][2]))
             else
-                GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i]), 300, false, false)
+                GiveWeaponToPed(PlayerPedId(), GetHashKey(weaponLoadout[approach][selectedGunman][selectedLoadout][i]), 500, false, false)
             end
         end
     end
