@@ -4,7 +4,8 @@ showTimer = false
 
 local test = false
 
-local teamlivesColour = {255, 255, 255, 255}
+--local teamlivesColour = {255, 255, 255, 255}
+local teamlivesColour = {255, 100, 100, 255}
 
 local amountSize = 0.5
 local height = 0.903

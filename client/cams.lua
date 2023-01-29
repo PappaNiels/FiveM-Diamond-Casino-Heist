@@ -320,6 +320,7 @@ function RemoveCams()
     end
 end
 
+-- Remove
 AddEventHandler("onResourceStop", function(rs)
     if rs ~= GetCurrentResourceName() then return end 
 
@@ -330,6 +331,8 @@ AddEventHandler("onResourceStop", function(rs)
             DeleteEntity(cams[i][j])
         end
     end
+
+    exports.spawnmanager:setAutoSpawn(true)
 
 end)
 

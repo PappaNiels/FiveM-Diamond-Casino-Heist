@@ -1,8 +1,8 @@
 hPlayer = {}
 heistInProgress = false
+loot = 0
 
 local approach = 0
-local loot = 0
 
 local selectedGunman = 0         
 local selectedLoadout = 0         
@@ -79,6 +79,10 @@ RegisterCommand("start_casinoheist", function(src, args)
     if not heistInProgress and hPlayer[1] == nil then 
         hPlayer[1] = src 
         SetPlayerRoutingBucket(src, 2)
+    elseif hPlayer[1] == src then 
+        TriggerClientEvent("cl:casinoheist:infoMessage", src, "You already host a session")
+    else
+        TriggerClientEvent("cl:casinoheist:infoMessage", src, "Someone else is already the heist leader.")
     end
 end, false)
 

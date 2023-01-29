@@ -1,6 +1,6 @@
 heistInProgress = false
 
-hPlayer = {1, 2}
+hPlayer = {}
 
 entrypointsCasino = {
     -- Agressive 
@@ -173,34 +173,6 @@ AddEventHandler("onResourceStart", function()
     --TriggerServerEvent("sv:casinoheist:setupheist" )
     --SetEntityVisible(PlayerPedId(), true)
 end)
-
-function SetupCheckpoint()
-    for i = 1, #nPropsCoords, 1 do 
-        local prop = GetClosestObjectOfType(nPropsCoords[i], 1.0, nPropsNames[i], false, false, false)
-        --local prop1 = GetClosestObjectOfType(2504.97, -240.31, -70.17, 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
-        SetEntityVisible(prop, false)
-        SetEntityCollision(prop, false, true)
-        --SetEntityVisible(prop1, true)
-        --SetEntityCollision(prop1, true, true)
-    end
-
-    
-    --FreezeEntityPosition(GetClosestObjectOfType(2504.58, -240.4, -70.71, 2.0, GetHashKey("ch_prop_ch_vaultdoor01x"), false, false, false), true)
-
-    local shaft = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
-    local vaultDoorOne = "ch_des_heist3_vault_01"
-    local vaultDoorTwo = "ch_des_heist3_vault_02"
-
-    SetEntityVisible(shaft, false)
-    LoadModel(vaultDoorOne)
-    LoadModel(vaultDoorTwo)
-
-    vaultObjOne = CreateObject(GetHashKey(vaultDoorOne), 2504.97, -240.31, -73.69, false, false, false)
-    vaultObjTwo = CreateObject(GetHashKey(vaultDoorTwo), 2504.97, -240.31, -75.334, false, false, false)  
-
-    SetEntityForAll(vaultObjOne)
-    SetEntityForAll(vaultObjTwo)
-end
 
 RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(crew)
     hPlayer = crew
