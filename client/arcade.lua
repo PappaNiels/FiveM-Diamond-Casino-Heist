@@ -167,12 +167,12 @@ local entranceString = {
         "ENTRANCE",
         "STAFF LOBBY",
         "WASTE DISPOSAL",
-        "N.E. ROOF TERRACE",
-        "N.W. ROOF TERRACE",
-        "S.E. ROOF TERRACE",
-        "S.W. ROOF TERRACE",
-        "SOUTH HELIPAD",
-        "NORTH HELIPAD"
+        --"N.E. ROOF TERRACE",
+        --"N.W. ROOF TERRACE",
+        --"S.E. ROOF TERRACE",
+        --"S.W. ROOF TERRACE",
+        --"SOUTH HELIPAD",
+        --"NORTH HELIPAD"
     },
     [2] = {
         [11] = "STAFF LOBBY",
@@ -185,11 +185,11 @@ local entranceString = {
         "MAIN DOOR",
         "SEWER",
         "STAFF LOBBY",
-        "WASTE DISPOSAL",
-        "N.E. ROOF TERRACE",
-        "N.W. ROOF TERRACE",
-        "S.E. ROOF TERRACE",
-        "S.W. ROOF TERRACE"
+        --"WASTE DISPOSAL",
+        --"N.E. ROOF TERRACE",
+        --"N.W. ROOF TERRACE",
+        --"S.E. ROOF TERRACE",
+        --"S.W. ROOF TERRACE"
     }
 }
 
@@ -237,11 +237,14 @@ local buyerString = {
 }
 
 local entryDisguiseString = {
+    -- old
+    -- "ENTRY DISGUISE",
+    -- "BUGSTARS",
+    -- "GRUPPE SECHS",
+    -- "LS WATER & POWER",
+    -- "YUNG ANCESTOR"
     "ENTRY DISGUISE",
-    "BUGSTARS",
     "GRUPPE SECHS",
-    "LS WATER & POWER",
-    "YUNG ANCESTOR"
 }
 
 local exitDisguiseString = {
@@ -749,15 +752,20 @@ local function InsertEntry()
         imageOrder[3][approach][2][i] = 0
     end
 
-    if imageOrderNum[3][13] == 2 then
-        imageOrder[3][2][2] = {11, 1}
-    elseif imageOrderNum[3][13] == 4 then
-        imageOrder[3][2][2] = {11, 1}
-    elseif imageOrderNum[3][13] == 3 then
-        imageOrder[3][2][2] = {6}
-    elseif imageOrderNum[3][13] == 5 then
-        imageOrder[3][2][2] = {2}
-    end
+    -- old
+
+
+    --if imageOrderNum[3][13] == 2 then
+    --    imageOrder[3][2][2] = {11, 1}
+    --elseif imageOrderNum[3][13] == 4 then
+    --    imageOrder[3][2][2] = {11, 1}
+    --elseif imageOrderNum[3][13] == 3 then
+    --    imageOrder[3][2][2] = {6}
+    --elseif imageOrderNum[3][13] == 5 then
+    --    imageOrder[3][2][2] = {2}
+    --end
+
+    imageOrder[3][2][2] = {6}
 
     SetDataFinal()
 end
@@ -1386,8 +1394,13 @@ end
 function PlayerJoinedCrew(i)
     BeginScaleformMovieMethod(boardType[3], "SET_CREW_MEMBER")
     ScaleformMovieMethodAddParamInt(7 + i)
-    ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(hPlayer[i])))
-    ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(hPlayer[i]))
+    if i == 1 then 
+        ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(PlayerId()))
+        ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(PlayerId()))
+    else
+        ScaleformMovieMethodAddParamPlayerNameString(GetPlayerName(GetPlayerFromServerId(hPlayer[i])))
+        ScaleformMovieMethodAddParamTextureNameString(GetPedMugshot(hPlayer[i]))
+    end
     EndScaleformMovieMethod()
     AppearanceButtons(#hPlayer, true)
     
