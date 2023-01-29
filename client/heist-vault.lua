@@ -364,7 +364,7 @@ local function GrabLoot(i)
             end
             
             SetEntityVisible(boxObj, false, false)            
-            
+            TriggerServerEvent("sv:casinoheist:addtake")
             --Wait(10)
 
             SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
@@ -404,7 +404,7 @@ local function GrabLoot(i)
     NetworkStartSynchronisedScene(exit)
     RenderScriptCams(false, true, 2000, true, false)
     TriggerServerEvent("sv:casinoheist:syncLStatus", i, animTime)
-    take = take + 1
+    --take = take + 1
 
     Wait(2000)
 
@@ -506,8 +506,9 @@ local function CutPainting(j)
     end
 
     TriggerServerEvent("sv:casinoheist:syncLStatus", j, 1.0)
+    TriggerServerEvent("sv:casinoheist:addtake")
 
-    take = take + 1
+    --take = take + 1
 
     ClearPedTasks(PlayerPedId())
 
