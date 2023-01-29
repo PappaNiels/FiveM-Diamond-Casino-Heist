@@ -113,8 +113,12 @@ local function SetupCargobob()
             Wait(10)
         end
 
+        NetworkRegisterEntityAsNetworked(cargobob[1])
+        NetworkRegisterEntityAsNetworked(cargobob[2])
+
         netIds[1] = VehToNet(cargobob[1])
         netIds[2] = PedToNet(cargobob[2])
+
 
         SetNetworkIdExistsOnAllMachines(netIds[1], true)
         SetNetworkIdExistsOnAllMachines(netIds[2], true)
