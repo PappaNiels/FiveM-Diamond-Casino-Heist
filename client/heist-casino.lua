@@ -727,9 +727,8 @@ end
 function Basement()
     if alarmTriggered == 0 then 
         InitRoutes()
-    else 
-        StartGuardSpawn(1)
     end
+
 
     if IsScreenFadedOut() then 
         DoScreenFadeIn(500)

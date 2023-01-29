@@ -478,6 +478,8 @@ function SetGuardAgg()
 end
 
 function StartGuardSpawn(room)
+    if player ~= 1 then return end
+
     if not HasModelLoaded(guards[2][1][1]) then 
         LoadModel(guards[2][1][1])
         LoadModel(guards[2][3][1]) 
@@ -499,9 +501,9 @@ function StartGuardSpawn(room)
             num = math.random(1, #spawnCoords[room])
 
             if #aggrGuards2 < 5 then 
-                sleep = 50
-            elseif sleep == 50 then 
                 sleep = 100
+            elseif sleep == 100 then 
+                sleep = 500
             end
 
             --print(#aggrGuards2 < 15, IsNotClose(spawnCoords[room][num].xyz, 15), not IsAnyPedLookingAtCoord(spawnCoords[room][num].xyz))
@@ -512,6 +514,8 @@ function StartGuardSpawn(room)
 
             end
         end
+
+        print("end")
 
         for i = 1, #aggrGuards2 do 
             DeletePed(aggrGuards2[i])
