@@ -39,8 +39,12 @@ RegisterCommand("invite_casinoheist", function(src, args)
             TriggerClientEvent("cl:casinoheist:infoMessage", src, "You can not invite yourself")
         else
             invitedPlayers[#invitedPlayers + 1] = tonumber(args[1]) 
-            TriggerClientEvent("cl:casinoheist:infoMessageExtra", tonumber(args[1]), src)
-            TriggerClientEvent("cl:casinoheist:infoMessage", src, "You have sent an invite to %s", tonumber(args[1]))
+            if GetResourceState("ifruit-phone") == "started" then 
+                TriggerClientEvent("cl:ifruit:invitePlayer", src, "Lester", "The Diamond Casino Heist", " Heist : Diamond Casino Heist", 1, "char_lester", "sv:casinoheist:joinHeist", true)
+            else
+                TriggerClientEvent("cl:casinoheist:infoMessageExtra", tonumber(args[1]), src)
+                TriggerClientEvent("cl:casinoheist:infoMessage", src, "You have sent an invite to %s", tonumber(args[1]))
+            end
         end
     else 
         TriggerClientEvent("cl:casinoheist:infoMessage", src, "You are not a heist leader for the Diamond Casino Heist")
@@ -48,31 +52,7 @@ RegisterCommand("invite_casinoheist", function(src, args)
 end, false)
 
 RegisterCommand("join_casinoheist", function(src)
-    if not heistInProgress then 
-        if #invitedPlayers ~= 0 then 
-            for i = 1, #invitedPlayers do
-                if invitedPlayers[i] == src then 
-                    hPlayer[#hPlayer + 1] = src 
-                    for i = 1, #hPlayer do 
-                        TriggerClientEvent("cl:casinoheist:updateHeistPlayers", hPlayer[i], hPlayer)
-                        --TriggerClientEvent("cl:casinoheist:syncHeistPlayerScaleform", hPlayer[i])
-                    end
-
-                    for i = 1, #hPlayer - 1 do 
-                        TriggerClientEvent("cl:casinoheist:infoMessage", i, "%s has joined the crew", src)
-                        SetPlayerRoutingBucket(src, 2)
-                    end
-
-                    TriggerClientEvent("cl:casinoheist:infoMessage", src, "You joined the crew of %s", hPlayer[1])
-                    break
-                elseif i == #invitedPlayers then
-                    TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
-                end
-            end
-        else 
-            TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
-        end
-    end
+    TriggerEvent("sv:casinoheist:joinHeist", src)
 end, false)
 
 RegisterCommand("start_casinoheist", function(src, args)
@@ -123,6 +103,36 @@ RegisterNetEvent("sv:casinoheist:playerLeftMarker", function()
     end
 end)
 
+RegisterNetEvent("sv:casinoheist:joinHeist", function(src)
+    local src = source
+    if heistInProgress then return end 
+    if #hPlayer >= 4 then TriggerClientEvent("cl:casinoheist:infoMessage", src, "The crew is full.") return end
+
+    if #invitedPlayers ~= 0 then 
+        for i = 1, #invitedPlayers do
+            if invitedPlayers[i] == src then 
+                hPlayer[#hPlayer + 1] = src 
+                for i = 1, #hPlayer do 
+                    TriggerClientEvent("cl:casinoheist:updateHeistPlayers", hPlayer[i], hPlayer)
+                    --TriggerClientEvent("cl:casinoheist:syncHeistPlayerScaleform", hPlayer[i])
+                end
+
+                for i = 1, #hPlayer - 1 do 
+                    TriggerClientEvent("cl:casinoheist:infoMessage", hPlayer[i], "%s has joined the crew", src)
+                    SetPlayerRoutingBucket(src, 2)
+                end
+
+                TriggerClientEvent("cl:casinoheist:infoMessage", src, "You joined the crew of %s", hPlayer[1])
+                break
+            elseif i == #invitedPlayers then
+                TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
+            end
+        end
+    else 
+        TriggerClientEvent("cl:casinoheist:infoMessage", src, "You haven't received an invite for the Diamond Casino Heist...") 
+    end
+end)
+
 RegisterNetEvent("test:sv:casinoheist:openvaultdoors", function()
     TriggerClientEvent("test:cl:casinoheist:openvaultdoors", -1)
     return true
@@ -138,6 +148,7 @@ RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
     --if GetInvokingResource() ~= "Diamond-Casino-Heist" then return end 
     if heistInProgress then return end
 
+    invitedPlayers = {}
 
     if not heistInProgress then
         invitedPlayers = {} 
