@@ -789,11 +789,13 @@ function TunnelEntry()
         end
     end
 
-    SetBlipCoords(blips[1], vector3(2514.73, -279.29, -64.72))
+    RemoveBlip(blips[1])
+
+    blips[1] = AddBlipForCoord(2514.73, -279.29, -64.72)
     SetBlipSprite(blips[1], 743)
     SetBlipColour(blips[1], 5)
 
-    AddDoorToSystem(642441681, GetHashKey("ch_prop_ch_gendoor_01"), 2515.308, -281.5983, -64.57317, true, false, false)
+    AddDoorToSystem(642441681, GetHashKey("ch_prop_ch_gendoor_01"), 2515.308, -281.5983, -64.57317, true, false, true)
     DoorSystemSetDoorState(642441681, 0, false, true)
     
     while GetEntityCoords(PlayerPedId()).z > -65 do
