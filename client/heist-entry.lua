@@ -296,6 +296,15 @@ function StartHeist()
         LoadModel(model)
         veh = CreateVehicle(GetHashKey(model), 720.82, -842.88, 23.95, 271.44, true, false)
 
+        if selectedEntryDisguise == 3 and player == 1 then 
+            NetworkRegisterEntityAsNetworked(veh)
+            
+            local net = VehToNet(veh)
+            SetNetworkIdCanMigrate(net, true)
+            SetNetworkIdExistsOnAllMachines(net, true)
+            TriggerServerEvent("sv:casinoheist:syncStockade", net)
+        end
+
         if selectedEntryDisguise == 3 and approach == 2 then 
             SetVehicleColours(veh, 111, 0)
         elseif approach ~= 2 then 
@@ -516,6 +525,12 @@ RegisterNetEvent("cl:casinoheist:startHeist", StartHeist)
 
 RegisterNetEvent("cl:casinoheist:setNetIds", function(ids)
     netIds = ids
+end)
+
+RegisterNetEvent("cl:casinoheist:syncStockade", function(net)
+    repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(net)
+
+    veh = NetToVeh(net)
 end)
 
 

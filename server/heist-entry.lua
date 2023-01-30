@@ -4,11 +4,17 @@ RegisterNetEvent("sv:casinoheist:syncNetIds", function(ids)
     end
 end)
 
-RegisterNetEvent("sv:casinoheist:syncStockade", function(id, veh)
+RegisterNetEvent("sv:casinoheist:syncStockad1e", function(id, veh)
     --for i = 1, #hPlayer do 
         src = source
         TriggerClientEvent("cl:casinoheist:syncStockadeNet", -1, id, veh, src)
     --end
+end)
+
+RegisterNetEvent("sv:casinoheist:syncStockade", function(net)
+    for i = 2, #hPlayer do 
+        TriggerClientEvent("cl:casinoheist:syncStockade")
+    end
 end)
 
 RegisterCommand("sv_tunnel", function()
