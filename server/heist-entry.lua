@@ -13,7 +13,7 @@ end)
 
 RegisterNetEvent("sv:casinoheist:syncStockade", function(net)
     for i = 2, #hPlayer do 
-        TriggerClientEvent("cl:casinoheist:syncStockade")
+        TriggerClientEvent("cl:casinoheist:syncStockade", hPlayer[i])
     end
 end)
 
