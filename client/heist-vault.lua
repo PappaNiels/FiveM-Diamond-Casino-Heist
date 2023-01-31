@@ -297,6 +297,10 @@ local function GrabLoot(i)
     bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
     boxObj = CreateObject(propType[loot], GetEntityCoords(PlayerPedId()), true, false, false)
 
+    NetworkRequestControlOfEntity(takeObjs[i])
+
+    repeat Wait(0) until NetworkHasControlOfEntity(takeObjs[i])
+
     AttachEntityToEntity(boxObj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 0, true)
     SetEntityVisible(boxObj, false, false)
     cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
@@ -338,10 +342,10 @@ local function GrabLoot(i)
     
     while animTime < 1.0 do 
         Wait(GetFrameTime())
+        if IsControlPressed(0, 237) and not grabbing then 
 
         DisableControlAction(0, 1, true)
 
-        if IsControlJustPressed(0, 237) and not grabbing then 
             waiting = false
             grabbing = true
             
@@ -363,6 +367,8 @@ local function GrabLoot(i)
                 Wait(1)
             end
             
+            grabbing = false
+            
             SetEntityVisible(boxObj, false, false)            
             TriggerServerEvent("sv:casinoheist:addtake")
             --Wait(10)
@@ -370,7 +376,6 @@ local function GrabLoot(i)
             SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
             animTime = GetSynchronizedScenePhase(NetworkGetLocalSceneFromNetworkId(a))
             
-            grabbing = false
         elseif IsControlPressed(0, 238) then 
             waiting = false
             quit = true
@@ -440,6 +445,9 @@ local function CutPainting(j)
     LoadModel(blade)
     LoadModel(bag)
     SetPedComponentVariation(PlayerPedId(), 5, 0, 0, 0)
+    NetworkRequestControlOfEntity(paintingObjs[j])
+
+    repeat Wait(0) until NetworkHasControlOfEntity(paintingObjs[i])
     
     local bladeObj = CreateObject(GetHashKey(blade), GetEntityCoords(PlayerPedId()), true, false, false)
     local bagObj = CreateObject(GetHashKey(bag), GetEntityCoords(PlayerPedId()), true, false, false)
@@ -712,13 +720,13 @@ function VaultCheck()
 end
 
 function Vault()
-    print("Data set")
+    --print("Data set")
     --loot = 3
     local bTake = take
-    playerAmount = 2
+    --playerAmount = 2
     --vaultLayout = 1
     --cartLayout = 1
-    player = 1--GetCurrentHeistPlayer() -- 1 
+    --player = 1--GetCurrentHeistPlayer() -- 1 
     --selectedHacker = 5
     
     isInVault = true
@@ -734,7 +742,7 @@ function Vault()
 
     if player == 1 then 
         SetVaultObjs()
-    else 
+    elseif player ~= 1 then 
         Wait(100)
         GetVaultObjs()
     end
@@ -852,11 +860,11 @@ function Vault()
                         RemoveAnimDict("anim@heists@ornate_bank@grab_cash")
                     end
 
-                    for i = 1, #doorHash do 
-                        DoorSystemSetHoldOpen(doorHash, false)
-                        DoorSystemSetDoorState(doorHash, 1, false, false)
-                        RemoveDoorFromSystem(doorHash)
-                    end
+                    --for i = 1, #doorHash do 
+                    --    DoorSystemSetHoldOpen(doorHash, false)
+                    --    DoorSystemSetDoorState(doorHash, 1, false, false)
+                    --    RemoveDoorFromSystem(doorHash)
+                    --end
 
                     isInVault = false 
                     isBusy = true 
@@ -864,7 +872,7 @@ function Vault()
                     VaultLobby(true, false)
 
                     break
-                elseif distance < 7 then 
+                elseif distance < 7 or distance > 40 then 
                     isInVault = false 
                 else
                     isInVault = true

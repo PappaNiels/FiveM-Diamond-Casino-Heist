@@ -368,7 +368,7 @@ end
 function TeleportThread()
     local txt = "Go to the ~y~Casino."
     
-    if selectedEntrance == 6 then 
+    if selectedEntrance == 6 and not DoesEntityExist(veh) then 
         veh = GetVehiclePedIsIn(GetHeistPlayerPed(hPlayer[1]), false)
     elseif selectedEntrance == 7 then 
         txt = "Go to ~y~sewer tunnel."
@@ -385,6 +385,8 @@ function TeleportThread()
                 if IsNotClose(entryCoords[selectedEntrance], 3) then
                     SubtitleMsg("Wait for your team members", 110)
                 else 
+                    SetBlipRoute(blip, false)
+                    RemoveBlip(blip)
                     EnterCasino()
                     break
                 end
@@ -426,6 +428,8 @@ function EnterCasino()
 end
 
 function EnterCasinoTunnel()
+    SetBlipRoute(blip, false)
+    RemoveBlip(blip)
     DoScreenFadeOut(500)
     
     while not IsScreenFadedOut() do 

@@ -40,7 +40,7 @@ RegisterCommand("invite_casinoheist", function(src, args)
         else
             invitedPlayers[#invitedPlayers + 1] = tonumber(args[1]) 
             if GetResourceState("ifruit-phone") == "started" then 
-                TriggerClientEvent("cl:ifruit:invitePlayer", src, "Lester", "The Diamond Casino Heist", " Heist : Diamond Casino Heist", 1, "char_lester", "sv:casinoheist:joinHeist", true)
+                TriggerClientEvent("cl:ifruit:invitePlayer", tonumber(args[1]), "Lester", "The Diamond Casino Heist", " Heist : Diamond Casino Heist", 1, "char_lester", "sv:casinoheist:joinHeist", true)
             else
                 TriggerClientEvent("cl:casinoheist:infoMessageExtra", tonumber(args[1]), src)
                 TriggerClientEvent("cl:casinoheist:infoMessage", src, "You have sent an invite to %s", tonumber(args[1]))

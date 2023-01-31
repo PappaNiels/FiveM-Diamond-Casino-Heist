@@ -159,12 +159,12 @@ function GoToExit()
                 SubtitleMsg("Exit the Casino via the ~y~" .. txt[selectedExit], 110)
             end
 
-            if coords.z > -59 --[[and GetRoom() == 2]] then 
-                --SetRoom(1)
-
-                --if alarmTriggered == 0 then 
-                --    SetBlipsColour(1)
-                --end 
+            if coords.z > -59 and GetRoom() == 2 then 
+                SetRoom(1)
+                
+                if alarmTriggered == 0 then 
+                    SetBlipsColour(1)
+                end 
 
                 if approach == 2 and selectedExitDisguise ~= 0 and selectedExitDisguise < 4 then 
                     local bag = "ch_prop_ch_duffelbag_01x"
@@ -237,12 +237,12 @@ function ExitCasino()
     DeletePaths()
 
     DoScreenFadeIn(1000)
-    print("Data set")
-    player = 1
-    selectedExit = 11
-    selectedDriver = 1
-    selectedVehicle = 4
-    selectedBuyer = 3
+    --print("Data set")
+    --player = 1
+    --selectedExit = 11
+    --selectedDriver = 1
+    --selectedVehicle = 4
+    --selectedBuyer = 3
     DoScreenFadeOut(2000)
 
     while not IsScreenFadedOut() do 

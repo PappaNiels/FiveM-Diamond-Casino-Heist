@@ -263,7 +263,7 @@ local function SpawnPed()
 end
 
 local function SetAiBlip(ped, cone)
-    print(DoesEntityExist(ped))
+    --print(DoesEntityExist(ped))
 
     SetPedHasAiBlip(ped, true)
     SetPedAiBlipGangId(ped, 0--[[GetCamBlipColour()]])
@@ -272,7 +272,7 @@ local function SetAiBlip(ped, cone)
     SetPedAiBlipForcedOn(ped, true)
     SetPedAiBlipHasCone(ped, cone)
 
-    print(DoesPedHaveAiBlip(ped))
+    --print(DoesPedHaveAiBlip(ped))
 end
 
 local function SetAggrPed(ped)
@@ -308,6 +308,10 @@ local function SpawnAggrPed(room, loc)
 end
 
 local function InitAggrPeds(room)
+    for i = 1, #aggrGuards2 do 
+        DeletePed(aggrGuards2[i])
+    end
+
     local aggrNetIds = {} 
     for i = 1, #spawnCoords[room] do 
         local aggrGuards = CreatePed(0, GetHashKey(guards[1][math.random(1, 2)][1]), spawnCoords[room][i], true, false)
@@ -428,9 +432,15 @@ end
 function StopGuards()
     currentRoom = 0
 
-    for i = 1, 2 do 
-        for j = 1, #guards[i] do 
-            SetPedAiBlipForcedOn(activeGuards[i][j], false)
+    if alarmTriggered == 0 then 
+        for i = 1, 2 do 
+            for j = 1, #guards[i] do 
+                SetPedAiBlipForcedOn(activeGuards[i][j], false)
+            end
+        end
+    else 
+        for i = 1, #aggrGuards2	do 
+            DeletePed(aggrGuards2[i])
         end
     end
 end
@@ -498,8 +508,11 @@ function StartGuardSpawn(room)
             Wait(sleep)
 
             --print("tick")
+            if num == #spawnCoords[room] then 
+                num = 0
+            end
 
-            num = math.random(1, #spawnCoords[room])
+            num += 1
 
             if #aggrGuards2 < 5 then 
                 sleep = 100

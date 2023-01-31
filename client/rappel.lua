@@ -68,8 +68,8 @@ local function HideCutProps(bool)
 end
 
 function RopeStart()
-    player = 1
-    print("data sets")
+    --player = 1
+    --print("data sets")
     LoadCutscene("hs3f_mul_rp1")
     StartCutscene(0)
 

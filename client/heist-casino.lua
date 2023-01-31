@@ -347,8 +347,18 @@ local function VaultExplosion()
     RemoveAnimDict(reactAnimDict)
     SetEntityVisible(vaultObjs[4], true, false)
     SetEntityCollision(vaultObjs[4], true, true)
+
+    if not DoesEntityExist(vaultObjs[2]) then 
+        vaultObjs[2] = GetClosestObjectOfType(aggressiveVaultDoorCoords[2], 1.0, GetHashKey("ch_des_heist3_vault_01"), false, false, false)
+    end
+    
+    if not DoesEntityExist(vaultObjs[3]) then 
+        vaultObjs[3] = GetClosestObjectOfType(aggressiveVaultDoorCoords[3], 1.0, GetHashKey("ch_des_heist3_vault_02"), false, false, false)
+    end
     DeleteEntity(vaultObjs[2])
     DeleteEntity(vaultObjs[3])
+
+    ClearAreaOfObjects(aggressiveVaultDoorCoords[2], 3.0, 0)
 
     Vault()
 end
@@ -683,7 +693,7 @@ function MainEntry()
         blips[1] = AddBlipForCoord(2525.77, -251.71, -60.31)
         SetBlipColour(blips[1], 5) 
         
-        player = GetCurrentHeistPlayer()
+        --player = GetCurrentHeistPlayer()
 
         CreateThread(function()
             while true do 
@@ -694,6 +704,8 @@ function MainEntry()
                     if IsNotClose(vector3(2525.77, -251.71, -60.31), 3) then
                         SubtitleMsg("Wait for your team members", 110)
                     else 
+                        RemoveBlip(blips[1])
+
                         DoScreenFadeOut(500)
                         
                         while not IsScreenFadedOut() do 
@@ -945,7 +957,7 @@ function FirstMantrap()
             
             local distance = #(GetEntityCoords(PlayerPedId()) - vaultEntryDoorCoords)
             
-            if distance < 7 then 
+            if distance < 7 or (selectedEntryDisguise == 3 and IsAnyCrewNear(vaultEntryDoorCoords, 7)) then 
                 if approach == 2 and selectedEntryDisguise == 3 then 
                     if not DoesEntityExist(vaultObjs[1]) then 
                         vaultObjs[1] = GetClosestObjectOfType(2505.54, -238.53, -71.65, 10.0, GetHashKey("ch_prop_ch_vault_wall_damage"), false, false, false)
