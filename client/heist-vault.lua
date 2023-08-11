@@ -185,7 +185,6 @@ local function SetVaultObjs()
 
         SetModelAsNoLongerNeeded("ch_prop_ch_sec_cabinet_02a") 
     else 
-        --loot = 1
         cartLayout = 1
             
         for i = 1, #cartType[loot] do 
@@ -235,8 +234,6 @@ local function SetVaultLayout()
             cartLayout = 2
         end
     end
-
-    --vaultLayout = 1
 
     for i = 1, 7 do 
         if i < 4 then 
@@ -304,7 +301,6 @@ local function GrabLoot(i)
     AttachEntityToEntity(boxObj, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 60309), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 0, true)
     SetEntityVisible(boxObj, false, false)
     cam = CreateCam("DEFAULT_SCRIPTED_CAMERA", true)
-    --AttachCamToEntity(cam, trollyObj, 1.0, 1.0, 1.0, true)
     SetCamCoord(cam, camCoords)
     PointCamAtCoord(cam, cartCoords.xy, cartCoords.z + 0.5)
     SetCamActive(cam, true)
@@ -371,7 +367,6 @@ local function GrabLoot(i)
             
             SetEntityVisible(boxObj, false, false)            
             TriggerServerEvent("sv:casinoheist:addtake")
-            --Wait(10)
 
             SetSynchronizedSceneRate(NetworkGetLocalSceneFromNetworkId(a), 0)
             animTime = GetSynchronizedScenePhase(NetworkGetLocalSceneFromNetworkId(a))
@@ -409,7 +404,6 @@ local function GrabLoot(i)
     NetworkStartSynchronisedScene(exit)
     RenderScriptCams(false, true, 2000, true, false)
     TriggerServerEvent("sv:casinoheist:syncLStatus", i, animTime)
-    --take = take + 1
 
     Wait(2000)
 
@@ -538,11 +532,8 @@ local function OpenSlideDoors(size, num, hash)
     
     DoorSystemSetDoorState(dHash, 0, false, false)
     DoorSystemSetHoldOpen(dHash, true)
-    --Wait(4000)
     
     doorHash[#doorHash + 1] = dHash
-    --RemoveDoorFromSystem(GetHashKey("WHOUSE_DOOR_RANCHO_" .. tostring(num) .. size))
-    --FreezeEntityPosition(slideDoorObjs[num], true)
 end
 
 local function VaultGas()
@@ -552,75 +543,74 @@ local function VaultGas()
         {"COUGH_B", "COUGH_B_FACIAL"},
         {"COUGH_C", "COUGH_C_FACIAL"}
     }
-    --local arr1 = {
-    --    [0] = 1,
-    --    [1] = "anim@fidgets@coughs",
-    --    [2] = "",
-    --    [3] = 0.0,
-    --    [4] = 1065353216,
-    --    [5] = 1065353216,
-    --    [6] = 0,
-    --    [7] = 0,
-    --    [8] = 0,
-    --    [9] = 1065353216,
-    --    [10] = 1065353216,
-    --    [11] = 0,
-    --    [12] = 0,
-    --    [13] = 0,
-    --    [14] = 1065353216,
-    --    [15] = 1065353216,
-    --    [16] = GetHashKey("BONEMASK_UPPERONLY"),
-    --    [17] = 1040187392,
-    --    [18] = 1040187392,
-    --    [19] = -1,
-    --    [20] = 304
-    --}
-    --local arr2 = {
-    --    [0] = 0,
-    --    [1] = 0,
-    --    [2] = 0,
-    --    [3] = 0,
-    --    [4] = 1065353216,
-    --    [5] = 1065353216,
-    --    [6] = 0,
-    --    [7] = 0,
-    --    [8] = 0,
-    --    [9] = 1065353216,
-    --    [10] = 1065353216,
-    --    [11] = 0,
-    --    [12] = 0,
-    --    [13] = 0,
-    --    [14] = 1065353216,
-    --    [15] = 1065353216,
-    --    [16] = 0,
-    --    [17] = 1040187392,
-    --    [18] = 1040187392,
-    --    [19] = -1
-    --}
-    --local arr3 = {
-    --    [0] = 0,
-    --    [1] = 0,
-    --    [2] = 0,
-    --    [3] = 0,
-    --    [4] = 1065353216,
-    --    [5] = 1065353216,
-    --    [6] = 0,
-    --    [7] = 0,
-    --    [8] = 0,
-    --    [9] = 1065353216,
-    --    [10] = 1065353216,
-    --    [11] = 0,
-    --    [12] = 0,
-    --    [13] = 0,
-    --    [14] = 1065353216,
-    --    [15] = 1065353216,
-    --    [16] = 0,
-    --    [17] = 1040187392,
-    --    [18] = 1040187392,
-    --    [19] = -1
-    --}
+    local arr1 = {
+        1,
+        "anim@fidgets@coughs",
+        "",
+        0.0,
+        1065353216,
+        1065353216,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        GetHashKey("BONEMASK_UPPERONLY"),
+        1040187392,
+        1040187392,
+        -1,
+        304
+    }
+    local arr2 = {
+        0,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        1040187392,
+        1040187392,
+        -1
+    }
+    local arr3 = {
+        0,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        0,
+        0,
+        1065353216,
+        1065353216,
+        0,
+        1040187392,
+        1040187392,
+        -1
+    }
     
-    --CreateThread(function()
     RequestScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01", false, -1)
     RequestAnimSet("anim@fidgets@coughs")
 
@@ -675,16 +665,14 @@ local function VaultGas()
         SetParticleFxLoopedEvolution(ptfx[4], "fill", x, true)
         SetParticleFxLoopedEvolution(ptfx[4], "fade", x, true)
     end
-    --end)
     
-    --sId = GetSoundId()
     CreateThread(function()
         while isInVault do 
             Wait(1500)
             local num = math.random(1, 3)
             
-            --TaskScriptedAnimation(PlayerPedId(), 0xC1C26FF930, 0xC1C26FF998, 0xC1C26FF998, 0.125, 0.125)
-            --TaskPlayAnim(PlayerPedId(), animDict, cough[1][num], -8.0, 8.0, 2000, 0, 0, false, false, false)
+            -- This might break. Remove if needed
+            TaskScriptedAnimation(PlayerPedId(), tonumber(arr1), tonumber(arr2), tonumber(arr3), 0.125, 0.125)
             PlayFacialAnim(PlayerPedId(), cough[2][num], "anim@fidgets@coughs")
             PlaySoundFromEntity(-1, "Male_0".. num, PlayerPedId(), "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500)
 
@@ -703,10 +691,7 @@ local function VaultGas()
     for i = 1 , 3 do 
         StopParticleFxLooped(ptfx[i], 0)
     end
-    --end
 end
-
-RegisterCommand("test_gas", VaultGas, false)
 
 function VaultCheck()
     for i = 1, #hPlayer do 
@@ -720,14 +705,7 @@ function VaultCheck()
 end
 
 function Vault()
-    --print("Data set")
-    --loot = 3
     local bTake = take
-    --playerAmount = 2
-    --vaultLayout = 1
-    --cartLayout = 1
-    --player = 1--GetCurrentHeistPlayer() -- 1 
-    --selectedHacker = 5
     
     isInVault = true
 
@@ -860,12 +838,6 @@ function Vault()
                         RemoveAnimDict("anim@heists@ornate_bank@grab_cash")
                     end
 
-                    --for i = 1, #doorHash do 
-                    --    DoorSystemSetHoldOpen(doorHash, false)
-                    --    DoorSystemSetDoorState(doorHash, 1, false, false)
-                    --    RemoveDoorFromSystem(doorHash)
-                    --end
-
                     isInVault = false 
                     isBusy = true 
                     showTimer = false
@@ -893,126 +865,10 @@ RegisterNetEvent("cl:casinoheist:syncDStatus", function(num)
     status[2][num] = true
     if num < 4 then 
         OpenSlideDoors("A", num, "ch_prop_ch_vault_slide_door_lrg")
-        --SetEntityCoords(slideDoorObjs[num], GetEntityCoords(slideDoorObjs[num]) + (2 * GetEntityOffset(slideDoorObjs[num], true)), true, false, false, false)
     else 
         OpenSlideDoors("A", num, "ch_prop_ch_vault_slide_door_sm")
-        --SetEntityCoords(slideDoorObjs[num], GetEntityCoords(slideDoorObjs[num]) + (1.5 * GetEntityOffset(slideDoorObjs[num], true)), true, false, false, false)
     end    
 end)
 
+-- Test event??
 RegisterNetEvent("test:cl:vault", Vault)
-
-RegisterCommand("test_offset", function()
-    selectedHacker = 4
-    loot = 2
-    vaultLayout = 1
-    cartLayout = 1
-    Vault()
-end, false)
-
-RegisterCommand("dist", function()
-    CreateThread(function()
-        while true do 
-            Wait(0)
-            print(#(GetEntityCoords(GetHeistPlayerPed(hPlayer[i])) - vaultEntryDoorCoords))
-        end
-    end)
-end, false)
-
-RegisterCommand("test_time", function()
-    loot = 3
-    vaultLayout = 1
-    cartLayout = 1
-    player = 1 --GetCurrentHeistPlayer() -- 1 
-
-    local txt = {
-        "Press ~INPUT_CONTEXT~ to begin grabbing the cash.",
-        "Press ~INPUT_CONTEXT~ to begin grabbing the gold.",
-        "Press ~INPUT_CONTEXT~ to cut the paintings.",
-        "Press ~INPUT_CONTEXT~ to begin grabbing the diamonds."
-    }
-    
-    SetVaultLayout()
-
-    if player == 1 then 
-        SetVaultObjs()
-    else 
-        Wait(100)
-        GetVaultObjs()
-    end
-    CutPainting(1)
-end, false)
-
---[[
-    AUDIO::PLAY_SOUND_FROM_ENTITY(-1, func_11831(), iLocal_932, "dlc_ch_heist_finale_poison_gas_coughs_sounds", true, 500);
-
-    -- Gas
-
-    void func_11838(int iParam0)//Position - 0x3D2C89
-{
-	GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
-	iLocal_9769[iParam0] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_poison_gas", func_11840(iParam0), func_11839(iParam0), 1f, false, false, false, true);
-	GRAPHICS::SET_PARTICLE_FX_LOOPED_COLOUR(iLocal_9769[iParam0], 255f, 255f, 255f, true);
-	GRAPHICS::SET_PARTICLE_FX_LOOPED_ALPHA(iLocal_9769[iParam0], 255f);
-}
-
-Vector3 func_11839(int iParam0)//Position - 0x3D2CE6
-{
-	switch (iParam0)
-	{
-		case 1:
-			return 0f, 0f, 90f;
-		
-		default:
-	}
-	return 0f, 0f, 0f;
-}
-
-Vector3 func_11840(int iParam0)//Position - 0x3D2D08
-{
-	switch (iParam0)
-	{
-		case 0:
-			return 2521f, -226.2f, -71.7f;
-		
-		case 1:
-			return 2533.4f, -238.5f, -71.7f;
-		
-		case 2:
-			return 2521f, -250.9f, -71.7f;
-		
-		default:
-	}
-	return 0f, 0f, 0f;
-
-Kuch Animatie
-
-    fLocal_9771 = (fLocal_9771 + (MISC::GET_FRAME_TIME() * 0.01f));
-    fLocal_9771 = func_2619(fLocal_9771, 0f, 1f);
-    GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(iLocal_9768, "fill", fLocal_9771, true);
-    GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(iLocal_9768, "fade", fLocal_9771, true);
-
-    iLocal_9777 = MISC::GET_RANDOM_INT_IN_RANGE(0, 3);
-    switch (iLocal_9777)
-    {
-        case 0:
-            Var2.f_2 = "COUGH_A";
-            sVar5 = "COUGH_A_FACIAL";
-            break;
-    
-        case 1:
-            Var2.f_2 = "COUGH_B";
-            sVar5 = "COUGH_B_FACIAL";
-            break;
-    
-        case 2:
-            Var2.f_2 = "COUGH_C";
-            sVar5 = "COUGH_C_FACIAL";
-            break;
-    }
-    TASK::TASK_SCRIPTED_ANIMATION(iLocal_932, &Var2, &Var3, &Var4, 0.125f, 0.125f);
-    PED::PLAY_FACIAL_ANIM(iLocal_932, sVar5, Var2.f_1);
-    func_319(&uLocal_9775, 0, 0);
-    MISC::SET_BIT(&uLocal_4178, 11);
-    MISC::CLEAR_BIT(&bLocal_4179, 0);
-]]

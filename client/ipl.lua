@@ -200,7 +200,6 @@ function SetLoot(loot)
         
         local add = {
             "gold_prop_1",
-            --"gold_prop_2"
         }
         
         for i = 1, #remove, 1 do 

@@ -25,12 +25,6 @@ local cartLayout = 0
 local cuts = {}
 local invitedPlayers = {}
 
-RegisterCommand("test_h", function(source, args)
-    print(source, args[1], GetPlayerPed(source))
-    hPlayer[tonumber(args[1])] = source
-    print(hPlayer[1], hPlayer[2])
-end, false)
-
 RegisterCommand("invite_casinoheist", function(src, args)
     if src == hPlayer[1] then 
         if args[1] == nil then 
@@ -40,7 +34,7 @@ RegisterCommand("invite_casinoheist", function(src, args)
         else
             invitedPlayers[#invitedPlayers + 1] = tonumber(args[1]) 
             if GetResourceState("ifruit-phone") == "started" then 
-                TriggerClientEvent("cl:ifruit:invitePlayer", tonumber(args[1]), "Lester", "The Diamond Casino Heist", " Heist : Diamond Casino Heist", 1, "char_lester", "sv:casinoheist:joinHeist", true)
+                TriggerClientEvent("cl:ifruit:invitePlayer", tonumber(args[1]), "Lester", "The Diamond Casino Heist", "Heist : Diamond Casino Heist", 1, "char_lester", "sv:casinoheist:joinHeist", true)
             else
                 TriggerClientEvent("cl:casinoheist:infoMessageExtra", tonumber(args[1]), src)
                 TriggerClientEvent("cl:casinoheist:infoMessage", src, "You have sent an invite to %s", tonumber(args[1]))
@@ -59,6 +53,7 @@ RegisterCommand("start_casinoheist", function(src, args)
     if not heistInProgress and hPlayer[1] == nil then 
         hPlayer[1] = src 
         SetPlayerRoutingBucket(src, 2)
+        TriggerClientEvent("cl:casinoheist:infoMessage", src, "You started a session")
     elseif hPlayer[1] == src then 
         TriggerClientEvent("cl:casinoheist:infoMessage", src, "You already host a session")
     else
@@ -69,7 +64,6 @@ end, false)
 RegisterNetEvent("sv:casinoheist:setHeistLeader", function(bool)
     if not hPlayer[1] and bool then 
         hPlayer[1] = source
-        --print(source)
     elseif not bool then
         hPlayer = {}
     else 
@@ -112,6 +106,7 @@ end)
 RegisterNetEvent("sv:casinoheist:joinHeist", function(src)
     if heistInProgress then return end 
     
+    print(source)
     if src == nil then 
         src = source
     end 
@@ -124,7 +119,6 @@ RegisterNetEvent("sv:casinoheist:joinHeist", function(src)
                 hPlayer[#hPlayer + 1] = src 
                 for i = 1, #hPlayer do 
                     TriggerClientEvent("cl:casinoheist:updateHeistPlayers", hPlayer[i], hPlayer)
-                    --TriggerClientEvent("cl:casinoheist:syncHeistPlayerScaleform", hPlayer[i])
                 end
 
                 for i = 1, #hPlayer - 1 do 
@@ -155,8 +149,7 @@ RegisterNetEvent("sv:casinoheist:alarm", function()
 end)
 
 RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
-    --if GetInvokingResource() ~= "Diamond-Casino-Heist" then return end 
-    if heistInProgress then return end
+    if GetInvokingResource() ~= "Diamond-Casino-Heist" or heistInProgress then return end 
 
     invitedPlayers = {}
 
@@ -203,5 +196,3 @@ RegisterNetEvent("sv:casinoheist:guardBlips", function(netId)
         TriggerClientEvent("cl:casinoheist:guardBlips", hPlayer[i], netId)
     end
 end)
-
---print(" _______  __   __  _______    ______   ___   _______  __   __  _______  __    _  ______     _______  _______  _______  ___   __    _  _______    __   __  _______  ___   _______  _______ \n|       ||  | |  ||       |  |      | |   | |   _   ||  |_|  ||       ||  |  | ||      |   |     __||   _   ||       ||   | |  |  | ||       |  |  | |  ||       ||   | |       ||       |\n|_     _||  |_|  ||    ___|  |  __   ||   | |  |_|  ||       ||   _   ||   |_| ||  __   |  |    |   |  |_|  ||  _____||   | |   |_| ||   _   |  |  |_|  ||    ___||   | |  _____||_     _|\n  |   |  |       ||   |___   | |  |  ||   | |       ||       ||  | |  ||       || |  |  |  |    |   |       || |_____ |   | |       ||  | |  |  |       ||   |___ |   | | |_____   |   |  \n  |   |  |   _   ||    ___|  | |__|  ||   | |   _   || || || ||  |_|  ||  _    || |__|  |  |    |   |   _   ||_____  ||   | |  _    ||  |_|  |  |   _   ||    ___||   | |_____  |  |   |  \n  |   |  |  | |  ||   |___   |       ||   | |  | |  || ||_|| ||       || | |   ||       |  |    |__ |  | |  | _____| ||   | | | |   ||       |  |  | |  ||   |___ |   |  _____| |  |   |  \n  |___|  |__| |__||_______|  |______| |___| |__| |__||_|   |_||_______||_|  |__||______|   |_______||__| |__||_______||___| |_|  |__||_______|  |__| |__||_______||___| |_______|  |___|  ")

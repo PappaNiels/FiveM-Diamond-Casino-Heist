@@ -1,11 +1,3 @@
-RegisterCommand("rappel", function(source)
-    Start()
-end, false)
-
-RegisterCommand("rope", function()
-    RopeStart()
-end, false)
-
 local rope = false
 
 local coords1 = { -- func_11488
@@ -21,26 +13,6 @@ local coords2 = { -- func_11487
     vector3(2571.0, -255.4523, -73.3),
     vector3(2574.8, -255.4523, -73.3)
 }
-
-function Start()
-    RequestCutscene("hs3f_mul_rp1", 8)
-
-    while not HasCutsceneLoaded() do
-        Wait(10)
-        
-    end 
-
-    SetCutsceneEntityStreamingFlags("MP_1", 0, 1)
-    RegisterEntityForCutscene(PlayerPedId(), "MP_1", 0, 0, 64)
-    --SetCutsceneEntityStreamingFlags("MP_2", 0, 1)
-    --RegisterEntityForCutscene(0, "MP_2", 0, 0, 64)
-
-    SetCutsceneCanBeSkipped(true)
-    StartCutscene(0)
-    
-    Wait(11966)
-    RopeStart()
-end
 
 local function HideCutProps(bool)
     while not DoesCutsceneEntityExist("MP_3") do 
@@ -60,16 +32,10 @@ local function HideCutProps(bool)
         end
     end 
 
-    --if bool then 
-    --    repeat Wait(100) until HasCutsceneFinished()
-    --else
-        repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 500
-    --end
+    repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 500
 end
 
 function RopeStart()
-    --player = 1
-    --print("data sets")
     LoadCutscene("hs3f_mul_rp1")
     StartCutscene(0)
 
@@ -112,7 +78,6 @@ function RopeStart()
     
     while GetEntityCoords(GetHeistPlayerPed(hPlayer[1])).z > -140 or GetEntityCoords(GetHeistPlayerPed(hPlayer[2])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[3])).z > -136 or GetEntityCoords(GetHeistPlayerPed(hPlayer[4])).z > -136 do
         DisableControlAction(0, 0, true)
-        --DisableControlAction(0, 1, true)
         DisableControlAction(0, 26, true)
         DisableControlAction(0, 37, true)
         DisableControlAction(0, 260, true)

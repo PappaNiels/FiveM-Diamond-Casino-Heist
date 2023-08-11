@@ -237,12 +237,7 @@ function ExitCasino()
     DeletePaths()
 
     DoScreenFadeIn(1000)
-    --print("Data set")
-    --player = 1
-    --selectedExit = 11
-    --selectedDriver = 1
-    --selectedVehicle = 4
-    --selectedBuyer = 3
+
     DoScreenFadeOut(2000)
 
     while not IsScreenFadedOut() do 
@@ -323,7 +318,6 @@ function ExitCasino()
     RemoveBlip(blips[1])
     
     if player == 1 then 
-        print(print(" yesy"))
         TriggerServerEvent("sv:casinoheist:syncMeet", false)
     end
 end
@@ -385,7 +379,7 @@ local function Route(meet)
 
     vehs[3] = CreateVehicle(GetHashKey(model[selectedBuyer]), meetingPoint[selectedBuyer][meet], false, false)
 
-    repeat Wait(10) print("tick") until DoesEntityExist(vehs[3])
+    repeat Wait(10) until DoesEntityExist(vehs[3])
 
     for i = 1, 3 do 
         peds[i] = CreatePedInsideVehicle(vehs[3], 1, GetHashKey(pedModels[selectedBuyer][i]), -2 + i, false, false)
@@ -443,18 +437,11 @@ function FinishHeist(meet)
         end
     end 
 
-    repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 1000
-
-    --DoScreenFadeOut(2000)
---
-    --while not IsScreenFadedOut() do 
-    --    Wait(10)
-    --end
+    repeat Wait(100) until GetCutsceneTotalDuration() - GetCutsceneTime() < 100
 
     EndScreen()
     RemoveCutscene()
     SetStreamedTextureDictAsNoLongerNeeded("timerbars")
-    --LoadCutscene("")
 
     ReleaseNamedScriptAudioBank("DLC_HEIST3/CASINO_HEIST_FINALE_GENERAL_01")
     exports.spawnmanager:setAutoSpawn(true)
@@ -465,23 +452,3 @@ RegisterNetEvent("cl:casinoheist:syncMeet", Route)
 RegisterNetEvent("cl:casinoheist:syncClotingBlips", function(k)
     RemoveBlip(blips[k + 1])
 end)
-
-RegisterCommand("test_veh", function()
-    LoadModel("t20")
-    veh = CreateVehicle(GetHashKey("t20"), 985.31, -215.88, 70.5, 271.44, true, false)
-end)
-
-RegisterCommand("test_exit", ExitCasino, false)
-
-RegisterCommand("skip_swipe2", function()
-    triggered = true
-end)
-
-RegisterCommand("test_cc", function()
-    selectedExit = 11
-    approach = 2
-    player = 1
-    selectedEntryDisguise = 3
-    selectedExitDisguise = 3
-    GoToExit()
-end, false)

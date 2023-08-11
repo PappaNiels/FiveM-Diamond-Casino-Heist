@@ -146,8 +146,6 @@ local function SpawnCams()
     for i = 1, 3 do 
         SetModelAsNoLongerNeeded(camModels[i])
     end
-    
-    --SetRoom(1)
 end
 
 local function CheckCamVision(i, j)
@@ -212,7 +210,6 @@ function GetRoom()
 end
 
 function GetCamBlipColour()
-    --return 1
     return GetBlipColour(blips[1][3]) 
 end
 
@@ -232,8 +229,6 @@ function AddBlipsForSelectedRoom(room)
             GetCamEntities()
         end
     end
-
-    print("test cams")
 
     if approach == 3 or alarmTriggered == 1 then return end
 
@@ -320,37 +315,22 @@ function RemoveCams()
     end
 end
 
--- Remove
+-- Remove Cams if they exist
 AddEventHandler("onResourceStop", function(rs)
     if rs ~= GetCurrentResourceName() then return end 
 
-    DisableAlarm()
+    if IsAmbientZoneEnabled("AZ_H3_Casino_Alarm_Zone_01_Exterior") then 
+        DisableAlarm()
+    end
 
-    for i = 1, 2 do 
-        for j = 1, #camPlace[i] do 
-            DeleteEntity(cams[i][j])
+    if DoesEntityExist(cams[1][1]) then
+        for i = 1, 2 do 
+            for j = 1, #camPlace[i] do 
+                DeleteEntity(cams[i][j])
+            end
         end
     end
 
     exports.spawnmanager:setAutoSpawn(true)
 
-end)
-
-AddEventHandler("onResourceStart", function(rs)
-    if rs ~= "Diamond-Casino-Heist" then return end 
-    
-    --TriggerAlarm()
-    
-    --SpawnCams()
-
-    --PrepareMusicEvent("CH_IDLE")
-    --TriggerMusicEvent("CH_IDLE")
-
-    --if PlayerId() == GetPlayerFromServerId(1) then 
-    --    player = 1 
-    --end
---
-    --AddBlipsForSelectedRoom(1)
-    --SetFacilityObjects(1)
-    --Scale()
 end)

@@ -2,8 +2,8 @@ local ratio = GetAspectRatio(0)
 ratioR = 1.778 / ratio
 
 function HelpMsg(text, time)
-    AddTextEntry("HelpMsg", text)
-    BeginTextCommandDisplayHelp("HelpMsg")
+    BeginTextCommandDisplayHelp("STRING")
+    AddTextComponentSubstringPlayerName(text)
     EndTextCommandDisplayHelp(0, false, true)
 end
 
@@ -81,8 +81,6 @@ function LoadModel(model)
     if not HasModelLoaded(model) then 
        RequestModel(model)
 
-       --print(IsModelInCdimage(model))
-
        while not HasModelLoaded(model) do 
            Wait(10)
        end
@@ -92,8 +90,6 @@ end
 function LoadAnim(animDict)
     if not HasAnimDictLoaded(animDict) then 
         RequestAnimDict(animDict)
-
-        --print(DoesAnimDictExist())
 
         while not HasAnimDictLoaded(animDict) do
             Wait(10)
@@ -153,7 +149,7 @@ function SetPedComponents(stage)
     end
     
     local ped = PlayerPedId()
-    local num = 2 --math.random(1, 4) --GetCurrentHeistPlayer()
+    local num = GetCurrentHeistPlayer()
     local index = 1
     
     ClearAllPedProps(ped)
@@ -278,15 +274,3 @@ end)
 
 RegisterNetEvent("cl:casinoheist:infoMessage", InfoMsg)
 RegisterNetEvent("cl:casinoheist:infoMessageExtra", InfoMsgExtra)
---RegisterCommand("test_anim", function()
---    HackKeypad(4, 0)
---end, false)
---
--- -- NEEDS TESTING
---
---
---
---
---RegisterCommand("swipe_test", function()
---    SwipeKeycardMantrap(4)
---end, false)

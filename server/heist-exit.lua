@@ -13,7 +13,3 @@ RegisterNetEvent("sv:casinoheist:syncClotingBlips", function(k)
         TriggerClientEvent("cl:casinoheist:syncClotingBlips", hPlayer[i], k)
     end
 end)
-
-RegisterCommand("test_meet", function()
-    TriggerEvent("sv:casinoheist:syncMeet")
-end)

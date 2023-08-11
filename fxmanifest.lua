@@ -1,9 +1,13 @@
 fx_version "cerulean"
 game "gta5"
 
-author "Niels"
+author "PappaNiels"
 description "Diamond Casino Heist"
 version "1.0.0"
+repository "https://github.com/PappaNiels/FiveM-Diamond-Casino-Heist"
+
+-- for the ytyps
+this_is_a_map "yes"
 
 lua54 "yes"
 
@@ -19,12 +23,7 @@ shared_scripts {
     "shared/*.lua"
 }
 
---escrow_ignore {
---    "shared/*.lua"
---}
-
 dependencies {
     "/gameBuild:h4",
-    "baseevents",
-    "nj_casino"
+    "baseevents"
 }

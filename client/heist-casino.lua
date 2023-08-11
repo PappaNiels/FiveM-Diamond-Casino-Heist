@@ -195,7 +195,6 @@ function HackKeypad(level, j, start)
                 DeleteObject(phone)
                 ClearPedTasks(PlayerPedId())
                 
-                --status[2][j] = true
                 isBusy = false
             else
                 NetworkStartSynchronisedScene(hackKeypadAnims[2][4])
@@ -219,9 +218,6 @@ function KeycardReady(num)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][3])
             Wait(2000)
             NetworkStartSynchronisedScene(keycardSyncAnims[2][4])
-            --if not timerStarted then 
-            --    SyncKeycardSwipe(num)
-            --end
             break 
         elseif IsControlPressed(0, 200) then 
             ClearPedTasks(PlayerPedId())
@@ -368,6 +364,7 @@ local function VaultExplosionSetup()
     SetBlipColour(blips[1], 76)
     SetBlipAlpha(blips[1], 175)
 
+    -- phone but disabled due to lack of testing and phone being quite unstable...
     --if GetResourceState("ifruit-phone") == "stopped" and player == 1 then 
     --    TriggerEvent("cl:ifruit:setBombContact", true, "sv:casinoheist:vaultExplosion", true)
     --else 
@@ -376,8 +373,6 @@ local function VaultExplosionSetup()
         VaultExplosion()
     --end
 end
-
-RegisterCommand("test_exp", VaultExplosionSetup, false)
 
 local function PlantVaultBombs(num)
     local animDict = ""
@@ -693,8 +688,6 @@ function MainEntry()
         blips[1] = AddBlipForCoord(2525.77, -251.71, -60.31)
         SetBlipColour(blips[1], 5) 
         
-        --player = GetCurrentHeistPlayer()
-
         CreateThread(function()
             while true do 
                 Wait(100)
@@ -827,7 +820,6 @@ swiped = false
 sync = false
 
 function SecurityLobby(blip, old)
-    --RemoveAllBlips()
     if blip then 
         for i = 1, 2 do 
             blips[i] = AddBlipForCoord(keypads[4][i])
@@ -840,8 +832,6 @@ function SecurityLobby(blip, old)
     local animDict = "anim_heist@hs3f@ig3_cardswipe_insync@male@"
     local animNameOne = keycardSyncAnims[1][1][4][1]
     local animNameTwo = keycardSyncAnims[1][2][4][1]
-    --local swiped = false
-    --local sync = false
     local x = 0
 
     CreateThread(function()
@@ -986,7 +976,7 @@ function FirstMantrap()
                             SetEntityVisible(GetEntityIndexOfCutsceneEntity(arr[i], 0), false, false)
                         end
                     end
-                    --SetVaultObjs()
+
                     repeat Wait(100) until HasCutsceneFinished()
 
                     Vault()
@@ -999,7 +989,6 @@ function FirstMantrap()
                         SetEntityVisible(vaultObjs[1], false, false)
                     end
                     
-                    --SetVaultObjs()
                     Wait(1000)
                     EnableMantrapDoors(1, 1)
 
@@ -1122,113 +1111,3 @@ RegisterNetEvent("cl:casinoheist:syncVault", function(key)
         end
     end
 end)
-
-RegisterCommand("test_doors", function(src, args)
-    EnableMantrapDoors(tonumber(args[1]), tonumber(args[2]))
-end, false)
-
-RegisterCommand("test_basement", FirstMantrap, false)
-
-RegisterCommand("TEst_vault", function()
-    SetupVault()
-end)
-
-RegisterCommand("skip_swipe", function()
-    swiped = true
-    sync = true
-end, false)
-
-RegisterCommand("test_cut_agg", function()
-    MainEntry()
-end, false)
-
-RegisterCommand("test_vp", function()
-    vaultObjs[2] = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords, false, false, true)
-    SetEntityHeading(vaultObjs[2], 90.0)
-    FreezeEntityPosition(vaultObjs[2], true)
-end, false)
-
-RegisterNetEvent("cl:testt", function()
-    --LoadModel("ch_des_heist3_vault_01")
-    --vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
-    --
-    --BombVaultDoor()
-
-    SecurityLobby(true, false)
-end)
-
-RegisterCommand("test_vaultdoors", function()
-    LoadModel("ch_des_heist3_vault_01")
-    LoadModel("ch_des_heist3_vault_02")
-    LoadModel("ch_des_heist3_vault_end")
-    vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
-    vaultObjs[2] = CreateObject(GetHashKey("ch_des_heist3_vault_02"), 2504.97, -240.31, -75.339, false, false, false)
-    vaultObjs[3] = CreateObject(GetHashKey("ch_des_heist3_vault_end"), 2504.97, -240.31, -71.8, false, false, true)
-    
-    SetEntityVisible(vaultObjs[3], false, false)
-    SetEntityCollision(vaultObjs[3], false, true)
-    
-    VaultExplosionSetup()
-end, false)
-
-RegisterCommand("test_bombs", function()
-    LoadModel("ch_des_heist3_vault_01")
-    vaultObjs[1] = CreateObject(GetHashKey("ch_des_heist3_vault_01"), 2504.97, -240.31, -73.691, false, false, false)
-    
-    BombVaultDoor()
-end, false)
-
-local test = {}
-
-RegisterCommand("test_art", function()
-    
-    PlaySoundFromCoord(-1, "vault_door_explosion", 2504.961, -240.3102, -70.07, "dlc_ch_heist_finale_sounds", false, 0, false)
-
-    LoadModel("ch_prop_ch_sec_cabinet_02a")
-    LoadModel("ch_prop_vault_painting_01a")
-
-    for i = 1, #artCabinets do 
-        artCabinetObjs[i] = CreateObject(GetHashKey("ch_prop_ch_sec_cabinet_02a"), artCabinets[i].x, artCabinets[i].y, artCabinets[i].z, true, false, false)
-        SetEntityHeading(artCabinetObjs[i], artCabinets[i].w)
-        paintingObjs[i] = CreateObject(GetHashKey("ch_prop_vault_painting_01a"), paintings[i], false, false, false)
-        SetEntityHeading(paintingObjs[i], artCabinets[i].w)
-    end
-end, false)
-
-local test = {}
-
-RegisterCommand("test_trolly", function()
-    local cartType = {
-        {"ch_prop_ch_cash_trolly_01a", "ch_prop_ch_cash_trolly_01b", "ch_prop_ch_cash_trolly_01c"},
-        {"ch_prop_gold_trolly_01a", "ch_prop_gold_trolly_01b", "ch_prop_gold_trolly_01c"},
-        {},
-        {"ch_prop_diamond_trolly_01a", "ch_prop_diamond_trolly_01b", "ch_prop_diamond_trolly_01c"} 
-    }
-
-    for i = 1, #cartType[loot] do 
-        LoadModel(cartType[loot][i])
-    end
-
-    if vaultLayout < 3 then 
-        cartLayout = 1
-    else 
-        cartLayout = 2
-    end
-
-    local sprites = {}
-
-    for i = 1, #carts[cartLayout] do 
-        j = CartType(i)
-
-        test[i] = CreateObject(GetHashKey(cartType[loot][j]), carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z, true, true, false)
-        SetEntityHeading(test[i], carts[cartLayout][i].w)
-        
-        blips[i] = AddBlipForCoord(carts[cartLayout][i].x, carts[cartLayout][i].y, carts[cartLayout][i].z)
-        SetBlipSprite(blips[i], 534 + i)
-        SetBlipColour(blips[i], 2)
-        SetBlipScale(blips[i], 0.8)
-    end
-end, false)
-
-RegisterCommand("test_roof", HeliPadEntry, false)
-RegisterCommand("test_sewer", SewerEntry, false)

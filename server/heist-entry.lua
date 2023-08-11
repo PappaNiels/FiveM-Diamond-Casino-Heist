@@ -5,10 +5,8 @@ RegisterNetEvent("sv:casinoheist:syncNetIds", function(ids)
 end)
 
 RegisterNetEvent("sv:casinoheist:syncStockad1e", function(id, veh)
-    --for i = 1, #hPlayer do 
-        src = source
-        TriggerClientEvent("cl:casinoheist:syncStockadeNet", -1, id, veh, src)
-    --end
+    src = source
+    TriggerClientEvent("cl:casinoheist:syncStockadeNet", -1, id, veh, src)
 end)
 
 RegisterNetEvent("sv:casinoheist:syncStockade", function(net)
@@ -17,14 +15,14 @@ RegisterNetEvent("sv:casinoheist:syncStockade", function(net)
     end
 end)
 
-RegisterCommand("sv_tunnel", function()
-    for i = 1, #hPlayer do 
-        TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i])
-    end
-end, false)
-
-RegisterCommand("sv_aggr", function()
-    for i = 1, #hPlayer do
-        TriggerClientEvent("cl:casinoheist:testCut", i)
-    end
-end, false)
+--RegisterCommand("sv_tunnel", function()
+--    for i = 1, #hPlayer do 
+--        TriggerClientEvent("cl:casinoheist:startHeist", hPlayer[i])
+--    end
+--end, false)
+--
+--RegisterCommand("sv_aggr", function()
+--    for i = 1, #hPlayer do
+--        TriggerClientEvent("cl:casinoheist:testCut", i)
+--    end
+--end, false)

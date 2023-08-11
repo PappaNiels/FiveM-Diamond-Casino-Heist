@@ -101,7 +101,6 @@ local function SetTempAndSpeed(bool)
     end
 
     CallScaleformMovieMethodWithNumber(scaleformDrill, "SET_TEMPERATURE", temp, -1.0, -1.0, -1.0, -1,0)
-    --CallScaleformMovieMethodWithNumber(scaleformDrill, "SET_SPEED", speed, -1.0, -1.0, -1.0, -1.0)
 end
 
 local function SetLaser(bool)
@@ -244,9 +243,6 @@ function StartDrilling(k)
     LoadModel("ch_prop_ch_vaultdoor01x")
     LoadDrilling()
 
-    --vaultObj = CreateObject(GetHashKey("ch_prop_ch_vaultdoor01x"), regularVaultDoorCoords + vector3(0.0, 0.0, 1.48), false, false, true)
-    --SetEntityHeading(vaultObj, 90.0)
-
     isBusy = true
     drillObj = CreateObject(GetHashKey(drillName), GetEntityCoords(PlayerPedId()), true, false, false)
     bagObj = CreateObject(GetHashKey("ch_p_m_bag_var0" .. GetClothingModel(bagColour) .. "_arm_s"), GetEntityCoords(PlayerPedId()), true, false, false)
@@ -323,56 +319,3 @@ function StartDrilling(k)
         end
     end)
 end
-
-RegisterCommand("scaleform_max", function()
-    StartDrilling(1)
-end, false)
-
---[[
-    STREAMING::REQUEST_NAMED_PTFX_ASSET("scr_ch_finale");
-    if (STREAMING::HAS_NAMED_PTFX_ASSET_LOADED("scr_ch_finale"))
-    {
-        if (BitTest(Global_1966339[iParam3], 3))
-        {
-            if ((uParam0->f_47[iParam3] == 0 && ENTITY::DOES_ENTITY_EXIST(Global_1966438[iParam3])) && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_47[iParam3]))
-            {
-                Var1 = { -0.00375f, -0.3f, 0.015f };
-                GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
-                uParam0->f_47[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_ON_ENTITY("scr_ch_finale_laser", Global_1966438[iParam3], Var1, 0f, 0f, -90f, 1f, false, false, false);
-                bVar0 = false;
-            }
-            if (uParam0->f_80[iParam3] == 0 && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_80[iParam3]))
-            {
-                GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
-                Var2 = { ENTITY::GET_ENTITY_COORDS(iParam1, true) };
-                Var3 = { ENTITY::GET_ENTITY_COORDS(Global_1966438[iParam3], true) };
-                Var2.f_2 = (Var3.f_2 + 0.0225f);
-                Var4 = { ENTITY::GET_ENTITY_ROTATION(iParam1, 2) + Vector(0f, 0f, 90f) };
-                uParam0->f_80[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_laser_sparks", Var2, Var4, 1f, false, false, false, true);
-                GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(uParam0->f_80[iParam3], "power", 0f, false);
-                bVar0 = false;
-            }
-        }
-        else if (uParam0->f_80[iParam3] == 0 && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_80[iParam3]))
-        {
-            GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
-            Var5 = { ENTITY::GET_ENTITY_COORDS(iParam1, true) };
-            Var6 = { ENTITY::GET_ENTITY_COORDS(Global_1966438[iParam3], true) };
-            Var5.f_2 = (Var6.f_2 + 0.0225f);
-            Var7 = { ENTITY::GET_ENTITY_ROTATION(iParam1, 2) + Vector(0f, 0f, 90f) };
-            uParam0->f_80[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_drill_sparks", Var5, Var7, 1f, false, false, false, true);
-            GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(uParam0->f_80[iParam3], "power", 0f, false);
-            bVar0 = false;
-        }
-        if (uParam0->f_113[iParam3] == 0 && !GRAPHICS::DOES_PARTICLE_FX_LOOPED_EXIST(uParam0->f_113[iParam3]))
-        {
-            GRAPHICS::USE_PARTICLE_FX_ASSET("scr_ch_finale");
-            Var8 = { ENTITY::GET_ENTITY_COORDS(iParam1, true) };
-            Var9 = { ENTITY::GET_ENTITY_COORDS(Global_1966438[iParam3], true) };
-            Var8.f_2 = (Var9.f_2 + 0.0225f);
-            Var10 = { ENTITY::GET_ENTITY_ROTATION(iParam1, 2) + Vector(0f, 0f, 90f) };
-            uParam0->f_113[iParam3] = GRAPHICS::START_PARTICLE_FX_LOOPED_AT_COORD("scr_ch_finale_drill_overheat", Var8, Var10, 1f, false, false, false, true);
-            GRAPHICS::SET_PARTICLE_FX_LOOPED_EVOLUTION(uParam0->f_113[iParam3], "heat", 0f, false);
-            bVar0 = false;
-
-]]

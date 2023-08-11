@@ -178,7 +178,7 @@ end
 
 local function HasAnyPedShot()
     for i = 1, #hPlayer do 
-        if IsPedShooting(GetHeistPlayerPed(hPlayer[i])) and not IsUsingSuppressor(GetHeistPlayerPed(hPlayer[i])) then 
+        if IsPedShooting(GetHeistPlayerPed(hPlayer[i])) --[[and not IsUsingSuppressor(GetHeistPlayerPed(hPlayer[i]))]] then 
             return true 
         end
     end
@@ -202,8 +202,6 @@ local function SpawnPed()
         for j = 1, #guards[i] do
             activeGuards[i][j] = CreatePed(1, GetHashKey(guards[i][j][1]), guards[i][j][2][1], true, false)
 
-            SetPedRelationshipGroupHash(activeGuards[i][j], GetHashKey("GUARDS"))
-
             SetPedAlertness(activeGuards[i][j], 0)
             SetPedHearingRange(activeGuards[i][j], 30.0)
 
@@ -214,11 +212,6 @@ local function SpawnPed()
             SetPedCombatRange(activeGuards[i][j], 0)
 
             SetPedSeeingRange(activeGuards[i][j], 20.0)
-            --blips[i][j] = AddBlipForEntity(activeGuards[i][j])
-            --SetBlipScale(blips[i][j], 0.75)
-            --SetBlipSprite(blips[i][j], 270)
-            --SetBlipColour(blips[i][j], 1)
-            --SetBlipPriority(blips[i][j], 7)
 
             NetworkRegisterEntityAsNetworked(activeGuards[i][j])
 
@@ -242,13 +235,6 @@ local function SpawnPed()
 
     Wait(1000)
 
-    --for i = 1, 2 do 
-    --    for j = 1, #guards[i] do 
-    --        SetPedHasAiBlipWithColor(activeGuards[i][j], true, 0)
-    --    end
-    --end
-    --SetPedAiBlipGangId(activeGuards[1][1], 3)
-
     local tick2 = 0
     for i = 1, 2 do 
         for j = 1, #guards[i] do
@@ -258,12 +244,9 @@ local function SpawnPed()
             end
         end
     end
-
-    --SetGuardVision(1)
 end
 
 local function SetAiBlip(ped, cone)
-    --print(DoesEntityExist(ped))
 
     SetPedHasAiBlip(ped, true)
     SetPedAiBlipGangId(ped, 0--[[GetCamBlipColour()]])
@@ -271,8 +254,6 @@ local function SetAiBlip(ped, cone)
     SetPedAiBlipSprite(ped, 270)
     SetPedAiBlipForcedOn(ped, true)
     SetPedAiBlipHasCone(ped, cone)
-
-    --print(DoesPedHaveAiBlip(ped))
 end
 
 local function SetAggrPed(ped)
@@ -304,7 +285,6 @@ local function SpawnAggrPed(room, loc)
     SetNetworkIdCanMigrate(aggrNetIds, true)
 
     TriggerServerEvent("sv:casinoheist:guardBlips", aggrNetIds)
-    --SetAiBlip(aggrGuards[i])
 end
 
 local function InitAggrPeds(room)
@@ -324,8 +304,6 @@ local function InitAggrPeds(room)
 
         SetNetworkIdExistsOnAllMachines(aggrNetIds[i], true)
         SetNetworkIdCanMigrate(aggrNetIds[i], true)
-
-        --repeat Wait(0) print("tick") until NetworkDoesEntityExistWithNetworkId(aggrNetIds[i])
     end
 
     TriggerServerEvent("sv:casinoheist:initGuardBlips", aggrNetIds)
@@ -369,8 +347,6 @@ function SetGuardVision(room)
                     TriggerServerEvent("sv:casinoheist:alarm")
                 end
 
-                --print(GetCamBlipColour() == 1, IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0),HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17), #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8)
-
                 if GetCamBlipColour() == 1 and IsPedFacingPed(activeGuards[room][i], PlayerPedId(), 60.0) and HasEntityClearLosToEntity(activeGuards[room][i], PlayerPedId(), 17) and #(GetEntityCoords(PlayerPedId()) - GetEntityCoords(activeGuards[room][i])) < 8 then 
                     print("seen", i, seen[i], currentRoom == room, not IsPedDeadOrDying(activeGuards[room][i]), alarmTriggered == 0)
                     --print(GetBlipColour(blips[room][i]))
@@ -379,14 +355,12 @@ function SetGuardVision(room)
 
                     if seen[i] > 6 then 
                         TriggerServerEvent("sv:casinoheist:alarm")
-                        --SetGuardAgg()
                     end
                 elseif seen[i] ~= 0 then 
                     seen[i] = 0
                 end
 
             end
-            print("end")
         end)
     end
 end
@@ -445,6 +419,7 @@ function StopGuards()
     end
 end
 
+-- unused
 function SetGuardColour(colour)
     for i = 1, 2 do 
         for j = 1, #guards[i] do 
@@ -507,7 +482,6 @@ function StartGuardSpawn(room)
         while currentRoom == room do 
             Wait(sleep)
 
-            --print("tick")
             if num == #spawnCoords[room] then 
                 num = 0
             end
@@ -520,16 +494,12 @@ function StartGuardSpawn(room)
                 sleep = 500
             end
 
-            --print(#aggrGuards2 < 15, IsNotClose(spawnCoords[room][num].xyz, 15), not IsAnyPedLookingAtCoord(spawnCoords[room][num].xyz))
-
             if #aggrGuards2 < 15 and not IsAnyCrewNear(spawnCoords[room][num].xyz, 20) and not IsAnyPedLookingAtCoord(spawnCoords[room][num].xyz) then 
                 SpawnAggrPed(room, num)
                 print("guard spawned", "guard count: " .. #aggrGuards2)
 
             end
         end
-
-        print("end")
 
         for i = 1, #aggrGuards2 do 
             DeletePed(aggrGuards2[i])
@@ -544,7 +514,6 @@ function StartGuardSpawn(room)
             for i = 1, #aggrGuards2 do 
                 if IsPedDeadOrDying(aggrGuards2[i], true) then
                     table.remove(aggrGuards2, i)
-                    print("removed: " .. i, "guard count: " .. #aggrGuards2)
                 end
             end
         end
@@ -552,26 +521,15 @@ function StartGuardSpawn(room)
 end
 
 RegisterNetEvent("cl:casinoheist:calmGuard", function(room, netId)
-    if netId == nil or player == 1 then return end
+    if netId == nil then return end
 
     repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netId)
 
     activeGuards[room][#activeGuards[room]] = NetToPed(netId)
-
-    --local num = #activeGuards
---
-    --SetPedHasAiBlip(activeGuards[room][num], true)
-    --SetPedAiBlipGangId(activeGuards[room][num], 0--[[GetCamBlipColour()]])
-    --SetPedAiBlipNoticeRange(activeGuards[room][num], 100.0)
-    --SetPedAiBlipSprite(activeGuards[room][num], 270)
-    --SetPedAiBlipForcedOn(activeGuards[room][num], true)
-    --SetPedAiBlipHasCone(activeGuards[room][num], true)
---
-    --SetLogic()
+    SetAiBlip(activeGuards[room][#activeGuards[room]], true)
 end)
 
 RegisterNetEvent("cl:casinoheist:initGuardBlips", function(netIds)
-    print("test")
     for i = 1, #netIds do 
         repeat Wait(0) until NetworkDoesEntityExistWithNetworkId(netIds[i])
         aggrGuards2[i] = NetToPed(netIds[i])
@@ -590,26 +548,3 @@ RegisterNetEvent("cl:casinoheist:guardBlips", function(netId)
     SetAiBlip(aggrGuards2[#aggrGuards2], false)
     SetPedAsEnemy(aggrGuards2[#aggrGuards2], true)
 end)
-
-RegisterCommand("test_nav", function()
-    SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
-    AddRelationshipGroup("GUARDS")
-    SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
-    SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
-    SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
-    
-
-
-    SetRoom(1)
-end, false)
-
-RegisterCommand("test_gs", function()
-    SetPedRelationshipGroupHash(PlayerPedId(), GetHashKey("PLAYER"))
-    AddRelationshipGroup("GUARDS")
-    SetRelationshipBetweenGroups(0, GetHashKey("GUARDS"), GetHashKey("GUARDS"))
-    SetRelationshipBetweenGroups(5, GetHashKey("PLAYER"), GetHashKey("GUARDS"))
-    SetRelationshipBetweenGroups(5, GetHashKey("GUARDS"), GetHashKey("PLAYER"))
-
-    playerAmount = 2
-    StartGuardSpawn(3)
-end, false)

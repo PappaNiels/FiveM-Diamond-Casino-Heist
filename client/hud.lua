@@ -5,7 +5,6 @@ showTimer = false
 local test = false
 
 local teamlivesColour = {255, 255, 255, 255}
---local teamlivesColour = {255, 100, 100, 255}
 
 local amountSize = 0.5
 local height = 0.903
@@ -157,11 +156,7 @@ function DrawTeamlives()
             AddTextComponentSubstringPlayerName(tostring(teamlives))
             EndTextCommandDisplayText(GetXTextPlace(tw), 0.945)
 
-            if teamlives > 1 then 
-                DrawSpriteCut("timerbars", "all_red_bg", 1.094, 0.962, 600.0, 65.0, 255)
-            else 
-                DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.962, 300.0, 65.0, 140)
-            end 
+            DrawSpriteCut("timerbars", "all_black_bg", 1.232, 0.962, 300.0, 65.0, 140)
         end
     end)
 end
@@ -228,7 +223,6 @@ function EndScreen()
     AnimpostfxPlay("MP_Celeb_Win", 1000, true)
 
     StopCutscene(false)
-    --Citizen.InvokeNative(0x8D9DF6ECA8768583, GetThread())
 
     Wait(1000)
 
@@ -252,12 +246,6 @@ function EndScreen()
         "SILVER",
         "BRONZE"
     }
-    
-    --playerCount = 4
-    
-    --CAM::_0x5A43C76F7FC7BA5F()
-    --Citizen.InvokeNative(0x5A43C76F7FC7BA5F)
-    
     
     for i = 1, 3 do 
         
@@ -370,17 +358,3 @@ function EndScreen()
         SetScaleformMovieAsNoLongerNeeded(endScreen[i])
     end
 end
-
-RegisterCommand("test_cend", EndScreen, false)
-
-RegisterCommand("test_sec", function() 
-    --FormatTimer()
-    --test = true
-    DrawTeamlives()
-    DrawTake()
-    DrawTimer()
-    --loadTeamlives = true 
-    --loadTake = true 
-    --loadTimer = true
-    --StartTimer()
- end, false)

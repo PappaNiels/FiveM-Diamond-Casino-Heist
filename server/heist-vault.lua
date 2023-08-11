@@ -11,7 +11,3 @@ RegisterNetEvent("sv:casinoheist:syncDStatus", function(key)
         TriggerClientEvent("cl:casinoheist:syncDStatus", hPlayer[i], key)
     end
 end)
-
-RegisterCommand("sv_vault", function()
-    TriggerClientEvent("test:cl:vault", -1)
-end, false)

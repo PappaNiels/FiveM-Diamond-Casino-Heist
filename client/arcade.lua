@@ -752,19 +752,6 @@ local function InsertEntry()
         imageOrder[3][approach][2][i] = 0
     end
 
-    -- old
-
-
-    --if imageOrderNum[3][13] == 2 then
-    --    imageOrder[3][2][2] = {11, 1}
-    --elseif imageOrderNum[3][13] == 4 then
-    --    imageOrder[3][2][2] = {11, 1}
-    --elseif imageOrderNum[3][13] == 3 then
-    --    imageOrder[3][2][2] = {6}
-    --elseif imageOrderNum[3][13] == 5 then
-    --    imageOrder[3][2][2] = {2}
-    --end
-
     imageOrder[3][2][2] = {6}
 
     SetDataFinal()
@@ -1760,8 +1747,6 @@ CreateThread(function()
                     if distance < 1.3 then 
                         HelpMsg("Press ~INPUT_CONTEXT~ to enter the arcade")
                         if IsControlPressed(0, 38) then 
-                            --FadeTeleport(2737.99, -374.45, -49.0, 175.0)
-
                             DoScreenFadeOut(1000)
                             
                             while not IsScreenFadedOut() do
@@ -1771,6 +1756,7 @@ CreateThread(function()
                             SetEntityCoords(PlayerPedId(), 2737.99, -374.45, -49.0, true, false, false, false)
                             SetEntityHeading(PlayerPedId(), 175.0)
 
+                            -- wrong implementation... oops
                             --NetworkConcealPlayer(PlayerId(), true, true)
                             
                             RequestScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD", false, -1)
@@ -1778,8 +1764,6 @@ CreateThread(function()
                             boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
                             boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
                             barMenu = RequestScaleformMovie("INSTRUCTIONAL_BUTTONS")
-                            --hPlayer = {GetPlayerServerId(PlayerId())} 
-                            print(hPlayer[1])
 
                             while not HasScaleformMovieLoaded(boardType[3]) do 
                                 Wait(10)
@@ -1815,7 +1799,6 @@ CreateThread(function()
                         if IsControlPressed(0, 38) then 
                             FadeTeleport(759.08, -816.05, 25.3, 275.0)
                             ReleaseNamedScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD")
-                            --TriggerServerEvent("sv:casinoheist:setHeistLeader", false)
                             
                             hPlayer = {} 
                             for i = 1, 3 do 
@@ -1841,38 +1824,7 @@ CreateThread(function()
     end
 end)
 
-RegisterCommand("test_scale", function(src, args)
-    --boardUsing = tonumber(args[1])
-    RequestScriptAudioBank("DLC_MPHEIST/HEIST_PLANNING_BOARD", false, -1)
-    boardType[1] = RequestScaleformMovie("CASINO_HEIST_BOARD_SETUP")
-    boardType[2] = RequestScaleformMovie("CASINO_HEIST_BOARD_PREP")
-    boardType[3] = RequestScaleformMovie("CASINO_HEIST_BOARD_FINALE")
-    
-    while not HasScaleformMovieLoaded(boardType[3]) do 
-        Wait(10)
-    end
-    
-    SetupBoardInfo()
-
-    isInGarage = true
-    if approach ~= 0 and loot ~= 0 then
-        PrepBoardInfo()
-    end 
-                        
-    if selectedGunman ~= 0 and selectedDriver ~= 0 and selectedHacker ~= 0 then 
-        FinalBoardInfo()
-    end
-
-
-    ScaleformThread()
-end, false)
-
-RegisterCommand("add_h", function(src, args)
-    hPlayer[#hPlayer + 1] = tonumber(args[1])
-    PlayerJoinedCrew(#hPlayer)
-end, false)
-
--- Laptop 
+-- Code for the lester door which is unused for now
 
 local lesterdoorObj = 0
 local lesterdoorCoords = vector3(2727.91138, -371.982025, -48.40004)
@@ -1960,8 +1912,4 @@ RegisterCommand("lester_door", function()
     lesterdoorObj = CreateObject(GetHashKey("ch_prop_arcade_fortune_door_01a"), lesterdoorCoords, false, false, false)
     --FadeTeleport()
     --isInBuilding = true
-end, false)
-
-RegisterCommand("test_sevent", function()
-    TriggerServerEvent("sv:casinoheist:startHeist", {hPlayer, approach, loot, playerCut[#hPlayer], selectedGunman, selectedLoadout, selectedDriver, selectedVehicle, selectedHacker, selectedKeycard, selectedEntrance, selectedExit, selectedBuyer, selectedEntryDisguise, selectedExitDisguise, boughtCleanVehicle, boughtDecoy})
 end, false)

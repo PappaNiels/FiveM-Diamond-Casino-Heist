@@ -151,27 +151,15 @@ function DisableAlarm()
     SetAmbientZoneStatePersistent("AZ_H3_Casino_Alarm_Zone_02_Interior", false, true)
 end
 
---function SetLoot()
---    loot = math.random(1, 4)
---end
-
 function SetLayout()
     if loot ~= 3 then 
         vaultLayout = math.random(1,6)
     else  
         vaultLayout = math.random(7,10)
     end
-    --vaultLayout = math.random(1,4)
 end
 
 AddEventHandler("onResourceStart", function()
-    --HideNPropsStart()
-    --if GetCurrentResourceName() ~= "1heist" then 
-    --    print("Not the correct resource name")
-    --    StopResource(GetCurrentResourceName())
-    --end
-    --TriggerServerEvent("sv:casinoheist:setupheist" )
-    --SetEntityVisible(PlayerPedId(), true)
 end)
 
 RegisterNetEvent("cl:casinoheist:updateHeistPlayers", function(crew)
@@ -218,14 +206,5 @@ AddEventHandler("baseevents:onPlayerDied", function(o, i)
             heading = 117.02,
             skipFade = false
         })
-        print("works")
-    else 
-        print("isnt")
     end
 end)
-
-RegisterCommand("hPlayer", function(source, args)
-    print(args[1])
-    print(PlayerPedId())
-    TriggerServerEvent("sv:casinoheist:setHeistPlayers", PlayerPedId(), tonumber(args[1]))
-end, false)
