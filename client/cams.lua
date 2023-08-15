@@ -93,12 +93,12 @@ local function Helper(vec)
 end
 
 local function RemoveAllBlips()
-    N_0x8410c5e0cd847b9d()
+    Citizen.InvokeNative(0x8410c5e0cd847b9d)
 
     for i = 1, 2 do 
         for j = 1, #blips[i] do 
             SetBlipShowCone(blips[i][j], false, 11)
-            N_0x35a3cd97b2c0a6d2(blips[i][j])
+            Citizen.InvokeNative(0x35a3cd97b2c0a6d2, blips[i][j])
             RemoveBlip(blips[i][j])
         end
     end
@@ -116,7 +116,7 @@ local function GetCamEntities()
     for i = 1, 2 do 
         for j = 1, #camPlace[i] do 
             if i == 1 then 
-                cams[1][j] = GetClosestObjectOfType(camPlace[1][j].xyz, 2.0, GetHashKey(camModels[2]), false, false, false)
+                cams[1][j] = GetClosestObjectOfType(camPlace[1][j].xyz, 1.0, GetHashKey(camModels[2]), false, false, false)
             else 
                 cams[2][j] = GetClosestObjectOfType(camPlace[2][j].xyz, 1.0, GetHashKey(camModels[3]), false, false, false)
             end
@@ -259,7 +259,7 @@ function AddBlipsForSelectedRoom(room)
                         CamLoop(one, two)
                     end
 
-                    N_0x35a3cd97b2c0a6d2(blips[one][two])
+                    Citizen.InvokeNative(0x35a3cd97b2c0a6d2, blips[one][two])
                     RemoveBlip(blips[one][two])
                 end)
             else 
@@ -270,7 +270,7 @@ function AddBlipsForSelectedRoom(room)
                         BlipLoop(one, two)
                     end
 
-                    N_0x35a3cd97b2c0a6d2(blips[one][two])
+                    Citizen.InvokeNative(0x35a3cd97b2c0a6d2, blips[one][two])
                     RemoveBlip(blips[one][two])
                 end)
             end 
