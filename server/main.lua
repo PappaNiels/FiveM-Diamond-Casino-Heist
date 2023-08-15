@@ -149,7 +149,7 @@ RegisterNetEvent("sv:casinoheist:alarm", function()
 end)
 
 RegisterNetEvent("sv:casinoheist:startHeist", function(obj)
-    if GetInvokingResource() ~= "Diamond-Casino-Heist" or heistInProgress then return end 
+    if --[[GetInvokingResource() ~= "Diamond-Casino-Heist" or]] heistInProgress then return end 
 
     invitedPlayers = {}
 
