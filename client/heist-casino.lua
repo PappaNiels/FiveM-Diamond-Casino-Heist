@@ -15,7 +15,8 @@ local sewer = false
 local bombObjs = {}
 local blips = {}
 local vStatus = {false, false}
-local keycardSyncAnims = {
+
+keycardSyncAnims = {
     {
         {
             {"ped_a_enter", "ped_a_enter_keycard"},
@@ -242,13 +243,14 @@ function SyncKeycardEnter(num)
 
     LoadAnim(animDict)
     
+    
+    local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
+    
     if num > 2 then 
         num = num - 2
     end
 
     lvlFour = num
-
-    local keypadObj = GetClosestObjectOfType(keypads[4][num], 1.0, GetHashKey("ch_prop_fingerprint_scanner_01d"), false, false, false)
     keycardObj = CreateObject(GetHashKey(keycard), GetEntityCoords(PlayerPedId()), true, true, false)
     
     for i = 1, #keycardSyncAnims[1][2] do 
@@ -920,6 +922,8 @@ end
 function FirstMantrap()
     StopCams()
     StopGuards()
+
+    keycardSyncAnims[2] = {}
 
     blips[1] = AddBlipForCoord(mantrapCoords)
     SetBlipColour(blips[1], 5)
