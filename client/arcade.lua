@@ -667,7 +667,7 @@ local function UpdateList(list, button)
                 ToDoList(i, 2)
             end
         elseif boardUsing == 3 then
-            print(boardUsing, button, todoList[3][2])
+            --print(boardUsing, button, todoList[3][2])
             todoList[boardUsing][button][2] = true 
 
             --if approach == 2 then 
