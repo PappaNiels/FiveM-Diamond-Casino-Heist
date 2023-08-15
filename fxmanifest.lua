@@ -3,7 +3,7 @@ game "gta5"
 
 author "PappaNiels"
 description "Diamond Casino Heist"
-version "1.0.0"
+version "1.0.1"
 repository "https://github.com/PappaNiels/FiveM-Diamond-Casino-Heist"
 
 -- for the ytyps
