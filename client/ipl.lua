@@ -127,21 +127,20 @@ end
 
 function SetLoot(loot)
     --loot = math.random(1, 4)
-    
-    if loot == 1 then 
-        _loot = "cash"
-    elseif loot == 2 then
-        _loot = "art"
-    elseif loot == 3 then 
-        _loot = "gold"
-    elseif loot == 4 then 
-        _loot = "diamonds"
-    end 
 
-    
+    local lootNames = {
+        [1] = "cash",
+        [2] = "art",
+        [3] = "gold",
+        [4] = "diamonds",
+    }
+
+    _loot = lootNames[loot]
+
+
     print(_loot)
 
-    if loot == 1 then 
+    if loot == 1 then
         local remove = {
             "painting_prop_1",
             "painting_prop_2",

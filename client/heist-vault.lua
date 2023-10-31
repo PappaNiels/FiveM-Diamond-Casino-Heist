@@ -109,22 +109,27 @@ local function GetVaultObjs()
     end
 end
 
+local gasData = {
+    [1] = {
+        coords = vector3(2521.0, -226.2, -71.7),
+        rot = vector3(0.0, 0.0, 0.0),
+    },
+    [2] = {
+        coords = vector3(2533.4, -238.5, -71.7),
+        rot = vector3(0.0, 0.0, 90.0),
+    },
+    [3] = {
+        coords = vector3(2521.0, -250.9, -71.7),
+        rot = vector3(0.0, 0.0, 0.0),
+    },
+}
+
 local function GetGasCoords(num)
-    if num == 1 then 
-        return vector3(2521.0, -226.2, -71.7)
-    elseif num == 2 then 
-        return vector3(2533.4, -238.5, -71.7)
-    elseif num == 3 then
-        return vector3(2521.0, -250.9, -71.7)
-    end 
+    return gasData[num] and gasData[num].coords or vector3(0.0, 0.0, 0.0)
 end
 
 local function GetGasRot(num)
-    if num == 2 then 
-        return vector3(0.0, 0.0, 90.0)
-    else
-        return vector3(0.0, 0.0, 0.0)
-    end 
+    return gasData[num] and gasData[num].rot or vector3(0.0, 0.0, 0.0)
 end
 
 local function AreAllObjectsDone(num)
