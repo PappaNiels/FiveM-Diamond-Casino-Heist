@@ -89,17 +89,15 @@ function GetHeistPlayers()
 end
 
 function GetCurrentHeistPlayer()
-    if PlayerId() == GetPlayerFromServerId(hPlayer[1]) then 
-        return 1 
-    elseif PlayerId() == GetPlayerFromServerId(hPlayer[2]) then 
-        return 2
-    elseif PlayerId() == GetPlayerFromServerId(hPlayer[3]) then 
-        return 3
-    elseif PlayerId() == GetPlayerFromServerId(hPlayer[4]) then
-        return 4
-    else 
-        return nil
+    local currentPlayerId = PlayerId()
+
+    for i, serverId in ipairs(hPlayer) do
+        if currentPlayerId == GetPlayerFromServerId(serverId) then
+            return i
+        end
     end
+
+    return nil
 end
 
 function DeletePeds()
